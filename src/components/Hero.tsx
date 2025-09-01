@@ -468,7 +468,7 @@ const Hero: React.FC = () => {
 									return (
 										<motion.div
 											key={src}
-											className='absolute rounded-full bg-white/10 backdrop-blur-sm border border-white/30 shadow-2xl flex items-center justify-center overflow-hidden'
+											className='absolute rounded-full backdrop-blur-sm border border-white/30 shadow-2xl flex items-center justify-center overflow-hidden'
 											style={{
 												width: slot === "center" ? "90%" : "64%",
 												height: slot === "center" ? "90%" : "64%",
@@ -480,9 +480,10 @@ const Hero: React.FC = () => {
 											<LazyImage
 												src={src}
 												alt='Hero visual'
-												className='w-[78%] h-[78%] object-cover rounded-full'
+												className='w-[78%] h-[78%] object-cover rounded-full remove-bg'
 												threshold={0.1}
 												rootMargin="50px"
+												removeBackground={true}
 											/>
 										</motion.div>
 									);

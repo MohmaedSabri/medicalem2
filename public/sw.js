@@ -2,6 +2,9 @@ const CACHE_NAME = 'medical-eq-v1';
 const STATIC_CACHE = 'static-v1';
 const DYNAMIC_CACHE = 'dynamic-v1';
 
+// Check if we're in development mode
+const isDevelopment = self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1';
+
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -49,6 +52,12 @@ self.addEventListener('fetch', (event) => {
   
   // Skip non-GET requests
   if (request.method !== 'GET') {
+    return;
+  }
+
+  // Skip development server requests
+  if (isDevelopment) {
+    // In development, just pass through to network
     return;
   }
 

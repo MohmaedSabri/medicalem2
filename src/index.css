@@ -217,4 +217,20 @@
 	.xl\:mobile-padding {
 		padding: 3rem;
 	}
+
+	/* Custom utility classes for PNG background removal */
+	.remove-bg {
+		filter: brightness(0) saturate(100%) invert(1);
+		mix-blend-mode: multiply;
+	}
+	
+	.remove-bg-alt {
+		filter: brightness(0) saturate(100%) invert(1);
+		mix-blend-mode: screen;
+	}
+	
+	.remove-bg-dark {
+		filter: brightness(0) saturate(100%) invert(1);
+		mix-blend-mode: darken;
+	}
 }

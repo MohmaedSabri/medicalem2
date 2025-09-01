@@ -1,7 +1,11 @@
-// Service Worker Registration
-if ('serviceWorker' in navigator) {
+// Check if we're in development mode
+const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// Only register service worker in production
+if (!isDevelopment && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker
+      .register('/sw.js')
       .then((registration) => {
         console.log('SW registered: ', registration);
       })
@@ -9,6 +13,8 @@ if ('serviceWorker' in navigator) {
         console.log('SW registration failed: ', registrationError);
       });
   });
+} else if (isDevelopment) {
+  console.log('Service Worker disabled in development mode');
 }
 
 // Add to home screen functionality
