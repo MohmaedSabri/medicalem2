@@ -8,15 +8,15 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
       .register('/sw.js')
-      .then((registration) => {
-        console.log('SW registered: ', registration);
+      .then(() => {
+        // Service Worker registered successfully
       })
-      .catch((registrationError) => {
-        console.log('SW registration failed: ', registrationError);
+      .catch(() => {
+        // Service Worker registration failed
       });
   });
 } else if (import.meta.env.DEV) {
-  console.log('Service Worker disabled in development mode');
+  // Service Worker disabled in development mode
 }
 
 createRoot(document.getElementById('root')!).render(

@@ -8,6 +8,7 @@ import { useProducts } from "../contexts/ProductsContext";
 import { useSubCategories } from "../hooks/useSubCategories";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../contexts/LanguageContext";
+import { toast } from "react-hot-toast";
 
 const AddProductForm: React.FC = () => {
 	const { addProduct } = useProducts();
@@ -197,8 +198,7 @@ const AddProductForm: React.FC = () => {
 			const success = await addProduct(newProduct);
 
 			if (success) {
-				console.log("Product saved successfully");
-
+				toast.success("Product added successfully!");
 				// Reset form
 				setForm({
 					name: "",
@@ -217,14 +217,11 @@ const AddProductForm: React.FC = () => {
 					warranty: "",
 					certifications: [],
 				});
-
-				alert("Product added successfully!");
 			} else {
-				alert("Failed to add product. Please try again.");
+				toast.error("Failed to add product. Please try again.");
 			}
 		} catch (error) {
-			console.error("Error adding product:", error);
-			alert("Error adding product. Please try again.");
+			toast.error("Failed to add product. Please try again.");
 		} finally {
 			setIsSubmitting(false);
 		}

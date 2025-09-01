@@ -283,3 +283,4 @@ curl -H "Accept-Encoding: gzip, deflate, br" -I https://yourdomain.com
 # Check service worker
 # Open DevTools > Application > Service Workers
 ```
+

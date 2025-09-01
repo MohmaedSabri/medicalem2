@@ -12,7 +12,7 @@ export const categoryApi = {
       const response = await apiRepo.GET(CATEGORIES_BASE_URL);
       return response.data;
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      // Error fetching categories
       throw error;
     }
   },
@@ -23,7 +23,7 @@ export const categoryApi = {
       const response = await apiRepo.GET(`${CATEGORIES_BASE_URL}/${id}`);
       return response.data;
     } catch (error) {
-      console.error("Error fetching category:", error);
+      // Error fetching category
       throw error;
     }
   },
@@ -34,7 +34,7 @@ export const categoryApi = {
       const response = await apiRepo.POST(CATEGORIES_BASE_URL, categoryData);
       return response.data;
     } catch (error) {
-      console.error("Error creating category:", error);
+      // Error creating category
       throw error;
     }
   },
@@ -45,7 +45,7 @@ export const categoryApi = {
       const response = await apiRepo.PATCH(`${CATEGORIES_BASE_URL}/${id}`, categoryData);
       return response.data;
     } catch (error) {
-      console.error("Error updating category:", error);
+      // Error updating category
       throw error;
     }
   },
@@ -56,7 +56,7 @@ export const categoryApi = {
       const response = await apiRepo.DELETE(`${CATEGORIES_BASE_URL}/${id}`);
       return response.data;
     } catch (error) {
-      console.error("Error deleting category:", error);
+      // Error deleting category
       throw error;
     }
   }

@@ -1,93 +1,176 @@
 /** @format */
 
-import React, {
-	createContext,
-	useContext,
-	useState,
-	useEffect,
-	ReactNode,
-} from "react";
-import { User } from "../types";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
 
 interface AuthContextType {
-	user: User | null;
-	login: (email: string, password: string) => Promise<boolean>;
-	logout: () => void;
-	isLoading: boolean;
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  login: (email: string, password: string) => Promise<boolean>;
+  logout: () => void;
+  checkAuthStatus: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
-	const context = useContext(AuthContext);
-	if (context === undefined) {
-		throw new Error("useAuth must be used within an AuthProvider");
-	}
-	return context;
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };
 
 interface AuthProviderProps {
-	children: ReactNode;
+  children: ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-	const [user, setUser] = useState<User | null>(null);
-	const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
-	useEffect(() => {
-		// Check if user is logged in on app start
-		const storedUser = localStorage.getItem("user");
-		if (storedUser) {
-			try {
-				setUser(JSON.parse(storedUser));
-			} catch (error) {
-				localStorage.removeItem("user");
-			}
-		}
-		setIsLoading(false);
-	}, []);
+  const isAuthenticated = !!user;
 
-	const login = async (email: string, password: string): Promise<boolean> => {
-		setIsLoading(true);
+  // Check if user is authenticated on app load
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
 
-		try {
-			// Simulate API call
-			await new Promise((resolve) => setTimeout(resolve, 1000));
+  const checkAuthStatus = async () => {
+    try {
+      // Check if token exists in cookies
+      const token = getCookie('authToken');
+      
+      if (token) {
+        // Verify token with backend
+        const response = await fetch('http://localhost:5000/api/users/verify', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
 
-			// Demo login logic
-			if (email === "Zaher@gmail.com" && password === "Zaher@#123") {
-				const demoUser: User = {
-					id: "1",
-					email: "Zaher@gmail.com",
-					name: "Zaher",
-					role: "admin",
-				};
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData.user);
+        } else {
+          // Token is invalid, remove it
+          removeCookie('authToken');
+          setUser(null);
+        }
+      }
+    } catch (error: any) {
+      // Handle specific error messages from API
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('Network error. Please try again.');
+      }
+      removeCookie('authToken');
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-				setUser(demoUser);
-				localStorage.setItem("user", JSON.stringify(demoUser));
-				return true;
-			} else {
-				throw new Error("Invalid credentials");
-			}
-		} catch (error) {
-			console.error("Login error:", error);
-			return false;
-		} finally {
-			setIsLoading(false);
-		}
-	};
+  const login = async (email: string, password: string): Promise<boolean> => {
+    try {
+      setIsLoading(true);
+      
+      const response = await fetch('http://localhost:5000/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-	const logout = () => {
-		setUser(null);
-		localStorage.removeItem("user");
-	};
+      const data = await response.json();
 
-	const value: AuthContextType = {
-		user,
-		login,
-		logout,
-		isLoading,
-	};
+      if (response.ok) {
+        // Store token in cookie
+        setCookie('authToken', data.token, 1); // 1 day expiry
+        
+        // Set user data
+        setUser(data.user);
+        
+        toast.success('Login successful!');
+        navigate('/dashboard');
+        return true;
+      } else {
+        toast.error(data.message || 'Login failed');
+        return false;
+      }
+    } catch (error: any) {
+      // Handle specific error messages from API
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('Network error. Please try again.');
+      }
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  const logout = () => {
+    // Remove token from cookie
+    removeCookie('authToken');
+    
+    // Clear user data
+    setUser(null);
+    
+    // Navigate to home
+    navigate('/');
+    
+    toast.success('Logged out successfully');
+  };
+
+  // Cookie utility functions
+  const setCookie = (name: string, value: string, days: number) => {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Strict`;
+  };
+
+  const getCookie = (name: string): string | null => {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  };
+
+  const removeCookie = (name: string) => {
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+  };
+
+  const value: AuthContextType = {
+    user,
+    isAuthenticated,
+    isLoading,
+    login,
+    logout,
+    checkAuthStatus,
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 };

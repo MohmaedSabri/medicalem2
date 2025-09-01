@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import EditProductForm from "./EditProductForm";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../contexts/LanguageContext";
+import { toast } from "react-hot-toast";
 
 const ManageProducts: React.FC = () => {
 	const { products, deleteProduct } = useProducts();
@@ -58,8 +59,8 @@ const ManageProducts: React.FC = () => {
 				// local state update only
 				deleteProduct(productId);
 			} catch (error) {
-				console.error("Error deleting product:", error);
-				alert("Error deleting product. Please try again.");
+				// Error deleting product
+				toast.error("Failed to delete product");
 			} finally {
 				setDeletingProduct(null);
 			}

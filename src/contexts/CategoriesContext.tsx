@@ -48,8 +48,8 @@ export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({
 		try {
 			await createCategoryMutation.mutateAsync(categoryData);
 			return true;
-		} catch (err) {
-			console.error("Error adding category:", err);
+		} catch {
+			// Error adding category
 			return false;
 		}
 	};
@@ -57,16 +57,16 @@ export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({
 	const updateCategory = async (id: string, updates: Partial<Category>) => {
 		try {
 			await updateCategoryMutation.mutateAsync({ id, data: updates });
-		} catch (err) {
-			console.error("Error updating category:", err);
+		} catch {
+			// Error updating category
 		}
 	};
 
 	const deleteCategory = async (id: string) => {
 		try {
 			await deleteCategoryMutation.mutateAsync(id);
-		} catch (err) {
-			console.error("Error deleting category:", err);
+		} catch {
+			// Error deleting category
 		}
 	};
 

@@ -179,3 +179,4 @@ For local development, you can use tools like:
 - [MDN Security Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers#security)
 - [OWASP Security Headers](https://owasp.org/www-project-secure-headers/)
 - [Security Headers Best Practices](https://web.dev/security-headers/)
+

@@ -90,12 +90,15 @@ const ProductsPage: React.FC = () => {
 
 	// Products are loaded from API
 
-	// Create categories list with both categories and subcategories
-	const categories = [
-		"All",
-		...(allCategories || []).map(cat => cat?.name).filter(Boolean),
-		...Array.from(new Set(products.map((p) => p.subcategory).filter(Boolean))),
-	];
+	// Create categories list with both categories and subcategories, ensuring uniqueness
+	const categories = useMemo(() => {
+		const allCategoryNames = (allCategories || []).map(cat => cat?.name).filter(Boolean);
+		const allSubcategoryNames = Array.from(new Set(products.map((p) => p.subcategory).filter(Boolean)));
+		
+		// Combine and remove duplicates
+		const combined = ["All", ...allCategoryNames, ...allSubcategoryNames];
+		return combined.filter((value, index, self) => self.indexOf(value) === index);
+	}, [allCategories, products]);
 
 	const filteredProducts = useMemo(() => {
 		const filtered = products.filter((product) => {
@@ -438,8 +441,8 @@ const ProductsPage: React.FC = () => {
 								value={selectedCategory}
 								onChange={(e) => handleCategoryChange(e.target.value)}
 								className='w-full sm:w-auto px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 bg-white text-sm sm:text-base'>
-								{categories.map((category) => (
-									<option key={category} value={category}>
+								{categories.map((category, index) => (
+									<option key={`category-${index}-${category}`} value={category}>
 										{category}
 									</option>
 								))}

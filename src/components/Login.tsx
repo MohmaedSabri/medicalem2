@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Lock, Mail, ArrowLeft } from "lucide-react";
+import { Lock, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { LoginForm } from "../types";
 import { useAuth } from "../contexts/AuthContext";
@@ -14,7 +14,6 @@ const Login: React.FC = () => {
 		email: "",
 		password: "",
 	});
-	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [errors, setErrors] = useState<Partial<LoginForm>>({});
 	const [loginError, setLoginError] = useState("");
@@ -59,11 +58,22 @@ const Login: React.FC = () => {
 		try {
 			const success = await login(form.email, form.password);
 			if (success) {
-				navigate("/dashboard");
+				// Check if there's a redirect path stored
+				const redirectPath = sessionStorage.getItem('redirectAfterLogin');
+				
+				if (redirectPath && redirectPath !== '/login') {
+					// Navigate to the originally requested page
+					navigate(redirectPath);
+					// Clear the stored redirect path
+					sessionStorage.removeItem('redirectAfterLogin');
+				} else {
+					// Default redirect to dashboard
+					navigate("/dashboard");
+				}
 			} else {
 				setLoginError("Invalid email or password. Please try again.");
 			}
-		} catch (error) {
+		} catch {
 			setLoginError("An error occurred during login. Please try again.");
 		} finally {
 			setIsLoading(false);
@@ -77,28 +87,7 @@ const Login: React.FC = () => {
 				animate={{ opacity: 1, scale: 1 }}
 				transition={{ duration: 0.6 }}
 				className='max-w-md w-full space-y-8'>
-				{/* Header */}
-				<motion.div
-					initial={{ opacity: 0, y: 30 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.6, delay: 0.1 }}
-					className='text-center'>
-					<motion.button
-						whileHover={{ x: -5 }}
-						onClick={() => navigate("/")}
-						className='inline-flex items-center space-x-2 text-teal-600 hover:text-teal-700 transition-colors mb-6'>
-						<ArrowLeft className='h-4 w-4' />
-						<span>Back to Home</span>
-					</motion.button>
-
-					<h2 className='text-3xl font-bold text-gray-900 mb-2'>
-						Welcome Back
-					</h2>
-					<p className='text-gray-600'>
-						Sign in to access your medical equipment dashboard
-					</p>
-				</motion.div>
-
+				
 				{/* Login Form */}
 				<motion.div
 					initial={{ opacity: 0, y: 30 }}
@@ -150,27 +139,17 @@ const Login: React.FC = () => {
 								</div>
 								<motion.input
 									whileFocus={{ scale: 1.02 }}
-									type={showPassword ? "text" : "password"}
+									type='password'
 									name='password'
 									value={form.password}
 									onChange={handleChange}
-									className={`block w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all ${
+									className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all ${
 										errors.password
 											? "border-red-300 bg-red-50"
 											: "border-gray-300"
 									}`}
 									placeholder='Enter your password'
 								/>
-								<button
-									type='button'
-									onClick={() => setShowPassword(!showPassword)}
-									className='absolute inset-y-0 right-0 pr-3 flex items-center'>
-									{showPassword ? (
-										<EyeOff className='h-5 w-5 text-gray-400 hover:text-gray-600' />
-									) : (
-										<Eye className='h-5 w-5 text-gray-400 hover:text-gray-600' />
-									)}
-								</button>
 							</div>
 							{errors.password && (
 								<motion.p
@@ -180,23 +159,6 @@ const Login: React.FC = () => {
 									{errors.password}
 								</motion.p>
 							)}
-						</div>
-
-						{/* Remember & Forgot */}
-						<div className='flex items-center justify-between'>
-							<label className='flex items-center'>
-								<input
-									type='checkbox'
-									className='rounded border-gray-300 text-teal-600 focus:ring-teal-500'
-								/>
-								<span className='ml-2 text-sm text-gray-600'>Remember me</span>
-							</label>
-							<motion.a
-								whileHover={{ scale: 1.05 }}
-								href='#'
-								className='text-sm text-teal-600 hover:text-teal-700 transition-colors'>
-								Forgot password?
-							</motion.a>
 						</div>
 
 						{/* Login Error */}
@@ -226,47 +188,6 @@ const Login: React.FC = () => {
 							)}
 						</motion.button>
 					</form>
-
-					{/* Sign Up Link */}
-					<motion.div
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						transition={{ duration: 0.6, delay: 0.4 }}
-						className='mt-6 text-center'>
-						<p className='text-gray-600'>
-							Don't have an account?{" "}
-							<motion.a
-								whileHover={{ scale: 1.05 }}
-								href='#'
-								className='text-teal-600 hover:text-teal-700 font-medium transition-colors'>
-								Create Account
-							</motion.a>
-						</p>
-					</motion.div>
-
-					{/* Demo Credentials */}
-					<motion.div
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						transition={{ duration: 0.6, delay: 0.6 }}
-						className='mt-6 p-4 bg-gray-50 rounded-lg'>
-						<p className='text-xs text-gray-600 text-center'>
-							<strong>Demo Credentials:</strong>
-							<br />
-							Email: demo@medequippro.com
-							<br />
-							Password: demo123
-						</p>
-					</motion.div>
-				</motion.div>
-
-				{/* Security Notice */}
-				<motion.div
-					initial={{ opacity: 0, y: 30 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.6, delay: 0.3 }}
-					className='text-center text-sm text-gray-600'>
-					<p>🔒 Your data is protected with enterprise-grade security</p>
 				</motion.div>
 			</motion.div>
 		</div>

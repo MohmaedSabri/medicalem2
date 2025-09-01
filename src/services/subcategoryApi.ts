@@ -10,7 +10,7 @@ export const subcategoryApi = {
       const response = await axiosClient.get(endpoints.SUBCATEGORIES);
       return response.data;
     } catch (error) {
-      console.error("Error fetching subcategories:", error);
+      // Error fetching subcategories
       throw error;
     }
   },
@@ -22,7 +22,7 @@ export const subcategoryApi = {
       const response = await axiosClient.get(url);
       return response.data;
     } catch (error) {
-      console.error("Error fetching subcategory:", error);
+      // Error fetching subcategory
       throw error;
     }
   },
@@ -34,7 +34,7 @@ export const subcategoryApi = {
       const response = await axiosClient.get(url);
       return response.data;
     } catch (error) {
-      console.error("Error fetching subcategories by parent:", error);
+      // Error fetching subcategories by parent
       throw error;
     }
   },
@@ -45,7 +45,7 @@ export const subcategoryApi = {
       const response = await axiosClient.post(endpoints.SUBCATEGORIES, subcategoryData);
       return response.data;
     } catch (error) {
-      console.error("Error creating subcategory:", error);
+      // Error creating subcategory
       throw error;
     }
   },
@@ -57,7 +57,7 @@ export const subcategoryApi = {
       const response = await axiosClient.patch(url, subcategoryData);
       return response.data;
     } catch (error) {
-      console.error("Error updating subcategory:", error);
+      // Error updating subcategory
       throw error;
     }
   },
@@ -69,7 +69,7 @@ export const subcategoryApi = {
       const response = await axiosClient.delete(url);
       return response.data;
     } catch (error) {
-      console.error("Error deleting subcategory:", error);
+      // Error deleting subcategory
       throw error;
     }
   },

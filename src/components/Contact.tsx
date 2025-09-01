@@ -9,6 +9,7 @@ import { EMAILJS_CONFIG, initEmailJS } from "../config/emailjs";
 import { useSearchParams } from "react-router-dom";
 import { useProducts } from "../contexts/ProductsContext";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-hot-toast";
 
 const Contact: React.FC = () => {
 	const { products } = useProducts();
@@ -99,11 +100,9 @@ const Contact: React.FC = () => {
 			setTimeout(() => {
 				setIsSubmitted(false);
 			}, 5000);
-		} catch (err) {
-			console.error("EmailJS Error:", err);
-			setError(
-				"Failed to send message. Please try again or contact us directly."
-			);
+		} catch {
+			// EmailJS Error
+			toast.error("Failed to send message. Please try again.");
 		} finally {
 			setIsSubmitting(false);
 		}

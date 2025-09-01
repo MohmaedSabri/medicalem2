@@ -23,7 +23,7 @@ export const reviewApi = {
       const response = await apiRepo.GET("/reviews");
       return response.data;
     } catch (error) {
-      console.error("Error fetching reviews:", error);
+      // Error fetching reviews
       throw error;
     }
   },
@@ -34,7 +34,7 @@ export const reviewApi = {
       const response = await apiRepo.GET(`/reviews/${id}`);
       return response.data;
     } catch (error) {
-      console.error("Error fetching review:", error);
+      // Error fetching review
       throw error;
     }
   },
@@ -45,7 +45,7 @@ export const reviewApi = {
       const response = await apiRepo.POST("/reviews", reviewData);
       return response.data;
     } catch (error) {
-      console.error("Error creating review:", error);
+      // Error creating review
       throw error;
     }
   },
@@ -56,7 +56,7 @@ export const reviewApi = {
       const response = await apiRepo.PATCH(`/reviews/${id}`, reviewData);
       return response.data;
     } catch (error) {
-      console.error("Error updating review:", error);
+      // Error updating review
       throw error;
     }
   },
@@ -67,7 +67,7 @@ export const reviewApi = {
       const response = await apiRepo.DELETE(`/reviews/${id}`);
       return response.data;
     } catch (error) {
-      console.error("Error deleting review:", error);
+      // Error deleting review
       throw error;
     }
   },
@@ -78,7 +78,7 @@ export const reviewApi = {
       const response = await apiRepo.GET(`/reviews/user/${encodeURIComponent(user)}`);
       return response.data;
     } catch (error) {
-      console.error("Error fetching user reviews:", error);
+      // Error fetching user reviews
       throw error;
     }
   },
@@ -89,7 +89,7 @@ export const reviewApi = {
       const response = await apiRepo.GET(`/reviews/rating/${rating}`);
       return response.data;
     } catch (error) {
-      console.error("Error fetching reviews by rating:", error);
+      // Error fetching reviews by rating
       throw error;
     }
   },
@@ -104,7 +104,7 @@ export const reviewApi = {
       const response = await apiRepo.GET(`/reviews/product/${productId}`);
       return response.data;
     } catch (error) {
-      console.error("Error fetching product reviews:", error);
+      // Error fetching product reviews
       throw error;
     }
   }

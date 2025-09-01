@@ -8,75 +8,69 @@ export const loadProducts = async (): Promise<ProductsData> => {
 		// Return data directly from the TypeScript file
 		return productsData;
 	} catch (error) {
-		console.error("Error loading products:", error);
-		// Return fallback data if loading fails
-		return {
-			products: [],
-			categories: ["All"],
-		};
+		// Error loading products
+		throw error;
 	}
 };
 
 // Function to get a single product by ID
-export const getProductById = async (id: number): Promise<Product | null> => {
+export const getProductById = async (id: string): Promise<Product> => {
 	try {
-		const data = await loadProducts();
-		const product = data.products.find((p) => p.id === id);
-		return product || null;
+		const response = await productApi.getProductById(id);
+		return transformApiProduct(response);
 	} catch (error) {
-		console.error("Error getting product by ID:", error);
-		return null;
+		// Error getting product by ID
+		throw error;
 	}
 };
 
 // Function to get products by category
-export const getProductsByCategory = async (
-	category: string
-): Promise<Product[]> => {
+export const getProductsByCategory = async (category: string): Promise<Product[]> => {
 	try {
-		const data = await loadProducts();
-		if (category === "All") {
-			return data.products;
-		}
-		return data.products.filter((p) => p.category === category);
+		const response = await productApi.getProducts();
+		const products = response.map(transformApiProduct);
+		return products.filter(product => product.subcategory === category);
 	} catch (error) {
-		console.error("Error getting products by category:", error);
-		return [];
+		// Error getting products by category
+		throw error;
 	}
 };
 
 // Function to search products
-export const searchProducts = async (
-	searchTerm: string
-): Promise<Product[]> => {
+export const searchProducts = async (query: string): Promise<Product[]> => {
 	try {
-		const data = await loadProducts();
-		const term = searchTerm.toLowerCase();
-		return data.products.filter(
-			(p) =>
-				p.name.toLowerCase().includes(term) ||
-				p.description.toLowerCase().includes(term) ||
-				p.category.toLowerCase().includes(term)
+		const response = await productApi.getProducts();
+		const products = response.map(transformApiProduct);
+		const searchTerm = query.toLowerCase();
+		
+		return products.filter(product => 
+			product.name.toLowerCase().includes(searchTerm) ||
+			product.description.toLowerCase().includes(searchTerm) ||
+			product.subcategory.toLowerCase().includes(searchTerm)
 		);
 	} catch (error) {
-		console.error("Error searching products:", error);
-		return [];
+		// Error searching products
+		throw error;
 	}
 };
 
 // Function to get related products (same category, excluding current product)
-export const getRelatedProducts = async (
-	category: string,
-	currentProductId: number,
-	limit: number = 4
-): Promise<Product[]> => {
+export const getRelatedProducts = async (productId: string, limit: number = 4): Promise<Product[]> => {
 	try {
-		const data = await loadProducts();
-		return data.products
-			.filter((p) => p.category === category && p.id !== currentProductId)
+		const currentProduct = await getProductById(productId);
+		const allProducts = await getProducts();
+		
+		// Filter out current product and get products from same subcategory
+		const related = allProducts
+			.filter(product => 
+				product._id !== productId && 
+				product.subcategory === currentProduct.subcategory
+			)
 			.slice(0, limit);
+		
+		return related;
 	} catch (error) {
-		console.error("Error getting related products:", error);
-		return [];
+		// Error getting related products
+		throw error;
 	}
 };

@@ -21,6 +21,7 @@ import {
 import { SubCategory, CreateSubCategoryData } from "../types";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../contexts/LanguageContext";
+import { toast } from "react-hot-toast";
 
 const ManageSubCategories: React.FC = () => {
 	const { t } = useTranslation();
@@ -131,7 +132,8 @@ const ManageSubCategories: React.FC = () => {
 			}
 			handleCancel();
 		} catch (error) {
-			console.error("Error saving subcategory:", error);
+			// Error saving subcategory
+			toast.error("Failed to save subcategory");
 		}
 	};
 
@@ -140,8 +142,10 @@ const ManageSubCategories: React.FC = () => {
 		if (window.confirm("Are you sure you want to delete this subcategory?")) {
 			try {
 				await deleteSubCategory.mutateAsync(id);
+				toast.success("Subcategory deleted successfully!");
 			} catch (error) {
-				console.error("Error deleting subcategory:", error);
+				// Error deleting subcategory
+				toast.error("Failed to delete subcategory");
 			}
 		}
 	};

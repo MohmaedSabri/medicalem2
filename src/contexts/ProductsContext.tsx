@@ -59,26 +59,26 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
 			const apiProductData = transformToApiProduct(productData);
 			await createProductMutation.mutateAsync(apiProductData);
 			return true;
-		} catch (err) {
-			console.error("Error adding product:", err);
+		} catch {
+			// Error adding product
 			return false;
 		}
 	};
 
-	const updateProduct = async (id: string, updates: Partial<Product>) => {
+	const updateProduct = async (id: string, productData: Partial<Product>) => {
 		try {
-			const apiUpdates = transformToApiProduct(updates);
-			await updateProductMutation.mutateAsync({ id, data: apiUpdates });
-		} catch (err) {
-			console.error("Error updating product:", err);
+			const response = await updateProductMutation.mutateAsync({ id, data: transformToApiProduct(productData) });
+			return response;
+		} catch {
+			// Error updating product
 		}
 	};
 
 	const deleteProduct = async (id: string) => {
 		try {
 			await deleteProductMutation.mutateAsync(id);
-		} catch (err) {
-			console.error("Error deleting product:", err);
+		} catch {
+			// Error deleting product
 		}
 	};
 
@@ -89,7 +89,6 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
 	const resetToInitialProducts = () => {
 		// This function is now handled by React Query's cache invalidation
 		// The products will automatically refresh from the API
-		console.log("Products will refresh from API");
 	};
 
 	const value: ProductsContextType = {

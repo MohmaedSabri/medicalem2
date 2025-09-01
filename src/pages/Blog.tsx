@@ -24,11 +24,6 @@ const Blog: React.FC = () => {
 	const { data: postsData, isLoading: postsLoading } = usePosts(filters);
 	const { data: featuredPosts = [], isLoading: featuredLoading } = useFeaturedPosts(3);
 
-	// Debug logging
-	console.log('Current filters:', filters);
-	console.log('Posts data:', postsData);
-	console.log('Posts loading:', postsLoading);
-
 	// Update filters when page changes
 	useEffect(() => {
 		setFilters(prev => ({ ...prev, page: currentPage }));

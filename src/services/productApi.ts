@@ -71,7 +71,7 @@ export const productApi = {
       const response = await apiRepo.GET(endpoints.PRODUCTS);
       return response.data;
     } catch (error) {
-      console.error("Error fetching products:", error);
+      // Error fetching products
       throw error;
     }
   },
@@ -82,7 +82,7 @@ export const productApi = {
       const response = await apiRepo.GET(endpoints.PRODUCTS_BY_ID.replace(':id', id));
       return response.data;
     } catch (error) {
-      console.error("Error fetching product:", error);
+      // Error fetching product
       throw error;
     }
   },
@@ -93,7 +93,7 @@ export const productApi = {
       const response = await apiRepo.POST(endpoints.PRODUCTS, productData);
       return response.data;
     } catch (error) {
-      console.error("Error creating product:", error);
+      // Error creating product
       throw error;
     }
   },
@@ -104,7 +104,7 @@ export const productApi = {
       const response = await apiRepo.PATCH(endpoints.PRODUCTS_BY_ID.replace(':id', id), productData);
       return response.data;
     } catch (error) {
-      console.error("Error updating product:", error);
+      // Error updating product
       throw error;
     }
   },
@@ -115,7 +115,7 @@ export const productApi = {
       const response = await apiRepo.DELETE(endpoints.PRODUCTS_BY_ID.replace(':id', id));
       return response.data;
     } catch (error) {
-      console.error("Error deleting product:", error);
+      // Error deleting product
       throw error;
     }
   },
@@ -126,7 +126,7 @@ export const productApi = {
       const response = await apiRepo.POST(endpoints.PRODUCT_REVIEWS.replace(':productId', productId), reviewData);
       return response.data;
     } catch (error) {
-      console.error("Error adding review:", error);
+      // Error adding review
       throw error;
     }
   },
@@ -147,7 +147,7 @@ export const productApi = {
       const response = await apiRepo.GET(endpoints.PRODUCT_REVIEWS.replace(':productId', productId));
       return response.data;
     } catch (error) {
-      console.error("Error fetching reviews:", error);
+      // Error fetching reviews
       throw error;
     }
   }

@@ -24,7 +24,7 @@ export const postApi = {
       const response = await apiRepo.GET(url);
       return response.data;
     } catch (error) {
-      console.error("Error fetching posts:", error);
+      // Error fetching posts
       throw error;
     }
   },
@@ -35,7 +35,7 @@ export const postApi = {
       const response = await apiRepo.GET(`${POSTS_BASE_URL}/${id}`);
       return response.data;
     } catch (error) {
-      console.error("Error fetching post:", error);
+      // Error fetching post
       throw error;
     }
   },
@@ -46,7 +46,7 @@ export const postApi = {
       const response = await apiRepo.POST(POSTS_BASE_URL, postData);
       return response.data;
     } catch (error) {
-      console.error("Error creating post:", error);
+      // Error creating post
       throw error;
     }
   },
@@ -57,7 +57,7 @@ export const postApi = {
       const response = await apiRepo.PATCH(`${POSTS_BASE_URL}/${id}`, postData);
       return response.data;
     } catch (error) {
-      console.error("Error updating post:", error);
+      // Error updating post
       throw error;
     }
   },
@@ -68,7 +68,7 @@ export const postApi = {
       const response = await apiRepo.DELETE(`${POSTS_BASE_URL}/${id}`);
       return response.data;
     } catch (error) {
-      console.error("Error deleting post:", error);
+      // Error deleting post
       throw error;
     }
   },
@@ -79,7 +79,7 @@ export const postApi = {
       const response = await apiRepo.GET(`${POSTS_BASE_URL}/featured?limit=${limit}`);
       return response.data;
     } catch (error) {
-      console.error("Error fetching featured posts:", error);
+      // Error fetching featured posts
       throw error;
     }
   },
@@ -90,7 +90,7 @@ export const postApi = {
       const response = await apiRepo.GET(`${POSTS_BASE_URL}/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
       return response.data;
     } catch (error) {
-      console.error("Error searching posts:", error);
+      // Error searching posts
       throw error;
     }
   },
@@ -113,7 +113,7 @@ export const postApi = {
       const response = await apiRepo.GET(url);
       return response.data;
     } catch (error) {
-      console.error("Error fetching posts by category:", error);
+      // Error fetching posts by category
       throw error;
     }
   },
@@ -136,7 +136,7 @@ export const postApi = {
       const response = await apiRepo.GET(url);
       return response.data;
     } catch (error) {
-      console.error("Error fetching posts by author:", error);
+      // Error fetching posts by author
       throw error;
     }
   },
@@ -147,7 +147,7 @@ export const postApi = {
       const response = await apiRepo.POST(`${POSTS_BASE_URL}/${id}/like`);
       return response.data;
     } catch (error) {
-      console.error("Error liking post:", error);
+      // Error liking post
       throw error;
     }
   },
@@ -167,7 +167,7 @@ export const postApi = {
       const response = await apiRepo.GET(`${POSTS_BASE_URL}/stats`);
       return response.data;
     } catch (error) {
-      console.error("Error fetching post stats:", error);
+      // Error fetching post stats
       throw error;
     }
   },

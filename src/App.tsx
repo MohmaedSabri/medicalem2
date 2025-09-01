@@ -65,13 +65,13 @@ function App() {
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<AuthProvider>
-				<ProductsProvider>
-					<CategoriesProvider>
-						<LanguageProvider>
-							<Router>
-							<AppContent />
-							<Routes>
+			<ProductsProvider>
+				<CategoriesProvider>
+					<LanguageProvider>
+						<Router>
+							<AuthProvider>
+								<AppContent />
+								<Routes>
 								{/* Contact Route */}
 								<Route
 									path='/contact'
@@ -302,12 +302,12 @@ function App() {
 									},
 								}}
 							/>
+							</AuthProvider>
 						</Router>
 						</LanguageProvider>
 					</CategoriesProvider>
 				</ProductsProvider>
-			</AuthProvider>
-		</QueryClientProvider>
+			</QueryClientProvider>
 	);
 }
 

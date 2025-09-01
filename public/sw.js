@@ -21,11 +21,11 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then((cache) => {
-        console.log('Opened cache');
+        // Opened cache
         return cache.addAll(STATIC_ASSETS);
       })
       .catch((error) => {
-        console.error('Cache installation failed:', error);
+        // Cache installation failed
       })
   );
 });
@@ -37,7 +37,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-            console.log('Deleting old cache:', cacheName);
+            // Deleting old cache
             return caches.delete(cacheName);
           }
         })
@@ -142,7 +142,6 @@ self.addEventListener('sync', (event) => {
 
 async function doBackgroundSync() {
   // Handle offline actions when connection is restored
-  console.log('Background sync triggered');
 }
 
 // Push notifications

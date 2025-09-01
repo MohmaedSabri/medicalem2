@@ -1,21 +1,31 @@
 
 
 export const endpoints = {
+	// User Authentication
+	USERS_LOGIN: "/users/login",
+	
+	// Products
 	PRODUCTS: "/products",
 	PRODUCTS_BY_ID: "/products/:id",
 	PRODUCTS_BY_CATEGORY: "/products/category/:category",
 	PRODUCTS_BY_SUBCATEGORY: "/products/subcategory/:subcategory",
 	PRODUCT_REVIEWS: "/products/:productId/reviews",
+	
+	// Categories
 	CATEGORIES: "/categories",
 	CATEGORIES_BY_ID: "/categories/:id",
 	SUBCATEGORIES: "/subcategories",
 	SUBCATEGORIES_BY_ID: "/subcategories/:id",
 	SUBCATEGORIES_BY_PARENT: "/subcategories/parent/:parentId",
+	
+	// Reviews
 	REVIEWS: "/reviews",
 	REVIEWS_BY_ID: "/reviews/:id",
 	REVIEWS_BY_USER: "/reviews/user/:user",
 	REVIEWS_BY_RATING: "/reviews/rating/:rating",
 	REVIEWS_BY_PRODUCT: "/reviews/product/:productId",
+	
+	// Posts
 	POSTS: "/posts",
 	POSTS_BY_ID: "/posts/:id",
 	POSTS_FEATURED: "/posts/featured",

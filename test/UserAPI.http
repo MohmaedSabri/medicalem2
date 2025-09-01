@@ -1,0 +1,85 @@
+### User API Documentation
+### Base URL: http://localhost:5000/api/users
+
+# ========================================
+# USER LOGIN
+# ========================================
+POST http://localhost:5000/api/users/login
+Content-Type: application/json
+
+### Request Body
+```json
+{
+  "email": "zaher@gmail.com",
+  "password": "Zaher@*#123"
+}
+```
+
+### Response (200 OK) - Login Successful
+```json
+{
+  "message": "Login successful",
+  "user": {
+    "id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "Zaher",
+    "email": "zaher@gmail.com"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGYxYTJiM2M0ZDVlNmY3ZzhoOWkwajEiLCJlbWFpbCI6InphaGVyQGdtYWlsLmNvbSIsImlhdCI6MTczNzE5MjAwMCwiZXhwIjoxNzM3Mjc4NDAwfQ.example"
+}
+```
+
+### Response (401 Unauthorized) - Invalid Credentials
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+### Response (400 Bad Request) - Missing Fields
+```json
+{
+  "message": "Error during login",
+  "error": "Validation failed: email: Path `email` is required"
+}
+```
+
+# ========================================
+# NOTES
+# ========================================
+# 
+# 1. The user must be seeded first using: npm run seed:user
+# 2. Email: zaher@gmail.com
+# 3. Password: Zaher@*#123
+# 4. JWT token expires in 24 hours
+# 5. Use the returned token for authenticated requests
+#
+# ========================================
+# SEEDING THE USER
+# ========================================
+# 
+# Run this command to create the user:
+# npm run seed:user
+#
+# This will create a user with:
+# - Name: Zaher
+# - Email: zaher@gmail.com
+# - Password: Zaher@*#123
+#
+# ========================================
+# USAGE EXAMPLES
+# ========================================
+#
+# 1. Login with seeded user:
+# POST /api/users/login
+# {
+#   "email": "zaher@gmail.com",
+#   "password": "Zaher@*#123"
+# }
+#
+# 2. Use the returned token in Authorization header:
+# Authorization: Bearer <your-jwt-token>
+#
+# 3. Token contains:
+# - userId: User's MongoDB ObjectId
+# - email: User's email address
+# - exp: Expiration timestamp

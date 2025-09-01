@@ -37,16 +37,9 @@ const Footer: React.FC = () => {
 					href: `/products?category=${category}`,
 				}));
 				setProducts(footerProducts);
-			} catch (error) {
-				console.error("Error loading products for footer:", error);
-				// Fallback to default products
-				setProducts([
-					{ name: "Imaging Equipment", href: "/products" },
-					{ name: "Diagnostic Tools", href: "/products" },
-					{ name: "Monitoring Systems", href: "/products" },
-					{ name: "Surgical Equipment", href: "/products" },
-				]);
-			}
+					} catch {
+			// Error loading products for footer
+		}
 		};
 		fetchProducts();
 	}, []);

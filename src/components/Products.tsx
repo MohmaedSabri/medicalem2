@@ -238,10 +238,7 @@ const Products: React.FC = () => {
 													animate={{ scale: 1 }}
 													transition={{ duration: 0.8 }}
 													onError={(e) => {
-														console.error(
-															"Image failed to load:",
-															displayProducts[currentIndex]?.image
-														);
+														// Image failed to load
 														e.currentTarget.style.display = "none";
 													}}
 													onLoad={(e) => {

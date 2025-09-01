@@ -105,8 +105,8 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 			const reviewsData = await reviewApi.getProductReviews(product._id);
 			setReviews(reviewsData.reviews || []);
 		} catch (error) {
-			console.error("Error loading reviews:", error);
-			setReviews([]);
+			// Error loading reviews
+			toast.error("Failed to load reviews");
 		}
 	};
 
@@ -272,7 +272,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 			toast.success("Product updated successfully! 🎉");
 			onClose();
 		} catch (error) {
-			console.error("Error updating product:", error);
+			// Error updating product
 			toast.error("Failed to update product. Please try again.");
 		} finally {
 			setIsSubmitting(false);
@@ -307,7 +307,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 			closeReviewModal();
 			toast.success("Review updated successfully! 🎉");
 		} catch (error) {
-			console.error("Error updating review:", error);
+			// Error updating review
 			setReviewError("Error updating review. Please try again.");
 			toast.error("Failed to update review. Please try again.");
 		} finally {
@@ -323,7 +323,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 			await loadReviews();
 			toast.success("Review deleted successfully! 🗑️");
 		} catch (error) {
-			console.error("Error deleting review:", error);
+			// Error deleting review
 			toast.error("Failed to delete review. Please try again.");
 		}
 	};

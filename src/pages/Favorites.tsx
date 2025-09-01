@@ -7,6 +7,7 @@ import { Heart, ArrowRight, Star, Zap } from "lucide-react";
 import { Product } from "../types";
 import { productApi } from "../services/productApi";
 import { getFavorites, isFavorite, toggleFavorite } from "../utils/favorites";
+import { toast } from "react-hot-toast";
 
 const Favorites: React.FC = () => {
 	const navigate = useNavigate();
@@ -45,8 +46,8 @@ const Favorites: React.FC = () => {
 				
 				setProducts(transformedProducts);
 			} catch (err) {
-				setError("Failed to load products. Please try again.");
-				console.error("Error loading products:", err);
+				// Error loading products
+				toast.error("Failed to load favorite products");
 			} finally {
 				setLoading(false);
 			}

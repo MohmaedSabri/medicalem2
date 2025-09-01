@@ -45,7 +45,7 @@ const Hero: React.FC = () => {
 		}
 	}, [statsInView]);
 
-	// Hero tri-image rotating state
+	// Hero tri-image rotating state with continuous smooth orbital motion
 	const heroImages = React.useMemo(
 		() => [
 			"https://i.postimg.cc/Xv8RK0rM/top-view-world-science-day-arrangement-with-stethoscope-removebg-preview.png",
@@ -58,7 +58,7 @@ const Hero: React.FC = () => {
 	React.useEffect(() => {
 		const t = setInterval(() => {
 			setActiveIndex((i) => (i + 1) % heroImages.length);
-		}, 4000);
+		}, 3200); // Faster rotation to prevent stopping
 		return () => clearInterval(t);
 	}, [heroImages.length]);
 
@@ -72,11 +72,11 @@ const Hero: React.FC = () => {
 	type SlotKey = "left" | "right" | "center";
 	const slotStyles: Record<
 		SlotKey,
-		{ x: number; y: number; scale: number; zIndex: number; filter: string }
+		{ x: number; y: number; scale: number; zIndex: number; filter: string; opacity: number; rotate: number }
 	> = {
-		left: { x: -100, y: 0, scale: 0.72, zIndex: 5, filter: "blur(0px)" },
-		right: { x: 100, y: 0, scale: 0.72, zIndex: 5, filter: "blur(0px)" },
-		center: { x: 0, y: 0, scale: 1, zIndex: 10, filter: "none" },
+		left: { x: -100, y: 0, scale: 0.72, zIndex: 5, filter: "blur(0px)", opacity: 0.8, rotate: -5 },
+		right: { x: 100, y: 0, scale: 0.72, zIndex: 5, filter: "blur(0px)", opacity: 0.8, rotate: 5 },
+		center: { x: 0, y: 0, scale: 1, zIndex: 10, filter: "none", opacity: 1, rotate: 0 },
 	};
 
 	return (
@@ -460,37 +460,69 @@ const Hero: React.FC = () => {
 							</div>
 						</div>
 
-						{/* Image Side - Responsive to RTL */}
+						{/* Hero Images Section - Optimized */}
 						<div className='relative w-full flex justify-center items-center self-center order-1 lg:order-2 mb-8 lg:mb-0 lg:col-span-1'>
-							<div className='relative w-[20rem] h-[20rem] sm:w-[24rem] sm:h-[24rem] lg:w-[26rem] lg:h-[26rem]'>
+							{/* Main Image Container */}
+							<div className='relative w-[22rem] h-[22rem] sm:w-[28rem] sm:h-[28rem] lg:w-[32rem] lg:h-[32rem]'>
+								{/* Rotating Hero Images */}
 								{heroImages.map((src, i) => {
 									const slot = getSlotFor(i);
+									const isActive = slot === "center";
+									
 									return (
 										<motion.div
-											key={src}
-											className='absolute rounded-full backdrop-blur-sm border border-white/30 shadow-2xl flex items-center justify-center overflow-hidden'
+											key={`hero-image-${i}`}
+											className={`
+												absolute rounded-full 
+												backdrop-blur-md shadow-2xl 
+												flex items-center justify-center 
+												overflow-hidden cursor-pointer
+												transition-all duration-200
+												${isActive ? 'z-20' : 'z-10'}
+											`}
 											style={{
 												width: slot === "center" ? "90%" : "64%",
 												height: slot === "center" ? "90%" : "64%",
 											}}
 											animate={slotStyles[slot]}
-											transition={{ type: "spring", stiffness: 220, damping: 22 }}
+											transition={{ 
+												type: "tween", 
+												ease: "linear",
+												duration: 0.4
+											}}
 											onClick={() => setActiveIndex(i)}
-											whileHover={{ scale: slot === "center" ? 1.02 : 0.82 }}>
+											whileHover={{ 
+												scale: isActive ? 1.02 : 0.82,
+												transition: { duration: 0.2, ease: "linear" }
+											}}
+											whileTap={{ scale: 0.98 }}
+										>
+											{/* LazyImage Component */}
 											<LazyImage
 												src={src}
-												alt='Hero visual'
-												className='w-[78%] h-[78%] object-cover rounded-full'
+												alt={`Hero medical equipment ${i + 1}`}
+												className='w-full h-full object-cover rounded-full'
 												threshold={0.1}
-												rootMargin="50px"
+												rootMargin="100px"
 											/>
+											
+											{/* Active Image Indicator */}
+											{isActive && (
+												<motion.div
+													className="absolute inset-0 rounded-full border-2 border-white/20"
+													initial={{ opacity: 0, scale: 0.8 }}
+													animate={{ opacity: 1, scale: 1 }}
+													transition={{ duration: 0.3 }}
+												/>
+											)}
 										</motion.div>
 									);
 								})}
 							</div>
 
-							{/* Background Pattern */}
-							<div className='absolute inset-0 -z-10'>
+							{/* Decorative Background Elements */}
+							<div className='absolute inset-0 -z-10 pointer-events-none'>
+								{/* Outer Ring */}
 								<motion.div
 									className='absolute top-16 right-16 sm:top-20 sm:right-20 w-24 h-24 sm:w-32 sm:h-32 border border-white/10 rounded-full'
 									animate={{
@@ -502,8 +534,10 @@ const Hero: React.FC = () => {
 										duration: 8,
 										repeat: Infinity,
 										ease: "linear",
-									}}></motion.div>
-
+									}}
+								/>
+								
+								{/* Inner Ring */}
 								<motion.div
 									className='absolute bottom-16 left-16 sm:bottom-20 sm:left-20 w-20 h-20 sm:w-24 sm:h-24 border border-white/10 rounded-full'
 									animate={{
@@ -516,8 +550,10 @@ const Hero: React.FC = () => {
 										repeat: Infinity,
 										ease: "linear",
 										delay: 2,
-									}}></motion.div>
-
+									}}
+								/>
+								
+								{/* Center Ring */}
 								<motion.div
 									className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 sm:w-40 sm:h-40 border border-white/5 rounded-full'
 									animate={{
@@ -530,7 +566,8 @@ const Hero: React.FC = () => {
 										repeat: Infinity,
 										ease: "linear",
 										delay: 4,
-									}}></motion.div>
+									}}
+								/>
 							</div>
 						</div>
 					</div>

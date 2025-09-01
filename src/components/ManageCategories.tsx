@@ -8,6 +8,7 @@ import { useCategories } from "../contexts/CategoriesContext";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../contexts/LanguageContext";
+import { toast } from "react-hot-toast";
 
 const ManageCategories: React.FC = () => {
 	const { categories, deleteCategory, loading, error } = useCategories();
@@ -46,8 +47,8 @@ const ManageCategories: React.FC = () => {
 			try {
 				deleteCategory(categoryId);
 			} catch (error) {
-				console.error("Error deleting category:", error);
-				alert("Error deleting category. Please try again.");
+				// Error deleting category
+				toast.error("Failed to delete category");
 			} finally {
 				setDeletingCategory(null);
 			}
@@ -69,9 +70,12 @@ const ManageCategories: React.FC = () => {
 			if (success) {
 				setNewCategory({ name: "", description: "" });
 				setShowAddForm(false);
+			} else {
+				toast.error("Failed to add category");
 			}
 		} catch (error) {
-			console.error("Error adding category:", error);
+			// Error adding category
+			toast.error("Failed to add category");
 		}
 	};
 
@@ -84,7 +88,8 @@ const ManageCategories: React.FC = () => {
 			setEditingCategory(null);
 			setEditForm({ name: "", description: "" });
 		} catch (error) {
-			console.error("Error updating category:", error);
+			// Error updating category
+			toast.error("Failed to update category");
 		}
 	};
 

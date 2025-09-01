@@ -75,8 +75,7 @@ const ProductDetail: React.FC = () => {
 					if (reviewsData.totalReviews !== undefined) {
 						setTotalReviews(reviewsData.totalReviews);
 					}
-				} catch (reviewsError) {
-					console.error("Error fetching reviews:", reviewsError);
+				} catch {
 					// If reviews endpoint fails, try to get reviews from product data
 					if (productData.reviews) {
 						setReviews(productData.reviews);
@@ -114,9 +113,9 @@ const ProductDetail: React.FC = () => {
 					})
 					.slice(0, 4);
 				setRelatedProducts(related);
-			} catch (error) {
-				console.error("Error loading product:", error);
-			} finally {
+					} catch {
+			// Error loading product
+		} finally {
 				setLoading(false);
 			}
 		};
@@ -227,8 +226,7 @@ const ProductDetail: React.FC = () => {
 				if (reviewsData.totalReviews !== undefined) {
 					setTotalReviews(reviewsData.totalReviews);
 				}
-			} catch (reviewsError) {
-				console.error("Error reloading reviews:", reviewsError);
+			} catch {
 				// Fallback: reload the entire product
 				const productResponse = await axiosClient.get(endpoints.PRODUCTS_BY_ID.replace(':id', id!));
 				const productData = productResponse.data;
@@ -254,7 +252,7 @@ const ProductDetail: React.FC = () => {
 
 			alert("Review added successfully!");
 		} catch (error) {
-			console.error("Error adding review:", error);
+			// Error adding review
 			alert(`Error adding review: ${error instanceof Error ? error.message : 'Unknown error'}`);
 		}
 	};
