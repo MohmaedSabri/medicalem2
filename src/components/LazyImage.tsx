@@ -7,7 +7,6 @@ interface LazyImageProps {
   placeholder?: string;
   threshold?: number;
   rootMargin?: string;
-  removeBackground?: boolean;
 }
 
 const LazyImage: React.FC<LazyImageProps> = ({
@@ -16,8 +15,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
   className = '',
   placeholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2YzZjRmNiIvPjwvc3ZnPg==',
   threshold = 0.1,
-  rootMargin = '50px',
-  removeBackground = false
+  rootMargin = '50px'
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(false);
@@ -58,12 +56,6 @@ const LazyImage: React.FC<LazyImageProps> = ({
     setIsLoaded(false);
   };
 
-  // CSS styles for background removal
-  const backgroundRemovalStyles = removeBackground ? {
-    mixBlendMode: 'multiply',
-    filter: 'contrast(1.1) brightness(1.1)',
-  } : {};
-
   return (
     <img
       ref={imgRef}
@@ -80,7 +72,6 @@ const LazyImage: React.FC<LazyImageProps> = ({
         backgroundImage: `url(${placeholder})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        ...backgroundRemovalStyles,
       }}
     />
   );
