@@ -72,6 +72,14 @@ self.addEventListener('fetch', (event) => {
 });
 
 async function handleImageRequest(request) {
+  // Skip unsupported request schemes
+  if (request.url.startsWith('chrome-extension://') || 
+      request.url.startsWith('moz-extension://') ||
+      request.url.startsWith('ms-browser-extension://') ||
+      !request.url.startsWith('http')) {
+    return fetch(request);
+  }
+
   const cache = await caches.open(DYNAMIC_CACHE);
   const cachedResponse = await cache.match(request);
   
@@ -92,6 +100,14 @@ async function handleImageRequest(request) {
 }
 
 async function handleStaticAssetRequest(request) {
+  // Skip unsupported request schemes
+  if (request.url.startsWith('chrome-extension://') || 
+      request.url.startsWith('moz-extension://') ||
+      request.url.startsWith('ms-browser-extension://') ||
+      !request.url.startsWith('http')) {
+    return fetch(request);
+  }
+
   const cache = await caches.open(STATIC_CACHE);
   const cachedResponse = await cache.match(request);
   
@@ -111,6 +127,14 @@ async function handleStaticAssetRequest(request) {
 }
 
 async function handlePageRequest(request) {
+  // Skip unsupported request schemes
+  if (request.url.startsWith('chrome-extension://') || 
+      request.url.startsWith('moz-extension://') ||
+      request.url.startsWith('ms-browser-extension://') ||
+      !request.url.startsWith('http')) {
+    return fetch(request);
+  }
+
   try {
     const networkResponse = await fetch(request);
     if (networkResponse.ok) {
