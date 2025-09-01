@@ -51,34 +51,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const token = getCookie('authToken');
       
       if (token) {
-        // Verify token with backend
-        const response = await fetch('http://localhost:5000/api/users/verify', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData.user);
-        } else {
-          // Token is invalid, remove it
-          removeCookie('authToken');
-          setUser(null);
-        }
+        // Token exists, consider user authenticated
+        // You can add additional validation here if needed
+        // For now, we'll set a basic user object or you can store user data in localStorage/cookies
+        setUser({ id: '1', name: 'User', email: 'user@example.com' }); // Placeholder user data
+        setIsLoading(false);
+      } else {
+        // No token, user not authenticated
+        setUser(null);
+        setIsLoading(false);
       }
     } catch (error: any) {
-      // Handle specific error messages from API
-      if (error.response?.data?.message) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error('Network error. Please try again.');
-      }
+      // Handle any errors
       removeCookie('authToken');
       setUser(null);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -87,7 +73,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
       
-      const response = await fetch('http://localhost:5000/api/users/login', {
+      const response = await fetch('https://zaher-backend.vercel.app/api/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

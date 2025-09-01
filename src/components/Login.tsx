@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Lock, Mail } from "lucide-react";
+import { Lock, Mail, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { LoginForm } from "../types";
 import { useAuth } from "../contexts/AuthContext";
@@ -17,6 +17,7 @@ const Login: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [errors, setErrors] = useState<Partial<LoginForm>>({});
 	const [loginError, setLoginError] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
@@ -139,17 +140,29 @@ const Login: React.FC = () => {
 								</div>
 								<motion.input
 									whileFocus={{ scale: 1.02 }}
-									type='password'
+									type={showPassword ? 'text' : 'password'}
 									name='password'
 									value={form.password}
 									onChange={handleChange}
-									className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all ${
+									className={`block w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all ${
 										errors.password
 											? "border-red-300 bg-red-50"
 											: "border-gray-300"
 									}`}
 									placeholder='Enter your password'
 								/>
+								<button
+									type="button"
+									onClick={() => setShowPassword(!showPassword)}
+									className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+									aria-label={showPassword ? "Hide password" : "Show password"}
+								>
+									{showPassword ? (
+										<EyeOff className="h-5 w-5" />
+									) : (
+										<Eye className="h-5 w-5" />
+									)}
+								</button>
 							</div>
 							{errors.password && (
 								<motion.p

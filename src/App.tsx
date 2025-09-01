@@ -72,242 +72,242 @@ function App() {
 							<AuthProvider>
 								<AppContent />
 								<Routes>
-								{/* Contact Route */}
-								<Route
-									path='/contact'
-									element={
-										<AnimatePresence mode='wait'>
-											<motion.div
-												key='contact'
-												initial='initial'
-												animate='in'
-												exit='out'
-												variants={pageVariants}
-												transition={pageTransition}>
-												<Header />
-												<Suspense fallback={<LoadingSpinner />}>
-													<Contact />
-												</Suspense>
-											</motion.div>
-										</AnimatePresence>
-									}
-								/>
-								{/* Login Route */}
-								<Route
-									path='/login'
-									element={
-										<AnimatePresence mode='wait'>
-											<motion.div
-												key='login'
-												initial='initial'
-												animate='in'
-												exit='out'
-												variants={pageVariants}
-												transition={pageTransition}>
-												<Header isLoginPage />
-												<Login />
-											</motion.div>
-										</AnimatePresence>
-									}
-								/>
-
-								{/* Dashboard Route - Protected */}
-								<Route
-									path='/dashboard'
-									element={
-										<ProtectedRoute>
+									{/* Contact Route */}
+									<Route
+										path='/contact'
+										element={
 											<AnimatePresence mode='wait'>
 												<motion.div
-													key='dashboard'
+													key='contact'
 													initial='initial'
 													animate='in'
 													exit='out'
 													variants={pageVariants}
 													transition={pageTransition}>
-													<Dashboard />
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<Contact />
+													</Suspense>
 												</motion.div>
 											</AnimatePresence>
-										</ProtectedRoute>
-									}
-								/>
+										}
+									/>
+									{/* Login Route */}
+									<Route
+										path='/login'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='login'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header isLoginPage />
+													<Login />
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
 
-								{/* Products Page Route */}
-								<Route
-									path='/products'
-									element={
-										<AnimatePresence mode='wait'>
-											<motion.div
-												key='products'
-												initial='initial'
-												animate='in'
-												exit='out'
-												variants={pageVariants}
-												transition={pageTransition}>
-												<Header />
-												<Suspense fallback={<LoadingSpinner />}>
-													<ProductsPage />
-												</Suspense>
-											</motion.div>
-										</AnimatePresence>
-									}
-								/>
+									{/* Dashboard Route - Protected */}
+									<Route
+										path='/dashboard'
+										element={
+											<ProtectedRoute>
+												<AnimatePresence mode='wait'>
+													<motion.div
+														key='dashboard'
+														initial='initial'
+														animate='in'
+														exit='out'
+														variants={pageVariants}
+														transition={pageTransition}>
+														<Dashboard />
+													</motion.div>
+												</AnimatePresence>
+											</ProtectedRoute>
+										}
+									/>
 
-								{/* Product Detail Route */}
-								<Route
-									path='/product/:id'
-									element={
-										<AnimatePresence mode='wait'>
-											<motion.div
-												key='product-detail'
-												initial='initial'
-												animate='in'
-												exit='out'
-												variants={pageVariants}
-												transition={pageTransition}>
-												<Header />
-												<Suspense fallback={<LoadingSpinner />}>
-													<ProductDetail />
-												</Suspense>
-											</motion.div>
-										</AnimatePresence>
-									}
-								/>
+									{/* Products Page Route */}
+									<Route
+										path='/products'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='products'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<ProductsPage />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
 
-								{/* Favorites Route */}
-								<Route
-									path='/favorites'
-									element={
-										<AnimatePresence mode='wait'>
-											<motion.div
-												key='favorites'
-												initial='initial'
-												animate='in'
-												exit='out'
-												variants={pageVariants}
-												transition={pageTransition}>
-												<Header />
-												<Suspense fallback={<LoadingSpinner />}>
-													<Favorites />
-												</Suspense>
-											</motion.div>
-										</AnimatePresence>
-									}
-								/>
+									{/* Product Detail Route */}
+									<Route
+										path='/product/:id'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='product-detail'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<ProductDetail />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
 
-								{/* Blog Route */}
-								<Route
-									path='/blog'
-									element={
-										<AnimatePresence mode='wait'>
-											<motion.div
-												key='blog'
-												initial='initial'
-												animate='in'
-												exit='out'
-												variants={pageVariants}
-												transition={pageTransition}>
-												<Header />
-												<Suspense fallback={<LoadingSpinner />}>
-													<Blog />
-												</Suspense>
-											</motion.div>
-										</AnimatePresence>
-									}
-								/>
+									{/* Favorites Route */}
+									<Route
+										path='/favorites'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='favorites'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<Favorites />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
 
-								{/* Blog Detail Route */}
-								<Route
-									path='/blog/:id'
-									element={
-										<AnimatePresence mode='wait'>
-											<motion.div
-												key='blog-detail'
-												initial='initial'
-												animate='in'
-												exit='out'
-												variants={pageVariants}
-												transition={pageTransition}>
-												<Header />
-												<Suspense fallback={<LoadingSpinner />}>
-													<BlogDetail />
-												</Suspense>
-											</motion.div>
-										</AnimatePresence>
-									}
-								/>
+									{/* Blog Route */}
+									<Route
+										path='/blog'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='blog'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<Blog />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
 
-								{/* About Route */}
-								<Route
-									path='/about'
-									element={
-										<AnimatePresence mode='wait'>
-											<motion.div
-												key='about'
-												initial='initial'
-												animate='in'
-												exit='out'
-												variants={pageVariants}
-												transition={pageTransition}>
-												<Header />
-												<Suspense fallback={<LoadingSpinner />}>
-													<About />
-												</Suspense>
-											</motion.div>
-										</AnimatePresence>
-									}
-								/>
+									{/* Blog Detail Route */}
+									<Route
+										path='/blog/:id'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='blog-detail'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<BlogDetail />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
 
-								{/* Home Route */}
-								<Route
-									path='/'
-									element={
-										<AnimatePresence mode='wait'>
-											<motion.div
-												key='home'
-												initial='initial'
-												animate='in'
-												exit='out'
-												variants={pageVariants}
-												transition={pageTransition}>
-												<Suspense fallback={<LoadingSpinner />}>
-													<Home />
-												</Suspense>
-											</motion.div>
-										</AnimatePresence>
-									}
-								/>
-							</Routes>
-							{/* Toast Notifications */}
-							<Toaster
-								position="top-right"
-								toastOptions={{
-									duration: 4000,
-									style: {
-										background: '#363636',
-										color: '#fff',
-									},
-									success: {
+									{/* About Route */}
+									<Route
+										path='/about'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='about'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<About />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
+
+									{/* Home Route */}
+									<Route
+										path='/'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='home'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Suspense fallback={<LoadingSpinner />}>
+														<Home />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
+								</Routes>
+								{/* Toast Notifications */}
+								<Toaster
+									position="top-right"
+									toastOptions={{
 										duration: 4000,
 										style: {
-											background: '#10b981',
+											background: '#363636',
 											color: '#fff',
 										},
-									},
-									error: {
-										duration: 4000,
-										style: {
-											background: '#ef4444',
-											color: '#fff',
+										success: {
+											duration: 4000,
+											style: {
+												background: '#10b981',
+												color: '#fff',
+											},
 										},
-									},
-								}}
-							/>
+										error: {
+											duration: 4000,
+											style: {
+												background: '#ef4444',
+												color: '#fff',
+											},
+										},
+									}}
+								/>
 							</AuthProvider>
 						</Router>
-						</LanguageProvider>
-					</CategoriesProvider>
-				</ProductsProvider>
-			</QueryClientProvider>
+					</LanguageProvider>
+				</CategoriesProvider>
+			</ProductsProvider>
+		</QueryClientProvider>
 	);
 }
 
