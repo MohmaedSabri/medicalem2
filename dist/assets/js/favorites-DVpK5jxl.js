@@ -1,0 +1,1 @@
+const t="favorites",r=()=>{try{const r=localStorage.getItem(t);if(!r)return[];const e=JSON.parse(r);return Array.isArray(e)?e:[]}catch(r){return[]}},e=t=>r().includes(t),s=e=>{const s=r(),a=s.includes(e)?s.filter(t=>t!==e):[...s,e];return(r=>{try{localStorage.setItem(t,JSON.stringify(r))}catch(e){}})(a),a};export{r as g,e as i,s as t};

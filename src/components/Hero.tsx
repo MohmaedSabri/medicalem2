@@ -6,6 +6,7 @@ import { Shield, Award, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../contexts/LanguageContext";
+
 import LazyImage from "./LazyImage";
 
 const Hero: React.FC = () => {
