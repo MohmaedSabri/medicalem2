@@ -1,0 +1,475 @@
+### Post API Documentation
+### Base URL: http://localhost:5000/api/posts
+
+# ========================================
+# GET ALL POSTS (WITH PAGINATION & FILTERING)
+# ========================================
+GET {{baseUrl}}/?page=1&limit=10&status=published&featured=false
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "posts": [
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+      "title": "Getting Started with Node.js",
+      "content": "Node.js is a powerful JavaScript runtime that allows you to build scalable server-side applications. In this comprehensive guide, we'll explore the fundamentals of Node.js development...",
+      "authorName": "John Doe",
+      "authorEmail": "john.doe@example.com",
+      "postImage": "https://example.com/nodejs-guide.jpg",
+      "category": {
+        "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+        "name": "Programming",
+        "description": "Programming tutorials and guides"
+      },
+      "tags": ["Node.js", "JavaScript", "Backend"],
+      "status": "published",
+      "featured": false,
+      "views": 1250,
+      "likes": 45,
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
+    }
+  ],
+  "totalPages": 5,
+  "currentPage": 1,
+  "totalPosts": 48,
+  "hasNext": true,
+  "hasPrev": false
+}
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error fetching posts",
+  "error": "Database connection failed"
+}
+```
+
+# ========================================
+# GET POST BY ID
+# ========================================
+GET {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+  "title": "Getting Started with Node.js",
+  "content": "Node.js is a powerful JavaScript runtime that allows you to build scalable server-side applications. In this comprehensive guide, we'll explore the fundamentals of Node.js development, including event-driven programming, non-blocking I/O, and the npm ecosystem. We'll also cover best practices for building production-ready applications and common pitfalls to avoid.",
+  "authorName": "John Doe",
+  "authorEmail": "john.doe@example.com",
+  "postImage": "https://example.com/nodejs-guide.jpg",
+  "category": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+    "name": "Programming",
+    "description": "Programming tutorials and guides"
+  },
+  "tags": ["Node.js", "JavaScript", "Backend"],
+  "status": "published",
+  "featured": false,
+  "views": 1251,
+  "likes": 45,
+  "createdAt": "2024-01-15T10:30:00.000Z",
+  "updatedAt": "2024-01-15T10:30:00.000Z"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Post not found"
+}
+```
+
+# ========================================
+# CREATE NEW POST
+# ========================================
+POST {{baseUrl}}/
+Content-Type: application/json
+
+{
+  "title": "Advanced MongoDB Aggregation",
+  "content": "MongoDB aggregation pipeline is a powerful framework for data processing and analysis. This tutorial covers advanced aggregation operators, pipeline optimization techniques, and real-world examples for complex data transformations.",
+  "authorName": "Jane Smith",
+  "authorEmail": "jane.smith@example.com",
+  "postImage": "https://example.com/mongodb-aggregation.jpg",
+  "category": "64f1a2b3c4d5e6f7g8h9i0j3",
+  "tags": ["MongoDB", "Database", "Aggregation"],
+  "status": "draft",
+  "featured": false
+}
+
+### Response (201 Created)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j4",
+  "title": "Advanced MongoDB Aggregation",
+  "content": "MongoDB aggregation pipeline is a powerful framework for data processing and analysis. This tutorial covers advanced aggregation operators, pipeline optimization techniques, and real-world examples for complex data transformations.",
+  "authorName": "Jane Smith",
+  "authorEmail": "jane.smith@example.com",
+  "postImage": "https://example.com/mongodb-aggregation.jpg",
+  "category": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j3",
+    "name": "Database",
+    "description": "Database tutorials and guides"
+  },
+  "tags": ["MongoDB", "Database", "Aggregation"],
+  "status": "draft",
+  "featured": false,
+  "views": 0,
+  "likes": 0,
+  "createdAt": "2024-01-16T12:00:00.000Z",
+  "updatedAt": "2024-01-16T12:00:00.000Z"
+}
+```
+
+### Response (400 Bad Request - Missing Fields)
+```json
+{
+  "message": "Title, content, authorName, authorEmail, and category are required"
+}
+```
+
+### Response (400 Bad Request - Content Too Short)
+```json
+{
+  "message": "Content must be at least 10 characters long"
+}
+```
+
+### Response (404 Not Found - Category Not Found)
+```json
+{
+  "message": "Category not found"
+}
+```
+
+# ========================================
+# UPDATE POST
+# ========================================
+PATCH {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+{
+  "title": "Getting Started with Node.js - Updated",
+  "status": "published",
+  "featured": true,
+  "tags": ["Node.js", "JavaScript", "Backend", "Tutorial"]
+}
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+  "title": "Getting Started with Node.js - Updated",
+  "content": "Node.js is a powerful JavaScript runtime that allows you to build scalable server-side applications. In this comprehensive guide, we'll explore the fundamentals of Node.js development...",
+  "authorName": "John Doe",
+  "authorEmail": "john.doe@example.com",
+  "postImage": "https://example.com/nodejs-guide.jpg",
+  "category": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+    "name": "Programming",
+    "description": "Programming tutorials and guides"
+  },
+  "tags": ["Node.js", "JavaScript", "Backend", "Tutorial"],
+  "status": "published",
+  "featured": true,
+  "views": 1251,
+  "likes": 45,
+  "createdAt": "2024-01-15T10:30:00.000Z",
+  "updatedAt": "2024-01-16T14:30:00.000Z"
+}
+```
+
+### Response (400 Bad Request - Content Too Short)
+```json
+{
+  "message": "Content must be at least 10 characters long"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Post not found"
+}
+```
+
+# ========================================
+# DELETE POST
+# ========================================
+DELETE {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "message": "Post deleted successfully"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Post not found"
+}
+```
+
+# ========================================
+# GET FEATURED POSTS
+# ========================================
+GET {{baseUrl}}/featured?limit=5
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j5",
+    "title": "React Hooks Deep Dive",
+    "content": "Explore the power of React Hooks with practical examples and advanced patterns...",
+    "authorName": "Alice Johnson",
+    "authorEmail": "alice.johnson@example.com",
+    "postImage": "https://example.com/react-hooks.jpg",
+    "category": {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j6",
+      "name": "Frontend",
+      "description": "Frontend development tutorials"
+    },
+    "tags": ["React", "Hooks", "JavaScript"],
+    "status": "published",
+    "featured": true,
+    "views": 3200,
+    "likes": 128,
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  }
+]
+```
+
+# ========================================
+# SEARCH POSTS
+# ========================================
+GET {{baseUrl}}/search?q=Node.js&page=1&limit=10
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "posts": [
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+      "title": "Getting Started with Node.js",
+      "content": "Node.js is a powerful JavaScript runtime...",
+      "authorName": "John Doe",
+      "authorEmail": "john.doe@example.com",
+      "category": {
+        "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+        "name": "Programming",
+        "description": "Programming tutorials and guides"
+      },
+      "status": "published",
+      "views": 1251,
+      "likes": 45,
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
+    }
+  ],
+  "totalPages": 1,
+  "currentPage": 1,
+  "totalPosts": 1,
+  "searchQuery": "Node.js"
+}
+```
+
+### Response (400 Bad Request - No Search Query)
+```json
+{
+  "message": "Search query is required"
+}
+```
+
+# ========================================
+# GET POSTS BY AUTHOR
+# ========================================
+GET {{baseUrl}}/author/john.doe@example.com?page=1&limit=5&status=published
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "posts": [
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+      "title": "Getting Started with Node.js",
+      "content": "Node.js is a powerful JavaScript runtime...",
+      "authorName": "John Doe",
+      "authorEmail": "john.doe@example.com",
+      "category": {
+        "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+        "name": "Programming",
+        "description": "Programming tutorials and guides"
+      },
+      "status": "published",
+      "views": 1251,
+      "likes": 45,
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
+    }
+  ],
+  "totalPages": 1,
+  "currentPage": 1,
+  "totalPosts": 1
+}
+```
+
+# ========================================
+# GET POSTS BY CATEGORY
+# ========================================
+GET {{baseUrl}}/category/64f1a2b3c4d5e6f7g8h9i0j2?page=1&limit=10&status=published
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "posts": [
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+      "title": "Getting Started with Node.js",
+      "content": "Node.js is a powerful JavaScript runtime...",
+      "authorName": "John Doe",
+      "authorEmail": "john.doe@example.com",
+      "category": {
+        "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+        "name": "Programming",
+        "description": "Programming tutorials and guides"
+      },
+      "status": "published",
+      "views": 1251,
+      "likes": 45,
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
+    }
+  ],
+  "totalPages": 1,
+  "currentPage": 1,
+  "totalPosts": 1
+}
+```
+
+# ========================================
+# LIKE A POST
+# ========================================
+POST {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1/like
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "message": "Post liked successfully",
+  "likes": 46
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Post not found"
+}
+```
+
+# ========================================
+# GET POST STATISTICS
+# ========================================
+GET {{baseUrl}}/stats
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "overall": {
+    "totalPosts": 48,
+    "totalViews": 15680,
+    "totalLikes": 892,
+    "avgViews": 326.67,
+    "avgLikes": 18.58
+  },
+  "byStatus": [
+    {
+      "_id": "published",
+      "count": 35
+    },
+    {
+      "_id": "draft",
+      "count": 10
+    },
+    {
+      "_id": "archived",
+      "count": 3
+    }
+  ]
+}
+```
+
+# ========================================
+# ADVANCED FILTERING EXAMPLES
+# ========================================
+
+### Get posts with specific filters
+GET {{baseUrl}}/?status=published&category=64f1a2b3c4d5e6f7g8h9i0j2&featured=true&sortBy=views&sortOrder=desc&page=1&limit=5
+
+### Get posts by search term
+GET {{baseUrl}}/?search=JavaScript&status=published&page=1&limit=10
+
+### Get posts sorted by different criteria
+GET {{baseUrl}}/?sortBy=likes&sortOrder=desc&page=1&limit=10
+
+# ========================================
+# ERROR RESPONSES
+# ========================================
+
+### 400 Bad Request - Validation Error
+```json
+{
+  "message": "Error creating post",
+  "error": "Validation failed: title: Path `title` is required."
+}
+```
+
+### 400 Bad Request - Invalid Status
+```json
+{
+  "message": "Error creating post",
+  "error": "Validation failed: status: `invalid_status` is not a valid enum value for path `status`."
+}
+```
+
+### 500 Internal Server Error - General Error
+```json
+{
+  "message": "Error fetching posts",
+  "error": "Cast to ObjectId failed for value \"invalid-id\" at path \"_id\" for model \"Post\""
+}
+```
+
+# ========================================
+# NOTES
+# ========================================
+# - All posts support pagination with page and limit parameters
+# - Posts can be filtered by status (draft, published, archived), category, and featured
+# - Search functionality uses MongoDB text search on title and content
+# - Posts are automatically sorted by creation date (newest first) unless specified
+# - Views are automatically incremented when viewing a post
+# - Posts support tags for better categorization
+# - Author email is automatically converted to lowercase
+# - Category references are validated before creating/updating posts
+# - Text search requires MongoDB text indexes (automatically created)
+# - Statistics provide comprehensive analytics on posts, views, and likes
+# - All timestamps are automatically managed by Mongoose
+# - Posts support draft, published, and archived statuses
+# - Featured posts can be highlighted on the frontend
+# - Content validation ensures minimum length requirements

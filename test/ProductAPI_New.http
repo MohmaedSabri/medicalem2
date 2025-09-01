@@ -1,0 +1,379 @@
+### Product API Documentation (Updated with Virtual Reviews)
+### Base URL: http://localhost:5000/api/products
+
+# ========================================
+# GET ALL PRODUCTS
+# ========================================
+GET {{baseUrl}}/
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "iPhone 15 Pro",
+    "description": "Latest iPhone with advanced features",
+    "longDescription": "The iPhone 15 Pro features the most advanced camera system ever on iPhone, A17 Pro chip for incredible performance, and a stunning Super Retina XDR display.",
+    "image": "https://example.com/iphone15pro.jpg",
+    "images": [
+      "https://example.com/iphone15pro-1.jpg",
+      "https://example.com/iphone15pro-2.jpg"
+    ],
+    "category": {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+      "name": "Smartphones",
+      "description": "Mobile phones and smartphones"
+    },
+    "price": 999.99,
+    "features": [
+      "A17 Pro chip",
+      "48MP camera",
+      "USB-C port"
+    ],
+    "specifications": {
+      "storage": "128GB",
+      "color": "Natural Titanium",
+      "screen": "6.1 inch"
+    },
+    "inStock": true,
+    "stockQuantity": 50,
+    "shipping": "Free 2-day",
+    "warranty": "1 year",
+    "certifications": [
+      "FCC approved",
+      "CE certified"
+    ],
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  }
+]
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error fetching products",
+  "error": "Database connection failed"
+}
+```
+
+# ========================================
+# GET PRODUCT BY ID (WITH VIRTUAL REVIEWS)
+# ========================================
+GET {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+  "name": "iPhone 15 Pro",
+  "description": "Latest iPhone with advanced features",
+  "longDescription": "The iPhone 15 Pro features the most advanced camera system ever on iPhone, A17 Pro chip for incredible performance, and a stunning Super Retina XDR display.",
+  "image": "https://example.com/iphone15pro.jpg",
+  "images": [
+    "https://example.com/iphone15pro-1.jpg",
+    "https://example.com/iphone15pro-2.jpg"
+  ],
+  "category": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+    "name": "Smartphones",
+    "description": "Mobile phones and smartphones"
+  },
+  "price": 999.99,
+  "features": [
+    "A17 Pro chip",
+    "48MP camera",
+    "USB-C port"
+  ],
+  "specifications": {
+    "storage": "128GB",
+    "color": "Natural Titanium",
+    "screen": "6.1 inch"
+  },
+  "inStock": true,
+  "stockQuantity": 50,
+  "shipping": "Free 2-day",
+  "warranty": "1 year",
+  "certifications": [
+    "FCC approved",
+    "CE certified"
+  ],
+  "reviews": [
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j3",
+      "user": "John Doe",
+      "rating": 5,
+      "comment": "Excellent phone!",
+      "product": "64f1a2b3c4d5e6f7g8h9i0j1",
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
+    },
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j4",
+      "user": "Jane Smith",
+      "rating": 4,
+      "comment": "Great phone, but expensive",
+      "product": "64f1a2b3c4d5e6f7g8h9i0j1",
+      "createdAt": "2024-01-14T15:45:00.000Z",
+      "updatedAt": "2024-01-14T15:45:00.000Z"
+    }
+  ],
+  "averageRating": 4.5,
+  "totalReviews": 2,
+  "createdAt": "2024-01-10T08:00:00.000Z",
+  "updatedAt": "2024-01-15T10:30:00.000Z"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Product not found"
+}
+```
+
+# ========================================
+# CREATE NEW PRODUCT
+# ========================================
+POST {{baseUrl}}/
+Content-Type: application/json
+
+{
+  "name": "MacBook Pro 16",
+  "description": "Professional laptop for developers and creators",
+  "longDescription": "The MacBook Pro 16 features the M3 Pro chip, 16-inch Liquid Retina XDR display, and up to 96GB unified memory for ultimate performance.",
+  "image": "https://example.com/macbook-pro-16.jpg",
+  "images": [
+    "https://example.com/macbook-pro-16-1.jpg",
+    "https://example.com/macbook-pro-16-2.jpg"
+  ],
+  "category": "64f1a2b3c4d5e6f7g8h9i0j5",
+  "price": 2499.99,
+  "features": [
+    "M3 Pro chip",
+    "16-inch display",
+    "Up to 96GB memory"
+  ],
+  "specifications": {
+    "storage": "512GB SSD",
+    "memory": "16GB",
+    "display": "16 inch"
+  },
+  "inStock": true,
+  "stockQuantity": 25,
+  "shipping": "Free 2-day",
+  "warranty": "1 year",
+  "certifications": [
+    "FCC approved",
+    "CE certified"
+  ]
+}
+
+### Response (201 Created)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j6",
+  "name": "MacBook Pro 16",
+  "description": "Professional laptop for developers and creators",
+  "longDescription": "The MacBook Pro 16 features the M3 Pro chip, 16-inch Liquid Retina XDR display, and up to 96GB unified memory for ultimate performance.",
+  "image": "https://example.com/macbook-pro-16.jpg",
+  "images": [
+    "https://example.com/macbook-pro-16-1.jpg",
+    "https://example.com/macbook-pro-16-2.jpg"
+  ],
+  "category": "64f1a2b3c4d5e6f7g8h9i0j5",
+  "price": 2499.99,
+  "features": [
+    "M3 Pro chip",
+    "16-inch display",
+    "Up to 96GB memory"
+  ],
+  "specifications": {
+    "storage": "512GB SSD",
+    "memory": "16GB",
+    "display": "16 inch"
+  },
+  "inStock": true,
+  "stockQuantity": 25,
+  "shipping": "Free 2-day",
+  "warranty": "1 year",
+  "certifications": [
+    "FCC approved",
+    "CE certified"
+  ],
+  "createdAt": "2024-01-16T12:00:00.000Z",
+  "updatedAt": "2024-01-16T12:00:00.000Z"
+}
+```
+
+### Response (400 Bad Request)
+```json
+{
+  "message": "Error creating product",
+  "error": "Validation failed: price: Path `price` (-100) is less than minimum allowed value (0)."
+}
+```
+
+# ========================================
+# UPDATE PRODUCT
+# ========================================
+PATCH {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+{
+  "price": 899.99,
+  "stockQuantity": 35
+}
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+  "name": "iPhone 15 Pro",
+  "description": "Latest iPhone with advanced features",
+  "longDescription": "The iPhone 15 Pro features the most advanced camera system ever on iPhone, A17 Pro chip for incredible performance, and a stunning Super Retina XDR display.",
+  "image": "https://example.com/iphone15pro.jpg",
+  "images": [
+    "https://example.com/iphone15pro-1.jpg",
+    "https://example.com/iphone15pro-2.jpg"
+  ],
+  "category": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+    "name": "Smartphones",
+    "description": "Mobile phones and smartphones"
+  },
+  "price": 899.99,
+  "features": [
+    "A17 Pro chip",
+    "48MP camera",
+    "USB-C port"
+  ],
+  "specifications": {
+    "storage": "128GB",
+    "color": "Natural Titanium",
+    "screen": "6.1 inch"
+  },
+  "inStock": true,
+  "stockQuantity": 35,
+  "shipping": "Free 2-day",
+  "warranty": "1 year",
+  "certifications": [
+    "FCC approved",
+    "CE certified"
+  ],
+  "createdAt": "2024-01-10T08:00:00.000Z",
+  "updatedAt": "2024-01-16T14:30:00.000Z"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Product not found"
+}
+```
+
+# ========================================
+# DELETE PRODUCT
+# ========================================
+DELETE {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "message": "Product deleted successfully"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Product not found"
+}
+```
+
+# ========================================
+# GET PRODUCTS BY CATEGORY
+# ========================================
+GET {{baseUrl}}/?category=64f1a2b3c4d5e6f7g8h9i0j2
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "iPhone 15 Pro",
+    "description": "Latest iPhone with advanced features",
+    "price": 999.99,
+    "category": {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+      "name": "Smartphones",
+      "description": "Mobile phones and smartphones"
+    },
+    "inStock": true,
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  }
+]
+```
+
+# ========================================
+# SEARCH PRODUCTS
+# ========================================
+GET {{baseUrl}}/?search=iPhone
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "iPhone 15 Pro",
+    "description": "Latest iPhone with advanced features",
+    "price": 999.99,
+    "category": {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+      "name": "Smartphones",
+      "description": "Mobile phones and smartphones"
+    },
+    "inStock": true,
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  }
+]
+```
+
+# ========================================
+# ERROR RESPONSES
+# ========================================
+
+### 400 Bad Request - Validation Error
+```json
+{
+  "message": "Error creating product",
+  "error": "Validation failed: price: Path `price` is required."
+}
+```
+
+### 500 Internal Server Error - General Error
+```json
+{
+  "message": "Error fetching products",
+  "error": "Cast to ObjectId failed for value \"invalid-id\" at path \"_id\" for model \"Product\""
+}
+```
+
+# ========================================
+# NOTES
+# ========================================
+# - Reviews are now virtual fields that are automatically populated when getting products by ID
+# - No need to manually manage reviews array in products
+# - averageRating and totalReviews are calculated automatically from virtual reviews
+# - Reviews are sorted by creation date (newest first)
+# - All timestamps are automatically managed by Mongoose
+# - Virtual fields are included in JSON responses due to toJSON: { virtuals: true }
+# - Reviews are populated automatically via pre-find middleware

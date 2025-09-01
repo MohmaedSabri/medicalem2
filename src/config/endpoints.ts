@@ -1,0 +1,26 @@
+
+
+export const endpoints = {
+	PRODUCTS: "/products",
+	PRODUCTS_BY_ID: "/products/:id",
+	PRODUCTS_BY_CATEGORY: "/products/category/:category",
+	PRODUCTS_BY_SUBCATEGORY: "/products/subcategory/:subcategory",
+	PRODUCT_REVIEWS: "/products/:productId/reviews",
+	CATEGORIES: "/categories",
+	CATEGORIES_BY_ID: "/categories/:id",
+	SUBCATEGORIES: "/subcategories",
+	SUBCATEGORIES_BY_ID: "/subcategories/:id",
+	SUBCATEGORIES_BY_PARENT: "/subcategories/parent/:parentId",
+	REVIEWS: "/reviews",
+	REVIEWS_BY_ID: "/reviews/:id",
+	REVIEWS_BY_USER: "/reviews/user/:user",
+	REVIEWS_BY_RATING: "/reviews/rating/:rating",
+	REVIEWS_BY_PRODUCT: "/reviews/product/:productId",
+	POSTS: "/posts",
+	POSTS_BY_ID: "/posts/:id",
+	POSTS_FEATURED: "/posts/featured",
+	POSTS_SEARCH: "/posts/search",
+	POSTS_BY_AUTHOR: "/posts/author/:email",
+	POSTS_BY_CATEGORY: "/posts/category/:category",
+	POSTS_STATS: "/posts/stats",
+};

@@ -1,0 +1,227 @@
+### Category API Documentation
+### Base URL: http://localhost:5000/api/categories
+
+# ========================================
+# GET ALL CATEGORIES
+# ========================================
+GET http://localhost:5000/api/categories/
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+    "name": "Smartphones",
+    "description": "Mobile phones and smartphones",
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  },
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j4",
+    "name": "Laptops",
+    "description": "Portable computers and notebooks",
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  },
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j6",
+    "name": "Headphones",
+    "description": "Audio devices for listening",
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  }
+]
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error fetching categories",
+  "error": "Database connection failed"
+}
+```
+
+# ========================================
+# GET CATEGORY BY ID
+# ========================================
+GET http://localhost:5000/api/categories/64f1a2b3c4d5e6f7g8h9i0j2
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+  "name": "Smartphones",
+  "description": "Mobile phones and smartphones",
+  "createdAt": "2024-01-10T08:00:00.000Z",
+  "updatedAt": "2024-01-10T08:00:00.000Z"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Category not found"
+}
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error fetching category",
+  "error": "Invalid ObjectId format"
+}
+```
+
+# ========================================
+# CREATE NEW CATEGORY
+# ========================================
+POST http://localhost:5000/api/categories/
+Content-Type: application/json
+
+### Request Body (All fields optional)
+```json
+{
+  "name": "Tablets",
+  "description": "Portable touchscreen devices"
+}
+```
+
+### Response (201 Created)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j8",
+  "name": "Tablets",
+  "description": "Portable touchscreen devices",
+  "createdAt": "2024-01-15T12:00:00.000Z",
+  "updatedAt": "2024-01-15T12:00:00.000Z"
+}
+```
+
+### Response (400 Bad Request)
+```json
+{
+  "message": "Error creating category",
+  "error": "Validation failed: name: Path `name` is required"
+}
+```
+
+# ========================================
+# UPDATE CATEGORY
+# ========================================
+PUT http://localhost:5000/api/categories/64f1a2b3c4d5e6f7g8h9i0j2
+Content-Type: application/json
+
+### Request Body (Partial update)
+```json
+{
+  "description": "Mobile phones, smartphones, and cellular devices"
+}
+```
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+  "name": "Smartphones",
+  "description": "Mobile phones, smartphones, and cellular devices",
+  "createdAt": "2024-01-10T08:00:00.000Z",
+  "updatedAt": "2024-01-15T13:00:00.000Z"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Category not found"
+}
+```
+
+### Response (400 Bad Request)
+```json
+{
+  "message": "Error updating category",
+  "error": "Validation failed: name: Path `name` is required"
+}
+```
+
+# ========================================
+# DELETE CATEGORY
+# ========================================
+DELETE http://localhost:5000/api/categories/64f1a2b3c4d5e6f7g8h9i0j2
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "message": "Category deleted successfully"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Category not found"
+}
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error deleting category",
+  "error": "Database operation failed"
+}
+```
+
+# ========================================
+# NOTES
+# ========================================
+# 
+# 1. All fields in the Category schema are optional
+# 2. Timestamps are automatically added (createdAt, updatedAt)
+# 3. Name field is trimmed to remove whitespace
+# 4. Categories can be referenced by Products using their ObjectId
+# 5. Deleting a category will not automatically delete products that reference it
+# 6. Consider updating or removing products before deleting a category
+#
+# ========================================
+# ERROR CODES
+# ========================================
+# 200: Success
+# 201: Created
+# 400: Bad Request (validation errors)
+# 404: Not Found
+# 500: Internal Server Error
+#
+# ========================================
+# VALIDATION RULES
+# ========================================
+# - name: String, trimmed
+# - description: String
+#
+# ========================================
+# EXAMPLE USAGE SCENARIOS
+# ========================================
+#
+# 1. Create Electronics Category:
+# POST /api/categories
+# {
+#   "name": "Electronics",
+#   "description": "Electronic devices and gadgets"
+# }
+#
+# 2. Update Category Description:
+# PUT /api/categories/64f1a2b3c4d5e6f7g8h9i0j2
+# {
+#   "description": "Updated description for better clarity"
+# }
+#
+# 3. Get All Categories for Dropdown:
+# GET /api/categories
+#
+# 4. Get Specific Category for Product Creation:
+# GET /api/categories/64f1a2b3c4d5e6f7g8h9i0j2
+#
+# 5. Delete Unused Category:
+# DELETE /api/categories/64f1a2b3c4d5e6f7g8h9i0j8

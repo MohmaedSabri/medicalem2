@@ -1,0 +1,558 @@
+### Product API Documentation (Updated with SubCategories)
+### Base URL: http://localhost:5000/api/products
+
+# ========================================
+# GET ALL PRODUCTS
+# ========================================
+GET http://localhost:5000/api/products/
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "Air Compressing Nebulizer",
+    "description": "Compact and efficient air compressing nebulizer suitable for all ages.",
+    "longDescription": "The Air Compressing Nebulizer is latex free, easy to clean, and designed for patients of all ages...",
+    "image": "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011.jpg",
+    "images": [
+      "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-600x760.jpg",
+      "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-808x1024.jpg"
+    ],
+    "subcategory": {
+      "_id": "68b57264c32a9c16cd2d9090",
+      "name": "Respiratory Equipment",
+      "description": "Devices for respiratory therapy and breathing assistance"
+    },
+    "price": 84,
+    "features": [
+      "Latex free",
+      "Easy to clean",
+      "Ideal for all ages"
+    ],
+    "specifications": {
+      "Unit Size": "190x171x59mm",
+      "Weight": "1.2kg",
+      "Brand": "CL MEDICAL",
+      "Color": "White",
+      "Country of Origin": "China",
+      "SKU": "NHU01"
+    },
+    "inStock": true,
+    "stockQuantity": 20,
+    "shipping": "Standard",
+    "warranty": "1 year",
+    "certifications": ["CE Certified"],
+    "averageRating": 4.5,
+    "totalReviews": 12,
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  },
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+    "name": "Braun Thermometer 2 in 1 – No Touch + Front",
+    "description": "Measurement in under 2 seconds. Accurate and reliable. No Touch or Touch mode.",
+    "longDescription": "The Braun Thermometer 2 in 1 – No Touch + Front uses innovative infrared technology...",
+    "image": "https://www.pmemedicalstore.ae/wp-content/uploads/2021/07/81iuaN1Bo8L._SL1500_.jpg",
+    "images": [
+      "https://www.pmemedicalstore.ae/wp-content/uploads/2021/07/81iuaN1Bo8L._SL1500_.jpg",
+      "https://www.pmemedicalstore.ae/wp-content/uploads/2021/07/51F0CqmnWnL._AC_.jpg"
+    ],
+    "subcategory": {
+      "_id": "68b57264c32a9c16cd2d9099",
+      "name": "Thermometers",
+      "description": "Temperature measurement devices for home use"
+    },
+    "price": 245.00,
+    "features": [
+      "Measurement in under 2 seconds",
+      "Accurate and reliable",
+      "No Touch or Touch mode",
+      "Safe and hygienic"
+    ],
+    "specifications": {
+      "Brand": "Braun",
+      "Model": "NFT3000",
+      "Shipping Weight": "300 g",
+      "Dimensions": "16.6 x 6.6 x 20.0 cm",
+      "SKU": "NFT3000"
+    },
+    "inStock": true,
+    "stockQuantity": 45,
+    "shipping": "Standard",
+    "warranty": "1 year",
+    "certifications": [],
+    "averageRating": 4.8,
+    "totalReviews": 28,
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  }
+]
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error fetching products",
+  "error": "Database connection failed"
+}
+```
+
+# ========================================
+# GET PRODUCT BY ID
+# ========================================
+GET http://localhost:5000/api/products/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+  "name": "Air Compressing Nebulizer",
+  "description": "Compact and efficient air compressing nebulizer suitable for all ages.",
+  "longDescription": "The Air Compressing Nebulizer is latex free, easy to clean, and designed for patients of all ages...",
+  "image": "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011.jpg",
+  "images": [
+    "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-600x760.jpg",
+    "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-808x1024.jpg"
+  ],
+  "subcategory": {
+    "_id": "68b57264c32a9c16cd2d9090",
+    "name": "Respiratory Equipment",
+    "description": "Devices for respiratory therapy and breathing assistance"
+  },
+  "price": 84,
+  "features": [
+    "Latex free",
+    "Easy to clean",
+    "Ideal for all ages"
+  ],
+  "specifications": {
+    "Unit Size": "190x171x59mm",
+    "Weight": "1.2kg",
+    "Brand": "CL MEDICAL",
+    "Color": "White",
+    "Country of Origin": "China",
+    "SKU": "NHU01"
+  },
+  "inStock": true,
+  "stockQuantity": 20,
+  "shipping": "Standard",
+  "warranty": "1 year",
+  "certifications": ["CE Certified"],
+  "averageRating": 4.5,
+  "totalReviews": 12,
+  "reviews": [
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j3",
+      "user": "John Doe",
+      "rating": 5,
+      "comment": "Excellent product, very easy to use!",
+      "createdAt": "2024-01-15T10:00:00.000Z"
+    }
+  ],
+  "createdAt": "2024-01-10T08:00:00.000Z",
+  "updatedAt": "2024-01-10T08:00:00.000Z"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Product not found"
+}
+```
+
+# ========================================
+# CREATE NEW PRODUCT
+# ========================================
+POST http://localhost:5000/api/products/
+Content-Type: application/json
+
+### Request Body (All fields optional except subcategory)
+```json
+{
+  "name": "Digital Blood Pressure Monitor",
+  "description": "Accurate digital blood pressure monitor for home use",
+  "longDescription": "Professional-grade digital blood pressure monitor with large LCD display and irregular heartbeat detection. Features include automatic inflation, memory storage for 2 users, and averaging function.",
+  "image": "https://example.com/bp-monitor.jpg",
+  "images": [
+    "https://example.com/bp-monitor-1.jpg",
+    "https://example.com/bp-monitor-2.jpg"
+  ],
+  "subcategory": "68b57264c32a9c16cd2d9093",
+  "price": 89.99,
+  "features": [
+    "Large LCD display",
+    "Irregular heartbeat detection",
+    "Memory for 2 users",
+    "Averaging function"
+  ],
+  "specifications": {
+    "Brand": "OMRON",
+    "Model": "BP710N",
+    "Weight": "340g",
+    "Dimensions": "15.2 x 8.9 x 13.3 cm",
+    "SKU": "BP710N"
+  },
+  "inStock": true,
+  "stockQuantity": 15,
+  "shipping": "Standard",
+  "warranty": "3 years",
+  "certifications": ["CE Certified", "FDA Approved"]
+}
+```
+
+### Response (201 Created)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j4",
+  "name": "Digital Blood Pressure Monitor",
+  "description": "Accurate digital blood pressure monitor for home use",
+  "longDescription": "Professional-grade digital blood pressure monitor with large LCD display and irregular heartbeat detection...",
+  "image": "https://example.com/bp-monitor.jpg",
+  "images": [
+    "https://example.com/bp-monitor-1.jpg",
+    "https://example.com/bp-monitor-2.jpg"
+  ],
+  "subcategory": {
+    "_id": "68b57264c32a9c16cd2d9093",
+    "name": "Monitoring Devices",
+    "description": "Equipment for patient monitoring and vital signs"
+  },
+  "price": 89.99,
+  "features": [
+    "Large LCD display",
+    "Irregular heartbeat detection",
+    "Memory for 2 users",
+    "Averaging function"
+  ],
+  "specifications": {
+    "Brand": "OMRON",
+    "Model": "BP710N",
+    "Weight": "340g",
+    "Dimensions": "15.2 x 8.9 x 13.3 cm",
+    "SKU": "BP710N"
+  },
+  "inStock": true,
+  "stockQuantity": 15,
+  "shipping": "Standard",
+  "warranty": "3 years",
+  "certifications": ["CE Certified", "FDA Approved"],
+  "averageRating": 0,
+  "totalReviews": 0,
+  "createdAt": "2024-01-15T12:00:00.000Z",
+  "updatedAt": "2024-01-15T12:00:00.000Z"
+}
+```
+
+### Response (400 Bad Request)
+```json
+{
+  "message": "Error creating product",
+  "error": "Validation failed: subcategory: Path `subcategory` is required"
+}
+```
+
+# ========================================
+# UPDATE PRODUCT
+# ========================================
+PATCH http://localhost:5000/api/products/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+### Request Body (Partial update)
+```json
+{
+  "price": 79.99,
+  "stockQuantity": 25,
+  "features": [
+    "Latex free",
+    "Easy to clean",
+    "Ideal for all ages",
+    "Compact design",
+    "Lightweight construction"
+  ]
+}
+```
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+  "name": "Air Compressing Nebulizer",
+  "description": "Compact and efficient air compressing nebulizer suitable for all ages.",
+  "longDescription": "The Air Compressing Nebulizer is latex free, easy to clean, and designed for patients of all ages...",
+  "image": "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011.jpg",
+  "images": [
+    "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-600x760.jpg",
+    "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-808x1024.jpg"
+  ],
+  "subcategory": {
+    "_id": "68b57264c32a9c16cd2d9090",
+    "name": "Respiratory Equipment",
+    "description": "Devices for respiratory therapy and breathing assistance"
+  },
+  "price": 79.99,
+  "features": [
+    "Latex free",
+    "Easy to clean",
+    "Ideal for all ages",
+    "Compact design",
+    "Lightweight construction"
+  ],
+  "specifications": {
+    "Unit Size": "190x171x59mm",
+    "Weight": "1.2kg",
+    "Brand": "CL MEDICAL",
+    "Color": "White",
+    "Country of Origin": "China",
+    "SKU": "NHU01"
+  },
+  "inStock": true,
+  "stockQuantity": 25,
+  "shipping": "Standard",
+  "warranty": "1 year",
+  "certifications": ["CE Certified"],
+  "averageRating": 4.5,
+  "totalReviews": 12,
+  "createdAt": "2024-01-10T08:00:00.000Z",
+  "updatedAt": "2024-01-15T13:00:00.000Z"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Product not found"
+}
+```
+
+# ========================================
+# DELETE PRODUCT
+# ========================================
+DELETE http://localhost:5000/api/products/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "message": "Product deleted successfully"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Product not found"
+}
+```
+
+# ========================================
+# ADD REVIEW TO PRODUCT
+# ========================================
+POST http://localhost:5000/api/products/64f1a2b3c4d5e6f7g8h9i0j1/reviews
+Content-Type: application/json
+
+### Request Body
+```json
+{
+  "user": "Jane Smith",
+  "rating": 5,
+  "comment": "Great product! Very easy to use and accurate readings."
+}
+```
+
+### Response (201 Created)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+  "name": "Air Compressing Nebulizer",
+  "description": "Compact and efficient air compressing nebulizer suitable for all ages.",
+  "subcategory": {
+    "_id": "68b57264c32a9c16cd2d9090",
+    "name": "Respiratory Equipment",
+    "description": "Devices for respiratory therapy and breathing assistance"
+  },
+  "price": 84,
+  "reviews": [
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j3",
+      "user": "John Doe",
+      "rating": 5,
+      "comment": "Excellent product, very easy to use!",
+      "createdAt": "2024-01-15T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j4",
+      "user": "Jane Smith",
+      "rating": 5,
+      "comment": "Great product! Very easy to use and accurate readings.",
+      "createdAt": "2024-01-15T14:00:00.000Z"
+    }
+  ],
+  "averageRating": 5,
+  "totalReviews": 2
+}
+```
+
+### Response (400 Bad Request)
+```json
+{
+  "message": "User and rating are required"
+}
+```
+
+# ========================================
+# GET PRODUCT REVIEWS
+# ========================================
+GET http://localhost:5000/api/products/64f1a2b3c4d5e6f7g8h9i0j1/reviews
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "reviews": [
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j3",
+      "user": "John Doe",
+      "rating": 5,
+      "comment": "Excellent product, very easy to use!",
+      "createdAt": "2024-01-15T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j4",
+      "user": "Jane Smith",
+      "rating": 5,
+      "comment": "Great product! Very easy to use and accurate readings.",
+      "createdAt": "2024-01-15T14:00:00.000Z"
+    }
+  ],
+  "averageRating": 5,
+  "totalReviews": 2
+}
+```
+
+# ========================================
+# NOTES
+# ========================================
+# 
+# 1. Products now reference subcategories instead of categories
+# 2. subcategory field is required when creating products
+# 3. All responses include populated subcategory information
+# 4. Virtual fields: averageRating and totalReviews are automatically calculated
+# 5. Reviews are stored as embedded documents in the product
+# 6. Timestamps are automatically added (createdAt, updatedAt)
+# 7. Specifications use Map type for flexible key-value pairs
+# 8. Images array supports multiple product images
+# 9. Features array supports multiple product features
+# 10. Certifications array supports multiple certifications
+#
+# ========================================
+# ERROR CODES
+# ========================================
+# 200: Success
+# 201: Created
+# 400: Bad Request (validation errors)
+# 404: Not Found
+# 500: Internal Server Error
+#
+# ========================================
+# VALIDATION RULES
+# ========================================
+# - name: String, trimmed
+# - description: String
+# - longDescription: String
+# - image: String (URL)
+# - images: Array of Strings (URLs)
+# - subcategory: ObjectId, required, must reference existing SubCategory
+# - price: Number, min: 0
+# - features: Array of Strings
+# - specifications: Map of String key-value pairs
+# - inStock: Boolean, default: true
+# - stockQuantity: Number, default: 0, min: 0
+# - shipping: String, default: "Standard"
+# - warranty: String, default: "1 year"
+# - certifications: Array of Strings
+#
+# ========================================
+# SUBCATEGORY IDS FOR REFERENCE
+# ========================================
+# Respiratory Equipment: 68b57264c32a9c16cd2d9090
+# Monitoring Devices: 68b57264c32a9c16cd2d9093
+# Transport Equipment: 68b57264c32a9c16cd2d9096
+# Thermometers: 68b57264c32a9c16cd2d9099
+# Testing Kits: 68b57264c32a9c16cd2d909c
+# Personal Care: 68b57264c32a9c16cd2d909f
+# Hospital Beds: 68b57264c32a9c16cd2d90a2
+# Medical Trolleys: 68b57264c32a9c16cd2d90a5
+# Privacy Screens: 68b57264c32a9c16cd2d90a8
+# Medical Accessories: 68b57264c32a9c16cd2d90ab
+# Scales & Measurement: 68b57264c32a9c16cd2d90ae
+# Screening Devices: 68b57264c32a9c16cd2d90b1
+# Wheelchairs: 68b57264c32a9c16cd2d90b4
+# Walking Aids: 68b57264c32a9c16cd2d90b7
+#
+# ========================================
+# EXAMPLE USAGE SCENARIOS
+# ========================================
+#
+# 1. Create a New Thermometer Product:
+# POST /api/products
+# {
+#   "name": "Digital Forehead Thermometer",
+#   "description": "Non-contact infrared thermometer",
+#   "subcategory": "68b57264c32a9c16cd2d9099",
+#   "price": 45.99,
+#   "features": ["Non-contact", "Fast reading", "Backlit display"],
+#   "specifications": {
+#     "Brand": "ThermoPro",
+#     "Range": "-22°F to 212°F",
+#     "Accuracy": "±0.9°F"
+#   }
+# }
+#
+# 2. Update Product Stock:
+# PATCH /api/products/64f1a2b3c4d5e6f7g8h9i0j1
+# {
+#   "stockQuantity": 50,
+#   "inStock": true
+# }
+#
+# 3. Add Product Review:
+# POST /api/products/64f1a2b3c4d5e6f7g8h9i0j1/reviews
+# {
+#   "user": "Customer123",
+#   "rating": 4,
+#   "comment": "Good product, easy to use"
+# }
+#
+# 4. Get Products by SubCategory (using SubCategory API):
+# GET /api/subcategories/68b57264c32a9c16cd2d9099
+# Then filter products by subcategory ID
+#
+# 5. Get All Products with Reviews:
+# GET /api/products/64f1a2b3c4d5e6f7g8h9i0j1
+# (Includes populated reviews array)
+#
+# ========================================
+# RELATIONSHIP WITH SUBCATEGORIES
+# ========================================
+#
+# Products are now organized under SubCategories:
+# - Each Product belongs to exactly one SubCategory
+# - SubCategories belong to Categories (hierarchical structure)
+# - Use SubCategory API to get products by category
+# - Popular workflow: GET /categories → GET /subcategories/parent/:categoryId → GET /products
+#
+# Example Product-SubCategory-Category Structure:
+# Medical Equipment (Category)
+#   └── Respiratory Equipment (SubCategory)
+#       ├── Air Compressing Nebulizer (Product)
+#       └── Oxygen Concentrator (Product)
+# 
+# Home Healthcare (Category)
+#   └── Thermometers (SubCategory)
+#       ├── Braun Thermometer (Product)
+#       └── Digital Forehead Thermometer (Product)
+

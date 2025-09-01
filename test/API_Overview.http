@@ -1,0 +1,131 @@
+### API Overview Documentation
+### Base URL: http://localhost:5000
+
+# ========================================
+# WELCOME ENDPOINT
+# ========================================
+GET http://localhost:5000/
+Content-Type: application/json
+
+### Response (200 OK)
+```
+API running ✅
+```
+
+# ========================================
+# PRODUCT ENDPOINTS
+# ========================================
+### Base URL: http://localhost:5000/api/products
+
+| Method | Endpoint | Description | Status Codes |
+|--------|----------|-------------|--------------|
+| GET | `/api/products` | Get all products | 200, 500 |
+| GET | `/api/products/:id` | Get product by ID | 200, 404, 500 |
+| POST | `/api/products` | Create new product | 201, 400 |
+| PUT | `/api/products/:id` | Update product | 200, 404, 400 |
+| DELETE | `/api/products/:id` | Delete product | 200, 404, 500 |
+| POST | `/api/products/:id/reviews` | Add review to product | 201, 400, 404 |
+| GET | `/api/products/:id/reviews` | Get product reviews | 200, 404, 500 |
+
+# ========================================
+# CATEGORY ENDPOINTS
+# ========================================
+### Base URL: http://localhost:5000/api/categories
+
+| Method | Endpoint | Description | Status Codes |
+|--------|----------|-------------|--------------|
+| GET | `/api/categories` | Get all categories | 200, 500 |
+| GET | `/api/categories/:id` | Get category by ID | 200, 404, 500 |
+| POST | `/api/categories` | Create new category | 201, 400 |
+| PUT | `/api/categories/:id` | Update category | 200, 404, 400 |
+| DELETE | `/api/categories/:id` | Delete category | 200, 404, 500 |
+
+# ========================================
+# STATUS CODE REFERENCE
+# ========================================
+| Code | Meaning | Description |
+|------|---------|-------------|
+| 200 | OK | Request successful |
+| 201 | Created | Resource created successfully |
+| 400 | Bad Request | Validation error or invalid data |
+| 404 | Not Found | Resource not found |
+| 500 | Internal Server Error | Server error or database issue |
+
+# ========================================
+# QUICK TEST EXAMPLES
+# ========================================
+
+### Test the API is running
+GET http://localhost:5000/
+
+### Get all products
+GET http://localhost:5000/api/products
+
+### Get all categories
+GET http://localhost:5000/api/categories
+
+### Create a test category
+POST http://localhost:5000/api/categories
+Content-Type: application/json
+
+{
+  "name": "Test Category",
+  "description": "This is a test category"
+}
+
+### Create a test product
+POST http://localhost:5000/api/products
+Content-Type: application/json
+
+{
+  "name": "Test Product",
+  "description": "This is a test product",
+  "price": 99.99,
+  "category": "CATEGORY_ID_HERE"
+}
+
+# ========================================
+# IMPORTANT NOTES
+# ========================================
+# 
+# 1. All fields in schemas are optional
+# 2. Category references in products must be valid ObjectIds
+# 3. Product ratings are automatically calculated from reviews
+# 4. Timestamps are automatically added to all documents
+# 5. Reviews are stored as subdocuments in products
+# 6. Use the detailed documentation files for complete examples:
+#    - ProductAPI.http
+#    - CategoryAPI.http
+#
+# ========================================
+# ENVIRONMENT SETUP
+# ========================================
+# 
+# Make sure you have:
+# 1. MongoDB running and accessible
+# 2. MONGO_URI environment variable set
+# 3. Server running on port 5000 (or set PORT env var)
+# 4. All dependencies installed (npm install)
+#
+# ========================================
+# STARTING THE SERVER
+# ========================================
+# 
+# Development mode:
+# npm run dev
+#
+# Production mode:
+# npm start
+#
+# ========================================
+# TESTING THE API
+# ========================================
+# 
+# You can use:
+# - VS Code REST Client extension
+# - Postman
+# - Insomnia
+# - curl commands
+# - Any HTTP client
+#
+# The .http files are compatible with VS Code REST Client extension

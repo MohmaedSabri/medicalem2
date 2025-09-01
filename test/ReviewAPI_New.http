@@ -1,0 +1,372 @@
+### Review API Documentation (Updated with Product References)
+### Base URL: http://localhost:5000/api/reviews
+
+# ========================================
+# GET ALL REVIEWS
+# ========================================
+GET {{baseUrl}}/
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "user": "John Doe",
+    "rating": 5,
+    "comment": "Excellent product! Highly recommended.",
+    "product": {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+      "name": "iPhone 15 Pro",
+      "description": "Latest iPhone with advanced features"
+    },
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  },
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j3",
+    "user": "Jane Smith",
+    "rating": 4,
+    "comment": "Good product, but could be better.",
+    "product": {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j4",
+      "name": "MacBook Pro 16",
+      "description": "Professional laptop for developers and creators"
+    },
+    "createdAt": "2024-01-14T15:45:00.000Z",
+    "updatedAt": "2024-01-14T15:45:00.000Z"
+  }
+]
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error fetching reviews",
+  "error": "Database connection failed"
+}
+```
+
+# ========================================
+# GET REVIEW BY ID
+# ========================================
+GET {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+  "user": "John Doe",
+  "rating": 5,
+  "comment": "Excellent product! Highly recommended.",
+  "product": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+    "name": "iPhone 15 Pro",
+    "description": "Latest iPhone with advanced features"
+  },
+  "createdAt": "2024-01-15T10:30:00.000Z",
+  "updatedAt": "2024-01-15T10:30:00.000Z"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Review not found"
+}
+```
+
+# ========================================
+# CREATE NEW REVIEW
+# ========================================
+POST {{baseUrl}}/
+Content-Type: application/json
+
+{
+  "user": "Alice Johnson",
+  "rating": 5,
+  "comment": "Amazing product quality!",
+  "productId": "64f1a2b3c4d5e6f7g8h9i0j2"
+}
+
+### Response (201 Created)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j5",
+  "user": "Alice Johnson",
+  "rating": 5,
+  "comment": "Amazing product quality!",
+  "product": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+    "name": "iPhone 15 Pro",
+    "description": "Latest iPhone with advanced features"
+  },
+  "createdAt": "2024-01-16T09:15:00.000Z",
+  "updatedAt": "2024-01-16T09:15:00.000Z"
+}
+```
+
+### Response (400 Bad Request - Missing Fields)
+```json
+{
+  "message": "User, rating, and productId are required"
+}
+```
+
+### Response (400 Bad Request - Invalid Rating)
+```json
+{
+  "message": "Rating must be between 1 and 5"
+}
+```
+
+### Response (400 Bad Request - Duplicate Review)
+```json
+{
+  "message": "User has already reviewed this product"
+}
+```
+
+### Response (404 Not Found - Product Not Found)
+```json
+{
+  "message": "Product not found"
+}
+```
+
+# ========================================
+# UPDATE REVIEW
+# ========================================
+PATCH {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+{
+  "rating": 4,
+  "comment": "Updated comment: Still a great product!"
+}
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+  "user": "John Doe",
+  "rating": 4,
+  "comment": "Updated comment: Still a great product!",
+  "product": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+    "name": "iPhone 15 Pro",
+    "description": "Latest iPhone with advanced features"
+  },
+  "createdAt": "2024-01-15T10:30:00.000Z",
+  "updatedAt": "2024-01-16T11:20:00.000Z"
+}
+```
+
+### Response (400 Bad Request - Invalid Rating)
+```json
+{
+  "message": "Rating must be between 1 and 5"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Review not found"
+}
+```
+
+# ========================================
+# DELETE REVIEW
+# ========================================
+DELETE {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "message": "Review deleted successfully"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Review not found"
+}
+```
+
+# ========================================
+# GET REVIEWS BY USER
+# ========================================
+GET {{baseUrl}}/user/John%20Doe
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "user": "John Doe",
+    "rating": 5,
+    "comment": "Excellent product! Highly recommended.",
+    "product": {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+      "name": "iPhone 15 Pro",
+      "description": "Latest iPhone with advanced features"
+    },
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  },
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j6",
+    "user": "John Doe",
+    "rating": 4,
+    "comment": "Another good product from this brand.",
+    "product": {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j7",
+      "name": "MacBook Pro 16",
+      "description": "Professional laptop for developers and creators"
+    },
+    "createdAt": "2024-01-10T14:20:00.000Z",
+    "updatedAt": "2024-01-10T14:20:00.000Z"
+  }
+]
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error fetching user reviews",
+  "error": "Database connection failed"
+}
+```
+
+# ========================================
+# GET REVIEWS BY RATING
+# ========================================
+GET {{baseUrl}}/rating/5
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "user": "John Doe",
+    "rating": 5,
+    "comment": "Excellent product! Highly recommended.",
+    "product": {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+      "name": "iPhone 15 Pro",
+      "description": "Latest iPhone with advanced features"
+    },
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  },
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j5",
+    "user": "Alice Johnson",
+    "rating": 5,
+    "comment": "Amazing product quality!",
+    "product": {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+      "name": "iPhone 15 Pro",
+      "description": "Latest iPhone with advanced features"
+    },
+    "createdAt": "2024-01-16T09:15:00.000Z",
+    "updatedAt": "2024-01-16T09:15:00.000Z"
+  }
+]
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error fetching reviews by rating",
+  "error": "Database connection failed"
+}
+```
+
+# ========================================
+# GET REVIEWS FOR SPECIFIC PRODUCT
+# ========================================
+GET {{baseUrl}}/product/64f1a2b3c4d5e6f7g8h9i0j2
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "reviews": [
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+      "user": "John Doe",
+      "rating": 5,
+      "comment": "Excellent product! Highly recommended.",
+      "product": "64f1a2b3c4d5e6f7g8h9i0j2",
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
+    },
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j5",
+      "user": "Alice Johnson",
+      "rating": 5,
+      "comment": "Amazing product quality!",
+      "product": "64f1a2b3c4d5e6f7g8h9i0j2",
+      "createdAt": "2024-01-16T09:15:00.000Z",
+      "updatedAt": "2024-01-16T09:15:00.000Z"
+    }
+  ],
+  "averageRating": 5,
+  "totalReviews": 2
+}
+```
+
+### Response (404 Not Found - Product Not Found)
+```json
+{
+  "message": "Product not found"
+}
+```
+
+# ========================================
+# ERROR RESPONSES
+# ========================================
+
+### 400 Bad Request - Validation Error
+```json
+{
+  "message": "Error creating review",
+  "error": "Validation failed: rating: Path `rating` (6) is more than maximum allowed value (5)."
+}
+```
+
+### 400 Bad Request - Duplicate Review Error
+```json
+{
+  "message": "User has already reviewed this product"
+}
+```
+
+### 500 Internal Server Error - General Error
+```json
+{
+  "message": "Error updating review",
+  "error": "Cast to ObjectId failed for value \"invalid-id\" at path \"_id\" for model \"Review\""
+}
+```
+
+# ========================================
+# NOTES
+# ========================================
+# - Reviews now have a direct reference to products via the 'product' field
+# - Each user can only review a product once (enforced by unique compound index)
+# - Product information is automatically populated when fetching reviews
+# - No need to manually manage product-review relationships
+# - Reviews are sorted by creation date (newest first)
+# - All timestamps are automatically managed by Mongoose
+# - Product references are validated before creating reviews
+# - Virtual fields in Product model automatically calculate averageRating and totalReviews
+# - Reviews are automatically populated when getting products by ID
+# - The system maintains data consistency between products and reviews

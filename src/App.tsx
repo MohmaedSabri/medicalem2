@@ -1,0 +1,297 @@
+/** @format */
+
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from 'react-hot-toast';
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Blog from "./pages/Blog";
+import BlogDetail from "./components/BlogDetail";
+import Contact from "./components/Contact";
+import Favorites from "./pages/Favorites";
+import ProductsPage from "./components/ProductsPage";
+import ProductDetail from "./components/ProductDetail";
+import Header from "./components/Header";
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
+// import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProductsProvider } from "./contexts/ProductsContext";
+import { CategoriesProvider } from "./contexts/CategoriesContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
+import TopBar from "./components/TopBar";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+// Import i18n configuration
+import './i18n';
+
+// Create a client
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			staleTime: 5 * 60 * 1000, // 5 minutes
+			gcTime: 10 * 60 * 1000, // 10 minutes
+			retry: 1,
+			refetchOnWindowFocus: false,
+		},
+		mutations: {
+			retry: 1,
+		},
+	},
+});
+
+function App() {
+	const pageVariants = {
+		initial: { opacity: 0, x: 100 },
+		in: { opacity: 1, x: 0 },
+		out: { opacity: 0, x: -100 },
+	};
+
+	const pageTransition = {
+		type: "tween" as const,
+		ease: "anticipate" as const,
+		duration: 0.5,
+	};
+
+	return (
+		<QueryClientProvider client={queryClient}>
+			<AuthProvider>
+				<ProductsProvider>
+					<CategoriesProvider>
+						<LanguageProvider>
+							<Router>
+							<AppContent />
+							<Routes>
+								{/* Contact Route */}
+								<Route
+									path='/contact'
+									element={
+										<AnimatePresence mode='wait'>
+											<motion.div
+												key='contact'
+												initial='initial'
+												animate='in'
+												exit='out'
+												variants={pageVariants}
+												transition={pageTransition}>
+												<Header />
+												<Contact />
+											</motion.div>
+										</AnimatePresence>
+									}
+								/>
+								{/* Login Route */}
+								<Route
+									path='/login'
+									element={
+										<AnimatePresence mode='wait'>
+											<motion.div
+												key='login'
+												initial='initial'
+												animate='in'
+												exit='out'
+												variants={pageVariants}
+												transition={pageTransition}>
+												<Header isLoginPage />
+												<Login />
+											</motion.div>
+										</AnimatePresence>
+									}
+								/>
+
+								{/* Dashboard Route - Protected */}
+								<Route
+									path='/dashboard'
+									element={
+										<ProtectedRoute>
+
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='dashboard'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Dashboard />
+												</motion.div>
+											</AnimatePresence>
+										</ProtectedRoute>
+										
+									}
+								/>
+
+								{/* Products Page Route */}
+								<Route
+									path='/products'
+									element={
+										<AnimatePresence mode='wait'>
+											<motion.div
+												key='products'
+												initial='initial'
+												animate='in'
+												exit='out'
+												variants={pageVariants}
+												transition={pageTransition}>
+												<Header />
+												<ProductsPage />
+											</motion.div>
+										</AnimatePresence>
+									}
+								/>
+
+								{/* Product Detail Route */}
+								<Route
+									path='/product/:id'
+									element={
+										<AnimatePresence mode='wait'>
+											<motion.div
+												key='product-detail'
+												initial='initial'
+												animate='in'
+												exit='out'
+												variants={pageVariants}
+												transition={pageTransition}>
+												<Header />
+												<ProductDetail />
+											</motion.div>
+										</AnimatePresence>
+									}
+								/>
+
+								{/* Favorites Route */}
+								<Route
+									path='/favorites'
+									element={
+										<AnimatePresence mode='wait'>
+											<motion.div
+												key='favorites'
+												initial='initial'
+												animate='in'
+												exit='out'
+												variants={pageVariants}
+												transition={pageTransition}>
+												<Header />
+												<Favorites />
+											</motion.div>
+										</AnimatePresence>
+									}
+								/>
+
+								{/* Blog Route */}
+								<Route
+									path='/blog'
+									element={
+										<AnimatePresence mode='wait'>
+											<motion.div
+												key='blog'
+												initial='initial'
+												animate='in'
+												exit='out'
+												variants={pageVariants}
+												transition={pageTransition}>
+												<Header />
+												<Blog />
+											</motion.div>
+										</AnimatePresence>
+									}
+								/>
+
+								{/* Blog Detail Route */}
+								<Route
+									path='/blog/:id'
+									element={
+										<AnimatePresence mode='wait'>
+											<motion.div
+												key='blog-detail'
+												initial='initial'
+												animate='in'
+												exit='out'
+												variants={pageVariants}
+												transition={pageTransition}>
+												<Header />
+												<BlogDetail />
+											</motion.div>
+										</AnimatePresence>
+									}
+								/>
+
+								{/* About Route */}
+								<Route
+									path='/about'
+									element={
+										<AnimatePresence mode='wait'>
+											<motion.div
+												key='about'
+												initial='initial'
+												animate='in'
+												exit='out'
+												variants={pageVariants}
+												transition={pageTransition}>
+												<Header />
+												<About />
+											</motion.div>
+										</AnimatePresence>
+									}
+								/>
+
+								{/* Home Route */}
+								<Route
+									path='/'
+									element={
+										<AnimatePresence mode='wait'>
+											<motion.div
+												key='home'
+												initial='initial'
+												animate='in'
+												exit='out'
+												variants={pageVariants}
+												transition={pageTransition}>
+												<Home />
+											</motion.div>
+										</AnimatePresence>
+									}
+								/>
+							</Routes>
+							{/* Toast Notifications */}
+							<Toaster
+								position="top-right"
+								toastOptions={{
+									duration: 4000,
+									style: {
+										background: '#363636',
+										color: '#fff',
+									},
+									success: {
+										duration: 4000,
+										style: {
+											background: '#10b981',
+											color: '#fff',
+										},
+									},
+									error: {
+										duration: 4000,
+										style: {
+											background: '#ef4444',
+											color: '#fff',
+										},
+									},
+								}}
+							/>
+						</Router>
+						</LanguageProvider>
+					</CategoriesProvider>
+				</ProductsProvider>
+			</AuthProvider>
+		</QueryClientProvider>
+	);
+}
+
+const AppContent = () => {
+	const location = useLocation();
+	const hideChrome = location.pathname.startsWith("/dashboard");
+	return hideChrome ? null : <TopBar />;
+};
+
+export default App;

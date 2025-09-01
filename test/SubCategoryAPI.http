@@ -1,0 +1,318 @@
+### SubCategory API Documentation
+### Base URL: http://localhost:5000/api/subcategories
+
+# ========================================
+# GET ALL SUBCATEGORIES
+# ========================================
+GET http://localhost:5000/api/subcategories/
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+    "name": "Gaming Laptops",
+    "description": "High-performance laptops for gaming",
+    "parentCategory": {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+      "name": "Laptops",
+      "description": "Portable computers and notebooks"
+    },
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  },
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j3",
+    "name": "Business Laptops",
+    "description": "Professional laptops for business use",
+    "parentCategory": {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+      "name": "Laptops",
+      "description": "Portable computers and notebooks"
+    },
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  }
+]
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error fetching subcategories",
+  "error": "Database connection failed"
+}
+```
+
+# ========================================
+# GET SUBCATEGORY BY ID
+# ========================================
+GET http://localhost:5000/api/subcategories/64f1a2b3c4d5e6f7g8h9i0j2
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+  "name": "Gaming Laptops",
+  "description": "High-performance laptops for gaming",
+  "parentCategory": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "Laptops",
+    "description": "Portable computers and notebooks"
+  },
+  "createdAt": "2024-01-10T08:00:00.000Z",
+  "updatedAt": "2024-01-10T08:00:00.000Z"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "SubCategory not found"
+}
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error fetching subcategory",
+  "error": "Invalid ObjectId format"
+}
+```
+
+# ========================================
+# GET SUBCATEGORIES BY PARENT CATEGORY
+# ========================================
+GET http://localhost:5000/api/subcategories/parent/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+    "name": "Gaming Laptops",
+    "description": "High-performance laptops for gaming",
+    "parentCategory": {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+      "name": "Laptops",
+      "description": "Portable computers and notebooks"
+    },
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  },
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j3",
+    "name": "Business Laptops",
+    "description": "Professional laptops for business use",
+    "parentCategory": {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+      "name": "Laptops",
+      "description": "Portable computers and notebooks"
+    },
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  }
+]
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error fetching subcategories by parent",
+  "error": "Invalid parent category ID"
+}
+```
+
+# ========================================
+# CREATE NEW SUBCATEGORY
+# ========================================
+POST http://localhost:5000/api/subcategories/
+Content-Type: application/json
+
+### Request Body (All fields required)
+```json
+{
+  "name": "Ultrabooks",
+  "description": "Ultra-thin and lightweight laptops",
+  "parentCategory": "64f1a2b3c4d5e6f7g8h9i0j1"
+}
+```
+
+### Response (201 Created)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j4",
+  "name": "Ultrabooks",
+  "description": "Ultra-thin and lightweight laptops",
+  "parentCategory": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "Laptops",
+    "description": "Portable computers and notebooks"
+  },
+  "createdAt": "2024-01-15T12:00:00.000Z",
+  "updatedAt": "2024-01-15T12:00:00.000Z"
+}
+```
+
+### Response (400 Bad Request)
+```json
+{
+  "message": "Error creating subcategory",
+  "error": "Validation failed: name: Path `name` is required, parentCategory: Path `parentCategory` is required"
+}
+```
+
+# ========================================
+# UPDATE SUBCATEGORY
+# ========================================
+PATCH http://localhost:5000/api/subcategories/64f1a2b3c4d5e6f7g8h9i0j2
+Content-Type: application/json
+
+### Request Body (Partial update)
+```json
+{
+  "description": "High-performance gaming laptops with advanced graphics"
+}
+```
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+  "name": "Gaming Laptops",
+  "description": "High-performance gaming laptops with advanced graphics",
+  "parentCategory": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "Laptops",
+    "description": "Portable computers and notebooks"
+  },
+  "createdAt": "2024-01-10T08:00:00.000Z",
+  "updatedAt": "2024-01-15T13:00:00.000Z"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "SubCategory not found"
+}
+```
+
+### Response (400 Bad Request)
+```json
+{
+  "message": "Error updating subcategory",
+  "error": "Validation failed: name: Path `name` is required"
+}
+```
+
+# ========================================
+# DELETE SUBCATEGORY
+# ========================================
+DELETE http://localhost:5000/api/subcategories/64f1a2b3c4d5e6f7g8h9i0j2
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "message": "SubCategory deleted successfully"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "SubCategory not found"
+}
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error deleting subcategory",
+  "error": "Database operation failed"
+}
+```
+
+# ========================================
+# NOTES
+# ========================================
+# 
+# 1. SubCategory requires name, description, and parentCategory fields
+# 2. parentCategory must be a valid Category ObjectId
+# 3. name field must be unique across all subcategories
+# 4. Timestamps are automatically added (createdAt, updatedAt)
+# 5. All responses include populated parentCategory information
+# 6. Use GET /parent/:parentId to get subcategories for a specific category
+# 7. Deleting a subcategory will not automatically delete products that reference it
+# 8. Consider updating or removing products before deleting a subcategory
+#
+# ========================================
+# ERROR CODES
+# ========================================
+# 200: Success
+# 201: Created
+# 400: Bad Request (validation errors)
+# 404: Not Found
+# 500: Internal Server Error
+#
+# ========================================
+# VALIDATION RULES
+# ========================================
+# - name: String, required, unique
+# - description: String, required
+# - parentCategory: ObjectId, required, must reference existing Category
+#
+# ========================================
+# EXAMPLE USAGE SCENARIOS
+# ========================================
+#
+# 1. Create Gaming Laptops SubCategory:
+# POST /api/subcategories
+# {
+#   "name": "Gaming Laptops",
+#   "description": "High-performance laptops for gaming",
+#   "parentCategory": "64f1a2b3c4d5e6f7g8h9i0j1"
+# }
+#
+# 2. Get All Subcategories for Dropdown:
+# GET /api/subcategories
+#
+# 3. Get Subcategories for Specific Category:
+# GET /api/subcategories/parent/64f1a2b3c4d5e6f7g8h9i0j1
+#
+# 4. Update SubCategory Description:
+# PATCH /api/subcategories/64f1a2b3c4d5e6f7g8h9i0j2
+# {
+#   "description": "Updated description for better clarity"
+# }
+#
+# 5. Get Specific SubCategory for Product Creation:
+# GET /api/subcategories/64f1a2b3c4d5e6f7g8h9i0j2
+#
+# 6. Delete Unused SubCategory:
+# DELETE /api/subcategories/64f1a2b3c4d5e6f7g8h9i0j4
+#
+# ========================================
+# RELATIONSHIP WITH CATEGORIES
+# ========================================
+#
+# SubCategories are children of Categories:
+# - Each SubCategory belongs to exactly one Category (parentCategory)
+# - Categories can have multiple SubCategories
+# - Use the parent endpoint to get all subcategories for a category
+# - Popular workflow: GET /categories → GET /subcategories/parent/:categoryId
+#
+# Example Category-SubCategory Structure:
+# Electronics (Category)
+#   ├── Smartphones (SubCategory)
+#   ├── Laptops (SubCategory)
+#   └── Tablets (SubCategory)
+# 
+# Clothing (Category)
+#   ├── Men's Clothing (SubCategory)
+#   ├── Women's Clothing (SubCategory)
+#   └── Kids' Clothing (SubCategory)
