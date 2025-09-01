@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, CSSProperties } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface LazyImageProps {
   src: string;
@@ -58,24 +58,11 @@ const LazyImage: React.FC<LazyImageProps> = ({
     setIsLoaded(false);
   };
 
-  // CSS filters to help remove white backgrounds from PNG images
-  const getImageStyles = (): CSSProperties => {
-    const baseStyles: CSSProperties = {
-      backgroundImage: `url(${placeholder})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-    };
-
-    if (removeBackground) {
-      return {
-        ...baseStyles,
-        filter: 'brightness(0) saturate(100%) invert(1)',
-        mixBlendMode: 'multiply',
-      };
-    }
-
-    return baseStyles;
-  };
+  // CSS styles for background removal
+  const backgroundRemovalStyles = removeBackground ? {
+    mixBlendMode: 'multiply',
+    filter: 'contrast(1.1) brightness(1.1)',
+  } : {};
 
   return (
     <img
@@ -89,7 +76,12 @@ const LazyImage: React.FC<LazyImageProps> = ({
       decoding="async"
       onLoad={handleLoad}
       onError={handleError}
-      style={getImageStyles()}
+      style={{
+        backgroundImage: `url(${placeholder})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        ...backgroundRemovalStyles,
+      }}
     />
   );
 };

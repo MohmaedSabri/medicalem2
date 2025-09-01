@@ -480,10 +480,9 @@ const Hero: React.FC = () => {
 											<LazyImage
 												src={src}
 												alt='Hero visual'
-												className='w-[78%] h-[78%] object-cover rounded-full remove-bg'
+												className='w-[78%] h-[78%] object-cover rounded-full'
 												threshold={0.1}
 												rootMargin="50px"
-												removeBackground={true}
 											/>
 										</motion.div>
 									);
