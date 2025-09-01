@@ -4,27 +4,36 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import { motion, AnimatePresence } from "framer-motion";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Blog from "./pages/Blog";
-import BlogDetail from "./components/BlogDetail";
-import Contact from "./components/Contact";
-import Favorites from "./pages/Favorites";
-import ProductsPage from "./components/ProductsPage";
-import ProductDetail from "./components/ProductDetail";
+import { Suspense, lazy } from 'react';
 import Header from "./components/Header";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
-// import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProductsProvider } from "./contexts/ProductsContext";
 import { CategoriesProvider } from "./contexts/CategoriesContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import TopBar from "./components/TopBar";
-import ProtectedRoute from "./components/ProtectedRoute";
 
 // Import i18n configuration
 import './i18n';
+
+// Lazy load components for better performance
+const Home = lazy(() => import("./pages/Home"));
+const About = lazy(() => import("./pages/About"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogDetail = lazy(() => import("./components/BlogDetail"));
+const Contact = lazy(() => import("./components/Contact"));
+const Favorites = lazy(() => import("./pages/Favorites"));
+const ProductsPage = lazy(() => import("./components/ProductsPage"));
+const ProductDetail = lazy(() => import("./components/ProductDetail"));
+
+// Loading component
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+  </div>
+);
 
 // Create a client
 const queryClient = new QueryClient({
@@ -76,7 +85,9 @@ function App() {
 												variants={pageVariants}
 												transition={pageTransition}>
 												<Header />
-												<Contact />
+												<Suspense fallback={<LoadingSpinner />}>
+													<Contact />
+												</Suspense>
 											</motion.div>
 										</AnimatePresence>
 									}
@@ -105,7 +116,6 @@ function App() {
 									path='/dashboard'
 									element={
 										<ProtectedRoute>
-
 											<AnimatePresence mode='wait'>
 												<motion.div
 													key='dashboard'
@@ -118,7 +128,6 @@ function App() {
 												</motion.div>
 											</AnimatePresence>
 										</ProtectedRoute>
-										
 									}
 								/>
 
@@ -135,7 +144,9 @@ function App() {
 												variants={pageVariants}
 												transition={pageTransition}>
 												<Header />
-												<ProductsPage />
+												<Suspense fallback={<LoadingSpinner />}>
+													<ProductsPage />
+												</Suspense>
 											</motion.div>
 										</AnimatePresence>
 									}
@@ -154,7 +165,9 @@ function App() {
 												variants={pageVariants}
 												transition={pageTransition}>
 												<Header />
-												<ProductDetail />
+												<Suspense fallback={<LoadingSpinner />}>
+													<ProductDetail />
+												</Suspense>
 											</motion.div>
 										</AnimatePresence>
 									}
@@ -173,7 +186,9 @@ function App() {
 												variants={pageVariants}
 												transition={pageTransition}>
 												<Header />
-												<Favorites />
+												<Suspense fallback={<LoadingSpinner />}>
+													<Favorites />
+												</Suspense>
 											</motion.div>
 										</AnimatePresence>
 									}
@@ -192,7 +207,9 @@ function App() {
 												variants={pageVariants}
 												transition={pageTransition}>
 												<Header />
-												<Blog />
+												<Suspense fallback={<LoadingSpinner />}>
+													<Blog />
+												</Suspense>
 											</motion.div>
 										</AnimatePresence>
 									}
@@ -211,7 +228,9 @@ function App() {
 												variants={pageVariants}
 												transition={pageTransition}>
 												<Header />
-												<BlogDetail />
+												<Suspense fallback={<LoadingSpinner />}>
+													<BlogDetail />
+												</Suspense>
 											</motion.div>
 										</AnimatePresence>
 									}
@@ -230,7 +249,9 @@ function App() {
 												variants={pageVariants}
 												transition={pageTransition}>
 												<Header />
-												<About />
+												<Suspense fallback={<LoadingSpinner />}>
+													<About />
+												</Suspense>
 											</motion.div>
 										</AnimatePresence>
 									}
@@ -248,7 +269,9 @@ function App() {
 												exit='out'
 												variants={pageVariants}
 												transition={pageTransition}>
-												<Home />
+												<Suspense fallback={<LoadingSpinner />}>
+													<Home />
+												</Suspense>
 											</motion.div>
 										</AnimatePresence>
 									}

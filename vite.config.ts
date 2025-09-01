@@ -10,10 +10,13 @@ export default defineConfig({
     compression({
       algorithm: 'gzip',
       exclude: [/\.(br)$ /, /\.(gz)$/],
+      threshold: 1024,
+
     }),
     compression({
       algorithm: 'brotliCompress',
       exclude: [/\.(br)$ /, /\.(gz)$/],
+      threshold: 1024,
     }),
     visualizer({
       filename: 'dist/stats.html',
@@ -25,6 +28,7 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
     include: ['react', 'react-dom', 'react-router-dom'],
+    force: true,
   },
   build: {
     rollupOptions: {
@@ -34,6 +38,20 @@ export default defineConfig({
           router: ['react-router-dom'],
           ui: ['framer-motion', 'lucide-react'],
           utils: ['axios', '@tanstack/react-query'],
+          i18n: ['i18next', 'react-i18next'],
+        },
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name?.split('.') || [];
+          const ext = info[info.length - 1];
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+            return `assets/images/[name]-[hash].${ext}`;
+          }
+          if (/css/i.test(ext)) {
+            return `assets/css/[name]-[hash].${ext}`;
+          }
+          return `assets/[name]-[hash].${ext}`;
         },
       },
     },
@@ -43,8 +61,17 @@ export default defineConfig({
       compress: {
         drop_console: true,
         drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug'],
+        passes: 2,
+      },
+      mangle: {
+        safari10: true,
       },
     },
+    cssCodeSplit: true,
+    sourcemap: false,
+    target: 'es2015',
+    assetsInlineLimit: 4096,
   },
   server: {
     proxy: {
@@ -55,5 +82,9 @@ export default defineConfig({
         secure: true,
       },
     },
+  },
+  preview: {
+    port: 4173,
+    host: true,
   },
 });
