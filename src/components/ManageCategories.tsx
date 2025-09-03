@@ -173,6 +173,7 @@ const ManageCategories: React.FC = () => {
 			setIsUpdating(false);
 		}
 	};
+	//
 
 	if (loading) {
 		return (
