@@ -22,7 +22,7 @@ const getCookie = (name: string): string | null => {
   }
   return null;
 };
-
+//
 // Request interceptor to add auth token
 axiosClient.interceptors.request.use(
   (config) => {
