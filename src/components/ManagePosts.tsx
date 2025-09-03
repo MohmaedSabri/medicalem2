@@ -824,623 +824,675 @@ const ManagePosts: React.FC = () => {
 
 			{/* Posts List */}
 			<div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-				{filteredPosts.map((post) => (
-					<React.Fragment key={post._id}>
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							className='bg-white rounded-XL shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1'>
-							{editingPost === post._id ? (
-								/* Edit Form */
-								<div className='p-6 space-y-4'>
-									<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-										<div>
-											<label className='block text-sm font-medium text-gray-700 mb-1'>
-												Title (EN)
-											</label>
-											<input
-												type='text'
-												value={editTitleEn}
-												onChange={(e) => setEditTitleEn(e.target.value)}
-												className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-											/>
-										</div>
-										<div>
-											<label className='block text-sm font-medium text-gray-700 mb-1'>
-												Title (AR)
-											</label>
-											<input
-												type='text'
-												value={editTitleAr}
-												onChange={(e) => setEditTitleAr(e.target.value)}
-												dir='rtl'
-												className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-											/>
-										</div>
-										{/* Content Editor Toggle */}
-										<div className='md:col-span-2'>
-											<div className='flex items-center justify-between mb-4'>
-												<label className='block text-sm font-medium text-gray-700'>
-													Content Editor
+				{filteredPosts.map((post) => {
+					// Debug: Log post data to see if postImage exists
+					console.log("Post data:", {
+						id: post._id,
+						title: getLocalizedText(post.title),
+						postImage: post.postImage,
+						hasPostImage: !!post.postImage,
+						postImageLength: post.postImage?.length || 0,
+					});
+
+					return (
+						<React.Fragment key={post._id}>
+							<motion.div
+								initial={{ opacity: 0, y: 20 }}
+								animate={{ opacity: 1, y: 0 }}
+								className='bg-white rounded-XL shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1'>
+								{editingPost === post._id ? (
+									/* Edit Form */
+									<div className='p-6 space-y-4'>
+										<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+											<div>
+												<label className='block text-sm font-medium text-gray-700 mb-1'>
+													Title (EN)
 												</label>
-												<div className='flex items-center space-x-4'>
-													<button
-														type='button'
-														onClick={() => setUseRichEditor(false)}
-														className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-															!useRichEditor
-																? "bg-teal-600 text-white"
-																: "bg-gray-200 text-gray-700 hover:bg-gray-300"
-														}`}>
-														Simple Text
-													</button>
-													<button
-														type='button'
-														onClick={() => setUseRichEditor(true)}
-														className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-															useRichEditor
-																? "bg-teal-600 text-white"
-																: "bg-gray-200 text-gray-700 hover:bg-gray-300"
-														}`}>
-														Rich Editor
-													</button>
+												<input
+													type='text'
+													value={editTitleEn}
+													onChange={(e) => setEditTitleEn(e.target.value)}
+													className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+												/>
+											</div>
+											<div>
+												<label className='block text-sm font-medium text-gray-700 mb-1'>
+													Title (AR)
+												</label>
+												<input
+													type='text'
+													value={editTitleAr}
+													onChange={(e) => setEditTitleAr(e.target.value)}
+													dir='rtl'
+													className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+												/>
+											</div>
+											{/* Content Editor Toggle */}
+											<div className='md:col-span-2'>
+												<div className='flex items-center justify-between mb-4'>
+													<label className='block text-sm font-medium text-gray-700'>
+														Content Editor
+													</label>
+													<div className='flex items-center space-x-4'>
+														<button
+															type='button'
+															onClick={() => setUseRichEditor(false)}
+															className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+																!useRichEditor
+																	? "bg-teal-600 text-white"
+																	: "bg-gray-200 text-gray-700 hover:bg-gray-300"
+															}`}>
+															Simple Text
+														</button>
+														<button
+															type='button'
+															onClick={() => setUseRichEditor(true)}
+															className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+																useRichEditor
+																	? "bg-teal-600 text-white"
+																	: "bg-gray-200 text-gray-700 hover:bg-gray-300"
+															}`}>
+															Rich Editor
+														</button>
+													</div>
 												</div>
 											</div>
-										</div>
 
-										{/* Content EN/AR */}
-										{!useRichEditor ? (
-											<>
-												<div className='md:col-span-2'>
-													<label className='block text-sm font-medium text-gray-700 mb-1'>
-														Content (EN)
-													</label>
-													<textarea
-														value={editContentEn}
-														onChange={(e) => setEditContentEn(e.target.value)}
-														rows={4}
-														className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-vertical'
-													/>
-												</div>
-												<div className='md:col-span-2'>
-													<label className='block text-sm font-medium text-gray-700 mb-1'>
-														Content (AR)
-													</label>
-													<textarea
-														value={editContentAr}
-														onChange={(e) => setEditContentAr(e.target.value)}
-														rows={4}
-														dir='rtl'
-														className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-vertical'
-													/>
-												</div>
-											</>
-										) : (
-											<>
-												{/* Rich Content Editor for English */}
-												<div className='md:col-span-2'>
-													<label className='block text-sm font-medium text-gray-700 mb-2'>
-														Content (EN)
-													</label>
-													<div className='border border-gray-300 rounded-lg p-4 space-y-4'>
-														{editContentBlocksEn.map((block, index) => (
-															<div
-																key={index}
-																className='border border-gray-200 rounded-lg p-4 bg-gray-50'>
-																<div className='flex items-center justify-between mb-2'>
-																	<span className='text-sm font-medium text-gray-600'>
-																		{block.type === "paragraph"
-																			? "Paragraph"
-																			: "Image"}{" "}
-																		{index + 1}
-																	</span>
-																	<div className='flex items-center space-x-2'>
-																		<button
-																			type='button'
-																			onClick={() =>
-																				setEditContentBlocksEn(
-																					removeContentBlock(
-																						editContentBlocksEn,
-																						index
+											{/* Content EN/AR */}
+											{!useRichEditor ? (
+												<>
+													<div className='md:col-span-2'>
+														<label className='block text-sm font-medium text-gray-700 mb-1'>
+															Content (EN)
+														</label>
+														<textarea
+															value={editContentEn}
+															onChange={(e) => setEditContentEn(e.target.value)}
+															rows={4}
+															className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-vertical'
+														/>
+													</div>
+													<div className='md:col-span-2'>
+														<label className='block text-sm font-medium text-gray-700 mb-1'>
+															Content (AR)
+														</label>
+														<textarea
+															value={editContentAr}
+															onChange={(e) => setEditContentAr(e.target.value)}
+															rows={4}
+															dir='rtl'
+															className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-vertical'
+														/>
+													</div>
+												</>
+											) : (
+												<>
+													{/* Rich Content Editor for English */}
+													<div className='md:col-span-2'>
+														<label className='block text-sm font-medium text-gray-700 mb-2'>
+															Content (EN)
+														</label>
+														<div className='border border-gray-300 rounded-lg p-4 space-y-4'>
+															{editContentBlocksEn.map((block, index) => (
+																<div
+																	key={index}
+																	className='border border-gray-200 rounded-lg p-4 bg-gray-50'>
+																	<div className='flex items-center justify-between mb-2'>
+																		<span className='text-sm font-medium text-gray-600'>
+																			{block.type === "paragraph"
+																				? "Paragraph"
+																				: "Image"}{" "}
+																			{index + 1}
+																		</span>
+																		<div className='flex items-center space-x-2'>
+																			<button
+																				type='button'
+																				onClick={() =>
+																					setEditContentBlocksEn(
+																						removeContentBlock(
+																							editContentBlocksEn,
+																							index
+																						)
 																					)
-																				)
-																			}
-																			className='text-red-600 hover:text-red-800'>
-																			<X className='w-4 h-4' />
-																		</button>
+																				}
+																				className='text-red-600 hover:text-red-800'>
+																				<X className='w-4 h-4' />
+																			</button>
+																		</div>
 																	</div>
+																	{block.type === "paragraph" ? (
+																		<div className='space-y-2'>
+																			<input
+																				type='text'
+																				value={block.title || ""}
+																				onChange={(e) =>
+																					setEditContentBlocksEn(
+																						updateContentBlock(
+																							editContentBlocksEn,
+																							index,
+																							{ title: e.target.value }
+																						)
+																					)
+																				}
+																				placeholder='Paragraph title (optional)'
+																				className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
+																			/>
+																			<textarea
+																				value={block.text || ""}
+																				onChange={(e) =>
+																					setEditContentBlocksEn(
+																						updateContentBlock(
+																							editContentBlocksEn,
+																							index,
+																							{ text: e.target.value }
+																						)
+																					)
+																				}
+																				placeholder='Paragraph text'
+																				rows={3}
+																				className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
+																			/>
+																		</div>
+																	) : (
+																		<div className='space-y-2'>
+																			<input
+																				type='url'
+																				value={block.imageUrl || ""}
+																				onChange={(e) =>
+																					setEditContentBlocksEn(
+																						updateContentBlock(
+																							editContentBlocksEn,
+																							index,
+																							{ imageUrl: e.target.value }
+																						)
+																					)
+																				}
+																				placeholder='Image URL'
+																				className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
+																			/>
+																			<input
+																				type='text'
+																				value={block.imageAlt || ""}
+																				onChange={(e) =>
+																					setEditContentBlocksEn(
+																						updateContentBlock(
+																							editContentBlocksEn,
+																							index,
+																							{ imageAlt: e.target.value }
+																						)
+																					)
+																				}
+																				placeholder='Image alt text'
+																				className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
+																			/>
+																			<input
+																				type='text'
+																				value={block.imageCaption || ""}
+																				onChange={(e) =>
+																					setEditContentBlocksEn(
+																						updateContentBlock(
+																							editContentBlocksEn,
+																							index,
+																							{ imageCaption: e.target.value }
+																						)
+																					)
+																				}
+																				placeholder='Image caption'
+																				className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
+																			/>
+																		</div>
+																	)}
 																</div>
-																{block.type === "paragraph" ? (
-																	<div className='space-y-2'>
-																		<input
-																			type='text'
-																			value={block.title || ""}
-																			onChange={(e) =>
-																				setEditContentBlocksEn(
-																					updateContentBlock(
-																						editContentBlocksEn,
-																						index,
-																						{ title: e.target.value }
-																					)
-																				)
-																			}
-																			placeholder='Paragraph title (optional)'
-																			className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
-																		/>
-																		<textarea
-																			value={block.text || ""}
-																			onChange={(e) =>
-																				setEditContentBlocksEn(
-																					updateContentBlock(
-																						editContentBlocksEn,
-																						index,
-																						{ text: e.target.value }
-																					)
-																				)
-																			}
-																			placeholder='Paragraph text'
-																			rows={3}
-																			className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
-																		/>
-																	</div>
-																) : (
-																	<div className='space-y-2'>
-																		<input
-																			type='url'
-																			value={block.imageUrl || ""}
-																			onChange={(e) =>
-																				setEditContentBlocksEn(
-																					updateContentBlock(
-																						editContentBlocksEn,
-																						index,
-																						{ imageUrl: e.target.value }
-																					)
-																				)
-																			}
-																			placeholder='Image URL'
-																			className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
-																		/>
-																		<input
-																			type='text'
-																			value={block.imageAlt || ""}
-																			onChange={(e) =>
-																				setEditContentBlocksEn(
-																					updateContentBlock(
-																						editContentBlocksEn,
-																						index,
-																						{ imageAlt: e.target.value }
-																					)
-																				)
-																			}
-																			placeholder='Image alt text'
-																			className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
-																		/>
-																		<input
-																			type='text'
-																			value={block.imageCaption || ""}
-																			onChange={(e) =>
-																				setEditContentBlocksEn(
-																					updateContentBlock(
-																						editContentBlocksEn,
-																						index,
-																						{ imageCaption: e.target.value }
-																					)
-																				)
-																			}
-																			placeholder='Image caption'
-																			className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
-																		/>
-																	</div>
-																)}
+															))}
+															<div className='flex space-x-2'>
+																<button
+																	type='button'
+																	onClick={() =>
+																		setEditContentBlocksEn(
+																			addContentBlock(
+																				editContentBlocksEn,
+																				"paragraph",
+																				{}
+																			)
+																		)
+																	}
+																	className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm'>
+																	+ Add Paragraph
+																</button>
+																<button
+																	type='button'
+																	onClick={() =>
+																		setEditContentBlocksEn(
+																			addContentBlock(
+																				editContentBlocksEn,
+																				"image",
+																				{}
+																			)
+																		)
+																	}
+																	className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm'>
+																	+ Add Image
+																</button>
 															</div>
-														))}
-														<div className='flex space-x-2'>
-															<button
-																type='button'
-																onClick={() =>
-																	setEditContentBlocksEn(
-																		addContentBlock(
-																			editContentBlocksEn,
-																			"paragraph",
-																			{}
-																		)
-																	)
-																}
-																className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm'>
-																+ Add Paragraph
-															</button>
-															<button
-																type='button'
-																onClick={() =>
-																	setEditContentBlocksEn(
-																		addContentBlock(
-																			editContentBlocksEn,
-																			"image",
-																			{}
-																		)
-																	)
-																}
-																className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm'>
-																+ Add Image
-															</button>
 														</div>
 													</div>
-												</div>
 
-												{/* Rich Content Editor for Arabic */}
-												<div className='md:col-span-2'>
-													<label className='block text-sm font-medium text-gray-700 mb-2'>
-														Content (AR)
-													</label>
-													<div className='border border-gray-300 rounded-lg p-4 space-y-4'>
-														{editContentBlocksAr.map((block, index) => (
-															<div
-																key={index}
-																className='border border-gray-200 rounded-lg p-4 bg-gray-50'>
-																<div className='flex items-center justify-between mb-2'>
-																	<span className='text-sm font-medium text-gray-600'>
-																		{block.type === "paragraph"
-																			? "فقرة"
-																			: "صورة"}{" "}
-																		{index + 1}
-																	</span>
-																	<div className='flex items-center space-x-2'>
-																		<button
-																			type='button'
-																			onClick={() =>
-																				setEditContentBlocksAr(
-																					removeContentBlock(
-																						editContentBlocksAr,
-																						index
+													{/* Rich Content Editor for Arabic */}
+													<div className='md:col-span-2'>
+														<label className='block text-sm font-medium text-gray-700 mb-2'>
+															Content (AR)
+														</label>
+														<div className='border border-gray-300 rounded-lg p-4 space-y-4'>
+															{editContentBlocksAr.map((block, index) => (
+																<div
+																	key={index}
+																	className='border border-gray-200 rounded-lg p-4 bg-gray-50'>
+																	<div className='flex items-center justify-between mb-2'>
+																		<span className='text-sm font-medium text-gray-600'>
+																			{block.type === "paragraph"
+																				? "فقرة"
+																				: "صورة"}{" "}
+																			{index + 1}
+																		</span>
+																		<div className='flex items-center space-x-2'>
+																			<button
+																				type='button'
+																				onClick={() =>
+																					setEditContentBlocksAr(
+																						removeContentBlock(
+																							editContentBlocksAr,
+																							index
+																						)
 																					)
-																				)
-																			}
-																			className='text-red-600 hover:text-red-800'>
-																			<X className='w-4 h-4' />
-																		</button>
+																				}
+																				className='text-red-600 hover:text-red-800'>
+																				<X className='w-4 h-4' />
+																			</button>
+																		</div>
 																	</div>
+																	{block.type === "paragraph" ? (
+																		<div className='space-y-2'>
+																			<input
+																				type='text'
+																				value={block.title || ""}
+																				onChange={(e) =>
+																					setEditContentBlocksAr(
+																						updateContentBlock(
+																							editContentBlocksAr,
+																							index,
+																							{ title: e.target.value }
+																						)
+																					)
+																				}
+																				placeholder='عنوان الفقرة (اختياري)'
+																				dir='rtl'
+																				className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
+																			/>
+																			<textarea
+																				value={block.text || ""}
+																				onChange={(e) =>
+																					setEditContentBlocksAr(
+																						updateContentBlock(
+																							editContentBlocksAr,
+																							index,
+																							{ text: e.target.value }
+																						)
+																					)
+																				}
+																				placeholder='نص الفقرة'
+																				dir='rtl'
+																				rows={3}
+																				className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
+																			/>
+																		</div>
+																	) : (
+																		<div className='space-y-2'>
+																			<input
+																				type='url'
+																				value={block.imageUrl || ""}
+																				onChange={(e) =>
+																					setEditContentBlocksAr(
+																						updateContentBlock(
+																							editContentBlocksAr,
+																							index,
+																							{ imageUrl: e.target.value }
+																						)
+																					)
+																				}
+																				placeholder='رابط الصورة'
+																				className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
+																			/>
+																			<input
+																				type='text'
+																				value={block.imageAlt || ""}
+																				onChange={(e) =>
+																					setEditContentBlocksAr(
+																						updateContentBlock(
+																							editContentBlocksAr,
+																							index,
+																							{ imageAlt: e.target.value }
+																						)
+																					)
+																				}
+																				placeholder='النص البديل للصورة'
+																				dir='rtl'
+																				className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
+																			/>
+																			<input
+																				type='text'
+																				value={block.imageCaption || ""}
+																				onChange={(e) =>
+																					setEditContentBlocksAr(
+																						updateContentBlock(
+																							editContentBlocksAr,
+																							index,
+																							{ imageCaption: e.target.value }
+																						)
+																					)
+																				}
+																				placeholder='تعليق الصورة'
+																				dir='rtl'
+																				className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
+																			/>
+																		</div>
+																	)}
 																</div>
-																{block.type === "paragraph" ? (
-																	<div className='space-y-2'>
-																		<input
-																			type='text'
-																			value={block.title || ""}
-																			onChange={(e) =>
-																				setEditContentBlocksAr(
-																					updateContentBlock(
-																						editContentBlocksAr,
-																						index,
-																						{ title: e.target.value }
-																					)
-																				)
-																			}
-																			placeholder='عنوان الفقرة (اختياري)'
-																			dir='rtl'
-																			className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
-																		/>
-																		<textarea
-																			value={block.text || ""}
-																			onChange={(e) =>
-																				setEditContentBlocksAr(
-																					updateContentBlock(
-																						editContentBlocksAr,
-																						index,
-																						{ text: e.target.value }
-																					)
-																				)
-																			}
-																			placeholder='نص الفقرة'
-																			dir='rtl'
-																			rows={3}
-																			className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
-																		/>
-																	</div>
-																) : (
-																	<div className='space-y-2'>
-																		<input
-																			type='url'
-																			value={block.imageUrl || ""}
-																			onChange={(e) =>
-																				setEditContentBlocksAr(
-																					updateContentBlock(
-																						editContentBlocksAr,
-																						index,
-																						{ imageUrl: e.target.value }
-																					)
-																				)
-																			}
-																			placeholder='رابط الصورة'
-																			className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
-																		/>
-																		<input
-																			type='text'
-																			value={block.imageAlt || ""}
-																			onChange={(e) =>
-																				setEditContentBlocksAr(
-																					updateContentBlock(
-																						editContentBlocksAr,
-																						index,
-																						{ imageAlt: e.target.value }
-																					)
-																				)
-																			}
-																			placeholder='النص البديل للصورة'
-																			dir='rtl'
-																			className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
-																		/>
-																		<input
-																			type='text'
-																			value={block.imageCaption || ""}
-																			onChange={(e) =>
-																				setEditContentBlocksAr(
-																					updateContentBlock(
-																						editContentBlocksAr,
-																						index,
-																						{ imageCaption: e.target.value }
-																					)
-																				)
-																			}
-																			placeholder='تعليق الصورة'
-																			dir='rtl'
-																			className='w-full px-3 py-2 border border-gray-300 rounded-md text-sm'
-																		/>
-																	</div>
-																)}
+															))}
+															<div className='flex space-x-2'>
+																<button
+																	type='button'
+																	onClick={() =>
+																		setEditContentBlocksAr(
+																			addContentBlock(
+																				editContentBlocksAr,
+																				"paragraph",
+																				{}
+																			)
+																		)
+																	}
+																	className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm'>
+																	+ إضافة فقرة
+																</button>
+																<button
+																	type='button'
+																	onClick={() =>
+																		setEditContentBlocksAr(
+																			addContentBlock(
+																				editContentBlocksAr,
+																				"image",
+																				{}
+																			)
+																		)
+																	}
+																	className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm'>
+																	+ إضافة صورة
+																</button>
 															</div>
-														))}
-														<div className='flex space-x-2'>
-															<button
-																type='button'
-																onClick={() =>
-																	setEditContentBlocksAr(
-																		addContentBlock(
-																			editContentBlocksAr,
-																			"paragraph",
-																			{}
-																		)
-																	)
-																}
-																className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm'>
-																+ إضافة فقرة
-															</button>
-															<button
-																type='button'
-																onClick={() =>
-																	setEditContentBlocksAr(
-																		addContentBlock(
-																			editContentBlocksAr,
-																			"image",
-																			{}
-																		)
-																	)
-																}
-																className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm'>
-																+ إضافة صورة
-															</button>
 														</div>
 													</div>
-												</div>
-											</>
-										)}
-										<div>
-											<label className='block text-sm font-medium text-gray-700 mb-1'>
-												Status
-											</label>
-											<select
-												value={editForm.status || post.status}
-												onChange={(e) =>
-													setEditForm((prev) => ({
-														...prev,
-														status: e.target.value as
-															| "draft"
-															| "published"
-															| "archived",
-													}))
-												}
-												className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent'>
-												<option value='draft'>Draft</option>
-												<option value='published'>Published</option>
-												<option value='archived'>Archived</option>
-											</select>
-										</div>
-										<div>
-											<label className='block text-sm font-medium text-gray-700 mb-1'>
-												Category
-											</label>
-											<select
-												value={editForm.category || ""}
-												onChange={(e) =>
-													setEditForm((prev) => ({
-														...prev,
-														category: e.target.value,
-													}))
-												}
-												className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent'>
-												{categories.map((category) => (
-													<option key={category._id} value={category._id}>
-														{getLocalizedText(category.name)}
-													</option>
-												))}
-											</select>
-										</div>
-										<div className='flex items-center space-x-3'>
-											<input
-												type='checkbox'
-												checked={editForm.featured || post.featured}
-												onChange={(e) =>
-													setEditForm((prev) => ({
-														...prev,
-														featured: e.target.checked,
-													}))
-												}
-												className='w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500'
-											/>
-											<label className='text-sm font-medium text-gray-700'>
-												Featured
-											</label>
-										</div>
-									</div>
-									<div className='flex justify-end space-x-3'>
-										<button
-											onClick={handleCancelEdit}
-											className='px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors'>
-											Cancel
-										</button>
-										<button
-											onClick={() => handleSaveEdit(post._id)}
-											className='px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors'>
-											Save Changes
-										</button>
-									</div>
-								</div>
-							) : (
-								/* Post Display */
-								<div className='relative'>
-									{/* Featured Badge */}
-									{post.featured && (
-										<div className='absolute top-4 right-4 z-10'>
-											<div className='bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg flex items-center space-x-1'>
-												<Star className='w-3 h-3 fill-current' />
-												<span>Featured</span>
+												</>
+											)}
+											<div>
+												<label className='block text-sm font-medium text-gray-700 mb-1'>
+													Status
+												</label>
+												<select
+													value={editForm.status || post.status}
+													onChange={(e) =>
+														setEditForm((prev) => ({
+															...prev,
+															status: e.target.value as
+																| "draft"
+																| "published"
+																| "archived",
+														}))
+													}
+													className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent'>
+													<option value='draft'>Draft</option>
+													<option value='published'>Published</option>
+													<option value='archived'>Archived</option>
+												</select>
+											</div>
+											<div>
+												<label className='block text-sm font-medium text-gray-700 mb-1'>
+													Category
+												</label>
+												<select
+													value={editForm.category || ""}
+													onChange={(e) =>
+														setEditForm((prev) => ({
+															...prev,
+															category: e.target.value,
+														}))
+													}
+													className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent'>
+													{categories.map((category) => (
+														<option key={category._id} value={category._id}>
+															{getLocalizedText(category.name)}
+														</option>
+													))}
+												</select>
+											</div>
+											<div className='flex items-center space-x-3'>
+												<input
+													type='checkbox'
+													checked={editForm.featured || post.featured}
+													onChange={(e) =>
+														setEditForm((prev) => ({
+															...prev,
+															featured: e.target.checked,
+														}))
+													}
+													className='w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500'
+												/>
+												<label className='text-sm font-medium text-gray-700'>
+													Featured
+												</label>
 											</div>
 										</div>
-									)}
-
-									{/* Post Image */}
-									<div className='h-48 bg-gradient-to-br from-teal-50 to-blue-50 relative overflow-hidden'>
-										{post.postImage ? (
-											<img
-												src={post.postImage}
-												alt={getLocalizedText(post.title)}
-												className='w-full h-full object-cover'
-											/>
-										) : (
-											<div className='w-full h-full flex items-center justify-center'>
-												<FileText className='w-16 h-16 text-teal-300' />
-											</div>
-										)}
-										{/* Status Badge Overlay */}
-										<div className='absolute top-4 left-4'>
-											<span
-												className={`px-3 py-1 text-xs font-semibold rounded-full shadow-lg ${getStatusBadgeColor(
-													post.status
-												)}`}>
-												{post.status.charAt(0).toUpperCase() +
-													post.status.slice(1)}
-											</span>
+										<div className='flex justify-end space-x-3'>
+											<button
+												onClick={handleCancelEdit}
+												className='px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors'>
+												Cancel
+											</button>
+											<button
+												onClick={() => handleSaveEdit(post._id)}
+												className='px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors'>
+												Save Changes
+											</button>
 										</div>
 									</div>
-
-									{/* Post Content */}
-									<div className='p-6'>
-										{/* Title and Meta */}
-										<div className='mb-4'>
-											<h3 className='text-xl font-bold text-gray-900 mb-2 line-clamp-2 leading-tight'>
-												{getLocalizedText(post.title)}
-											</h3>
-
-											<div className='flex items-center flex-wrap gap-4 text-sm text-gray-600 mb-3'>
-												<div className='flex items-center space-x-1'>
-													<div className='w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center'>
-														<User className='w-3 h-3 text-teal-600' />
-													</div>
-													<span className='font-medium'>{post.authorName}</span>
+								) : (
+									/* Post Display */
+									<div className='relative'>
+										{/* Featured Badge */}
+										{post.featured && (
+											<div className='absolute top-4 right-4 z-10'>
+												<div className='bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg flex items-center space-x-1'>
+													<Star className='w-3 h-3 fill-current' />
+													<span>Featured</span>
 												</div>
-												<div className='flex items-center space-x-1'>
-													<div className='w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center'>
-														<Calendar className='w-3 h-3 text-blue-600' />
-													</div>
-													<span>{formatDate(post.createdAt)}</span>
-												</div>
-												<div className='flex items-center space-x-1'>
-													<div className='w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center'>
-														<Tag className='w-3 h-3 text-purple-600' />
-													</div>
-													<span className='font-medium'>
-														{getCategoryName(post.category)}
-													</span>
-												</div>
-											</div>
-										</div>
-
-										{/* Content Preview */}
-										<p className='text-gray-700 line-clamp-3 mb-4 leading-relaxed'>
-											{getContentPreview(post.content)}
-										</p>
-
-										{/* Tags */}
-										{post.tags && post.tags.length > 0 && (
-											<div className='flex flex-wrap gap-2 mb-4'>
-												{post.tags.map((tag, index) => (
-													<span
-														key={index}
-														className='px-3 py-1 bg-gradient-to-r from-teal-50 to-blue-50 text-teal-700 text-xs rounded-full border border-teal-200 font-medium'>
-														#{tag}
-													</span>
-												))}
 											</div>
 										)}
 
-										{/* Stats and Actions */}
-										<div className='flex items-center justify-between pt-4 border-t border-gray-100'>
-											<div className='flex items-center space-x-4 text-sm text-gray-500'>
-												<div className='flex items-center space-x-1'>
-													<div className='w-4 h-4 bg-gray-100 rounded-full flex items-center justify-center'>
-														<span className='text-xs'>👁</span>
-													</div>
-													<span>{post.views || 0}</span>
+										{/* Post Image */}
+										<div className='h-48 bg-gradient-to-br from-teal-50 to-blue-50 relative overflow-hidden'>
+											{/* Debug info - remove this later */}
+											{post.postImage && (
+												<div className='absolute top-2 left-2 bg-red-500 text-white text-xs p-1 rounded z-20'>
+													Has Image: {post.postImage.substring(0, 30)}...
 												</div>
-												<div className='flex items-center space-x-1'>
-													<div className='w-4 h-4 bg-gray-100 rounded-full flex items-center justify-center'>
-														<span className='text-xs'>❤</span>
-													</div>
-													<span>{post.likes || 0}</span>
+											)}
+											{!post.postImage && (
+												<div className='absolute top-2 left-2 bg-yellow-500 text-white text-xs p-1 rounded z-20'>
+													No Image
 												</div>
-											</div>
+											)}
 
-											<div className='flex items-center space-x-2'>
-												<button
-													onClick={() =>
-														setShowComments(
-															showComments === post._id ? null : post._id
+											{post.postImage && post.postImage.trim() !== "" ? (
+												<img
+													src={post.postImage}
+													alt={getLocalizedText(post.title)}
+													className='w-full h-full object-cover'
+													onLoad={() =>
+														console.log(
+															"Image loaded successfully:",
+															post.postImage
 														)
 													}
-													className='p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 hover:scale-105'
-													title='View comments'>
-													<MessageCircle className='w-4 h-4' />
-												</button>
-												<button
-													onClick={() => handleEdit(post)}
-													className='p-2 text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 hover:scale-105'
-													title='Edit post'>
-													<Edit className='w-4 h-4' />
-												</button>
-												<button
-													onClick={() =>
-														handleDelete(post._id, getLocalizedText(post.title))
-													}
-													className='p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 hover:scale-105'
-													title='Delete post'>
-													<Trash2 className='w-4 h-4' />
-												</button>
+													onError={(e) => {
+														console.log(
+															"Image failed to load:",
+															post.postImage
+														);
+														e.currentTarget.style.display = "none";
+														const fallback = e.currentTarget
+															.nextElementSibling as HTMLElement;
+														if (fallback) {
+															fallback.style.display = "flex";
+														}
+													}}
+												/>
+											) : null}
+											<div
+												className='w-full h-full flex items-center justify-center'
+												style={{
+													display:
+														post.postImage && post.postImage.trim() !== ""
+															? "none"
+															: "flex",
+												}}>
+												<FileText className='w-16 h-16 text-teal-300' />
+											</div>
+											{/* Status Badge Overlay */}
+											<div className='absolute top-4 left-4'>
+												<span
+													className={`px-3 py-1 text-xs font-semibold rounded-full shadow-lg ${getStatusBadgeColor(
+														post.status
+													)}`}>
+													{post.status.charAt(0).toUpperCase() +
+														post.status.slice(1)}
+												</span>
+											</div>
+										</div>
+
+										{/* Post Content */}
+										<div className='p-6'>
+											{/* Title and Meta */}
+											<div className='mb-4'>
+												<h3 className='text-xl font-bold text-gray-900 mb-2 line-clamp-2 leading-tight'>
+													{getLocalizedText(post.title)}
+												</h3>
+
+												<div className='flex items-center flex-wrap gap-4 text-sm text-gray-600 mb-3'>
+													<div className='flex items-center space-x-1'>
+														<div className='w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center'>
+															<User className='w-3 h-3 text-teal-600' />
+														</div>
+														<span className='font-medium'>
+															{post.authorName}
+														</span>
+													</div>
+													<div className='flex items-center space-x-1'>
+														<div className='w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center'>
+															<Calendar className='w-3 h-3 text-blue-600' />
+														</div>
+														<span>{formatDate(post.createdAt)}</span>
+													</div>
+													<div className='flex items-center space-x-1'>
+														<div className='w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center'>
+															<Tag className='w-3 h-3 text-purple-600' />
+														</div>
+														<span className='font-medium'>
+															{getCategoryName(post.category)}
+														</span>
+													</div>
+												</div>
+											</div>
+
+											{/* Content Preview */}
+											<p className='text-gray-700 line-clamp-3 mb-4 leading-relaxed'>
+												{getContentPreview(post.content)}
+											</p>
+
+											{/* Tags */}
+											{post.tags && post.tags.length > 0 && (
+												<div className='flex flex-wrap gap-2 mb-4'>
+													{post.tags.map((tag, index) => (
+														<span
+															key={index}
+															className='px-3 py-1 bg-gradient-to-r from-teal-50 to-blue-50 text-teal-700 text-xs rounded-full border border-teal-200 font-medium'>
+															#{tag}
+														</span>
+													))}
+												</div>
+											)}
+
+											{/* Stats and Actions */}
+											<div className='flex items-center justify-between pt-4 border-t border-gray-100'>
+												<div className='flex items-center space-x-4 text-sm text-gray-500'>
+													<div className='flex items-center space-x-1'>
+														<div className='w-4 h-4 bg-gray-100 rounded-full flex items-center justify-center'>
+															<span className='text-xs'>👁</span>
+														</div>
+														<span>{post.views || 0}</span>
+													</div>
+													<div className='flex items-center space-x-1'>
+														<div className='w-4 h-4 bg-gray-100 rounded-full flex items-center justify-center'>
+															<span className='text-xs'>❤</span>
+														</div>
+														<span>{post.likes || 0}</span>
+													</div>
+												</div>
+
+												<div className='flex items-center space-x-2'>
+													<button
+														onClick={() =>
+															setShowComments(
+																showComments === post._id ? null : post._id
+															)
+														}
+														className='p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 hover:scale-105'
+														title='View comments'>
+														<MessageCircle className='w-4 h-4' />
+													</button>
+													<button
+														onClick={() => handleEdit(post)}
+														className='p-2 text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 hover:scale-105'
+														title='Edit post'>
+														<Edit className='w-4 h-4' />
+													</button>
+													<button
+														onClick={() =>
+															handleDelete(
+																post._id,
+																getLocalizedText(post.title)
+															)
+														}
+														className='p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 hover:scale-105'
+														title='Delete post'>
+														<Trash2 className='w-4 h-4' />
+													</button>
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							)}
-						</motion.div>
-
-						{/* Comments Section */}
-						{showComments === post._id && (
-							<motion.div
-								initial={{ opacity: 0, y: 10 }}
-								animate={{ opacity: 1, y: 0 }}
-								className='mt-4'>
-								<CommentsSection postId={post._id} />
+								)}
 							</motion.div>
-						)}
-					</React.Fragment>
-				))}
+
+							{/* Comments Section */}
+							{showComments === post._id && (
+								<motion.div
+									initial={{ opacity: 0, y: 10 }}
+									animate={{ opacity: 1, y: 0 }}
+									className='mt-4'>
+									<CommentsSection postId={post._id} />
+								</motion.div>
+							)}
+						</React.Fragment>
+					);
+				})}
 			</div>
 
 			{/* Empty State */}
