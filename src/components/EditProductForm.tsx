@@ -2,13 +2,23 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Save, X, Plus, Star, Edit, Trash2, User, Calendar } from "lucide-react";
+import {
+	Save,
+	X,
+	Plus,
+	Star,
+	Edit,
+	Trash2,
+	User,
+	Calendar,
+} from "lucide-react";
 import { Product, ProductFormData, Review } from "../types";
 import { useProducts } from "../contexts/ProductsContext";
 import { useSubCategories } from "../hooks/useSubCategories";
 import { reviewApi } from "../services/reviewApi";
 import { useLanguage } from "../contexts/LanguageContext";
 import toast from "react-hot-toast";
+import { useClickOutside } from "../hooks/useClickOutside";
 
 interface EditProductFormProps {
 	product: Product;
@@ -26,28 +36,36 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 
 	// Helper function to get localized text
 	const getLocalizedText = (value: unknown): string => {
-		if (typeof value === 'string') return value;
-		if (typeof value === 'object' && value !== null) {
+		if (typeof value === "string") return value;
+		if (typeof value === "object" && value !== null) {
 			const valueObj = value as Record<string, string>;
-			return valueObj[currentLanguage] || valueObj.en || valueObj.ar || '';
+			return valueObj[currentLanguage] || valueObj.en || valueObj.ar || "";
 		}
-		return '';
+		return "";
 	};
-	
+
 	// Product form state
 	const [form, setForm] = useState<ProductFormData>({
 		name: getLocalizedText(product.name) || "",
 		description: getLocalizedText(product.description) || "",
 		longDescription: getLocalizedText(product.longDescription) || "",
 		price: product.price || 0,
-		subcategory: typeof product.subcategory === 'string' ? product.subcategory : product.subcategory?._id || "",
+		subcategory:
+			typeof product.subcategory === "string"
+				? product.subcategory
+				: product.subcategory?._id || "",
 		images: product.images || [],
 		rating: product.averageRating || 0,
 		reviews: product.totalReviews || 0,
-		features: (product.features || []).map((f: unknown) => typeof f === 'string' ? f : getLocalizedText(f as unknown)),
-		specifications: typeof product.specifications === 'string' 
-			? product.specifications 
-			: Object.entries(product.specifications || {}).map(([key, value]) => `${key}: ${value}`).join(", "),
+		features: (product.features || []).map((f: unknown) =>
+			typeof f === "string" ? f : getLocalizedText(f as unknown)
+		),
+		specifications:
+			typeof product.specifications === "string"
+				? product.specifications
+				: Object.entries(product.specifications || {})
+						.map(([key, value]) => `${key}: ${value}`)
+						.join(", "),
 		inStock: product.inStock || false,
 		stockQuantity: product.stockQuantity || 0,
 		shipping: getLocalizedText(product.shipping as unknown) || "",
@@ -56,7 +74,9 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 	});
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [errors, setErrors] = useState<Partial<Record<keyof ProductFormData, string>>>({});
+	const [errors, setErrors] = useState<
+		Partial<Record<keyof ProductFormData, string>>
+	>({});
 	const [featuresInput, setFeaturesInput] = useState("");
 	const [certificationsInput, setCertificationsInput] = useState("");
 	const [imageInput, setImageInput] = useState("");
@@ -124,12 +144,18 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 
 	// Safely render review user (could be string or populated object)
 	const getReviewUserDisplay = (user: unknown): string => {
-		if (typeof user === 'string') return user;
-		if (user && typeof user === 'object') {
-			const u = user as { name?: string; email?: string; username?: string; _id?: string; id?: string };
-			return u.name || u.username || u.email || u._id || u.id || 'User';
+		if (typeof user === "string") return user;
+		if (user && typeof user === "object") {
+			const u = user as {
+				name?: string;
+				email?: string;
+				username?: string;
+				_id?: string;
+				id?: string;
+			};
+			return u.name || u.username || u.email || u._id || u.id || "User";
 		}
-		return 'User';
+		return "User";
 	};
 
 	// Product form handlers
@@ -176,7 +202,9 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 		}));
 	};
 
-	const handleCertificationsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleCertificationsChange = (
+		e: React.ChangeEvent<HTMLInputElement>
+	) => {
 		setCertificationsInput(e.target.value);
 	};
 
@@ -273,29 +301,43 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 				});
 			}
 
-			const toLocalized = (value: string, original: unknown): { en: string; ar: string } => {
-				const prev = (original && typeof original === 'object') ? (original as { en?: string; ar?: string }) : {};
+			const toLocalized = (
+				value: string,
+				original: unknown
+			): { en: string; ar: string } => {
+				const prev =
+					original && typeof original === "object"
+						? (original as { en?: string; ar?: string })
+						: {};
 				return {
-					en: currentLanguage === 'en' ? value : (prev.en ?? value),
-					ar: currentLanguage === 'ar' ? value : (prev.ar ?? value),
+					en: currentLanguage === "en" ? value : prev.en ?? value,
+					ar: currentLanguage === "ar" ? value : prev.ar ?? value,
 				};
 			};
 
 			const updatedProduct = {
 				name: toLocalized(form.name, product.name),
 				description: toLocalized(form.description, product.description),
-				longDescription: toLocalized(form.longDescription, product.longDescription),
+				longDescription: toLocalized(
+					form.longDescription,
+					product.longDescription
+				),
 				price: form.price,
 				subcategory: form.subcategory,
 				image: form.images[0] || "",
 				images: form.images,
 				features: (form.features as string[]).map((f, idx) => {
-					const prev = Array.isArray(product.features) ? product.features[idx] : undefined;
-					const prevObj = (prev && typeof prev === 'object') ? prev as { en?: string; ar?: string } : {};
-					const prevStr = typeof prev === 'string' ? prev : undefined;
+					const prev = Array.isArray(product.features)
+						? product.features[idx]
+						: undefined;
+					const prevObj =
+						prev && typeof prev === "object"
+							? (prev as { en?: string; ar?: string })
+							: {};
+					const prevStr = typeof prev === "string" ? prev : undefined;
 					return {
-						en: currentLanguage === 'en' ? f : (prevObj.en ?? prevStr ?? f),
-						ar: currentLanguage === 'ar' ? f : (prevObj.ar ?? prevStr ?? f),
+						en: currentLanguage === "en" ? f : prevObj.en ?? prevStr ?? f,
+						ar: currentLanguage === "ar" ? f : prevObj.ar ?? prevStr ?? f,
 					};
 				}),
 				specifications: specificationsObj,
@@ -366,10 +408,12 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 		}
 	};
 
-	const subcategoriesList = subcategories.map((sub: { _id: string; name: string }) => ({
-		id: sub._id,
-		name: sub.name,
-	}));
+	const subcategoriesList = subcategories.map(
+		(sub: { _id: string; name: string }) => ({
+			id: sub._id,
+			name: sub.name,
+		})
+	);
 
 	return (
 		<AnimatePresence>
@@ -423,7 +467,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 										value={form.name}
 										onChange={handleChange}
 										className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-											errors.name ? 'border-red-500' : 'border-gray-300'
+											errors.name ? "border-red-500" : "border-gray-300"
 										}`}
 										placeholder='Enter product name'
 									/>
@@ -444,7 +488,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 										step='0.01'
 										min='0'
 										className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-											errors.price ? 'border-red-500' : 'border-gray-300'
+											errors.price ? "border-red-500" : "border-gray-300"
 										}`}
 										placeholder='0.00'
 									/>
@@ -462,7 +506,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 										value={form.subcategory}
 										onChange={handleChange}
 										className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-											errors.subcategory ? 'border-red-500' : 'border-gray-300'
+											errors.subcategory ? "border-red-500" : "border-gray-300"
 										}`}>
 										<option value=''>Select a subcategory</option>
 										{subcategoriesList.map((subcategory) => (
@@ -472,7 +516,9 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 										))}
 									</select>
 									{errors.subcategory && (
-										<p className='mt-1 text-sm text-red-600'>{errors.subcategory}</p>
+										<p className='mt-1 text-sm text-red-600'>
+											{errors.subcategory}
+										</p>
 									)}
 								</div>
 
@@ -487,12 +533,16 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 										onChange={handleChange}
 										min='0'
 										className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-											errors.stockQuantity ? 'border-red-500' : 'border-gray-300'
+											errors.stockQuantity
+												? "border-red-500"
+												: "border-gray-300"
 										}`}
 										placeholder='0'
 									/>
 									{errors.stockQuantity && (
-										<p className='mt-1 text-sm text-red-600'>{errors.stockQuantity}</p>
+										<p className='mt-1 text-sm text-red-600'>
+											{errors.stockQuantity}
+										</p>
 									)}
 								</div>
 							</div>
@@ -509,12 +559,14 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 										onChange={handleChange}
 										rows={3}
 										className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-											errors.description ? 'border-red-500' : 'border-gray-300'
+											errors.description ? "border-red-500" : "border-gray-300"
 										}`}
 										placeholder='Brief product description'
 									/>
 									{errors.description && (
-										<p className='mt-1 text-sm text-red-600'>{errors.description}</p>
+										<p className='mt-1 text-sm text-red-600'>
+											{errors.description}
+										</p>
 									)}
 								</div>
 
@@ -528,12 +580,16 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 										onChange={handleChange}
 										rows={4}
 										className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-											errors.longDescription ? 'border-red-500' : 'border-gray-300'
+											errors.longDescription
+												? "border-red-500"
+												: "border-gray-300"
 										}`}
 										placeholder='Detailed product description'
 									/>
 									{errors.longDescription && (
-										<p className='mt-1 text-sm text-red-600'>{errors.longDescription}</p>
+										<p className='mt-1 text-sm text-red-600'>
+											{errors.longDescription}
+										</p>
 									)}
 								</div>
 							</div>
@@ -568,7 +624,8 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 														alt={`Product ${index + 1}`}
 														className='w-full h-24 object-cover rounded-lg'
 														onError={(e) => {
-															e.currentTarget.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zMCAzMEg3MFY3MEgzMFYzMFoiIGZpbGw9IiNEMUQ1REIiLz4KPHBhdGggZD0iTTM1IDM1VjY1SDY1VjM1SDM1WiIgZmlsbD0iI0M3Q0ZEMiIvPgo8L3N2Zz4K";
+															e.currentTarget.src =
+																"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zMCAzMEg3MFY3MEgzMFYzMFoiIGZpbGw9IiNEMUQ1REIiLz4KPHBhdGggZD0iTTM1IDM1VjY1SDY1VjM1SDM1WiIgZmlsbD0iI0M3Q0ZEMiIvPgo8L3N2Zz4K";
 														}}
 													/>
 													<button
@@ -742,7 +799,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 									disabled={isSubmitting}
 									className='px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2'>
 									<Save className='w-4 h-4' />
-									<span>{isSubmitting ? 'Updating...' : 'Update Product'}</span>
+									<span>{isSubmitting ? "Updating..." : "Update Product"}</span>
 								</button>
 							</div>
 						</form>
@@ -752,9 +809,11 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 							<h3 className='text-lg font-semibold text-gray-900 mb-4'>
 								Product Reviews ({reviews.length})
 							</h3>
-							
+
 							{reviews.length === 0 ? (
-								<p className='text-gray-500 text-sm'>No reviews for this product yet.</p>
+								<p className='text-gray-500 text-sm'>
+									No reviews for this product yet.
+								</p>
 							) : (
 								<div className='space-y-3 max-h-64 overflow-y-auto'>
 									{reviews.map((review) => (
@@ -778,36 +837,42 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 															</span>
 														</div>
 													</div>
-														
+
 													<div className='flex items-center gap-4 text-sm text-gray-500 mb-2'>
 														<div className='flex items-center gap-1'>
 															<User className='w-4 h-4' />
-															<span className='font-medium text-gray-900'>{getReviewUserDisplay(review.user)}</span>
+															<span className='font-medium text-gray-900'>
+																{getReviewUserDisplay(review.user)}
+															</span>
 														</div>
 														<div className='flex items-center gap-1'>
 															<Calendar className='w-4 h-4' />
-															<span>{new Date(review.createdAt).toLocaleDateString()}</span>
+															<span>
+																{new Date(
+																	review.createdAt
+																).toLocaleDateString()}
+															</span>
 														</div>
 													</div>
-														
-													<p className='text-gray-700 text-sm leading-relaxed'>{review.comment}</p>
+
+													<p className='text-gray-700 text-sm leading-relaxed'>
+														{review.comment}
+													</p>
 												</div>
-												
+
 												<div className='flex items-center gap-2 ml-4'>
 													<button
 														type='button'
 														onClick={() => handleEditReview(review)}
 														className='p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors'
-														title='Edit review'
-													>
+														title='Edit review'>
 														<Edit className='w-4 h-4' />
 													</button>
 													<button
 														type='button'
 														onClick={() => handleDeleteReview(review._id)}
 														className='p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors'
-														title='Delete review'
-													>
+														title='Delete review'>
 														<Trash2 className='w-4 h-4' />
 													</button>
 												</div>
@@ -823,21 +888,23 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 
 			{/* Edit Review Modal */}
 			{editingReview && (
-				<div 
+				<div
 					className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[9999]'
-					onClick={closeReviewModal}
-				>
+					onClick={closeReviewModal}>
 					<motion.div
 						initial={{ opacity: 0, scale: 0.9 }}
 						animate={{ opacity: 1, scale: 1 }}
 						exit={{ opacity: 0, scale: 0.9 }}
 						className='bg-white rounded-lg p-6 w-full max-w-md shadow-2xl'
-						onClick={(e) => e.stopPropagation()}
-					>
+						onClick={(e) => e.stopPropagation()}>
 						<div className='mb-4'>
-							<h3 id="edit-review-title" className='text-lg font-semibold text-gray-900'>Edit Review</h3>
+							<h3
+								id='edit-review-title'
+								className='text-lg font-semibold text-gray-900'>
+								Edit Review
+							</h3>
 						</div>
-						
+
 						<form onSubmit={(e) => e.preventDefault()} className='space-y-4'>
 							<div>
 								<label className='block text-sm font-medium text-gray-700 mb-2'>
@@ -846,7 +913,9 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 								<input
 									type='text'
 									value={editForm.name}
-									onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+									onChange={(e) =>
+										setEditForm({ ...editForm, name: e.target.value })
+									}
 									onClick={(e) => e.stopPropagation()}
 									onMouseDown={(e) => e.stopPropagation()}
 									onMouseUp={(e) => e.stopPropagation()}
@@ -863,7 +932,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 									{[...Array(5)].map((_, i) => (
 										<button
 											key={i}
-											type="button"
+											type='button'
 											onClick={(e) => {
 												e.preventDefault();
 												e.stopPropagation();
@@ -876,26 +945,31 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 													? "text-yellow-400"
 													: "text-gray-300 hover:text-yellow-200"
 											}`}
-											aria-label={`${i + 1} star${i === 0 ? '' : 's'}`}
-											aria-pressed={editForm.rating === i + 1}
-										>
-											<Star className={`w-6 h-6 ${
-												editForm.rating > i ? "fill-current" : ""
-											}`} />
+											aria-label={`${i + 1} star${i === 0 ? "" : "s"}`}
+											aria-pressed={editForm.rating === i + 1}>
+											<Star
+												className={`w-6 h-6 ${
+													editForm.rating > i ? "fill-current" : ""
+												}`}
+											/>
 										</button>
 									))}
 								</div>
 							</div>
-							
+
 							<div>
-								<label htmlFor="review-comment" className='block text-sm font-medium text-gray-700 mb-2'>
+								<label
+									htmlFor='review-comment'
+									className='block text-sm font-medium text-gray-700 mb-2'>
 									Comment
 								</label>
 								<textarea
-									id="review-comment"
+									id='review-comment'
 									rows={4}
 									value={editForm.comment}
-									onChange={(e) => setEditForm({ ...editForm, comment: e.target.value })}
+									onChange={(e) =>
+										setEditForm({ ...editForm, comment: e.target.value })
+									}
 									onClick={(e) => e.stopPropagation()}
 									onMouseDown={(e) => e.stopPropagation()}
 									onMouseUp={(e) => e.stopPropagation()}
@@ -904,16 +978,19 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 									aria-describedby={reviewError ? "review-error" : undefined}
 								/>
 							</div>
-							
+
 							{reviewError && (
-								<div id="review-error" className='mt-4 p-3 bg-red-50 border border-red-200 rounded-lg' role="alert">
+								<div
+									id='review-error'
+									className='mt-4 p-3 bg-red-50 border border-red-200 rounded-lg'
+									role='alert'>
 									<p className='text-sm text-red-600'>{reviewError}</p>
 								</div>
 							)}
-							
+
 							<div className='mt-6'>
 								<button
-									type="button"
+									type='button'
 									onClick={(e) => {
 										e.preventDefault();
 										e.stopPropagation();
@@ -921,9 +998,13 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 									}}
 									onMouseDown={(e) => e.stopPropagation()}
 									onMouseUp={(e) => e.stopPropagation()}
-									disabled={!editForm.comment.trim() || !editForm.name.trim() || editForm.rating === 0 || isUpdatingReview}
-									className='w-full px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
-								>
+									disabled={
+										!editForm.comment.trim() ||
+										!editForm.name.trim() ||
+										editForm.rating === 0 ||
+										isUpdatingReview
+									}
+									className='w-full px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
 									{isUpdatingReview ? "Updating..." : "Update Review"}
 								</button>
 							</div>

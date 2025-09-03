@@ -37,12 +37,12 @@ const Dashboard: React.FC = () => {
 
 	// Helper function to get localized text
 	const getLocalizedText = (value: unknown): string => {
-		if (typeof value === 'string') return value;
-		if (typeof value === 'object' && value !== null) {
+		if (typeof value === "string") return value;
+		if (typeof value === "object" && value !== null) {
 			const valueObj = value as Record<string, any>;
-			return valueObj[currentLanguage] || valueObj.en || valueObj.ar || '';
+			return valueObj[currentLanguage] || valueObj.en || valueObj.ar || "";
 		}
-		return '';
+		return "";
 	};
 	const [activeTab, setActiveTab] = useState("dashboard");
 	const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -58,7 +58,10 @@ const Dashboard: React.FC = () => {
 		useSubCategories();
 
 	// Use the posts hook to get real-time data with language support
-	const { data: postsData = { posts: [] }, isLoading: postsLoading } = usePosts({ limit: 100 }, currentLanguage);
+	const { data: postsData = { posts: [] }, isLoading: postsLoading } = usePosts(
+		{ limit: 100 },
+		currentLanguage
+	);
 
 	// Transform API products to local format for display
 	const products = (apiProducts || []).map((product) => ({
@@ -89,8 +92,12 @@ const Dashboard: React.FC = () => {
 			| { _id: string; name: string; description: string }
 	): string => {
 		if (typeof subcategoryValue === "string") {
-			const subcategory = subcategories.find((sub) => sub._id === subcategoryValue);
-			return subcategory ? getLocalizedText(subcategory.name) : subcategoryValue;
+			const subcategory = subcategories.find(
+				(sub) => sub._id === subcategoryValue
+			);
+			return subcategory
+				? getLocalizedText(subcategory.name)
+				: subcategoryValue;
 		}
 		return getLocalizedText(subcategoryValue.name);
 	};
@@ -101,10 +108,12 @@ const Dashboard: React.FC = () => {
 		name: string | { en: string; ar: string };
 	}): number => {
 		// Get all subcategories that belong to this category
-		const categorySubcategories = subcategories.filter((sub) =>
-			typeof sub.parentCategory === "string"
-				? sub.parentCategory === category._id
-				: sub.parentCategory._id === category._id
+		const categorySubcategories = subcategories.filter(
+			(sub) =>
+				sub.parentCategory &&
+				(typeof sub.parentCategory === "string"
+					? sub.parentCategory === category._id
+					: sub.parentCategory._id === category._id)
 		);
 
 		// Count products that belong to any of these subcategories
@@ -250,7 +259,17 @@ const Dashboard: React.FC = () => {
 				loading: productsLoading,
 			},
 		];
-	}, [products, productsLoading, categories, categoriesLoading, subcategories, subcategoriesLoading, postsData.posts, postsLoading, t]);
+	}, [
+		products,
+		productsLoading,
+		categories,
+		categoriesLoading,
+		subcategories,
+		subcategoriesLoading,
+		postsData.posts,
+		postsLoading,
+		t,
+	]);
 
 	const renderContent = () => {
 		switch (activeTab) {
@@ -364,7 +383,8 @@ const Dashboard: React.FC = () => {
 														{product.name}
 													</p>
 													<p className='text-sm text-gray-500'>
-														{t('currencySymbol')} {product.price.toLocaleString()}
+														{t("currencySymbol")}{" "}
+														{product.price.toLocaleString()}
 													</p>
 													<p className='text-xs text-gray-400'>
 														{getSubcategoryName(product.subcategory)}
@@ -629,8 +649,14 @@ const Dashboard: React.FC = () => {
 
 			{/* Sidebar */}
 			<div
-				className={`fixed inset-y-0 ${isRTL ? 'right-0' : 'left-0'} z-50 w-72 bg-white shadow-xl transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
-					sidebarOpen ? "translate-x-0" : `${isRTL ? 'translate-x-full' : '-translate-x-full'} lg:translate-x-0`
+				className={`fixed inset-y-0 ${
+					isRTL ? "right-0" : "left-0"
+				} z-50 w-72 bg-white shadow-xl transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+					sidebarOpen
+						? "translate-x-0"
+						: `${
+								isRTL ? "translate-x-full" : "-translate-x-full"
+						  } lg:translate-x-0`
 				}`}>
 				<div className='flex flex-col h-screen'>
 					{/* Header */}
@@ -647,13 +673,18 @@ const Dashboard: React.FC = () => {
 
 					{/* User Info */}
 					<div className='p-6 border-b border-gray-200'>
-						<div className={`flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse space-x-3' : 'space-x-3'}`}>
+						<div
+							className={`flex items-center ${
+								isRTL
+									? "flex-row-reverse space-x-reverse space-x-3"
+									: "space-x-3"
+							}`}>
 							<div className='w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center'>
 								<span className='text-white font-semibold text-sm'>
 									{user?.name?.charAt(0).toUpperCase()}
 								</span>
 							</div>
-							<div className={`${isRTL ? 'text-right' : 'text-left'}`}>
+							<div className={`${isRTL ? "text-right" : "text-left"}`}>
 								<p className='font-medium text-gray-900'>{user?.name}</p>
 								<p className='text-sm text-gray-500'>{user?.email}</p>
 							</div>
@@ -730,7 +761,12 @@ const Dashboard: React.FC = () => {
 							<Menu className='h-6 w-6' />
 						</button>
 
-						<div className={`flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse space-x-4' : 'space-x-4'}`}>
+						<div
+							className={`flex items-center ${
+								isRTL
+									? "flex-row-reverse space-x-reverse space-x-4"
+									: "space-x-4"
+							}`}>
 							<h1 className='text-xl font-semibold text-gray-900'>
 								{titleByTab[activeTab] || t("dashboard")}
 							</h1>

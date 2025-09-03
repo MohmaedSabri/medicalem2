@@ -31,7 +31,9 @@ const ProductsPage: React.FC = () => {
 		if (!value) return "";
 		if (typeof value === "string") return value;
 		if (typeof value === "object") {
-			return value[currentLanguage as "en" | "ar"] || value.en || value.ar || "";
+			return (
+				value[currentLanguage as "en" | "ar"] || value.en || value.ar || ""
+			);
 		}
 		return "";
 	};
@@ -52,7 +54,7 @@ const ProductsPage: React.FC = () => {
 	useEffect(() => {
 		const categoryFromUrl = searchParams.get("category");
 		const subcategoryFromUrl = searchParams.get("subcategory");
-		
+
 		if (subcategoryFromUrl) {
 			setSelectedCategory(subcategoryFromUrl);
 		} else if (categoryFromUrl) {
@@ -67,9 +69,13 @@ const ProductsPage: React.FC = () => {
 			setSearchParams({});
 		} else {
 			// Check if this is a parent category or subcategory
-			const isParentCategory = (allCategories || []).some(cat => cat?.name === category);
-			const isSubcategory = (allSubcategories || []).some(sub => sub?.name === category);
-			
+			const isParentCategory = (allCategories || []).some(
+				(cat) => cat?.name === category
+			);
+			const isSubcategory = (allSubcategories || []).some(
+				(sub) => sub?.name === category
+			);
+
 			if (isParentCategory) {
 				setSearchParams({ category });
 			} else if (isSubcategory) {
@@ -83,35 +89,44 @@ const ProductsPage: React.FC = () => {
 
 	// Transform API products to local Product format with localization resolution
 	const resolveText = (value: any): string => {
-		if (!value) return '';
-		if (typeof value === 'string') return value;
-		if (typeof value === 'object') {
-			return value[currentLanguage as 'en' | 'ar'] || value.en || value.ar || '';
+		if (!value) return "";
+		if (typeof value === "string") return value;
+		if (typeof value === "object") {
+			return (
+				value[currentLanguage as "en" | "ar"] || value.en || value.ar || ""
+			);
 		}
 		return String(value);
 	};
 
 	const products = apiProducts.map((product) => ({
 		_id: product._id,
-		name: product.localized?.name || resolveText(product.name),
-		description: product.localized?.description || resolveText(product.description),
-		longDescription: product.localized?.longDescription || resolveText(product.longDescription),
+		name: resolveText(product.name),
+		description: resolveText(product.description),
+		longDescription: resolveText(product.longDescription),
 		image: product.image,
 		images: product.images,
 		subcategory:
 			typeof product.subcategory === "string"
 				? product.subcategory
-				: (typeof product.subcategory?.name === 'object' ? resolveText(product.subcategory?.name) : (product.subcategory?.name || "Uncategorized")),
+				: typeof product.subcategory?.name === "object"
+				? resolveText(product.subcategory?.name)
+				: product.subcategory?.name || "Uncategorized",
 		price: product.price,
 		averageRating: product.averageRating || 0,
 		totalReviews: product.totalReviews || 0,
 		reviews: product.reviews,
-		features: (product.localized?.features || product.features || []).map((f: any) => resolveText(f)),
-		specifications: Object.fromEntries(Object.entries(product.specifications || {}).map(([k, v]) => [k, resolveText(v)])),
+		features: (product.features || []).map((f: any) => resolveText(f)),
+		specifications: Object.fromEntries(
+			Object.entries(product.specifications || {}).map(([k, v]) => [
+				k,
+				resolveText(v),
+			])
+		),
 		inStock: product.inStock,
 		stockQuantity: product.stockQuantity,
-		shipping: product.localized?.shipping || resolveText(product.shipping),
-		warranty: product.localized?.warranty || resolveText(product.warranty),
+		shipping: resolveText(product.shipping),
+		warranty: resolveText(product.warranty),
 		certifications: product.certifications,
 	}));
 
@@ -119,37 +134,56 @@ const ProductsPage: React.FC = () => {
 
 	// Create categories list with both categories and subcategories, ensuring uniqueness
 	const categories = useMemo(() => {
-		const allCategoryNames = (allCategories || []).map(cat => getLocalizedCategoryName(cat)).filter(Boolean);
-		const allSubcategoryNames = Array.from(new Set(products.map((p) => getLocalizedProductField(p.subcategory)).filter(Boolean)));
-		
+		const allCategoryNames = (allCategories || [])
+			.map((cat) => getLocalizedCategoryName(cat))
+			.filter(Boolean);
+		const allSubcategoryNames = Array.from(
+			new Set(
+				products
+					.map((p) => getLocalizedProductField(p.subcategory))
+					.filter(Boolean)
+			)
+		);
+
 		// Combine and remove duplicates
 		const combined = ["All", ...allCategoryNames, ...allSubcategoryNames];
-		return combined.filter((value, index, self) => self.indexOf(value) === index);
-	}, [allCategories, products, getLocalizedCategoryName, getLocalizedProductField]);
+		return combined.filter(
+			(value, index, self) => self.indexOf(value) === index
+		);
+	}, [
+		allCategories,
+		products,
+		getLocalizedCategoryName,
+		getLocalizedProductField,
+	]);
 
 	const filteredProducts = useMemo(() => {
 		const filtered = products.filter((product) => {
 			const productName = getLocalizedProductField(product.name);
 			const productDescription = getLocalizedProductField(product.description);
 			const productSubcategory = getLocalizedProductField(product.subcategory);
-			
+
 			const matchesSearch =
 				productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
 				productDescription.toLowerCase().includes(searchTerm.toLowerCase());
-			
-			const matchesCategory = selectedCategory === "All" || 
+
+			const matchesCategory =
+				selectedCategory === "All" ||
 				productSubcategory === selectedCategory ||
 				// Check if selected category is a parent category
-				(allCategories || []).some(cat => 
-					getLocalizedCategoryName(cat) === selectedCategory && 
-					(allSubcategories || []).some(sub => 
-						getLocalizedProductField(sub.name) === productSubcategory && 
-						(typeof sub.parentCategory === 'string' 
-							? sub.parentCategory === cat._id 
-							: sub.parentCategory._id === cat._id)
-					)
+				(allCategories || []).some(
+					(cat) =>
+						getLocalizedCategoryName(cat) === selectedCategory &&
+						(allSubcategories || []).some(
+							(sub) =>
+								getLocalizedProductField(sub.name) === productSubcategory &&
+								sub.parentCategory &&
+								(typeof sub.parentCategory === "string"
+									? sub.parentCategory === cat._id
+									: sub.parentCategory._id === cat._id)
+						)
 				);
-			
+
 			return matchesSearch && matchesCategory;
 		});
 
@@ -163,12 +197,21 @@ const ProductsPage: React.FC = () => {
 				case "rating":
 					return b.averageRating - a.averageRating;
 				default:
-					return getLocalizedProductField(a.name).localeCompare(getLocalizedProductField(b.name));
+					return getLocalizedProductField(a.name).localeCompare(
+						getLocalizedProductField(b.name)
+					);
 			}
 		});
 
 		return filtered;
-	}, [products, searchTerm, selectedCategory, sortBy, allCategories, allSubcategories]);
+	}, [
+		products,
+		searchTerm,
+		selectedCategory,
+		sortBy,
+		allCategories,
+		allSubcategories,
+	]);
 
 	const handleToggleFavorite = (id: string) => {
 		const newFavorites = toggleFavorite(id);
@@ -188,11 +231,13 @@ const ProductsPage: React.FC = () => {
 		product,
 		index,
 	}: {
-		product: Product & { price: number; averageRating: number; features: string[] };
+		product: Product & {
+			price: number;
+			averageRating: number;
+			features: string[];
+		};
 		index: number;
 	}) => {
-
-
 		return (
 			<motion.div
 				initial={{ opacity: 0, y: 30 }}
@@ -216,9 +261,10 @@ const ProductsPage: React.FC = () => {
 							src={product.image}
 							alt={`${product.name} - Medical equipment`}
 							className='w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700'
-							loading="lazy"
+							loading='lazy'
 							onError={(e) => {
-								e.currentTarget.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zMCAzMEg3MFY3MEgzMFYzMFoiIGZpbGw9IiNEMUQ1REIiLz4KPHBhdGggZD0iTTM1IDM1VjY1SDY1VjM1SDM1WiIgZmlsbD0iI0M3Q0ZEMiIvPgo8L3N2Zz4K";
+								e.currentTarget.src =
+									"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zMCAzMEg3MFY3MEgzMFYzMFoiIGZpbGw9IiNEMUQ1REIiLz4KPHBhdGggZD0iTTM1IDM1VjY1SDY1VjM1SDM1WiIgZmlsbD0iI0M3Q0ZEMiIvPgo8L3N2Zz4K";
 							}}
 						/>
 
@@ -272,7 +318,9 @@ const ProductsPage: React.FC = () => {
 					{/* Subcategory Badge - Bottom Left */}
 					<div className='absolute bottom-3 left-3 sm:bottom-4 sm:left-4'>
 						<span className='bg-gradient-to-r from-teal-600 to-emerald-600 backdrop-blur-xl border border-teal-400/50 text-white font-bold px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full text-xs sm:text-sm shadow-xl shadow-teal-500/25 hover:from-teal-700 hover:to-emerald-700 hover:border-teal-400/70 transition-all duration-300 transform hover:scale-105 drop-shadow-md'>
-							{typeof product.subcategory === 'string' ? product.subcategory : product.subcategory?.name || 'Uncategorized'}
+							{typeof product.subcategory === "string"
+								? product.subcategory
+								: product.subcategory?.name || "Uncategorized"}
 						</span>
 					</div>
 
@@ -280,7 +328,9 @@ const ProductsPage: React.FC = () => {
 					<div className='absolute top-3 left-3 sm:top-4 sm:left-4'>
 						<span className='bg-white/30 border border-white/30 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-bold shadow-lg flex items-center space-x-1 sm:space-x-1.5'>
 							<span className='text-yellow-300 drop-shadow-sm'>⭐</span>
-							<span className='font-semibold text-black'>{(product.averageRating || 0).toFixed(1)}</span>
+							<span className='font-semibold text-black'>
+								{(product.averageRating || 0).toFixed(1)}
+							</span>
 						</span>
 					</div>
 				</div>
@@ -322,7 +372,7 @@ const ProductsPage: React.FC = () => {
 							{product.features.length > (viewMode === "list" ? 4 : 2) && (
 								<span className='text-gray-500 text-xs font-medium bg-gray-100 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full hover:bg-gray-200 transition-colors duration-300 shadow-sm'>
 									+{product.features.length - (viewMode === "list" ? 4 : 2)}{" "}
-									{t('more')}
+									{t("more")}
 								</span>
 							)}
 						</div>
@@ -340,7 +390,7 @@ const ProductsPage: React.FC = () => {
 								whileTap={{ scale: 0.95 }}
 								onClick={() => navigate(`/product/${product._id}`)}
 								className='bg-teal-600 text-white px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg hover:bg-teal-700 transition-all duration-300 flex items-center space-x-1.5 sm:space-x-2 font-semibold shadow-md hover:shadow-lg text-xs sm:text-sm border-0'>
-								<span>{t('details')}</span>
+								<span>{t("details")}</span>
 								<ArrowRight className='h-3 w-3 sm:h-4 sm:w-4' />
 							</motion.button>
 						</div>
@@ -372,7 +422,7 @@ const ProductsPage: React.FC = () => {
 									<path d='M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12'></path>
 								</svg>
 								<span className='font-semibold text-xs sm:text-sm transition-all duration-500 group-hover:tracking-wide flex-shrink-0'>
-									{t('contactSales')}
+									{t("contactSales")}
 								</span>
 							</div>
 						</motion.button>
@@ -390,7 +440,7 @@ const ProductsPage: React.FC = () => {
 					<div className='text-center py-16 sm:py-20'>
 						<div className='animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-teal-600 mx-auto mb-4'></div>
 						<p className='text-gray-600 text-sm sm:text-base'>
-							{t('loadingProducts')}
+							{t("loadingProducts")}
 						</p>
 					</div>
 				</div>
@@ -408,15 +458,15 @@ const ProductsPage: React.FC = () => {
 							<Filter className='w-6 h-6 sm:w-8 sm:h-8 text-red-600' />
 						</div>
 						<h3 className='text-lg sm:text-xl font-semibold text-gray-900 mb-2'>
-							{t('errorLoadingProducts')}
+							{t("errorLoadingProducts")}
 						</h3>
 						<p className='text-sm sm:text-base text-gray-600 mb-4'>
-							{t('failedToLoadProducts')}
+							{t("failedToLoadProducts")}
 						</p>
 						<button
 							onClick={() => window.location.reload()}
 							className='bg-teal-600 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg hover:bg-teal-700 transition-colors text-sm sm:text-base'>
-							{t('retry')}
+							{t("retry")}
 						</button>
 					</div>
 				</div>
@@ -434,13 +484,13 @@ const ProductsPage: React.FC = () => {
 					transition={{ duration: 0.6 }}
 					className='text-center mb-8 sm:mb-12'>
 					<h1 className='text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 leading-tight'>
-						{t('ourProducts')}
+						{t("ourProducts")}
 						<span className='block bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent'>
-							{t('products')}
+							{t("products")}
 						</span>
 					</h1>
 					<p className='text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4 sm:px-0'>
-						{t('productsDescription')}
+						{t("productsDescription")}
 					</p>
 				</motion.div>
 
@@ -457,7 +507,7 @@ const ProductsPage: React.FC = () => {
 								<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5' />
 								<input
 									type='text'
-									placeholder={t('searchProducts')}
+									placeholder={t("searchProducts")}
 									value={searchTerm}
 									onChange={(e) => setSearchTerm(e.target.value)}
 									className='w-full pl-10 pr-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base'
@@ -473,7 +523,9 @@ const ProductsPage: React.FC = () => {
 								onChange={(e) => handleCategoryChange(e.target.value)}
 								className='w-full sm:w-auto px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 bg-white text-sm sm:text-base'>
 								{categories.map((category, index) => (
-									<option key={`category-${index}-${category}`} value={category}>
+									<option
+										key={`category-${index}-${category}`}
+										value={category}>
 										{category}
 									</option>
 								))}
@@ -484,10 +536,10 @@ const ProductsPage: React.FC = () => {
 								value={sortBy}
 								onChange={(e) => setSortBy(e.target.value)}
 								className='w-full sm:w-auto px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 bg-white text-sm sm:text-base'>
-								<option value='name'>{t('sortByName')}</option>
-								<option value='price-low'>{t('sortByPriceLow')}</option>
-								<option value='price-high'>{t('sortByPriceHigh')}</option>
-								<option value='rating'>{t('sortByRating')}</option>
+								<option value='name'>{t("sortByName")}</option>
+								<option value='price-low'>{t("sortByPriceLow")}</option>
+								<option value='price-high'>{t("sortByPriceHigh")}</option>
+								<option value='rating'>{t("sortByRating")}</option>
 							</select>
 
 							{/* View Mode Toggle */}
@@ -500,7 +552,9 @@ const ProductsPage: React.FC = () => {
 											: "text-gray-600 hover:text-gray-900"
 									}`}>
 									<Grid3X3 className='w-3 h-3 sm:w-4 sm:h-4' />
-									<span className='text-xs sm:text-sm font-medium'>{t('grid')}</span>
+									<span className='text-xs sm:text-sm font-medium'>
+										{t("grid")}
+									</span>
 								</button>
 								<button
 									onClick={() => setViewMode("list")}
@@ -510,7 +564,9 @@ const ProductsPage: React.FC = () => {
 											: "text-gray-600 hover:text-gray-900"
 									}`}>
 									<List className='w-3 h-3 sm:w-4 sm:h-4' />
-									<span className='text-xs sm:text-sm font-medium'>{t('list')}</span>
+									<span className='text-xs sm:text-sm font-medium'>
+										{t("list")}
+									</span>
 								</button>
 							</div>
 						</div>
@@ -544,10 +600,10 @@ const ProductsPage: React.FC = () => {
 							<Search className='w-8 h-8 sm:w-12 sm:h-12 text-gray-400' />
 						</div>
 						<h3 className='text-xl sm:text-2xl font-semibold text-gray-900 mb-2'>
-							{t('noProductsFound')}
+							{t("noProductsFound")}
 						</h3>
 						<p className='text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-4 sm:px-0'>
-							{t('tryAdjustingSearch')}
+							{t("tryAdjustingSearch")}
 						</p>
 						<button
 							onClick={() => {
@@ -556,7 +612,7 @@ const ProductsPage: React.FC = () => {
 								setSortBy("name");
 							}}
 							className='bg-teal-600 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl hover:bg-teal-700 transition-colors duration-300 text-sm sm:text-base'>
-							{t('clearFilters')}
+							{t("clearFilters")}
 						</button>
 					</motion.div>
 				)}

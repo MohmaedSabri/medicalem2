@@ -14,7 +14,7 @@ interface CategoriesContextType {
 	addCategory: (
 		category: Omit<Category, "_id" | "createdAt" | "updatedAt">
 	) => Promise<boolean>;
-	updateCategory: (id: string, updates: Partial<Category>) => Promise<void>;
+	updateCategory: (id: string, updates: Partial<Category>) => Promise<boolean>;
 	deleteCategory: (id: string) => Promise<void>;
 	getCategoryById: (id: string) => Category | undefined;
 	getCategoryByName: (name: string) => Category | undefined;
@@ -64,7 +64,12 @@ export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({
 	};
 
 	const updateCategory = async (id: string, updates: Partial<Category>) => {
-		await updateCategoryMutation.mutateAsync({ id, data: updates });
+		try {
+			await updateCategoryMutation.mutateAsync({ id, data: updates });
+			return true;
+		} catch {
+			return false;
+		}
 	};
 
 	const deleteCategory = async (id: string) => {
