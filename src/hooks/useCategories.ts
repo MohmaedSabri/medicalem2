@@ -91,7 +91,6 @@ export const useUpdateCategory = () => {
 		},
 		onError: (error: any) => {
 			// Error handling is done in the component
-			console.error("Category update failed:", error);
 		},
 	});
 };

@@ -57,7 +57,6 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
 	try {
 		products = Array.isArray(apiProducts) ? apiProducts.map(transformApiProduct) : [];
 	} catch (transformError) {
-		console.warn('Error transforming products:', transformError);
 		products = [];
 	}
 
@@ -67,7 +66,6 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
 			await createProductMutation.mutateAsync(apiProductData);
 			return true;
 		} catch (error) {
-			console.warn('Error adding product:', error);
 			return false;
 		}
 	};
@@ -77,7 +75,6 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
 			const response = await updateProductMutation.mutateAsync({ id, data: transformToApiProduct(productData) });
 			return response;
 		} catch (error) {
-			console.warn('Error updating product:', error);
 			return null;
 		}
 	};
@@ -86,7 +83,7 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
 		try {
 			await deleteProductMutation.mutateAsync(id);
 		} catch (error) {
-			console.warn('Error deleting product:', error);
+			// Error handled by mutation
 		}
 	};
 

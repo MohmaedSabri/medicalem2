@@ -8,10 +8,6 @@ import {
 	ArrowLeft,
 	BookOpen,
 	Tag,
-	Heart,
-	Share2,
-	User,
-	Clock,
 } from "lucide-react";
 import { usePosts, useFeaturedPosts } from "../hooks/usePosts";
 import { Link } from "react-router-dom";

@@ -1,13 +1,11 @@
 /** @format */
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Heart, ArrowRight, Star, Zap } from "lucide-react";
-import { Product } from "../types";
+import { Heart, ArrowRight, Zap } from "lucide-react";
 import { useProducts } from "../hooks/useProducts";
-import { getFavorites, isFavorite, toggleFavorite } from "../utils/favorites";
-import { toast } from "react-hot-toast";
+import { getFavorites, toggleFavorite } from "../utils/favorites";
 import { useLanguage } from "../contexts/LanguageContext";
 
 const Favorites: React.FC = () => {
@@ -19,7 +17,7 @@ const Favorites: React.FC = () => {
 	const { data: apiProducts = [], isLoading: loading, error } = useProducts();
 
 	// Helper: get localized text from string or {en, ar}
-	const getLocalizedProductField = (value: any): string => {
+	const getLocalizedProductField = useCallback((value: string | { en?: string; ar?: string } | null | undefined): string => {
 		if (!value) return "";
 		if (typeof value === "string") return value;
 		if (typeof value === "object") {
@@ -28,7 +26,7 @@ const Favorites: React.FC = () => {
 			);
 		}
 		return "";
-	};
+	}, [currentLanguage]);
 
 	// Transform API products to display format using useMemo for performance
 	const products = useMemo(
@@ -57,7 +55,7 @@ const Favorites: React.FC = () => {
 				warranty: getLocalizedProductField(product.warranty),
 				certifications: product.certifications,
 			})),
-		[apiProducts, currentLanguage]
+		[apiProducts, getLocalizedProductField]
 	);
 
 	// Update favorites when localStorage changes (e.g., from other pages)
@@ -88,18 +86,6 @@ const Favorites: React.FC = () => {
 		() => products.filter((product) => favoriteIds.includes(product._id)),
 		[products, favoriteIds]
 	);
-
-	// Debug logging
-	useEffect(() => {
-		console.log("Favorites Debug Info:");
-		console.log("favoriteIds:", favoriteIds);
-		console.log("products count:", products.length);
-		console.log("favoriteProducts count:", favoriteProducts.length);
-		console.log("localStorage favorites:", getFavorites());
-		if (products.length > 0) {
-			console.log("Sample product ID:", products[0]._id);
-		}
-	}, [favoriteIds, products, favoriteProducts]);
 
 	const formatPrice = (price: number) => {
 		return new Intl.NumberFormat("en-US", {

@@ -13,7 +13,6 @@ import {
 	Plus,
 	X,
 	MessageCircle,
-	Eye,
 } from "lucide-react";
 import {
 	usePosts,
@@ -202,8 +201,7 @@ const ManagePosts: React.FC = () => {
 	const [editForm, setEditForm] = useState<UpdatePostData>({});
 	const [editTitleEn, setEditTitleEn] = useState("");
 	const [editTitleAr, setEditTitleAr] = useState("");
-	const [editContentEn, setEditContentEn] = useState("");
-	const [editContentAr, setEditContentAr] = useState("");
+
 	const [searchQuery, setSearchQuery] = useState("");
 	const [statusFilter, setStatusFilter] = useState<string>("all");
 	const [categoryFilter, setCategoryFilter] = useState<string>("all");
@@ -373,13 +371,7 @@ const ManagePosts: React.FC = () => {
 		setPostToDelete(null);
 	};
 
-	// Helper function to extract all text from content blocks
-	const extractAllTextFromContent = (contentBlocks: ContentBlock[]): string => {
-		return contentBlocks
-			.filter((block) => block.type === "paragraph")
-			.map((block) => block.text || "")
-			.join("\n\n");
-	};
+
 
 	// Handle edit
 	const handleEdit = (post: Post) => {
@@ -407,11 +399,9 @@ const ManagePosts: React.FC = () => {
 			contentBlocksAr = contentObj.ar || [];
 		}
 
-		// Set both rich editor and simple text editor
+		// Set rich editor content blocks
 		setEditContentBlocksEn(contentBlocksEn);
 		setEditContentBlocksAr(contentBlocksAr);
-		setEditContentEn(extractAllTextFromContent(contentBlocksEn));
-		setEditContentAr(extractAllTextFromContent(contentBlocksAr));
 		setEditForm({
 			status: post.status,
 			featured: post.featured,
@@ -515,8 +505,6 @@ const ManagePosts: React.FC = () => {
 					setEditForm({});
 					setEditTitleEn("");
 					setEditTitleAr("");
-					setEditContentEn("");
-					setEditContentAr("");
 					setEditContentBlocksEn([]);
 					setEditContentBlocksAr([]);
 					toast.success("Post updated successfully!");
@@ -537,8 +525,6 @@ const ManagePosts: React.FC = () => {
 		setEditForm({});
 		setEditTitleEn("");
 		setEditTitleAr("");
-		setEditContentEn("");
-		setEditContentAr("");
 		setEditContentBlocksEn([]);
 		setEditContentBlocksAr([]);
 	};
@@ -1242,7 +1228,7 @@ const ManagePosts: React.FC = () => {
 																src={currentImageUrl}
 																alt="Post preview"
 																className='w-full h-full object-cover'
-																onLoad={() => console.log("Preview image loaded")}
+																onLoad={() => {}}
 																onError={(e) => {
 																	e.currentTarget.style.display = "none";
 																	const fallback = e.currentTarget.nextElementSibling as HTMLElement;
@@ -1299,14 +1285,8 @@ const ManagePosts: React.FC = () => {
 												src={post.postImage}
 												alt={getLocalizedText(post.title)}
 												className='w-full h-full object-cover'
-												onLoad={() =>
-													console.log(
-														"Image loaded successfully:",
-														post.postImage
-													)
-												}
+												onLoad={() => {}}
 												onError={(e) => {
-													console.log("Image failed to load:", post.postImage);
 													e.currentTarget.style.display = "none";
 													const fallback = e.currentTarget
 														.nextElementSibling as HTMLElement;
