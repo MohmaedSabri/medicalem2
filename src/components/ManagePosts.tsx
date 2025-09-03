@@ -248,7 +248,7 @@ const ManagePosts: React.FC = () => {
 	const [editContentBlocksAr, setEditContentBlocksAr] = useState<
 		ContentBlock[]
 	>([]);
-	const [useRichEditor, setUseRichEditor] = useState(false);
+	const [useRichEditor, setUseRichEditor] = useState(true);
 
 	const posts = postsData?.posts || [];
 
@@ -418,6 +418,7 @@ const ManagePosts: React.FC = () => {
 			category:
 				typeof post.category === "string" ? post.category : post.category._id,
 			tags: post.tags,
+			postImage: post.postImage || "",
 		});
 	};
 
@@ -490,33 +491,22 @@ const ManagePosts: React.FC = () => {
 			return;
 		}
 
-		// Use rich content blocks if available, otherwise convert from text
-		let structuredContentEn: ContentBlock[];
-		let structuredContentAr: ContentBlock[];
-
-		if (
-			useRichEditor &&
-			(editContentBlocksEn.length > 0 || editContentBlocksAr.length > 0)
-		) {
-			structuredContentEn = editContentBlocksEn;
-			structuredContentAr = editContentBlocksAr;
-		} else {
-			if (!editContentEn.trim() || !editContentAr.trim()) {
-				toast.error("Both English and Arabic content are required");
-				return;
-			}
-			structuredContentEn = convertTextToContentBlocks(editContentEn);
-			structuredContentAr = convertTextToContentBlocks(editContentAr);
+		// Validate rich content blocks
+		if (editContentBlocksEn.length === 0 || editContentBlocksAr.length === 0) {
+			toast.error("Both English and Arabic content blocks are required");
+			return;
 		}
 
 		const payload: UpdatePostData = {
 			title: { en: editTitleEn, ar: editTitleAr },
-			content: { en: structuredContentEn, ar: structuredContentAr },
+			content: { en: editContentBlocksEn, ar: editContentBlocksAr },
 			status: editForm.status,
 			featured: editForm.featured,
 			category: editForm.category,
 			tags: editForm.tags,
+			postImage: editForm.postImage,
 		};
+		
 		updatePost(
 			{ id: postId, postData: payload },
 			{
@@ -857,66 +847,12 @@ const ManagePosts: React.FC = () => {
 												className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent'
 											/>
 										</div>
-										{/* Content Editor Toggle */}
+										{/* Rich Content Editor */}
 										<div className='md:col-span-2'>
-											<div className='flex items-center justify-between mb-4'>
-												<label className='block text-sm font-medium text-gray-700'>
-													Content Editor
-												</label>
-												<div className='flex items-center space-x-4'>
-													<button
-														type='button'
-														onClick={() => setUseRichEditor(false)}
-														className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-															!useRichEditor
-																? "bg-teal-600 text-white"
-																: "bg-gray-200 text-gray-700 hover:bg-gray-300"
-														}`}>
-														Simple Text
-													</button>
-													<button
-														type='button'
-														onClick={() => setUseRichEditor(true)}
-														className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-															useRichEditor
-																? "bg-teal-600 text-white"
-																: "bg-gray-200 text-gray-700 hover:bg-gray-300"
-														}`}>
-														Rich Editor
-													</button>
-												</div>
-											</div>
+											<label className='block text-sm font-medium text-gray-700 mb-4'>
+												Content Editor
+											</label>
 										</div>
-
-										{/* Content EN/AR */}
-										{!useRichEditor ? (
-											<>
-												<div className='md:col-span-2'>
-													<label className='block text-sm font-medium text-gray-700 mb-1'>
-														Content (EN)
-													</label>
-													<textarea
-														value={editContentEn}
-														onChange={(e) => setEditContentEn(e.target.value)}
-														rows={4}
-														className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-vertical'
-													/>
-												</div>
-												<div className='md:col-span-2'>
-													<label className='block text-sm font-medium text-gray-700 mb-1'>
-														Content (AR)
-													</label>
-													<textarea
-														value={editContentAr}
-														onChange={(e) => setEditContentAr(e.target.value)}
-														rows={4}
-														dir='rtl'
-														className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-vertical'
-													/>
-												</div>
-											</>
-										) : (
-											<>
 												{/* Rich Content Editor for English */}
 												<div className='md:col-span-2'>
 													<label className='block text-sm font-medium text-gray-700 mb-2'>
@@ -1220,8 +1156,6 @@ const ManagePosts: React.FC = () => {
 														</div>
 													</div>
 												</div>
-											</>
-										)}
 										<div>
 											<label className='block text-sm font-medium text-gray-700 mb-1'>
 												Status
@@ -1287,7 +1221,7 @@ const ManagePosts: React.FC = () => {
 											</label>
 											<input
 												type='url'
-												value={editForm.postImage || post.postImage || ""}
+												value={editForm.postImage !== undefined ? editForm.postImage : (post.postImage || "")}
 												onChange={(e) =>
 													setEditForm((prev) => ({
 														...prev,
@@ -1297,6 +1231,39 @@ const ManagePosts: React.FC = () => {
 												className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent'
 												placeholder='Enter image URL or leave empty to remove image'
 											/>
+											{/* Image Preview */}
+											{(() => {
+												const currentImageUrl = editForm.postImage !== undefined ? editForm.postImage : post.postImage;
+												return currentImageUrl && currentImageUrl.trim() !== "" && (
+													<div className='mt-3'>
+														<p className='text-sm text-gray-600 mb-2'>Preview:</p>
+														<div className='relative w-full h-48 border border-gray-200 rounded-lg overflow-hidden bg-gray-50'>
+															<img
+																src={currentImageUrl}
+																alt="Post preview"
+																className='w-full h-full object-cover'
+																onLoad={() => console.log("Preview image loaded")}
+																onError={(e) => {
+																	e.currentTarget.style.display = "none";
+																	const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+																	if (fallback) {
+																		fallback.style.display = "flex";
+																	}
+																}}
+															/>
+															<div
+																className='absolute inset-0 flex items-center justify-center text-gray-500'
+																style={{ display: "none" }}
+															>
+																<div className='text-center'>
+																	<FileText className='w-12 h-12 mx-auto mb-2' />
+																	<p className='text-sm'>Invalid image URL</p>
+																</div>
+															</div>
+														</div>
+													</div>
+												);
+											})()}
 										</div>
 									</div>
 									<div className='flex justify-end space-x-3'>
