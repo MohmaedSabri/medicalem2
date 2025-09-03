@@ -2,6 +2,9 @@ const CACHE_NAME = 'medical-eq-v1';
 const STATIC_CACHE = 'static-v1';
 const DYNAMIC_CACHE = 'dynamic-v1';
 
+// Check if we're in development mode
+const isDevelopment = self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1';
+
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -18,11 +21,11 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then((cache) => {
-        console.log('Opened cache');
+        // Opened cache
         return cache.addAll(STATIC_ASSETS);
       })
       .catch((error) => {
-        console.error('Cache installation failed:', error);
+        // Cache installation failed
       })
   );
 });
@@ -34,7 +37,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-            console.log('Deleting old cache:', cacheName);
+            // Deleting old cache
             return caches.delete(cacheName);
           }
         })
@@ -52,6 +55,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Skip development server requests
+  if (isDevelopment) {
+    // In development, just pass through to network
+    return;
+  }
+
   // Handle different types of requests
   if (request.destination === 'image') {
     event.respondWith(handleImageRequest(request));
@@ -63,6 +72,14 @@ self.addEventListener('fetch', (event) => {
 });
 
 async function handleImageRequest(request) {
+  // Skip unsupported request schemes
+  if (request.url.startsWith('chrome-extension://') || 
+      request.url.startsWith('moz-extension://') ||
+      request.url.startsWith('ms-browser-extension://') ||
+      !request.url.startsWith('http')) {
+    return fetch(request);
+  }
+
   const cache = await caches.open(DYNAMIC_CACHE);
   const cachedResponse = await cache.match(request);
   
@@ -83,6 +100,14 @@ async function handleImageRequest(request) {
 }
 
 async function handleStaticAssetRequest(request) {
+  // Skip unsupported request schemes
+  if (request.url.startsWith('chrome-extension://') || 
+      request.url.startsWith('moz-extension://') ||
+      request.url.startsWith('ms-browser-extension://') ||
+      !request.url.startsWith('http')) {
+    return fetch(request);
+  }
+
   const cache = await caches.open(STATIC_CACHE);
   const cachedResponse = await cache.match(request);
   
@@ -102,6 +127,14 @@ async function handleStaticAssetRequest(request) {
 }
 
 async function handlePageRequest(request) {
+  // Skip unsupported request schemes
+  if (request.url.startsWith('chrome-extension://') || 
+      request.url.startsWith('moz-extension://') ||
+      request.url.startsWith('ms-browser-extension://') ||
+      !request.url.startsWith('http')) {
+    return fetch(request);
+  }
+
   try {
     const networkResponse = await fetch(request);
     if (networkResponse.ok) {
@@ -133,7 +166,6 @@ self.addEventListener('sync', (event) => {
 
 async function doBackgroundSync() {
   // Handle offline actions when connection is restored
-  console.log('Background sync triggered');
 }
 
 // Push notifications

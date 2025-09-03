@@ -15,7 +15,8 @@ import {
 	Trash2
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Post } from "../types";
+import { Post, ContentBlock } from "../types";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface PostCardProps {
 	post: Post;
@@ -23,7 +24,7 @@ interface PostCardProps {
 	showActions?: boolean;
 	onEdit?: (post: Post) => void;
 	onDelete?: (postId: string, postTitle: string) => void;
-	getCategoryName: (category: string | { _id: string; name: string; description: string }) => string;
+	getCategoryName: (category: string | { _id: string; name: string | { en: string; ar: string }; description: string | { en: string; ar: string } }) => string;
 	formatDate: (dateString: string) => string;
 	index?: number;
 }
@@ -38,6 +39,43 @@ const PostCard: React.FC<PostCardProps> = ({
 	formatDate,
 	index = 0
 }) => {
+	const { currentLanguage } = useLanguage();
+	
+	// Get localized title
+	const getTitle = (): string => {
+		const postWithLocalized = post as Post & { localized?: { title?: string; content?: ContentBlock[] } };
+		if (postWithLocalized.localized?.title) return postWithLocalized.localized.title;
+		const value = postWithLocalized.title;
+		if (typeof value === 'string') return value;
+		if (value && typeof value === 'object') {
+			return value[currentLanguage as 'en' | 'ar'] || value.en || value.ar || '';
+		}
+		return '';
+	};
+
+	// Get content preview
+	const getContentPreview = (): string => {
+		const postWithLocalized = post as Post & { localized?: { title?: string; content?: ContentBlock[] } };
+		let content: ContentBlock[] = [];
+		
+		if (postWithLocalized.localized?.content) {
+			content = postWithLocalized.localized.content;
+		} else if (Array.isArray(postWithLocalized.content)) {
+			content = postWithLocalized.content;
+		} else if (postWithLocalized.content && typeof postWithLocalized.content === 'object') {
+			content = postWithLocalized.content[currentLanguage as 'en' | 'ar'] || postWithLocalized.content.en || postWithLocalized.content.ar || [];
+		}
+		
+		const firstParagraph = content.find(block => block.type === 'paragraph');
+		if (firstParagraph && firstParagraph.type === 'paragraph') {
+			return firstParagraph.text;
+		}
+		return '';
+	};
+
+	const titleText = getTitle();
+	const contentText = getContentPreview();
+
 	// Animation variants
 	const cardVariants = {
 		hidden: { opacity: 0, y: 20 },
@@ -79,7 +117,7 @@ const PostCard: React.FC<PostCardProps> = ({
 					{post.postImage ? (
 						<img
 							src={post.postImage}
-							alt={post.title}
+							alt={titleText}
 							className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
 						/>
 					) : (
@@ -100,7 +138,7 @@ const PostCard: React.FC<PostCardProps> = ({
 				
 				<div className="p-4">
 					<h3 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-teal-600 transition-colors leading-tight">
-						{post.title}
+						{titleText}
 					</h3>
 					<div className="flex items-center justify-between text-xs text-gray-500">
 						<div className="flex items-center space-x-1">
@@ -141,7 +179,7 @@ const PostCard: React.FC<PostCardProps> = ({
 						{post.postImage ? (
 							<img
 								src={post.postImage}
-								alt={post.title}
+								alt={titleText}
 								className="w-full h-full object-cover"
 							/>
 						) : (
@@ -166,7 +204,7 @@ const PostCard: React.FC<PostCardProps> = ({
 						{/* Title and Meta */}
 						<div className="mb-6">
 							<h3 className="text-2xl font-bold text-gray-900 mb-4 line-clamp-2 leading-tight">
-								{post.title}
+								{titleText}
 							</h3>
 							
 							<div className="flex items-center flex-wrap gap-6 text-sm text-gray-600 mb-4">
@@ -193,7 +231,7 @@ const PostCard: React.FC<PostCardProps> = ({
 
 						{/* Content Preview */}
 						<p className="text-gray-700 line-clamp-4 mb-6 leading-relaxed text-base">
-							{post.content}
+							{contentText}
 						</p>
 
 						{/* Tags */}
@@ -237,7 +275,7 @@ const PostCard: React.FC<PostCardProps> = ({
 										<Edit className="w-5 h-5" />
 									</button>
 									<button
-										onClick={() => onDelete(post._id, post.title)}
+										onClick={() => onDelete(post._id, titleText)}
 										className="p-3 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 hover:scale-100"
 										title="Delete post"
 									>
@@ -266,7 +304,7 @@ const PostCard: React.FC<PostCardProps> = ({
 				{post.postImage ? (
 					<img
 						src={post.postImage}
-						alt={post.title}
+						alt={titleText}
 						className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
 					/>
 				) : (
@@ -297,10 +335,10 @@ const PostCard: React.FC<PostCardProps> = ({
 			
 			<div className="p-6 flex flex-col h-full">
 				<h3 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2 group-hover:text-teal-600 transition-colors leading-tight">
-					{post.title}
+					{titleText}
 				</h3>
 				<p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed flex-grow">
-					{post.content}
+					{contentText}
 				</p>
 				
 				{/* Stats */}

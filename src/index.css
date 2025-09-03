@@ -88,6 +88,16 @@
 		-webkit-tap-highlight-color: transparent;
 	}
 
+	/* Hide scrollbar */
+	.hide-scrollbar {
+		scrollbar-width: none; /* Firefox */
+		-ms-overflow-style: none; /* Internet Explorer 10+ */
+	}
+
+	.hide-scrollbar::-webkit-scrollbar {
+		display: none; /* WebKit */
+	}
+
 	/* Line clamp utilities */
 	.line-clamp-1 {
 		overflow: hidden;

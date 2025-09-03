@@ -10,10 +10,12 @@ import { useCategories } from "../contexts/CategoriesContext";
 import { useSubCategories } from "../hooks/useSubCategories";
 import { toggleFavorite, getFavorites } from "../utils/favorites";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const ProductsPage: React.FC = () => {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
+	const { currentLanguage } = useLanguage();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const { data: apiProducts = [], isLoading: loading, error } = useProducts();
 	const { categories: allCategories } = useCategories();
@@ -23,6 +25,22 @@ const ProductsPage: React.FC = () => {
 	const [sortBy, setSortBy] = useState("name");
 	const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 	const [favorites, setFavorites] = useState<string[]>(() => getFavorites());
+
+	// Helper: get localized text from string or {en, ar}
+	const getLocalizedProductField = (value: any): string => {
+		if (!value) return "";
+		if (typeof value === "string") return value;
+		if (typeof value === "object") {
+			return value[currentLanguage as "en" | "ar"] || value.en || value.ar || "";
+		}
+		return "";
+	};
+
+	// Helper: get localized category name
+	const getLocalizedCategoryName = (category: any): string => {
+		if (!category) return "";
+		return getLocalizedProductField(category.name);
+	};
 
 	// Sync favorites with localStorage
 	useEffect(() => {
@@ -63,28 +81,37 @@ const ProductsPage: React.FC = () => {
 		}
 	};
 
-	// Transform API products to local Product format
+	// Transform API products to local Product format with localization resolution
+	const resolveText = (value: any): string => {
+		if (!value) return '';
+		if (typeof value === 'string') return value;
+		if (typeof value === 'object') {
+			return value[currentLanguage as 'en' | 'ar'] || value.en || value.ar || '';
+		}
+		return String(value);
+	};
+
 	const products = apiProducts.map((product) => ({
-		_id: product._id, // Keep the original _id for routing
-		name: product.name,
-		description: product.description,
-		longDescription: product.longDescription,
+		_id: product._id,
+		name: product.localized?.name || resolveText(product.name),
+		description: product.localized?.description || resolveText(product.description),
+		longDescription: product.localized?.longDescription || resolveText(product.longDescription),
 		image: product.image,
 		images: product.images,
 		subcategory:
 			typeof product.subcategory === "string"
 				? product.subcategory
-				: product.subcategory?.name || "Uncategorized",
+				: (typeof product.subcategory?.name === 'object' ? resolveText(product.subcategory?.name) : (product.subcategory?.name || "Uncategorized")),
 		price: product.price,
 		averageRating: product.averageRating || 0,
 		totalReviews: product.totalReviews || 0,
-		reviews: product.reviews, // Keep as array of Review objects
-		features: product.features,
-		specifications: product.specifications,
+		reviews: product.reviews,
+		features: (product.localized?.features || product.features || []).map((f: any) => resolveText(f)),
+		specifications: Object.fromEntries(Object.entries(product.specifications || {}).map(([k, v]) => [k, resolveText(v)])),
 		inStock: product.inStock,
 		stockQuantity: product.stockQuantity,
-		shipping: product.shipping,
-		warranty: product.warranty,
+		shipping: product.localized?.shipping || resolveText(product.shipping),
+		warranty: product.localized?.warranty || resolveText(product.warranty),
 		certifications: product.certifications,
 	}));
 
@@ -92,27 +119,31 @@ const ProductsPage: React.FC = () => {
 
 	// Create categories list with both categories and subcategories, ensuring uniqueness
 	const categories = useMemo(() => {
-		const allCategoryNames = (allCategories || []).map(cat => cat?.name).filter(Boolean);
-		const allSubcategoryNames = Array.from(new Set(products.map((p) => p.subcategory).filter(Boolean)));
+		const allCategoryNames = (allCategories || []).map(cat => getLocalizedCategoryName(cat)).filter(Boolean);
+		const allSubcategoryNames = Array.from(new Set(products.map((p) => getLocalizedProductField(p.subcategory)).filter(Boolean)));
 		
 		// Combine and remove duplicates
 		const combined = ["All", ...allCategoryNames, ...allSubcategoryNames];
 		return combined.filter((value, index, self) => self.indexOf(value) === index);
-	}, [allCategories, products]);
+	}, [allCategories, products, getLocalizedCategoryName, getLocalizedProductField]);
 
 	const filteredProducts = useMemo(() => {
 		const filtered = products.filter((product) => {
+			const productName = getLocalizedProductField(product.name);
+			const productDescription = getLocalizedProductField(product.description);
+			const productSubcategory = getLocalizedProductField(product.subcategory);
+			
 			const matchesSearch =
-				product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-				product.description.toLowerCase().includes(searchTerm.toLowerCase());
+				productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+				productDescription.toLowerCase().includes(searchTerm.toLowerCase());
 			
 			const matchesCategory = selectedCategory === "All" || 
-				product.subcategory === selectedCategory ||
+				productSubcategory === selectedCategory ||
 				// Check if selected category is a parent category
 				(allCategories || []).some(cat => 
-					cat?.name === selectedCategory && 
+					getLocalizedCategoryName(cat) === selectedCategory && 
 					(allSubcategories || []).some(sub => 
-						sub?.name === product.subcategory && 
+						getLocalizedProductField(sub.name) === productSubcategory && 
 						(typeof sub.parentCategory === 'string' 
 							? sub.parentCategory === cat._id 
 							: sub.parentCategory._id === cat._id)
@@ -132,7 +163,7 @@ const ProductsPage: React.FC = () => {
 				case "rating":
 					return b.averageRating - a.averageRating;
 				default:
-					return a.name.localeCompare(b.name);
+					return getLocalizedProductField(a.name).localeCompare(getLocalizedProductField(b.name));
 			}
 		});
 
@@ -267,12 +298,12 @@ const ProductsPage: React.FC = () => {
 									? "text-lg sm:text-xl"
 									: "text-base sm:text-lg lg:text-xl"
 							} font-bold text-gray-900 leading-tight cursor-pointer hover:text-teal-600 transition-colors duration-300 mb-2`}>
-							{product.name}
+							{getLocalizedProductField(product.name)}
 						</h3>
 
 						{/* Description */}
 						<p className='text-gray-600 text-sm leading-relaxed line-clamp-2 mb-4'>
-							{product.description}
+							{getLocalizedProductField(product.description)}
 						</p>
 					</div>
 
@@ -285,7 +316,7 @@ const ProductsPage: React.FC = () => {
 									<span
 										key={idx}
 										className='bg-gradient-to-r from-teal-50 to-emerald-50 text-teal-700 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs font-medium border border-teal-200 hover:from-teal-100 hover:to-emerald-100 transition-all duration-300 shadow-sm'>
-										{feature}
+										{getLocalizedProductField(feature)}
 									</span>
 								))}
 							{product.features.length > (viewMode === "list" ? 4 : 2) && (

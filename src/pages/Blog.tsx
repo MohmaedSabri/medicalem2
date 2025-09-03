@@ -6,11 +6,13 @@ import { Filter, ArrowRight, ArrowLeft, BookOpen, Tag, Heart, Share2, User, Cloc
 import { usePosts, useFeaturedPosts } from "../hooks/usePosts";
 import { Link } from "react-router-dom";
 import { useCategories } from "../contexts/CategoriesContext";
-import { PostFilters, Post } from "../types";
+import { PostFilters, Post, ContentBlock } from "../types";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const Blog: React.FC = () => {
 	const { t } = useTranslation();
+	const { currentLanguage } = useLanguage();
 	const [currentPage, setCurrentPage] = useState(1);
 	const [filters, setFilters] = useState<PostFilters>({
 		page: 1,
@@ -21,8 +23,8 @@ const Blog: React.FC = () => {
 	});
 
 	const { categories } = useCategories();
-	const { data: postsData, isLoading: postsLoading } = usePosts(filters);
-	const { data: featuredPosts = [], isLoading: featuredLoading } = useFeaturedPosts(3);
+	const { data: postsData, isLoading: postsLoading } = usePosts(filters, currentLanguage);
+	const { data: featuredPosts = [], isLoading: featuredLoading } = useFeaturedPosts(3, currentLanguage);
 
 	// Update filters when page changes
 	useEffect(() => {
@@ -69,15 +71,30 @@ const Blog: React.FC = () => {
 	};
 
 	// Estimate read time based on content length (200 wpm)
-	const getReadTime = (content: string) => {
-		const words = content ? content.trim().split(/\s+/).length : 0;
-		const minutes = Math.max(1, Math.ceil(words / 200));
+	const getReadTime = (content: ContentBlock[]) => {
+		let totalWords = 0;
+		
+		content.forEach(block => {
+			if (block.type === 'paragraph') {
+				const words = block.text.trim().split(/\s+/).length;
+				totalWords += words;
+				if (block.title) {
+					const titleWords = block.title.trim().split(/\s+/).length;
+					totalWords += titleWords;
+				}
+			}
+		});
+		
+		const minutes = Math.max(1, Math.ceil(totalWords / 200));
 		return `${minutes} min read`;
 	};
 
-	// Create an excerpt from content without HTML tags
-	const getExcerpt = (content: string, maxLength: number = 160) => {
-		const text = (content || "").replace(/<[^>]*>/g, "").trim();
+	// Create an excerpt from structured content
+	const getExcerpt = (content: ContentBlock[], maxLength: number = 160) => {
+		const firstParagraph = content.find(block => block.type === 'paragraph');
+		if (!firstParagraph || firstParagraph.type !== 'paragraph') return '';
+		
+		const text = firstParagraph.text.trim();
 		if (text.length <= maxLength) return text;
 		const sliced = text.slice(0, maxLength);
 		const lastSpace = sliced.lastIndexOf(" ");
@@ -85,28 +102,84 @@ const Blog: React.FC = () => {
 	};
 
 	// Get category name
-	const getCategoryName = (category: string | { _id: string; name: string; description: string }) => {
+	const getCategoryName = (category: string | { _id: string; name: string | { en: string; ar: string }; description: string | { en: string; ar: string } }) => {
 		if (typeof category === "string") {
 			const cat = categories.find(c => c._id === category);
-			return cat ? cat.name : category;
+			if (!cat) return category;
+			
+			// Handle localized category names
+			if (typeof cat.name === 'string') return cat.name;
+			if (cat.name && typeof cat.name === 'object') {
+				return cat.name[currentLanguage as 'en' | 'ar'] || cat.name.en || cat.name.ar || '';
+			}
+			return category;
 		}
-		return category.name;
+		
+		// Handle localized category names from API
+		if (typeof category.name === 'string') return category.name;
+		if (category.name && typeof category.name === 'object') {
+			return category.name[currentLanguage as 'en' | 'ar'] || category.name.en || category.name.ar || '';
+		}
+		return '';
+	};
+
+	// Resolve full category display name (for sidebar list)
+	const getCategoryDisplayName = (cat: { _id: string; name: string | { en: string; ar: string } }) => {
+		if (!cat) return '';
+		if (typeof cat.name === 'string') return cat.name;
+		if (cat.name && typeof cat.name === 'object') {
+			return cat.name[currentLanguage as 'en' | 'ar'] || cat.name.en || cat.name.ar || '';
+		}
+		return '';
+	};
+
+	// Localization helpers
+	const getTitle = (post: Post): string => {
+		const postWithLocalized = post as Post & { localized?: { title?: string; content?: string } };
+		if (postWithLocalized.localized?.title) return postWithLocalized.localized.title;
+		const value = postWithLocalized.title;
+		if (typeof value === 'string') return value;
+		if (value && typeof value === 'object') {
+			return value[currentLanguage as 'en' | 'ar'] || value.en || value.ar || '';
+		}
+		return '';
+	};
+	const getContent = (post: Post): ContentBlock[] => {
+		const postWithLocalized = post as Post & { localized?: { title?: string; content?: ContentBlock[] } };
+		if (postWithLocalized.localized?.content) return postWithLocalized.localized.content;
+		const value = postWithLocalized.content;
+		if (Array.isArray(value)) return value;
+		if (value && typeof value === 'object') {
+			return value[currentLanguage as 'en' | 'ar'] || value.en || value.ar || [];
+		}
+		return [];
 	};
 
 	// Content validation function
 	const isValidPostContent = (post: Post) => {
-		if (!post.title || !post.content) return false;
+		const title = getTitle(post);
+		const content = getContent(post);
+		if (!title || !content || content.length === 0) return false;
 		
 		// Check if title is too short or contains only special characters
-		const cleanTitle = post.title.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+		// Support both Arabic and English characters
+		const cleanTitle = title.replace(/[^a-zA-Z0-9\u0600-\u06FF\s]/g, '').trim();
 		if (cleanTitle.length < 3) return false;
 		
-		// Check if content is too short or contains only special characters
-		const cleanContent = post.content.replace(/[^a-zA-Z0-9\s]/g, '').trim();
-		if (cleanContent.length < 10) return false;
+		// Check if content has meaningful text
+		const hasValidContent = content.some(block => {
+			if (block.type === 'paragraph') {
+				const cleanText = block.text.replace(/[^a-zA-Z0-9\u0600-\u06FF\s]/g, '').trim();
+				return cleanText.length >= 10;
+			}
+			return false;
+		});
+		if (!hasValidContent) return false;
 		
 		return true;
 	};
+
+
 
 	// Filter out invalid posts
 	const validPosts = postsData?.posts?.filter(isValidPostContent) || [];
@@ -213,7 +286,7 @@ const Blog: React.FC = () => {
 									<div className="relative overflow-hidden">
 										<img 
 											src={post.postImage} 
-											alt={post.title}
+											alt={getTitle(post)}
 											className="w-full h-64 object-cover transition-transform duration-300 hover:scale-105"
 										/>
 										<div className="absolute top-4 left-4">
@@ -236,16 +309,16 @@ const Blog: React.FC = () => {
 											<User className="w-4 h-4 mr-2" />
 											<span className="mr-4">{post.authorName}</span>
 											<Clock className="w-4 h-4 mr-2" />
-											<span className="mr-4">{getReadTime(post.content)}</span>
+											<span className="mr-4">{getReadTime(getContent(post))}</span>
 											<span>{formatDate(post.createdAt)}</span>
 										</div>
 										
 										<h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
-											{post.title}
+											{getTitle(post)}
 										</h3>
 										
 										<p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed">
-											{getExcerpt(post.content, 180)}
+											{getExcerpt(getContent(post), 180)}
 										</p>
 										
 										<Link 
@@ -303,7 +376,7 @@ const Blog: React.FC = () => {
 													: "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
 											}`}
 										>
-											{category.name}
+											{getCategoryDisplayName(category as { _id: string; name: string | { en: string; ar: string } })}
 										</button>
 									))}
 								</div>
@@ -433,7 +506,7 @@ const Blog: React.FC = () => {
 												<div className="relative overflow-hidden">
 													<img 
 														src={post.postImage} 
-														alt={post.title}
+														alt={getTitle(post)}
 														className="w-full h-56 object-cover transition-transform duration-300 hover:scale-105"
 													/>
 													<div className="absolute top-3 left-3">
@@ -446,16 +519,16 @@ const Blog: React.FC = () => {
 												<div className="p-6">
 													<div className="flex items-center text-xs text-gray-500 mb-2">
 														<span className="mr-3">{post.authorName}</span>
-														<span className="mr-3">{getReadTime(post.content)}</span>
+														<span className="mr-3">{getReadTime(getContent(post))}</span>
 														<span>{formatDate(post.createdAt)}</span>
 													</div>
 													
 													<h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
-														{post.title}
+														{getTitle(post)}
 													</h3>
 													
 													<p className="text-gray-600 text-sm mb-4 line-clamp-3">
-														{getExcerpt(post.content, 140)}
+														{getExcerpt(getContent(post), 140)}
 													</p>
 													
 													<Link 
@@ -529,7 +602,7 @@ const Blog: React.FC = () => {
 											: t('tryAdjustingSearch')
 										}
 									</p>
-									{postsData?.posts && postsData.posts.length > 0 && (
+									{postsData?.posts && postsData.posts.length > 0 && validPosts.length === 0 && (
 										<div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 max-w-md mx-auto">
 											<p className="text-sm text-yellow-800">
 												<strong>{t('note')}:</strong> {postsData.posts.length} {t('postsFilteredOut')}

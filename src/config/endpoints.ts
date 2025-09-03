@@ -33,4 +33,7 @@ export const endpoints = {
 	POSTS_BY_AUTHOR: "/posts/author/:email",
 	POSTS_BY_CATEGORY: "/posts/category/:category",
 	POSTS_STATS: "/posts/stats",
+	POSTS_LIKE: "/posts/:id/like",
+	POSTS_COMMENTS: "/posts/:id/comments",
+	POSTS_COMMENT_BY_ID: "/posts/:postId/comments/:commentId",
 };

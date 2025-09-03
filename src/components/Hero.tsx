@@ -48,7 +48,7 @@ const Hero: React.FC = () => {
 	// Hero tri-image rotating state with continuous smooth orbital motion
 	const heroImages = React.useMemo(
 		() => [
-			"https://i.postimg.cc/Xv8RK0rM/top-view-world-science-day-arrangement-with-stethoscope-removebg-preview.png",
+			"https://i.postimg.cc/hGFsChm7/hero1.png",
 			"https://i.postimg.cc/qvcbn3YV/hero2.png",
 			"https://i.postimg.cc/qqfDyxkr/hero3.png",
 		],
@@ -88,7 +88,7 @@ const Hero: React.FC = () => {
 			
 			<section
 				id='home'
-				className='relative min-h-screen py-20 bg-[#00796a] overflow-hidden'>
+				className='relative min-h-[600px] md:min-h-[700px] lg:min-h-[800px] pb-8 xl:min-h-screen pt-20 xl:px-[180px] xl:pt-28 sm:pt-8 md:pt-12 xl:pb-20 bg-[#00796a] overflow-hidden max-w-full'>
 				{/* Enhanced Medical Equipment Background Textures */}
 				<div className='absolute inset-0 -z-20 opacity-25'>
 					{/* Medical Crosses Pattern */}
@@ -349,7 +349,7 @@ const Hero: React.FC = () => {
 								delay: i * 0.8,
 							}}>
 							<div className='absolute top-1/2 left-0 w-full h-1 bg-white/20 transform -translate-y-1/2'></div>
-							<div className='absolute top-0 left-1/2 w-1 h-full bg-white/20 transform -translate-x-1/2'></div>
+
 						</motion.div>
 					))}
 
@@ -389,7 +389,7 @@ const Hero: React.FC = () => {
 				</div>
 
 				{/* Curved Bottom - Hidden on mobile, visible on md+ */}
-				<div className='absolute bottom-0 left-0 w-full hidden md:block'>
+				<div className='absolute bottom-0 left-0 w-full hidden md:block '>
 					<svg
 						viewBox='0 0 1440 120'
 						preserveAspectRatio='none'
@@ -404,10 +404,10 @@ const Hero: React.FC = () => {
 					</svg>
 				</div>
 
-				<div className='container mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-20 lg:pt-8'>
-					<div className='grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-12 items-center min-h-[70vh] sm:min-h-[75vh] lg:min-h-[85vh]'>
+				<div className='container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 pt-6 md:pt-8 max-w-full overflow-hidden'>
+					<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12 items-center min-h-[65vh] md:min-h-[65vh] xl:min-h-[75vh] max-w-full'>
 						{/* Content Side - Responsive to RTL */}
-						<div className={`text-white text-center ${isRTL ? 'lg:text-right' : 'lg:text-left'} order-2 lg:order-1 lg:col-span-2 ${isRTL ? 'lg:pr-8' : 'lg:pl-8'}`}>
+						<div className={`text-white text-center ${isRTL ? 'md:text-right lg:text-right' : 'md:text-left lg:text-left'} order-2 md:order-1 lg:order-1 md:col-span-1 lg:col-span-2 ${isRTL ? 'md:pr-4 lg:pr-4' : 'md:pl-4 lg:pl-4'} max-w-full overflow-hidden`}>
 							<h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 sm:mb-6'>
 								{t('advancedMedicalEquipment')}
 								<span className='block text-yellow-300'>{t('equipment')}</span>
@@ -418,7 +418,7 @@ const Hero: React.FC = () => {
 								{t('heroDescription')}
 							</p>
 
-							<div className={`flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-12 justify-center ${isRTL ? 'lg:justify-end' : 'lg:justify-start'} ${isRTL ? 'lg:flex-row-reverse' : ''}`}>
+							<div className={`flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 md:mb-8 lg:mb-12 justify-center ${isRTL ? 'md:justify-end lg:justify-end' : 'md:justify-start lg:justify-start'} ${isRTL ? 'md:flex-row-reverse lg:flex-row-reverse' : ''} max-w-full overflow-hidden`}>
 								<motion.button
 									whileHover={{ scale: 1.02, y: -1 }}
 									whileTap={{ scale: 0.98 }}
@@ -461,9 +461,9 @@ const Hero: React.FC = () => {
 						</div>
 
 						{/* Hero Images Section - Optimized */}
-						<div className='relative w-full flex justify-center items-center self-center order-1 lg:order-2 mb-8 lg:mb-0 lg:col-span-1'>
+						<div className='relative w-full flex justify-center items-center self-center order-1 md:order-2 lg:order-2 mb-6 md:mb-8 lg:mb-0 md:col-span-1 lg:col-span-1 max-w-full overflow-hidden'>
 							{/* Main Image Container */}
-							<div className='relative w-[22rem] h-[22rem] sm:w-[28rem] sm:h-[28rem] lg:w-[32rem] lg:h-[32rem]'>
+							<div className='relative w-full max-w-[18rem] h-[18rem] sm:max-w-[22rem] sm:h-[22rem] md:max-w-[24rem] md:h-[24rem] lg:max-w-[28rem] lg:h-[28rem] mx-auto'>
 								{/* Rotating Hero Images */}
 								{heroImages.map((src, i) => {
 									const slot = getSlotFor(i);
@@ -474,7 +474,7 @@ const Hero: React.FC = () => {
 											key={`hero-image-${i}`}
 											className={`
 												absolute rounded-full 
-												backdrop-blur-md shadow-2xl 
+												backdrop-blur-md 
 												flex items-center justify-center 
 												overflow-hidden cursor-pointer
 												transition-all duration-200

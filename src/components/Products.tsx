@@ -11,13 +11,23 @@ import { useLanguage } from "../contexts/LanguageContext";
 const Products: React.FC = () => {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const { isRTL } = useLanguage();
+	const { isRTL, currentLanguage } = useLanguage();
 	const { products, loading } = useProducts();
 
 	// Function to detect if text is Arabic
 	const isArabicText = (text: string): boolean => {
 		const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
 		return arabicRegex.test(text);
+	};
+
+	// Helper: get localized text from string or {en, ar}
+	const getLocalizedText = (value: any): string => {
+		if (!value) return "";
+		if (typeof value === "string") return value;
+		if (typeof value === "object") {
+			return value[currentLanguage as "en" | "ar"] || value.en || value.ar || "";
+		}
+		return "";
 	};
 
 	// All hooks must be called before any conditional returns
@@ -233,7 +243,7 @@ const Products: React.FC = () => {
 											<div className='relative w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 group'>
 												<motion.img
 													src={displayProducts[currentIndex]?.image || ""}
-													alt={displayProducts[currentIndex]?.name || ""}
+													alt={getLocalizedText(displayProducts[currentIndex]?.name) || ""}
 													initial={{ scale: 1.05 }}
 													animate={{ scale: 1 }}
 													transition={{ duration: 0.8 }}
@@ -270,14 +280,13 @@ const Products: React.FC = () => {
 												animate={{ opacity: 1, y: 0 }}
 												transition={{ delay: 0.4 }}
 												className='absolute top-2 left-2 sm:top-3 sm:left-3 md:top-4 md:left-4 lg:top-6 lg:left-6'>
-												<span className={`inline-flex items-center space-x-1 sm:space-x-1.5 md:space-x-2 bg-white/95 backdrop-blur-sm text-gray-800 px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 lg:px-5 lg:py-3 rounded-lg sm:rounded-xl md:rounded-2xl font-medium border border-white/20 shadow-lg text-xs sm:text-sm md:text-base ${isArabicText(typeof displayProducts[currentIndex]?.subcategory === "string" ? displayProducts[currentIndex]?.subcategory : displayProducts[currentIndex]?.subcategory?.name || "") ? 'flex-row-reverse' : ''}`}>
+												<span 												className={`inline-flex items-center space-x-1 sm:space-x-1.5 md:space-x-2 bg-white/95 backdrop-blur-sm text-gray-800 px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 lg:px-5 lg:py-3 rounded-lg sm:rounded-xl md:rounded-2xl font-medium border border-white/20 shadow-lg text-xs sm:text-sm md:text-base ${isArabicText(getLocalizedText(typeof displayProducts[currentIndex]?.subcategory === "string" ? displayProducts[currentIndex]?.subcategory : displayProducts[currentIndex]?.subcategory?.name)) ? 'flex-row-reverse' : ''}`}>
 													<Star className='w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-teal-600' />
 													<span>
-														{typeof displayProducts[currentIndex]?.subcategory ===
+														{getLocalizedText(typeof displayProducts[currentIndex]?.subcategory ===
 														"string"
 															? displayProducts[currentIndex]?.subcategory
-															: displayProducts[currentIndex]?.subcategory?.name ||
-															  ""}
+															: displayProducts[currentIndex]?.subcategory?.name)}
 													</span>
 												</span>
 											</motion.div>
@@ -297,8 +306,8 @@ const Products: React.FC = () => {
 														initial={{ opacity: 0, y: 15 }}
 														animate={{ opacity: 1, y: 0 }}
 														transition={{ delay: 0.4 }}
-														className={`text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light text-gray-900 mb-2 sm:mb-3 md:mb-4 lg:mb-6 leading-tight line-clamp-2 ${isArabicText(displayProducts[currentIndex]?.name || "") ? 'text-right' : 'text-left'}`}>
-														{displayProducts[currentIndex]?.name || ""}
+														className={`text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light text-gray-900 mb-2 sm:mb-3 md:mb-4 lg:mb-6 leading-tight line-clamp-2 ${isArabicText(getLocalizedText(displayProducts[currentIndex]?.name)) ? 'text-right' : 'text-left'}`}>
+														{getLocalizedText(displayProducts[currentIndex]?.name)}
 													</motion.h3>
 
 													{/* Product Description */}
@@ -306,8 +315,8 @@ const Products: React.FC = () => {
 														initial={{ opacity: 0, y: 15 }}
 														animate={{ opacity: 1, y: 0 }}
 														transition={{ delay: 0.5 }}
-														className={`text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 mb-4 sm:mb-6 md:mb-8 lg:mb-10 leading-relaxed line-clamp-3 ${isArabicText(displayProducts[currentIndex]?.description || "") ? 'text-right' : 'text-left'}`}>
-														{displayProducts[currentIndex]?.description || ""}
+														className={`text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 mb-4 sm:mb-6 md:mb-8 lg:mb-10 leading-relaxed line-clamp-3 ${isArabicText(getLocalizedText(displayProducts[currentIndex]?.description)) ? 'text-right' : 'text-left'}`}>
+														{getLocalizedText(displayProducts[currentIndex]?.description)}
 													</motion.p>
 												</div>
 
@@ -384,17 +393,25 @@ const Products: React.FC = () => {
 					transition={{ duration: 0.8, delay: 0.4 }}
 					className='text-center mt-8 sm:mt-12 md:mt-16 lg:mt-20'>
 					<motion.button
-						whileHover={{ scale: 1.02, y: -2 }}
+						whileHover={{ scale: 1.05, y: -3 }}
 						whileTap={{ scale: 0.98 }}
 						onClick={() => navigate("/products")}
-						className='group relative inline-flex items-center space-x-2 sm:space-x-3 md:space-x-4 bg-white text-teal-600 border-2 border-teal-600 px-4 py-2.5 sm:px-6 sm:py-3 md:px-10 md:py-4 lg:px-12 lg:py-5 rounded-lg sm:rounded-xl md:rounded-2xl font-semibold shadow-lg sm:shadow-xl hover:shadow-2xl overflow-hidden text-sm sm:text-base touch-manipulation w-full xs:w-auto max-w-xs xs:max-w-none mx-auto'>
-						{/* Hover fill effect */}
-						<div className='absolute inset-0 bg-teal-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-1000 ease-in-out'></div>
+						className='group relative inline-flex items-center space-x-2 sm:space-x-3 md:space-x-4 bg-white text-teal-600 border-2 border-teal-600 px-4 py-2.5 sm:px-6 sm:py-3 md:px-10 md:py-4 lg:px-12 lg:py-5 rounded-lg sm:rounded-xl md:rounded-2xl font-semibold shadow-lg sm:shadow-xl hover:shadow-2xl hover:shadow-teal-500/50 hover:border-teal-400 hover:bg-teal-600 hover:text-white text-sm sm:text-base touch-manipulation w-full xs:w-auto max-w-xs xs:max-w-none mx-auto transition-all duration-500 ease-out overflow-hidden'>
+						{/* Animated background glow */}
+						<div className='absolute inset-0 bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500 ease-out rounded-lg sm:rounded-xl md:rounded-2xl'></div>
+						
+						{/* Sparkle effects */}
+						<div className='absolute inset-0 overflow-hidden rounded-lg sm:rounded-xl md:rounded-2xl'>
+							<div className='absolute top-2 left-4 w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300 delay-100'></div>
+							<div className='absolute top-3 right-6 w-1.5 h-1.5 bg-yellow-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-300 delay-200'></div>
+							<div className='absolute bottom-3 left-8 w-1 h-1 bg-blue-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-bounce transition-opacity duration-300 delay-300'></div>
+							<div className='absolute bottom-2 right-4 w-1.5 h-1.5 bg-pink-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300 delay-400'></div>
+						</div>
 
 						{/* Button content */}
-						<div className={`relative z-10 flex items-center justify-center text-teal-600 group-hover:text-white transition-colors duration-1000 ${isRTL ? 'flex-row-reverse' : ''}`}>
-							<span>{t('viewAllProducts')}</span>
-							<ArrowRight className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${isRTL ? 'mr-2 rotate-180' : 'ml-2'} group-hover:translate-x-1 transition-transform`} />
+						<div className={`relative z-10 flex items-center justify-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+							<span className='group-hover:drop-shadow-lg transition-all duration-300'>{t('viewAllProducts')}</span>
+							<ArrowRight className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${isRTL ? 'ml-2 rotate-180' : 'ml-2'} group-hover:translate-x-2 group-hover:scale-110 transition-all duration-300 ease-out`} />
 						</div>
 					</motion.button>
 				</motion.div>

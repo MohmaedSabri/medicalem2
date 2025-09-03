@@ -2,33 +2,142 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Edit, Trash2, Star, Calendar, User, Tag, FileText, Plus, X } from "lucide-react";
-import { usePosts, useDeletePost, useUpdatePost, useCreatePost } from "../hooks/usePosts";
+import { Edit, Trash2, Star, Calendar, User, Tag, FileText, Plus, X, MessageCircle, Eye } from "lucide-react";
+import { usePosts, useDeletePost, useUpdatePost, useCreatePost, usePostComments, useDeleteComment } from "../hooks/usePosts";
 import { useCategories } from "../contexts/CategoriesContext";
-import { Post, UpdatePostData, CreatePostData } from "../types";
+import { Post, UpdatePostData, CreatePostData, ContentBlock, ContentParagraph, ContentImage } from "../types";
 import toast from "react-hot-toast";
-import { useTranslation } from "react-i18next";
 import { useLanguage } from "../contexts/LanguageContext";
 
+// Comments Section Component
+const CommentsSection: React.FC<{ postId: string }> = ({ postId }) => {
+	const [commentPage, setCommentPage] = useState(1);
+	const { data: commentsData, isLoading: commentsLoading } = usePostComments(postId, commentPage, 10);
+	const { mutate: deleteComment } = useDeleteComment();
+
+	const handleDeleteComment = (commentId: string) => {
+		if (window.confirm('Are you sure you want to delete this comment?')) {
+			deleteComment(
+				{ postId, commentId },
+				{
+					onSuccess: () => {
+						toast.success('Comment deleted successfully');
+					},
+					onError: () => {
+						toast.error('Failed to delete comment');
+					},
+				}
+			);
+		}
+	};
+
+	if (commentsLoading) {
+		return (
+			<div className="bg-gray-50 p-4 rounded-lg mt-4">
+				<div className="animate-pulse">
+					<div className="h-4 bg-gray-300 rounded w-1/4 mb-4"></div>
+					<div className="space-y-3">
+						{[...Array(3)].map((_, i) => (
+							<div key={i} className="h-20 bg-gray-300 rounded"></div>
+						))}
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	return (
+		<div className="bg-gray-50 p-4 rounded-lg mt-4 border border-gray-200">
+			<div className="flex items-center justify-between mb-4">
+				<h4 className="text-lg font-semibold text-gray-800 flex items-center">
+					<MessageCircle className="w-5 h-5 mr-2" />
+					Comments ({commentsData?.totalComments || 0})
+				</h4>
+			</div>
+
+			{commentsData?.comments && commentsData.comments.length > 0 ? (
+				<div className="space-y-3">
+					{commentsData.comments.map((comment) => (
+						<div key={comment._id} className="bg-white p-4 rounded-lg border border-gray-100">
+							<div className="flex items-start justify-between">
+								<div className="flex-1">
+									<div className="flex items-center space-x-2 mb-2">
+										<User className="w-4 h-4 text-gray-400" />
+										<span className="font-medium text-gray-800">{comment.authorName}</span>
+										<span className="text-sm text-gray-500">{comment.authorEmail}</span>
+										<span className="text-xs text-gray-400">
+											{new Date(comment.createdAt).toLocaleDateString()}
+										</span>
+									</div>
+									<p className="text-gray-700 text-sm leading-relaxed">{comment.content}</p>
+								</div>
+								<button
+									onClick={() => handleDeleteComment(comment._id)}
+									className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors"
+									title="Delete comment"
+								>
+									<Trash2 className="w-4 h-4" />
+								</button>
+							</div>
+						</div>
+					))}
+
+					{/* Pagination */}
+					{commentsData.totalPages > 1 && (
+						<div className="flex items-center justify-center space-x-2 mt-4">
+							<button
+								onClick={() => setCommentPage(prev => Math.max(1, prev - 1))}
+								disabled={!commentsData.hasPrev}
+								className="px-3 py-1 bg-white border border-gray-300 rounded text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+							>
+								Previous
+							</button>
+							<span className="text-sm text-gray-600">
+								Page {commentPage} of {commentsData.totalPages}
+							</span>
+							<button
+								onClick={() => setCommentPage(prev => prev + 1)}
+								disabled={!commentsData.hasNext}
+								className="px-3 py-1 bg-white border border-gray-300 rounded text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+							>
+								Next
+							</button>
+						</div>
+					)}
+				</div>
+			) : (
+				<div className="text-center py-8 text-gray-500">
+					<MessageCircle className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+					<p>No comments yet</p>
+				</div>
+			)}
+		</div>
+	);
+};
+
 const ManagePosts: React.FC = () => {
-	const { data: postsData, isLoading } = usePosts({ limit: 100 });
+	const { currentLanguage } = useLanguage();
+	const { data: postsData, isLoading } = usePosts({ limit: 100 }, currentLanguage);
 	const { mutate: deletePost } = useDeletePost();
 	const { mutate: updatePost } = useUpdatePost();
 	const { mutate: createPost } = useCreatePost();
 	const { categories } = useCategories();
-	const { t } = useTranslation();
-	const { isRTL } = useLanguage();
+
 
 	const [editingPost, setEditingPost] = useState<string | null>(null);
 	const [editForm, setEditForm] = useState<UpdatePostData>({});
+	const [editTitleEn, setEditTitleEn] = useState("");
+	const [editTitleAr, setEditTitleAr] = useState("");
+	const [editContentEn, setEditContentEn] = useState("");
+	const [editContentAr, setEditContentAr] = useState("");
 	const [searchQuery, setSearchQuery] = useState("");
 	const [statusFilter, setStatusFilter] = useState<string>("all");
 	const [categoryFilter, setCategoryFilter] = useState<string>("all");
 	const [featuredFilter, setFeaturedFilter] = useState<string>("all");
 	const [showAddForm, setShowAddForm] = useState(false);
 	const [addFormData, setAddFormData] = useState<CreatePostData>({
-		title: "",
-		content: "",
+		title: { en: "", ar: "" },
+		content: { en: [], ar: [] },
 		authorName: "",
 		authorEmail: "",
 		postImage: "",
@@ -37,15 +146,76 @@ const ManagePosts: React.FC = () => {
 		status: "draft",
 		featured: false,
 	});
+	const [addTitleEn, setAddTitleEn] = useState("");
+	const [addTitleAr, setAddTitleAr] = useState("");
+	const [addContentEn, setAddContentEn] = useState("");
+	const [addContentAr, setAddContentAr] = useState("");
+	
+	// Comment management state
+	const [showComments, setShowComments] = useState<string | null>(null);
 	const [tagInput, setTagInput] = useState("");
+	
+	// Rich content editor states
+	const [addContentBlocksEn, setAddContentBlocksEn] = useState<ContentBlock[]>([]);
+	const [addContentBlocksAr, setAddContentBlocksAr] = useState<ContentBlock[]>([]);
+	const [editContentBlocksEn, setEditContentBlocksEn] = useState<ContentBlock[]>([]);
+	const [editContentBlocksAr, setEditContentBlocksAr] = useState<ContentBlock[]>([]);
+	const [useRichEditor, setUseRichEditor] = useState(false);
 
 	const posts = postsData?.posts || [];
 
+	// Helper function to get localized text
+	const getLocalizedText = (value: unknown): string => {
+		if (typeof value === 'string') return value;
+		if (typeof value === 'object' && value !== null) {
+			const valueObj = value as Record<string, string>;
+			return valueObj[currentLanguage] || valueObj.en || valueObj.ar || '';
+		}
+		return '';
+	};
+
+	// Helper function to get content preview from structured content
+	const getContentPreview = (content: unknown): string => {
+		if (typeof content === 'string') return content;
+		
+		// Handle ContentBlock[] directly
+		if (Array.isArray(content)) {
+			const paragraphs = content.filter((block: ContentBlock) => block.type === 'paragraph');
+			const images = content.filter((block: ContentBlock) => block.type === 'image');
+			if (paragraphs.length > 0) {
+				// Combine all paragraph texts
+				const text = paragraphs.map(block => block.text || '').join(' ');
+				const imageText = images.length > 0 ? ` [${images.length} image${images.length > 1 ? 's' : ''}]` : '';
+				return text.substring(0, 200) + (text.length > 200 ? '...' : '') + imageText;
+			}
+		}
+		
+		// Handle localized content object
+		if (typeof content === 'object' && content !== null) {
+			const contentObj = content as Record<string, ContentBlock[]>;
+			const localizedContent = contentObj[currentLanguage] || contentObj.en || contentObj.ar;
+			if (Array.isArray(localizedContent)) {
+				const paragraphs = localizedContent.filter((block: ContentBlock) => block.type === 'paragraph');
+				const images = localizedContent.filter((block: ContentBlock) => block.type === 'image');
+				if (paragraphs.length > 0) {
+					// Combine all paragraph texts
+					const text = paragraphs.map(block => block.text || '').join(' ');
+					const imageText = images.length > 0 ? ` [${images.length} image${images.length > 1 ? 's' : ''}]` : '';
+					return text.substring(0, 200) + (text.length > 200 ? '...' : '') + imageText;
+				}
+			}
+		}
+		return '';
+	};
+
 	// Filter posts based on search and filters
 	const filteredPosts = posts.filter((post) => {
+		const displayTitle = getLocalizedText(post.title);
+		const displayContent = getContentPreview(post.content);
+		
 		const matchesSearch = searchQuery === "" || 
-			post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			displayTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			displayContent.toLowerCase().includes(searchQuery.toLowerCase()) ||
 			post.authorName.toLowerCase().includes(searchQuery.toLowerCase());
 		
 		const matchesStatus = statusFilter === "all" || post.status === statusFilter;
@@ -64,12 +234,45 @@ const ManagePosts: React.FC = () => {
 		}
 	};
 
+	// Helper function to extract all text from content blocks
+	const extractAllTextFromContent = (contentBlocks: ContentBlock[]): string => {
+		return contentBlocks
+			.filter(block => block.type === 'paragraph')
+			.map(block => block.text || '')
+			.join('\n\n');
+	};
+
 	// Handle edit
 	const handleEdit = (post: Post) => {
 		setEditingPost(post._id);
+		
+		// Handle title
+		const title = typeof post.title === 'string' ? { en: post.title, ar: '' } : post.title;
+		setEditTitleEn(title?.en || "");
+		setEditTitleAr(title?.ar || "");
+		
+		// Handle content - extract all content blocks
+		const content = post.content;
+		let contentBlocksEn: ContentBlock[] = [];
+		let contentBlocksAr: ContentBlock[] = [];
+		
+		if (Array.isArray(content)) {
+			// Direct ContentBlock[] format
+			contentBlocksEn = content;
+			contentBlocksAr = content;
+		} else if (typeof content === 'object' && content !== null) {
+			// Localized content format
+			const contentObj = content as Record<string, ContentBlock[]>;
+			contentBlocksEn = contentObj.en || [];
+			contentBlocksAr = contentObj.ar || [];
+		}
+		
+		// Set both rich editor and simple text editor
+		setEditContentBlocksEn(contentBlocksEn);
+		setEditContentBlocksAr(contentBlocksAr);
+		setEditContentEn(extractAllTextFromContent(contentBlocksEn));
+		setEditContentAr(extractAllTextFromContent(contentBlocksAr));
 		setEditForm({
-			title: post.title,
-			content: post.content,
 			status: post.status,
 			featured: post.featured,
 			category: typeof post.category === "string" ? post.category : post.category._id,
@@ -77,16 +280,102 @@ const ManagePosts: React.FC = () => {
 		});
 	};
 
+	// Helper function to convert text to multiple paragraph blocks
+	const convertTextToContentBlocks = (text: string): ContentBlock[] => {
+		if (!text.trim()) return [];
+		
+		// Split by double newlines to create separate paragraphs
+		const paragraphs = text.split('\n\n').filter(p => p.trim());
+		
+		return paragraphs.map(paragraph => ({
+			type: "paragraph" as const,
+			text: paragraph.trim()
+		}));
+	};
+
+	// Helper functions for managing content blocks
+	const addContentBlock = (blocks: ContentBlock[], type: 'paragraph' | 'image', newBlock: Partial<ContentParagraph> | Partial<ContentImage>): ContentBlock[] => {
+		if (type === 'paragraph') {
+			const paragraphBlock = newBlock as Partial<ContentParagraph>;
+			return [...blocks, {
+				type: 'paragraph',
+				text: paragraphBlock.text || '',
+				title: paragraphBlock.title || ''
+			} as ContentParagraph];
+		} else if (type === 'image') {
+			const imageBlock = newBlock as Partial<ContentImage>;
+			return [...blocks, {
+				type: 'image',
+				imageUrl: imageBlock.imageUrl || '',
+				imageAlt: imageBlock.imageAlt || '',
+				imageCaption: imageBlock.imageCaption || ''
+			} as ContentImage];
+		}
+		return blocks;
+	};
+
+	const updateContentBlock = (blocks: ContentBlock[], index: number, updatedBlock: Partial<ContentParagraph> | Partial<ContentImage>): ContentBlock[] => {
+		return blocks.map((block, i) => 
+			i === index ? { ...block, ...updatedBlock } as ContentBlock : block
+		);
+	};
+
+	const removeContentBlock = (blocks: ContentBlock[], index: number): ContentBlock[] => {
+		return blocks.filter((_, i) => i !== index);
+	};
+
+
+
 	// Handle save edit
 	const handleSaveEdit = (postId: string) => {
+		// Validate required fields
+		if (!editTitleEn.trim() || !editTitleAr.trim()) {
+			toast.error("Both English and Arabic titles are required");
+			return;
+		}
+		
+		// Use rich content blocks if available, otherwise convert from text
+		let structuredContentEn: ContentBlock[];
+		let structuredContentAr: ContentBlock[];
+		
+		if (useRichEditor && (editContentBlocksEn.length > 0 || editContentBlocksAr.length > 0)) {
+			structuredContentEn = editContentBlocksEn;
+			structuredContentAr = editContentBlocksAr;
+		} else {
+			if (!editContentEn.trim() || !editContentAr.trim()) {
+				toast.error("Both English and Arabic content are required");
+				return;
+			}
+			structuredContentEn = convertTextToContentBlocks(editContentEn);
+			structuredContentAr = convertTextToContentBlocks(editContentAr);
+		}
+
+		const payload: UpdatePostData = {
+			title: { en: editTitleEn, ar: editTitleAr },
+			content: { en: structuredContentEn, ar: structuredContentAr },
+			status: editForm.status,
+			featured: editForm.featured,
+			category: editForm.category,
+			tags: editForm.tags,
+		};
 		updatePost(
-			{ id: postId, postData: editForm },
+			{ id: postId, postData: payload },
 			{
 				onSuccess: () => {
 					setEditingPost(null);
 					setEditForm({});
+					setEditTitleEn("");
+					setEditTitleAr("");
+					setEditContentEn("");
+					setEditContentAr("");
+					setEditContentBlocksEn([]);
+					setEditContentBlocksAr([]);
 					toast.success("Post updated successfully!");
 				},
+				onError: (error: Error) => {
+					const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to update post";
+					toast.error(errorMessage);
+				}
 			}
 		);
 	};
@@ -95,6 +384,12 @@ const ManagePosts: React.FC = () => {
 	const handleCancelEdit = () => {
 		setEditingPost(null);
 		setEditForm({});
+		setEditTitleEn("");
+		setEditTitleAr("");
+		setEditContentEn("");
+		setEditContentAr("");
+		setEditContentBlocksEn([]);
+		setEditContentBlocksAr([]);
 	};
 
 	// Clear all filters
@@ -107,12 +402,56 @@ const ManagePosts: React.FC = () => {
 
 	// Handle add post
 	const handleAddPost = () => {
-		createPost(addFormData, {
+		// Validate required fields
+		if (!addTitleEn.trim() || !addTitleAr.trim()) {
+			toast.error("Both English and Arabic titles are required");
+			return;
+		}
+		
+		if (!addContentEn.trim() || !addContentAr.trim()) {
+			toast.error("Both English and Arabic content are required");
+			return;
+		}
+		
+		if (!addFormData.authorName.trim() || !addFormData.authorEmail.trim()) {
+			toast.error("Author name and email are required");
+			return;
+		}
+		
+		if (!addFormData.category) {
+			toast.error("Category is required");
+			return;
+		}
+
+		// Use rich content blocks if available, otherwise convert from text
+		let structuredContentEn: ContentBlock[];
+		let structuredContentAr: ContentBlock[];
+		
+		if (useRichEditor && (addContentBlocksEn.length > 0 || addContentBlocksAr.length > 0)) {
+			structuredContentEn = addContentBlocksEn;
+			structuredContentAr = addContentBlocksAr;
+		} else {
+			structuredContentEn = convertTextToContentBlocks(addContentEn);
+			structuredContentAr = convertTextToContentBlocks(addContentAr);
+		}
+
+		const payload: CreatePostData = {
+			title: { en: addTitleEn, ar: addTitleAr },
+			content: { en: structuredContentEn, ar: structuredContentAr },
+			authorName: addFormData.authorName,
+			authorEmail: addFormData.authorEmail,
+			postImage: addFormData.postImage,
+			category: addFormData.category,
+			tags: addFormData.tags,
+			status: addFormData.status,
+			featured: addFormData.featured,
+		};
+		createPost(payload, {
 			onSuccess: () => {
 				setShowAddForm(false);
 				setAddFormData({
-					title: "",
-					content: "",
+					title: { en: "", ar: "" },
+					content: { en: [], ar: [] },
 					authorName: "",
 					authorEmail: "",
 					postImage: "",
@@ -122,8 +461,18 @@ const ManagePosts: React.FC = () => {
 					featured: false,
 				});
 				setTagInput("");
+				setAddTitleEn("");
+				setAddTitleAr("");
+				setAddContentEn("");
+				setAddContentAr("");
+				setAddContentBlocksEn([]);
+				setAddContentBlocksAr([]);
 				toast.success("Post created successfully!");
 			},
+			onError: (error: Error) => {
+				const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to create post";
+				toast.error(errorMessage);
+			}
 		});
 	};
 
@@ -147,20 +496,21 @@ const ManagePosts: React.FC = () => {
 	};
 
 	// Get category name
-	const getCategoryName = (category: string | { _id: string; name: string; description: string }) => {
+	const getCategoryName = (category: string | { _id: string; name: string | { en: string; ar: string }; description: string | { en: string; ar: string } }) => {
 		if (typeof category === "string") {
 			const cat = categories.find((c) => c._id === category);
-			return cat ? cat.name : category;
+			if (!cat) return category;
+			return getLocalizedText(cat.name);
 		}
-		return category.name;
+		return getLocalizedText(category.name);
 	};
 
 	// Format date
 	const formatDate = (dateString: string) => {
 		return new Date(dateString).toLocaleDateString("en-US", {
-			year: "numeric",
-			month: "short",
-			day: "numeric",
+		year: "numeric",
+		month: "short",
+		day: "numeric",
 		});
 	};
 
@@ -258,7 +608,7 @@ const ManagePosts: React.FC = () => {
 							<option value="all">All Categories</option>
 							{categories.map((category) => (
 								<option key={category._id} value={category._id}>
-									{category.name}
+									{getLocalizedText(category.name)}
 								</option>
 							))}
 						</select>
@@ -301,11 +651,11 @@ const ManagePosts: React.FC = () => {
 			{/* Posts List */}
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 				{filteredPosts.map((post) => (
+					<React.Fragment key={post._id}>
 					<motion.div
-						key={post._id}
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
-						className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+						className="bg-white rounded-XL shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
 					>
 						{editingPost === post._id ? (
 							/* Edit Form */
@@ -313,17 +663,264 @@ const ManagePosts: React.FC = () => {
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 									<div>
 										<label className="block text-sm font-medium text-gray-700 mb-1">
-											Title
+											Title (EN)
 										</label>
 										<input
 											type="text"
-											value={editForm.title || ""}
-											onChange={(e) =>
-												setEditForm((prev) => ({ ...prev, title: e.target.value }))
-											}
+											value={editTitleEn}
+											onChange={(e) => setEditTitleEn(e.target.value)}
 											className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
 										/>
 									</div>
+									<div>
+										<label className="block text-sm font-medium text-gray-700 mb-1">
+											Title (AR)
+										</label>
+										<input
+											type="text"
+											value={editTitleAr}
+											onChange={(e) => setEditTitleAr(e.target.value)}
+											dir="rtl"
+											className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+										/>
+									</div>
+									{/* Content Editor Toggle */}
+									<div className="md:col-span-2">
+										<div className="flex items-center justify-between mb-4">
+											<label className="block text-sm font-medium text-gray-700">
+												Content Editor
+											</label>
+											<div className="flex items-center space-x-4">
+												<button
+													type="button"
+													onClick={() => setUseRichEditor(false)}
+													className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+														!useRichEditor 
+															? 'bg-teal-600 text-white' 
+															: 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+													}`}
+												>
+													Simple Text
+												</button>
+												<button
+													type="button"
+													onClick={() => setUseRichEditor(true)}
+													className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+														useRichEditor 
+															? 'bg-teal-600 text-white' 
+															: 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+													}`}
+												>
+													Rich Editor
+												</button>
+											</div>
+										</div>
+									</div>
+
+									{/* Content EN/AR */}
+									{!useRichEditor ? (
+										<>
+											<div className="md:col-span-2">
+												<label className="block text-sm font-medium text-gray-700 mb-1">
+													Content (EN)
+												</label>
+												<textarea
+													value={editContentEn}
+													onChange={(e) => setEditContentEn(e.target.value)}
+													rows={4}
+													className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-vertical"
+												/>
+											</div>
+											<div className="md:col-span-2">
+												<label className="block text-sm font-medium text-gray-700 mb-1">
+													Content (AR)
+												</label>
+												<textarea
+													value={editContentAr}
+													onChange={(e) => setEditContentAr(e.target.value)}
+													rows={4}
+													dir="rtl"
+													className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-vertical"
+												/>
+											</div>
+										</>
+									) : (
+										<>
+											{/* Rich Content Editor for English */}
+											<div className="md:col-span-2">
+												<label className="block text-sm font-medium text-gray-700 mb-2">
+													Content (EN)
+												</label>
+												<div className="border border-gray-300 rounded-lg p-4 space-y-4">
+													{editContentBlocksEn.map((block, index) => (
+														<div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+															<div className="flex items-center justify-between mb-2">
+																<span className="text-sm font-medium text-gray-600">
+																	{block.type === 'paragraph' ? 'Paragraph' : 'Image'} {index + 1}
+																</span>
+																<div className="flex items-center space-x-2">
+																	<button
+																		type="button"
+																		onClick={() => setEditContentBlocksEn(removeContentBlock(editContentBlocksEn, index))}
+																		className="text-red-600 hover:text-red-800"
+																	>
+																		<X className="w-4 h-4" />
+																	</button>
+																</div>
+															</div>
+															{block.type === 'paragraph' ? (
+																<div className="space-y-2">
+																	<input
+																		type="text"
+																		value={block.title || ''}
+																		onChange={(e) => setEditContentBlocksEn(updateContentBlock(editContentBlocksEn, index, { title: e.target.value }))}
+																		placeholder="Paragraph title (optional)"
+																		className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																	/>
+																	<textarea
+																		value={block.text || ''}
+																		onChange={(e) => setEditContentBlocksEn(updateContentBlock(editContentBlocksEn, index, { text: e.target.value }))}
+																		placeholder="Paragraph text"
+																		rows={3}
+																		className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																	/>
+																</div>
+															) : (
+																<div className="space-y-2">
+																	<input
+																		type="url"
+																		value={block.imageUrl || ''}
+																		onChange={(e) => setEditContentBlocksEn(updateContentBlock(editContentBlocksEn, index, { imageUrl: e.target.value }))}
+																		placeholder="Image URL"
+																		className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																	/>
+																	<input
+																		type="text"
+																		value={block.imageAlt || ''}
+																		onChange={(e) => setEditContentBlocksEn(updateContentBlock(editContentBlocksEn, index, { imageAlt: e.target.value }))}
+																		placeholder="Image alt text"
+																		className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																	/>
+																	<input
+																		type="text"
+																		value={block.imageCaption || ''}
+																		onChange={(e) => setEditContentBlocksEn(updateContentBlock(editContentBlocksEn, index, { imageCaption: e.target.value }))}
+																		placeholder="Image caption"
+																		className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																	/>
+																</div>
+															)}
+														</div>
+													))}
+													<div className="flex space-x-2">
+														<button
+															type="button"
+															onClick={() => setEditContentBlocksEn(addContentBlock(editContentBlocksEn, 'paragraph', {}))}
+															className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+														>
+															+ Add Paragraph
+														</button>
+														<button
+															type="button"
+															onClick={() => setEditContentBlocksEn(addContentBlock(editContentBlocksEn, 'image', {}))}
+															className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+														>
+															+ Add Image
+														</button>
+													</div>
+												</div>
+											</div>
+
+											{/* Rich Content Editor for Arabic */}
+											<div className="md:col-span-2">
+												<label className="block text-sm font-medium text-gray-700 mb-2">
+													Content (AR)
+												</label>
+												<div className="border border-gray-300 rounded-lg p-4 space-y-4">
+													{editContentBlocksAr.map((block, index) => (
+														<div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+															<div className="flex items-center justify-between mb-2">
+																<span className="text-sm font-medium text-gray-600">
+																	{block.type === 'paragraph' ? 'فقرة' : 'صورة'} {index + 1}
+																</span>
+																<div className="flex items-center space-x-2">
+																	<button
+																		type="button"
+																		onClick={() => setEditContentBlocksAr(removeContentBlock(editContentBlocksAr, index))}
+																		className="text-red-600 hover:text-red-800"
+																	>
+																		<X className="w-4 h-4" />
+																	</button>
+																</div>
+															</div>
+															{block.type === 'paragraph' ? (
+																<div className="space-y-2">
+																	<input
+																		type="text"
+																		value={block.title || ''}
+																		onChange={(e) => setEditContentBlocksAr(updateContentBlock(editContentBlocksAr, index, { title: e.target.value }))}
+																		placeholder="عنوان الفقرة (اختياري)"
+																		dir="rtl"
+																		className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																	/>
+																	<textarea
+																		value={block.text || ''}
+																		onChange={(e) => setEditContentBlocksAr(updateContentBlock(editContentBlocksAr, index, { text: e.target.value }))}
+																		placeholder="نص الفقرة"
+																		dir="rtl"
+																		rows={3}
+																		className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																	/>
+																</div>
+															) : (
+																<div className="space-y-2">
+																	<input
+																		type="url"
+																		value={block.imageUrl || ''}
+																		onChange={(e) => setEditContentBlocksAr(updateContentBlock(editContentBlocksAr, index, { imageUrl: e.target.value }))}
+																		placeholder="رابط الصورة"
+																		className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																	/>
+																	<input
+																		type="text"
+																		value={block.imageAlt || ''}
+																		onChange={(e) => setEditContentBlocksAr(updateContentBlock(editContentBlocksAr, index, { imageAlt: e.target.value }))}
+																		placeholder="النص البديل للصورة"
+																		dir="rtl"
+																		className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																	/>
+																	<input
+																		type="text"
+																		value={block.imageCaption || ''}
+																		onChange={(e) => setEditContentBlocksAr(updateContentBlock(editContentBlocksAr, index, { imageCaption: e.target.value }))}
+																		placeholder="تعليق الصورة"
+																		dir="rtl"
+																		className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																	/>
+																</div>
+															)}
+														</div>
+													))}
+													<div className="flex space-x-2">
+														<button
+															type="button"
+															onClick={() => setEditContentBlocksAr(addContentBlock(editContentBlocksAr, 'paragraph', {}))}
+															className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+														>
+															+ إضافة فقرة
+														</button>
+														<button
+															type="button"
+															onClick={() => setEditContentBlocksAr(addContentBlock(editContentBlocksAr, 'image', {}))}
+															className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+														>
+															+ إضافة صورة
+														</button>
+													</div>
+												</div>
+											</div>
+										</>
+									)}
 									<div>
 										<label className="block text-sm font-medium text-gray-700 mb-1">
 											Status
@@ -353,7 +950,7 @@ const ManagePosts: React.FC = () => {
 										>
 											{categories.map((category) => (
 												<option key={category._id} value={category._id}>
-													{category.name}
+													{getLocalizedText(category.name)}
 												</option>
 											))}
 										</select>
@@ -371,19 +968,6 @@ const ManagePosts: React.FC = () => {
 											Featured
 										</label>
 									</div>
-								</div>
-								<div>
-									<label className="block text-sm font-medium text-gray-700 mb-1">
-										Content
-									</label>
-									<textarea
-										value={editForm.content || ""}
-										onChange={(e) =>
-											setEditForm((prev) => ({ ...prev, content: e.target.value }))
-										}
-										rows={4}
-										className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-vertical"
-									/>
 								</div>
 								<div className="flex justify-end space-x-3">
 									<button
@@ -404,7 +988,7 @@ const ManagePosts: React.FC = () => {
 							/* Post Display */
 							<div className="relative">
 								{/* Featured Badge */}
-											{post.featured && (
+										{post.featured && (
 									<div className="absolute top-4 right-4 z-10">
 										<div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg flex items-center space-x-1">
 											<Star className="w-3 h-3 fill-current" />
@@ -418,7 +1002,7 @@ const ManagePosts: React.FC = () => {
 									{post.postImage ? (
 										<img
 											src={post.postImage}
-											alt={post.title}
+											alt={getLocalizedText(post.title)}
 											className="w-full h-full object-cover"
 										/>
 									) : (
@@ -435,7 +1019,7 @@ const ManagePosts: React.FC = () => {
 											>
 											{post.status.charAt(0).toUpperCase() + post.status.slice(1)}
 											</span>
-										</div>
+									</div>
 								</div>
 
 								{/* Post Content */}
@@ -443,7 +1027,7 @@ const ManagePosts: React.FC = () => {
 									{/* Title and Meta */}
 									<div className="mb-4">
 										<h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 leading-tight">
-											{post.title}
+											{getLocalizedText(post.title)}
 										</h3>
 										
 										<div className="flex items-center flex-wrap gap-4 text-sm text-gray-600 mb-3">
@@ -470,22 +1054,22 @@ const ManagePosts: React.FC = () => {
 
 									{/* Content Preview */}
 									<p className="text-gray-700 line-clamp-3 mb-4 leading-relaxed">
-											{post.content}
-										</p>
+										{getContentPreview(post.content)}
+									</p>
 
 									{/* Tags */}
 										{post.tags && post.tags.length > 0 && (
 										<div className="flex flex-wrap gap-2 mb-4">
-												{post.tags.map((tag, index) => (
-													<span
-														key={index}
-													className="px-3 py-1 bg-gradient-to-r from-teal-50 to-blue-50 text-teal-700 text-xs rounded-full border border-teal-200 font-medium"
-													>
-														#{tag}
-													</span>
-												))}
-											</div>
-										)}
+											{post.tags.map((tag, index) => (
+												<span
+													key={index}
+												className="px-3 py-1 bg-gradient-to-r from-teal-50 to-blue-50 text-teal-700 text-xs rounded-full border border-teal-200 font-medium"
+												>
+													#{tag}
+												</span>
+											))}
+										</div>
+									)}
 
 									{/* Stats and Actions */}
 									<div className="flex items-center justify-between pt-4 border-t border-gray-100">
@@ -501,20 +1085,27 @@ const ManagePosts: React.FC = () => {
 													<span className="text-xs">❤</span>
 												</div>
 												<span>{post.likes || 0}</span>
+											</div>
 										</div>
-									</div>
 
 										<div className="flex items-center space-x-2">
 										<button
+											onClick={() => setShowComments(showComments === post._id ? null : post._id)}
+											className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 hover:scale-105"
+											title="View comments"
+										>
+											<MessageCircle className="w-4 h-4" />
+										</button>
+										<button
 											onClick={() => handleEdit(post)}
-												className="p-2 text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 hover:scale-105"
+											className="p-2 text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 hover:scale-105"
 											title="Edit post"
 										>
 											<Edit className="w-4 h-4" />
 										</button>
 										<button
-											onClick={() => handleDelete(post._id, post.title)}
-												className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 hover:scale-105"
+											onClick={() => handleDelete(post._id, getLocalizedText(post.title))}
+											className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 hover:scale-105"
 											title="Delete post"
 										>
 											<Trash2 className="w-4 h-4" />
@@ -525,6 +1116,18 @@ const ManagePosts: React.FC = () => {
 							</div>
 						)}
 					</motion.div>
+					
+					{/* Comments Section */}
+					{showComments === post._id && (
+						<motion.div
+							initial={{ opacity: 0, y: 10 }}
+							animate={{ opacity: 1, y: 0 }}
+							className="mt-4"
+						>
+							<CommentsSection postId={post._id} />
+						</motion.div>
+					)}
+				</React.Fragment>
 				))}
 			</div>
 
@@ -574,18 +1177,33 @@ const ManagePosts: React.FC = () => {
 						{/* Form */}
 						<div className="p-6 space-y-6">
 							<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-								{/* Title */}
-								<div className="lg:col-span-2">
+								{/* Title EN */}
+								<div>
 									<label className="block text-sm font-medium text-gray-700 mb-2">
-										Title *
+										Title (EN) *
 									</label>
 									<input
 										type="text"
-										value={addFormData.title}
-										onChange={(e) => setAddFormData(prev => ({ ...prev, title: e.target.value }))}
+										value={addTitleEn}
+										onChange={(e) => setAddTitleEn(e.target.value)}
 										required
 										className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-										placeholder="Enter post title"
+										placeholder="Enter post title in English"
+									/>
+								</div>
+								{/* Title AR */}
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">
+										Title (AR) *
+									</label>
+									<input
+										type="text"
+										value={addTitleAr}
+										onChange={(e) => setAddTitleAr(e.target.value)}
+										required
+										dir="rtl"
+										className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+										placeholder="أدخل عنوان المقال بالعربية"
 									/>
 								</div>
 
@@ -633,7 +1251,7 @@ const ManagePosts: React.FC = () => {
 										<option value="">Select a category</option>
 										{categories.map((category) => (
 											<option key={category._id} value={category._id}>
-												{category.name}
+												{getLocalizedText(category.name)}
 											</option>
 										))}
 									</select>
@@ -726,23 +1344,261 @@ const ManagePosts: React.FC = () => {
 									)}
 								</div>
 
-								{/* Content */}
+								{/* Content Editor Toggle */}
 								<div className="lg:col-span-2">
-									<label className="block text-sm font-medium text-gray-700 mb-2">
-										Content *
-									</label>
-									<textarea
-										value={addFormData.content}
-										onChange={(e) => setAddFormData(prev => ({ ...prev, content: e.target.value }))}
-										required
-										rows={12}
-										className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-vertical"
-										placeholder="Write your post content here..."
-									/>
-									<p className="text-sm text-gray-500 mt-2">
-										Minimum 10 characters required. Current: {addFormData.content.length}
-									</p>
+									<div className="flex items-center justify-between mb-4">
+										<label className="block text-sm font-medium text-gray-700">
+											Content Editor
+										</label>
+										<div className="flex items-center space-x-4">
+											<button
+												type="button"
+												onClick={() => setUseRichEditor(false)}
+												className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+													!useRichEditor 
+														? 'bg-teal-600 text-white' 
+														: 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+												}`}
+											>
+												Simple Text
+											</button>
+											<button
+												type="button"
+												onClick={() => setUseRichEditor(true)}
+												className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+													useRichEditor 
+														? 'bg-teal-600 text-white' 
+														: 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+												}`}
+											>
+												Rich Editor
+											</button>
+										</div>
+									</div>
 								</div>
+
+								{/* Content EN/AR */}
+								{!useRichEditor ? (
+									<>
+										<div className="lg:col-span-2">
+											<label className="block text-sm font-medium text-gray-700 mb-2">
+												Content (EN) *
+											</label>
+											<p className="text-sm text-gray-500 mb-2">
+												Tip: Use double line breaks (press Enter twice) to create separate paragraphs.
+											</p>
+											<textarea
+												value={addContentEn}
+												onChange={(e) => setAddContentEn(e.target.value)}
+												required
+												rows={12}
+												className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-vertical"
+												placeholder="Write your post content in English...
+
+Use double line breaks to create separate paragraphs.
+
+Each paragraph will be saved as a separate content block."
+											/>
+										</div>
+										<div className="lg:col-span-2">
+											<label className="block text-sm font-medium text-gray-700 mb-2">
+												Content (AR) *
+											</label>
+											<p className="text-sm text-gray-500 mb-2">
+												نصيحة: استخدم فاصلين أسطر (اضغط Enter مرتين) لإنشاء فقرات منفصلة.
+											</p>
+											<textarea
+												value={addContentAr}
+												onChange={(e) => setAddContentAr(e.target.value)}
+												required
+												dir="rtl"
+												rows={12}
+												className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-vertical"
+												placeholder="اكتب محتوى المقال بالعربية...
+
+استخدم فاصلين أسطر لإنشاء فقرات منفصلة.
+
+كل فقرة ستُحفظ ككتلة محتوى منفصلة."
+											/>
+										</div>
+									</>
+								) : (
+									<>
+										{/* Rich Content Editor for English */}
+										<div className="lg:col-span-2">
+											<label className="block text-sm font-medium text-gray-700 mb-2">
+												Content (EN) *
+											</label>
+											<div className="border border-gray-300 rounded-lg p-4 space-y-4">
+												{addContentBlocksEn.map((block, index) => (
+													<div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+														<div className="flex items-center justify-between mb-2">
+															<span className="text-sm font-medium text-gray-600">
+																{block.type === 'paragraph' ? 'Paragraph' : 'Image'} {index + 1}
+															</span>
+															<div className="flex items-center space-x-2">
+																<button
+																	type="button"
+																	onClick={() => setAddContentBlocksEn(removeContentBlock(addContentBlocksEn, index))}
+																	className="text-red-600 hover:text-red-800"
+																>
+																	<X className="w-4 h-4" />
+																</button>
+															</div>
+														</div>
+														{block.type === 'paragraph' ? (
+															<div className="space-y-2">
+																<input
+																	type="text"
+																	value={block.title || ''}
+																	onChange={(e) => setAddContentBlocksEn(updateContentBlock(addContentBlocksEn, index, { title: e.target.value }))}
+																	placeholder="Paragraph title (optional)"
+																	className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																/>
+																<textarea
+																	value={block.text || ''}
+																	onChange={(e) => setAddContentBlocksEn(updateContentBlock(addContentBlocksEn, index, { text: e.target.value }))}
+																	placeholder="Paragraph text"
+																	rows={3}
+																	className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																/>
+															</div>
+														) : (
+															<div className="space-y-2">
+																<input
+																	type="url"
+																	value={block.imageUrl || ''}
+																	onChange={(e) => setAddContentBlocksEn(updateContentBlock(addContentBlocksEn, index, { imageUrl: e.target.value }))}
+																	placeholder="Image URL"
+																	className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																/>
+																<input
+																	type="text"
+																	value={block.imageAlt || ''}
+																	onChange={(e) => setAddContentBlocksEn(updateContentBlock(addContentBlocksEn, index, { imageAlt: e.target.value }))}
+																	placeholder="Image alt text"
+																	className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																/>
+																<input
+																	type="text"
+																	value={block.imageCaption || ''}
+																	onChange={(e) => setAddContentBlocksEn(updateContentBlock(addContentBlocksEn, index, { imageCaption: e.target.value }))}
+																	placeholder="Image caption"
+																	className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																/>
+															</div>
+														)}
+													</div>
+												))}
+												<div className="flex space-x-2">
+													<button
+														type="button"
+														onClick={() => setAddContentBlocksEn(addContentBlock(addContentBlocksEn, 'paragraph', {}))}
+														className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+													>
+														+ Add Paragraph
+													</button>
+													<button
+														type="button"
+														onClick={() => setAddContentBlocksEn(addContentBlock(addContentBlocksEn, 'image', {}))}
+														className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+													>
+														+ Add Image
+													</button>
+												</div>
+											</div>
+										</div>
+
+										{/* Rich Content Editor for Arabic */}
+										<div className="lg:col-span-2">
+											<label className="block text-sm font-medium text-gray-700 mb-2">
+												Content (AR) *
+											</label>
+											<div className="border border-gray-300 rounded-lg p-4 space-y-4">
+												{addContentBlocksAr.map((block, index) => (
+													<div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+														<div className="flex items-center justify-between mb-2">
+															<span className="text-sm font-medium text-gray-600">
+																{block.type === 'paragraph' ? 'فقرة' : 'صورة'} {index + 1}
+															</span>
+															<div className="flex items-center space-x-2">
+																<button
+																	type="button"
+																	onClick={() => setAddContentBlocksAr(removeContentBlock(addContentBlocksAr, index))}
+																	className="text-red-600 hover:text-red-800"
+																>
+																	<X className="w-4 h-4" />
+																</button>
+															</div>
+														</div>
+														{block.type === 'paragraph' ? (
+															<div className="space-y-2">
+																<input
+																	type="text"
+																	value={block.title || ''}
+																	onChange={(e) => setAddContentBlocksAr(updateContentBlock(addContentBlocksAr, index, { title: e.target.value }))}
+																	placeholder="عنوان الفقرة (اختياري)"
+																	dir="rtl"
+																	className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																/>
+																<textarea
+																	value={block.text || ''}
+																	onChange={(e) => setAddContentBlocksAr(updateContentBlock(addContentBlocksAr, index, { text: e.target.value }))}
+																	placeholder="نص الفقرة"
+																	dir="rtl"
+																	rows={3}
+																	className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																/>
+															</div>
+														) : (
+															<div className="space-y-2">
+																<input
+																	type="url"
+																	value={block.imageUrl || ''}
+																	onChange={(e) => setAddContentBlocksAr(updateContentBlock(addContentBlocksAr, index, { imageUrl: e.target.value }))}
+																	placeholder="رابط الصورة"
+																	className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																/>
+																<input
+																	type="text"
+																	value={block.imageAlt || ''}
+																	onChange={(e) => setAddContentBlocksAr(updateContentBlock(addContentBlocksAr, index, { imageAlt: e.target.value }))}
+																	placeholder="النص البديل للصورة"
+																	dir="rtl"
+																	className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																/>
+																<input
+																	type="text"
+																	value={block.imageCaption || ''}
+																	onChange={(e) => setAddContentBlocksAr(updateContentBlock(addContentBlocksAr, index, { imageCaption: e.target.value }))}
+																	placeholder="تعليق الصورة"
+																	dir="rtl"
+																	className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+																/>
+															</div>
+														)}
+													</div>
+												))}
+												<div className="flex space-x-2">
+													<button
+														type="button"
+														onClick={() => setAddContentBlocksAr(addContentBlock(addContentBlocksAr, 'paragraph', {}))}
+														className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+													>
+														+ إضافة فقرة
+													</button>
+													<button
+														type="button"
+														onClick={() => setAddContentBlocksAr(addContentBlock(addContentBlocksAr, 'image', {}))}
+														className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+													>
+														+ إضافة صورة
+													</button>
+												</div>
+											</div>
+										</div>
+									</>
+								)}
 							</div>
 
 							{/* Submit Button */}
@@ -757,7 +1613,7 @@ const ManagePosts: React.FC = () => {
 								<button
 									type="button"
 									onClick={handleAddPost}
-									disabled={addFormData.content.length < 10 || !addFormData.title || !addFormData.authorName || !addFormData.authorEmail || !addFormData.category || !addFormData.postImage}
+									disabled={addContentEn.length < 10 || addContentAr.length < 10 || !addTitleEn || !addTitleAr || !addFormData.authorName || !addFormData.authorEmail || !addFormData.category || !addFormData.postImage}
 									className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
 								>
 									<Plus className="w-5 h-5" />

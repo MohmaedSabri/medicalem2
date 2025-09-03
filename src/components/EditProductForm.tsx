@@ -7,6 +7,7 @@ import { Product, ProductFormData, Review } from "../types";
 import { useProducts } from "../contexts/ProductsContext";
 import { useSubCategories } from "../hooks/useSubCategories";
 import { reviewApi } from "../services/reviewApi";
+import { useLanguage } from "../contexts/LanguageContext";
 import toast from "react-hot-toast";
 
 interface EditProductFormProps {
@@ -21,25 +22,36 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 	const modalRef = useRef<HTMLDivElement>(null);
 	const { updateProduct } = useProducts();
 	const { data: subcategories = [] } = useSubCategories();
+	const { currentLanguage } = useLanguage();
+
+	// Helper function to get localized text
+	const getLocalizedText = (value: unknown): string => {
+		if (typeof value === 'string') return value;
+		if (typeof value === 'object' && value !== null) {
+			const valueObj = value as Record<string, string>;
+			return valueObj[currentLanguage] || valueObj.en || valueObj.ar || '';
+		}
+		return '';
+	};
 	
 	// Product form state
 	const [form, setForm] = useState<ProductFormData>({
-		name: product.name || "",
-		description: product.description || "",
-		longDescription: product.longDescription || "",
+		name: getLocalizedText(product.name) || "",
+		description: getLocalizedText(product.description) || "",
+		longDescription: getLocalizedText(product.longDescription) || "",
 		price: product.price || 0,
 		subcategory: typeof product.subcategory === 'string' ? product.subcategory : product.subcategory?._id || "",
 		images: product.images || [],
 		rating: product.averageRating || 0,
 		reviews: product.totalReviews || 0,
-		features: product.features || [],
+		features: (product.features || []).map((f: unknown) => typeof f === 'string' ? f : getLocalizedText(f as unknown)),
 		specifications: typeof product.specifications === 'string' 
 			? product.specifications 
 			: Object.entries(product.specifications || {}).map(([key, value]) => `${key}: ${value}`).join(", "),
 		inStock: product.inStock || false,
 		stockQuantity: product.stockQuantity || 0,
-		shipping: product.shipping || "",
-		warranty: product.warranty || "",
+		shipping: getLocalizedText(product.shipping as unknown) || "",
+		warranty: getLocalizedText(product.warranty as unknown) || "",
 		certifications: product.certifications || [],
 	});
 
@@ -108,6 +120,16 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 			// Error loading reviews
 			toast.error("Failed to load reviews");
 		}
+	};
+
+	// Safely render review user (could be string or populated object)
+	const getReviewUserDisplay = (user: unknown): string => {
+		if (typeof user === 'string') return user;
+		if (user && typeof user === 'object') {
+			const u = user as { name?: string; email?: string; username?: string; _id?: string; id?: string };
+			return u.name || u.username || u.email || u._id || u.id || 'User';
+		}
+		return 'User';
 	};
 
 	// Product form handlers
@@ -251,20 +273,36 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 				});
 			}
 
+			const toLocalized = (value: string, original: unknown): { en: string; ar: string } => {
+				const prev = (original && typeof original === 'object') ? (original as { en?: string; ar?: string }) : {};
+				return {
+					en: currentLanguage === 'en' ? value : (prev.en ?? value),
+					ar: currentLanguage === 'ar' ? value : (prev.ar ?? value),
+				};
+			};
+
 			const updatedProduct = {
-				name: form.name,
-				description: form.description,
-				longDescription: form.longDescription,
+				name: toLocalized(form.name, product.name),
+				description: toLocalized(form.description, product.description),
+				longDescription: toLocalized(form.longDescription, product.longDescription),
 				price: form.price,
 				subcategory: form.subcategory,
 				image: form.images[0] || "",
 				images: form.images,
-				features: form.features,
+				features: (form.features as string[]).map((f, idx) => {
+					const prev = Array.isArray(product.features) ? product.features[idx] : undefined;
+					const prevObj = (prev && typeof prev === 'object') ? prev as { en?: string; ar?: string } : {};
+					const prevStr = typeof prev === 'string' ? prev : undefined;
+					return {
+						en: currentLanguage === 'en' ? f : (prevObj.en ?? prevStr ?? f),
+						ar: currentLanguage === 'ar' ? f : (prevObj.ar ?? prevStr ?? f),
+					};
+				}),
 				specifications: specificationsObj,
 				inStock: form.inStock,
 				stockQuantity: form.stockQuantity,
-				shipping: form.shipping,
-				warranty: form.warranty,
+				shipping: toLocalized(form.shipping as string, product.shipping),
+				warranty: toLocalized(form.warranty as string, product.warranty),
 				certifications: form.certifications,
 			};
 
@@ -429,7 +467,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 										<option value=''>Select a subcategory</option>
 										{subcategoriesList.map((subcategory) => (
 											<option key={subcategory.id} value={subcategory.id}>
-												{subcategory.name}
+												{getLocalizedText(subcategory.name)}
 											</option>
 										))}
 									</select>
@@ -576,7 +614,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 												<div
 													key={index}
 													className='flex items-center gap-2 bg-teal-100 text-teal-800 px-3 py-1 rounded-full'>
-													<span className='text-sm'>{feature}</span>
+													<span className='text-sm'>{feature.en}</span>
 													<button
 														type='button'
 														onClick={() => handleRemoveFeature(index)}
@@ -663,7 +701,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 												<div
 													key={index}
 													className='flex items-center gap-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full'>
-													<span className='text-sm'>{cert}</span>
+													<span className='text-sm'>{cert.en}</span>
 													<button
 														type='button'
 														onClick={() => handleRemoveCertification(index)}
@@ -744,7 +782,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 													<div className='flex items-center gap-4 text-sm text-gray-500 mb-2'>
 														<div className='flex items-center gap-1'>
 															<User className='w-4 h-4' />
-															<span className='font-medium text-gray-900'>{review.user}</span>
+															<span className='font-medium text-gray-900'>{getReviewUserDisplay(review.user)}</span>
 														</div>
 														<div className='flex items-center gap-1'>
 															<Calendar className='w-4 h-4' />

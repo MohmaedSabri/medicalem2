@@ -2,14 +2,18 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { productApi, ApiProduct, CreateProductData, UpdateProductData, ReviewData } from '../services/productApi';
 import { queryKeys } from '../config/queryKeys';
+import { Product } from '../types';
 
 // Hook to get all products
-export const useProducts = (filters?: Record<string, any>) => {
+export const useProducts = (filters?: Record<string, string | number | boolean>) => {
   return useQuery({
     queryKey: queryKeys.products.list(filters || {}),
     queryFn: () => productApi.getAllProducts(),
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
+    retry: 1, // Only retry once on failure
+    retryDelay: 1000, // Wait 1 second before retry
+    refetchOnWindowFocus: false, // Don't refetch on window focus
   });
 };
 
@@ -60,7 +64,7 @@ export const useCreateProduct = () => {
         },
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       const errorMessage = error.response?.data?.message || 'Failed to create product';
       toast.error(errorMessage, {
         duration: 4000,
@@ -100,7 +104,7 @@ export const useUpdateProduct = () => {
         },
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       const errorMessage = error.response?.data?.message || 'Failed to update product';
       toast.error(errorMessage, {
         duration: 4000,
@@ -136,7 +140,7 @@ export const useDeleteProduct = () => {
         },
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       const errorMessage = error.response?.data?.message || 'Failed to delete product';
       toast.error(errorMessage, {
         duration: 4000,
@@ -176,7 +180,7 @@ export const useAddReview = () => {
         },
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       const errorMessage = error.response?.data?.message || 'Failed to add review';
       toast.error(errorMessage, {
         duration: 4000,
@@ -217,7 +221,7 @@ export const transformApiProduct = (apiProduct: ApiProduct) => {
 };
 
 // Utility function to transform local product to API format
-export const transformToApiProduct = (localProduct: any): CreateProductData => {
+export const transformToApiProduct = (localProduct: Partial<Product>): CreateProductData => {
   return {
     name: localProduct.name,
     description: localProduct.description,

@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { motion, useInView } from "framer-motion";
 import { Shield, Award, Clock, Users, Zap, Heart } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -11,14 +11,14 @@ const WhyChooseUs: React.FC = () => {
 	const statsRef = useRef<HTMLDivElement | null>(null);
 	const statsInView = useInView(statsRef, { margin: "-100px", amount: 0.3 });
 
-	const stats = [
+	const stats = useMemo(() => [
 		{ label: t('yearsExperience'), value: 15, suffix: "+", icon: Shield },
 		{ label: t('certifiedProducts'), value: 500, suffix: "+", icon: Award },
 		{ label: t('countriesServed'), value: 25, suffix: "+", icon: Clock },
 		{ label: t('happyClients'), value: 10000, suffix: "+", icon: Users },
-	];
+	], [t]);
 
-	const features = [
+	const features = useMemo(() => [
 		{
 			icon: Zap,
 			title: t('cuttingEdgeTechnology'),
@@ -34,11 +34,11 @@ const WhyChooseUs: React.FC = () => {
 			title: t('support247'),
 			description: t('supportDescription'),
 		},
-	];
+	], [t]);
 
 	const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
-	const animateCounters = () => {
+	const animateCounters = useCallback(() => {
 		const durationMs = 1800;
 		const start = performance.now();
 		const frame = (now: number) => {
@@ -48,7 +48,7 @@ const WhyChooseUs: React.FC = () => {
 			if (p < 1) requestAnimationFrame(frame);
 		};
 		requestAnimationFrame(frame);
-	};
+	}, [stats]);
 
 	useEffect(() => {
 		if (statsInView) {
@@ -56,7 +56,7 @@ const WhyChooseUs: React.FC = () => {
 		} else {
 			setCounters([0, 0, 0, 0]);
 		}
-	}, [statsInView]);
+	}, [statsInView, animateCounters]);
 
 	return (
 		<section id='about' className='py-20 bg-white relative pt-24'>
@@ -140,31 +140,75 @@ const WhyChooseUs: React.FC = () => {
 					))}
 				</div>
 
-				{/* CTA Section */}
+				{/* Modern CTA Section */}
 				<motion.div
 					initial={{ opacity: 0, y: 30 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true }}
 					transition={{ duration: 0.6, delay: 0.4 }}
-					className='text-center mt-20'>
-					<div className='bg-[#00B4C1] rounded-2xl p-12 text-white shadow-xl'>
-						<h3 className='text-2xl lg:text-3xl font-bold mb-4'>
-							{t('readyToTransform')}
-						</h3>
-						<p className='text-lg mb-8 opacity-90 max-w-2xl mx-auto'>
-							{t('transformDescription')}
-						</p>
-						<motion.button
-							whileHover={{ scale: 1.05, y: -2 }}
-							whileTap={{ scale: 0.95 }}
-							className='bg-white text-[#00B4C1] px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl'
-							onClick={() =>
-								document
-									.getElementById("contact")
-									?.scrollIntoView({ behavior: "smooth" })
-							}>
-							{t('getFreeConsultation')}
-						</motion.button>
+					className='mt-20'>
+					<div className='bg-gray-50 rounded-3xl p-8 sm:p-12 lg:p-16 relative overflow-hidden'>
+						{/* Background decoration */}
+						<div className='absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-teal-100 to-teal-200 rounded-full opacity-20 transform translate-x-16 -translate-y-16'></div>
+						<div className='absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-teal-100 to-teal-200 rounded-full opacity-20 transform -translate-x-12 translate-y-12'></div>
+						
+						<div className='relative z-10 max-w-4xl mx-auto'>
+							<div className='flex flex-col lg:flex-row items-center justify-between gap-8'>
+								{/* Left Content */}
+								<div className='flex-1 text-left'>
+									<motion.div
+										initial={{ opacity: 0, x: -20 }}
+										whileInView={{ opacity: 1, x: 0 }}
+										viewport={{ once: true }}
+										transition={{ duration: 0.6, delay: 0.2 }}
+										className='mb-6'>
+										<p className='text-sm text-gray-500 font-medium tracking-wide uppercase mb-4'>
+											{t('since2008')}
+										</p>
+										<h3 className='text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6'>
+											{t('weRiseInCare')} 
+											<br />
+											<span className='text-gray-700'>{t('toMakeAnImpact')}</span>
+										</h3>
+										<p className='text-lg text-gray-600 leading-relaxed max-w-2xl'>
+											{t('drivenByOneGoal')}
+										</p>
+									</motion.div>
+								</div>
+								
+								{/* Right Button */}
+								<div className='flex-shrink-0'>
+									<motion.button
+										whileHover={{ scale: 1.05, y: -3 }}
+										whileTap={{ scale: 0.98 }}
+										className='group relative inline-flex items-center gap-3 bg-teal-600 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-2xl hover:shadow-teal-500/50 hover:bg-teal-700 transition-all duration-500 ease-out overflow-hidden'
+										onClick={() =>
+											document
+												.getElementById("contact")
+												?.scrollIntoView({ behavior: "smooth" })
+										}>
+										{/* Animated background glow */}
+										<div className='absolute inset-0 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full'></div>
+										
+										{/* Sparkle effects */}
+										<div className='absolute inset-0 overflow-hidden rounded-full'>
+											<div className='absolute top-2 left-4 w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300 delay-100'></div>
+											<div className='absolute top-3 right-6 w-1.5 h-1.5 bg-yellow-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-300 delay-200'></div>
+											<div className='absolute bottom-3 left-8 w-1 h-1 bg-blue-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-bounce transition-opacity duration-300 delay-300'></div>
+											<div className='absolute bottom-2 right-4 w-1.5 h-1.5 bg-pink-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300 delay-400'></div>
+										</div>
+
+										{/* Button content */}
+										<div className='relative z-10 flex items-center gap-3'>
+											<span className='w-6 h-6 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-sm font-bold group-hover:bg-opacity-30 transition-all duration-300'>
+												+
+											</span>
+											<span className='group-hover:drop-shadow-lg transition-all duration-300'>{t('getFreeConsultation')}</span>
+										</div>
+									</motion.button>
+								</div>
+							</div>
+						</div>
 					</div>
 				</motion.div>
 			</div>

@@ -8,8 +8,8 @@ interface FloatingSocialSidebarProps {
 
 const FloatingSocialSidebar: React.FC<FloatingSocialSidebarProps> = ({ isVisible }) => {
   const socialLinks = [
-    { icon: Mail, href: 'mailto:info@medicaleq.com', label: 'Email', color: 'hover:bg-red-500' },
-    { icon: Phone, href: 'tel:+1234567890', label: 'Phone', color: 'hover:bg-green-500' },
+    { icon: Mail, href: 'mailto:info@dorarmed.com', label: 'Email', color: 'hover:bg-red-500' },
+    { icon: Phone, href: 'tel:+971556707773', label: 'Phone', color: 'hover:bg-green-500' },
     { icon: Facebook, href: 'https://facebook.com', label: 'Facebook', color: 'hover:bg-blue-600' },
     { icon: Twitter, href: 'https://twitter.com', label: 'Twitter', color: 'hover:bg-blue-400' },
     { icon: Instagram, href: 'https://instagram.com', label: 'Instagram', color: 'hover:bg-pink-500' },
@@ -29,7 +29,7 @@ const FloatingSocialSidebar: React.FC<FloatingSocialSidebarProps> = ({ isVisible
             ease: "easeOut",
             type: "tween"
           }}
-          className="fixed left-4 top-[25vh] transform  z-50 hidden lg:block"
+          className="fixed left-4 top-[30vh] transform  z-50 hidden lg:block"
         >
           <div className="flex flex-col space-y-4">
             {socialLinks.map((social, index) => (

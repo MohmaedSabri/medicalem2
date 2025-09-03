@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 
@@ -40,12 +40,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const isAuthenticated = !!user;
 
-  // Check if user is authenticated on app load
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
+  // Cookie utility functions
+  const setCookie = (name: string, value: string, days: number) => {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Strict`;
+  };
 
-  const checkAuthStatus = async () => {
+  const getCookie = (name: string): string | null => {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  };
+
+  const removeCookie = (name: string) => {
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+  };
+
+  const checkAuthStatus = useCallback(async () => {
     try {
       // Check if token exists in cookies
       const token = getCookie('authToken');
@@ -61,13 +78,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(null);
         setIsLoading(false);
       }
-    } catch (error: any) {
+    } catch {
       // Handle any errors
       removeCookie('authToken');
       setUser(null);
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  // Check if user is authenticated on app load
+  useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
@@ -97,10 +119,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         toast.error(data.message || 'Login failed');
         return false;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle specific error messages from API
-      if (error.response?.data?.message) {
-        toast.error(error.response.data.message);
+      if (error && typeof error === 'object' && 'response' in error) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        if (apiError.response?.data?.message) {
+          toast.error(apiError.response.data.message);
+        } else {
+          toast.error('Network error. Please try again.');
+        }
       } else {
         toast.error('Network error. Please try again.');
       }
@@ -121,28 +148,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     navigate('/');
     
     toast.success('Logged out successfully');
-  };
-
-  // Cookie utility functions
-  const setCookie = (name: string, value: string, days: number) => {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Strict`;
-  };
-
-  const getCookie = (name: string): string | null => {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-  };
-
-  const removeCookie = (name: string) => {
-    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
   };
 
   const value: AuthContextType = {

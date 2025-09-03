@@ -17,20 +17,34 @@ const ManageProducts: React.FC = () => {
 	const { data: subcategories = [] } = useSubCategories();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const { isRTL } = useLanguage();
+	const { currentLanguage } = useLanguage();
+
+	// Helper function to get localized text
+	const getLocalizedText = (value: unknown): string => {
+		if (typeof value === 'string') return value;
+		if (typeof value === 'object' && value !== null) {
+			return value[currentLanguage] || value.en || value.ar || '';
+		}
+		return '';
+	};
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedSubcategory, setSelectedSubcategory] = useState("");
 	const subcategoriesList = [
 		{ id: "all", name: "All Subcategories" },
-		...subcategories.map((sub: { _id: string; name: string }) => ({ id: sub._id, name: sub.name }))
+		...subcategories.map((sub: { _id: string; name: string | { en: string; ar: string } }) => ({ 
+			id: sub._id, 
+			name: getLocalizedText(sub.name) 
+		}))
 	];
 	const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 	const [deletingProduct, setDeletingProduct] = useState<string | null>(null);
 
 	const filteredProducts = products.filter((product) => {
+		const productName = getLocalizedText(product.name);
+		const productDescription = getLocalizedText(product.description);
 		const matchesSearch =
-			product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			product.description.toLowerCase().includes(searchTerm.toLowerCase());
+			productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			productDescription.toLowerCase().includes(searchTerm.toLowerCase());
 		const matchesSubcategory =
 			selectedSubcategory === "" ||
 			selectedSubcategory === "all" ||
@@ -51,7 +65,7 @@ const ManageProducts: React.FC = () => {
 
 		if (
 			window.confirm(
-				`Are you sure you want to delete "${product.name}"? This action cannot be undone.`
+				`Are you sure you want to delete "${getLocalizedText(product.name)}"? This action cannot be undone.`
 			)
 		) {
 			setDeletingProduct(productId);
@@ -124,7 +138,7 @@ const ManageProducts: React.FC = () => {
 							className='block w-full pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all appearance-none'>
 							{subcategoriesList.map((subcategory) => (
 								<option key={subcategory.id} value={subcategory.id}>
-									{subcategory.name}
+									{getLocalizedText(subcategory.name)}
 								</option>
 							))}
 						</select>
@@ -182,7 +196,7 @@ const ManageProducts: React.FC = () => {
 													<img
 														className='h-12 w-12 rounded-lg object-cover'
 														src={product.image}
-														alt={product.name}
+														alt={getLocalizedText(product.name)}
 														onError={(e) => {
 															e.currentTarget.src =
 																"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zMCAzMEg3MFY3MEgzMFYzMFoiIGZpbGw9IiNEMUQ1REIiLz4KPHBhdGggZD0iTTM1IDM1VjY1SDY1VjM1SDM1WiIgZmlsbD0iI0M3Q0ZEMiIvPgo8L3N2Zz4K";
@@ -191,7 +205,7 @@ const ManageProducts: React.FC = () => {
 												</div>
 												<div className='ml-4'>
 													<div className='text-sm font-medium text-gray-900'>
-														{product.name}
+														{getLocalizedText(product.name)}
 													</div>
 												</div>
 											</div>
@@ -200,7 +214,7 @@ const ManageProducts: React.FC = () => {
 											<span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800'>
 												{typeof product.subcategory === 'string' 
 													? product.subcategory 
-													: product.subcategory?.name || 'Uncategorized'}
+													: getLocalizedText(product.subcategory?.name) || 'Uncategorized'}
 											</span>
 										</td>
 										<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>

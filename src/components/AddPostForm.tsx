@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { X, Plus, Save, Image as ImageIcon } from "lucide-react";
 import { useCreatePost } from "../hooks/usePosts";
 import { useCategories } from "../contexts/CategoriesContext";
-import { CreatePostData } from "../types";
+import { CreatePostData, ContentBlock, ContentParagraph, ContentImage } from "../types";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../contexts/LanguageContext";
 
@@ -17,11 +17,52 @@ const AddPostForm: React.FC<AddPostFormProps> = ({ onClose }) => {
 	const { mutate: createPost, isPending } = useCreatePost();
 	const { categories } = useCategories();
 	const { t } = useTranslation();
-	const { isRTL } = useLanguage();
+	const { isRTL, currentLanguage } = useLanguage();
+
+	// Helper function to get localized text
+	const getLocalizedText = (value: unknown): string => {
+		if (typeof value === 'string') return value;
+		if (typeof value === 'object' && value !== null) {
+			const valueObj = value as Record<string, string>;
+			return valueObj[currentLanguage] || valueObj.en || valueObj.ar || '';
+		}
+		return '';
+	};
+
+	// Helper functions for managing content blocks
+	const addContentBlock = (blocks: ContentBlock[], type: 'paragraph' | 'image', newBlock: Partial<ContentParagraph> | Partial<ContentImage>): ContentBlock[] => {
+		if (type === 'paragraph') {
+			const paragraphBlock = newBlock as Partial<ContentParagraph>;
+			return [...blocks, {
+				type: 'paragraph',
+				text: paragraphBlock.text || '',
+				title: paragraphBlock.title || ''
+			} as ContentParagraph];
+		} else if (type === 'image') {
+			const imageBlock = newBlock as Partial<ContentImage>;
+			return [...blocks, {
+				type: 'image',
+				imageUrl: imageBlock.imageUrl || '',
+				imageAlt: imageBlock.imageAlt || '',
+				imageCaption: imageBlock.imageCaption || ''
+			} as ContentImage];
+		}
+		return blocks;
+	};
+
+	const updateContentBlock = (blocks: ContentBlock[], index: number, updatedBlock: Partial<ContentParagraph> | Partial<ContentImage>): ContentBlock[] => {
+		return blocks.map((block, i) => 
+			i === index ? { ...block, ...updatedBlock } as ContentBlock : block
+		);
+	};
+
+	const removeContentBlock = (blocks: ContentBlock[], index: number): ContentBlock[] => {
+		return blocks.filter((_, i) => i !== index);
+	};
 
 	const [formData, setFormData] = useState<CreatePostData>({
-		title: "",
-		content: "",
+		title: { en: "", ar: "" },
+		content: { en: [], ar: [] },
 		authorName: "",
 		authorEmail: "",
 		postImage: "",
@@ -32,6 +73,15 @@ const AddPostForm: React.FC<AddPostFormProps> = ({ onClose }) => {
 	});
 
 	const [tagInput, setTagInput] = useState("");
+	const [titleEn, setTitleEn] = useState("");
+	const [titleAr, setTitleAr] = useState("");
+	const [contentEn, setContentEn] = useState("");
+	const [contentAr, setContentAr] = useState("");
+	
+	// Rich content editor states
+	const [contentBlocksEn, setContentBlocksEn] = useState<ContentBlock[]>([]);
+	const [contentBlocksAr, setContentBlocksAr] = useState<ContentBlock[]>([]);
+	const [useRichEditor, setUseRichEditor] = useState(false);
 
 	const handleInputChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -64,7 +114,39 @@ const AddPostForm: React.FC<AddPostFormProps> = ({ onClose }) => {
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		createPost(formData, {
+		
+		// Convert text content to structured content format
+		const convertTextToContentBlocks = (text: string) => {
+			if (!text.trim()) return [];
+			const paragraphs = text.split('\n\n').filter(p => p.trim());
+			return paragraphs.map(paragraph => ({
+				type: "paragraph" as const,
+				text: paragraph.trim()
+			}));
+		};
+
+		// Use rich content blocks if available, otherwise convert from text
+		let structuredContentEn: ContentBlock[];
+		let structuredContentAr: ContentBlock[];
+		
+		if (useRichEditor && (contentBlocksEn.length > 0 || contentBlocksAr.length > 0)) {
+			structuredContentEn = contentBlocksEn;
+			structuredContentAr = contentBlocksAr;
+		} else {
+			structuredContentEn = convertTextToContentBlocks(contentEn);
+			structuredContentAr = convertTextToContentBlocks(contentAr);
+		}
+
+		const payload: CreatePostData = {
+			...formData,
+			title: { en: titleEn, ar: titleAr },
+			content: { 
+				en: structuredContentEn, 
+				ar: structuredContentAr 
+			},
+		};
+
+		createPost(payload, {
 			onSuccess: () => {
 				onClose();
 			},
@@ -98,19 +180,34 @@ const AddPostForm: React.FC<AddPostFormProps> = ({ onClose }) => {
 				{/* Form */}
 				<form onSubmit={handleSubmit} className="p-6 space-y-6">
 					<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-						{/* Title */}
-						<div className="lg:col-span-2">
+						{/* Title EN */}
+						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">
-								Title *
+								Title (EN) *
 							</label>
 							<input
 								type="text"
-								name="title"
-								value={formData.title}
-								onChange={handleInputChange}
+								value={titleEn}
+								onChange={(e) => setTitleEn(e.target.value)}
 								required
 								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-								placeholder="Enter post title"
+								placeholder="Enter post title in English"
+							/>
+						</div>
+
+						{/* Title AR */}
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">
+								Title (AR) *
+							</label>
+							<input
+								type="text"
+								value={titleAr}
+								onChange={(e) => setTitleAr(e.target.value)}
+								required
+								dir="rtl"
+								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								placeholder="أدخل عنوان المقال بالعربية"
 							/>
 						</div>
 
@@ -161,7 +258,7 @@ const AddPostForm: React.FC<AddPostFormProps> = ({ onClose }) => {
 								<option value="">Select a category</option>
 								{categories.map((category) => (
 									<option key={category._id} value={category._id}>
-										{category.name}
+										{getLocalizedText(category.name)}
 									</option>
 								))}
 							</select>
@@ -265,24 +362,258 @@ const AddPostForm: React.FC<AddPostFormProps> = ({ onClose }) => {
 							)}
 						</div>
 
-						{/* Content */}
+						{/* Content Editor Toggle */}
 						<div className="lg:col-span-2">
-							<label className="block text-sm font-medium text-gray-700 mb-2">
-								Content *
-							</label>
-							<textarea
-								name="content"
-								value={formData.content}
-								onChange={handleInputChange}
-								required
-								rows={12}
-								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
-								placeholder="Write your post content here..."
-							/>
-							<p className="text-sm text-gray-500 mt-2">
-								Minimum 10 characters required. Current: {formData.content.length}
-							</p>
+							<div className="flex items-center justify-between mb-4">
+								<label className="block text-sm font-medium text-gray-700">
+									Content Editor
+								</label>
+								<div className="flex items-center space-x-4">
+									<button
+										type="button"
+										onClick={() => setUseRichEditor(false)}
+										className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+											!useRichEditor 
+												? 'bg-blue-600 text-white' 
+												: 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+										}`}
+									>
+										Simple Text
+									</button>
+									<button
+										type="button"
+										onClick={() => setUseRichEditor(true)}
+										className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+											useRichEditor 
+												? 'bg-blue-600 text-white' 
+												: 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+										}`}
+									>
+										Rich Editor
+									</button>
+								</div>
+							</div>
 						</div>
+
+						{/* Content EN/AR */}
+						{!useRichEditor ? (
+							<>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">
+										Content (EN) *
+									</label>
+									<textarea
+										value={contentEn}
+										onChange={(e) => setContentEn(e.target.value)}
+										required
+										rows={8}
+										className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
+										placeholder="Write your post content in English...
+
+Use double line breaks to create separate paragraphs."
+									/>
+									<p className="text-sm text-gray-500 mt-2">
+										Current: {contentEn.length} characters
+									</p>
+								</div>
+
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">
+										Content (AR) *
+									</label>
+									<textarea
+										value={contentAr}
+										onChange={(e) => setContentAr(e.target.value)}
+										required
+										dir="rtl"
+										rows={8}
+										className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
+										placeholder="اكتب محتوى المقال بالعربية...
+
+استخدم فاصلين أسطر لإنشاء فقرات منفصلة."
+									/>
+									<p className="text-sm text-gray-500 mt-2">
+										الحالي: {contentAr.length} حرف
+									</p>
+								</div>
+							</>
+						) : (
+							<>
+								{/* Rich Content Editor for English */}
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">
+										Content (EN) *
+									</label>
+									<div className="border border-gray-300 rounded-lg p-4 space-y-4">
+										{contentBlocksEn.map((block, index) => (
+											<div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+												<div className="flex items-center justify-between mb-2">
+													<span className="text-sm font-medium text-gray-600">
+														{block.type === 'paragraph' ? 'Paragraph' : 'Image'} {index + 1}
+													</span>
+													<div className="flex items-center space-x-2">
+														<button
+															type="button"
+															onClick={() => setContentBlocksEn(removeContentBlock(contentBlocksEn, index))}
+															className="text-red-600 hover:text-red-800"
+														>
+															<X className="w-4 h-4" />
+														</button>
+													</div>
+												</div>
+												{block.type === 'paragraph' ? (
+													<div className="space-y-2">
+														<input
+															type="text"
+															value={block.title || ''}
+															onChange={(e) => setContentBlocksEn(updateContentBlock(contentBlocksEn, index, { title: e.target.value }))}
+															placeholder="Paragraph title (optional)"
+															className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+														/>
+														<textarea
+															value={block.text || ''}
+															onChange={(e) => setContentBlocksEn(updateContentBlock(contentBlocksEn, index, { text: e.target.value }))}
+															placeholder="Paragraph text"
+															rows={3}
+															className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+														/>
+													</div>
+												) : (
+													<div className="space-y-2">
+														<input
+															type="url"
+															value={block.imageUrl || ''}
+															onChange={(e) => setContentBlocksEn(updateContentBlock(contentBlocksEn, index, { imageUrl: e.target.value }))}
+															placeholder="Image URL"
+															className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+														/>
+														<input
+															type="text"
+															value={block.imageAlt || ''}
+															onChange={(e) => setContentBlocksEn(updateContentBlock(contentBlocksEn, index, { imageAlt: e.target.value }))}
+															placeholder="Image alt text"
+															className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+														/>
+														<input
+															type="text"
+															value={block.imageCaption || ''}
+															onChange={(e) => setContentBlocksEn(updateContentBlock(contentBlocksEn, index, { imageCaption: e.target.value }))}
+															placeholder="Image caption"
+															className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+														/>
+													</div>
+												)}
+											</div>
+										))}
+										<div className="flex space-x-2">
+											<button
+												type="button"
+												onClick={() => setContentBlocksEn(addContentBlock(contentBlocksEn, 'paragraph', {}))}
+												className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+											>
+												+ Add Paragraph
+											</button>
+											<button
+												type="button"
+												onClick={() => setContentBlocksEn(addContentBlock(contentBlocksEn, 'image', {}))}
+												className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+											>
+												+ Add Image
+											</button>
+										</div>
+									</div>
+								</div>
+
+								{/* Rich Content Editor for Arabic */}
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">
+										Content (AR) *
+									</label>
+									<div className="border border-gray-300 rounded-lg p-4 space-y-4">
+										{contentBlocksAr.map((block, index) => (
+											<div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+												<div className="flex items-center justify-between mb-2">
+													<span className="text-sm font-medium text-gray-600">
+														{block.type === 'paragraph' ? 'فقرة' : 'صورة'} {index + 1}
+													</span>
+													<div className="flex items-center space-x-2">
+														<button
+															type="button"
+															onClick={() => setContentBlocksAr(removeContentBlock(contentBlocksAr, index))}
+															className="text-red-600 hover:text-red-800"
+														>
+															<X className="w-4 h-4" />
+														</button>
+													</div>
+												</div>
+												{block.type === 'paragraph' ? (
+													<div className="space-y-2">
+														<input
+															type="text"
+															value={block.title || ''}
+															onChange={(e) => setContentBlocksAr(updateContentBlock(contentBlocksAr, index, { title: e.target.value }))}
+															placeholder="عنوان الفقرة (اختياري)"
+															dir="rtl"
+															className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+														/>
+														<textarea
+															value={block.text || ''}
+															onChange={(e) => setContentBlocksAr(updateContentBlock(contentBlocksAr, index, { text: e.target.value }))}
+															placeholder="نص الفقرة"
+															dir="rtl"
+															rows={3}
+															className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+														/>
+													</div>
+												) : (
+													<div className="space-y-2">
+														<input
+															type="url"
+															value={block.imageUrl || ''}
+															onChange={(e) => setContentBlocksAr(updateContentBlock(contentBlocksAr, index, { imageUrl: e.target.value }))}
+															placeholder="رابط الصورة"
+															className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+														/>
+														<input
+															type="text"
+															value={block.imageAlt || ''}
+															onChange={(e) => setContentBlocksAr(updateContentBlock(contentBlocksAr, index, { imageAlt: e.target.value }))}
+															placeholder="النص البديل للصورة"
+															dir="rtl"
+															className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+														/>
+														<input
+															type="text"
+															value={block.imageCaption || ''}
+															onChange={(e) => setContentBlocksAr(updateContentBlock(contentBlocksAr, index, { imageCaption: e.target.value }))}
+															placeholder="تعليق الصورة"
+															dir="rtl"
+															className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+														/>
+													</div>
+												)}
+											</div>
+										))}
+										<div className="flex space-x-2">
+											<button
+												type="button"
+												onClick={() => setContentBlocksAr(addContentBlock(contentBlocksAr, 'paragraph', {}))}
+												className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+											>
+												+ إضافة فقرة
+											</button>
+											<button
+												type="button"
+												onClick={() => setContentBlocksAr(addContentBlock(contentBlocksAr, 'image', {}))}
+												className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+											>
+												+ إضافة صورة
+											</button>
+										</div>
+									</div>
+								</div>
+							</>
+						)}
 					</div>
 
 					{/* Submit Button */}
@@ -296,7 +627,12 @@ const AddPostForm: React.FC<AddPostFormProps> = ({ onClose }) => {
 						</button>
 						<button
 							type="submit"
-							disabled={isPending || formData.content.length < 10}
+							disabled={
+								isPending || 
+								!titleEn.trim() || 
+								!titleAr.trim() ||
+								(useRichEditor ? (contentBlocksEn.length === 0 || contentBlocksAr.length === 0) : (contentEn.length < 10 || contentAr.length < 10))
+							}
 							className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
 						>
 							<Save className="w-5 h-5" />
