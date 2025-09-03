@@ -2,18 +2,18 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Tag, Edit, Trash2, Search, Plus, Eye } from "lucide-react";
+import { Tag, Edit, Trash2, Search, Plus } from "lucide-react";
 import { Category } from "../types";
 import { useCategories } from "../contexts/CategoriesContext";
-import { useNavigate } from "react-router-dom";
 
+import { useClickOutside } from "../hooks/useClickOutside";
+import DeletionModal from "./DeletionModal";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 
 const ManageCategories: React.FC = () => {
 	const { categories, deleteCategory, loading, error } = useCategories();
-	const navigate = useNavigate();
 	const { currentLanguage, isRTL } = useLanguage();
 	const { t } = useTranslation();
 
@@ -33,6 +33,20 @@ const ManageCategories: React.FC = () => {
 	const [newCategory, setNewCategory] = useState({ name: "", description: "" });
 	const [editForm, setEditForm] = useState({ name: "", description: "" });
 	const [isUpdating, setIsUpdating] = useState(false);
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
+		null
+	);
+
+	// Click outside refs
+	const addFormRef = useClickOutside<HTMLDivElement>(
+		() => setShowAddForm(false),
+		showAddForm
+	);
+	const editModalRef = useClickOutside<HTMLDivElement>(() => {
+		setEditingCategory(null);
+		setEditForm({ name: "", description: "" });
+	}, !!editingCategory);
 
 	// Build localized object for add; for update we only overwrite current language
 	const toLocalized = (value: string): { en: string; ar: string } => ({
@@ -69,29 +83,30 @@ const ManageCategories: React.FC = () => {
 		});
 	};
 
-	const handleDelete = async (categoryId: string) => {
-		const category = categories.find((c) => c._id === categoryId);
-		if (!category) return;
+	const handleDelete = (category: Category) => {
+		setCategoryToDelete(category);
+		setShowDeleteModal(true);
+	};
 
-		if (
-			window.confirm(
-				t("confirmDeleteCategory", { name: getLocalizedText(category.name) })
-			)
-		) {
-			setDeletingCategory(categoryId);
-			try {
-				await deleteCategory(categoryId);
-			} catch (error) {
-				// Error deleting category - the mutation hook will handle the error toast
-				console.error("Error deleting category:", error);
-			} finally {
-				setDeletingCategory(null);
-			}
+	const confirmDelete = async () => {
+		if (!categoryToDelete) return;
+
+		setDeletingCategory(categoryToDelete._id);
+		try {
+			await deleteCategory(categoryToDelete._id);
+			setShowDeleteModal(false);
+			setCategoryToDelete(null);
+		} catch (error) {
+			// Error deleting category - the mutation hook will handle the error toast
+			console.error("Error deleting category:", error);
+		} finally {
+			setDeletingCategory(null);
 		}
 	};
 
-	const handleView = (categoryId: string) => {
-		navigate(`/category/${categoryId}`);
+	const cancelDelete = () => {
+		setShowDeleteModal(false);
+		setCategoryToDelete(null);
 	};
 
 	const { addCategory, updateCategory } = useCategories();
@@ -249,7 +264,7 @@ const ManageCategories: React.FC = () => {
 
 				{/* Add Category Form */}
 				{showAddForm && (
-					<div className='mb-6 p-4 bg-gray-50 rounded-lg'>
+					<div ref={addFormRef} className='mb-6 p-4 bg-gray-50 rounded-lg'>
 						<h3 className='text-lg font-semibold text-gray-900 mb-4'>
 							{t("addNewCategory", { defaultValue: "Add New Category" })}
 						</h3>
@@ -381,7 +396,7 @@ const ManageCategories: React.FC = () => {
 												<Edit className='h-4 w-4' />
 											</button>
 											<button
-												onClick={() => handleDelete(category._id)}
+												onClick={() => handleDelete(category)}
 												disabled={deletingCategory === category._id}
 												className='text-red-600 hover:text-red-900 transition-colors disabled:opacity-50'
 												title={t("deleteCategory", {
@@ -400,7 +415,9 @@ const ManageCategories: React.FC = () => {
 				{/* Edit Category Modal */}
 				{editingCategory && (
 					<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-						<div className='bg-white rounded-lg p-6 w-full max-w-md mx-4'>
+						<div
+							ref={editModalRef}
+							className='bg-white rounded-lg p-6 w-full max-w-md mx-4'>
 							<h3 className='text-lg font-semibold text-gray-900 mb-4'>
 								{t("editCategory", { defaultValue: "Edit Category" })}
 							</h3>
@@ -462,6 +479,24 @@ const ManageCategories: React.FC = () => {
 							</form>
 						</div>
 					</div>
+				)}
+
+				{/* Delete Confirmation Modal */}
+				{showDeleteModal && categoryToDelete && (
+					<DeletionModal
+						isOpen={showDeleteModal}
+						onClose={cancelDelete}
+						onConfirm={confirmDelete}
+						title={t("confirmDelete", { defaultValue: "Confirm Delete" })}
+						description={t("deleteCategoryWarning", {
+							defaultValue:
+								"Are you sure you want to delete this category? This action cannot be undone.",
+						})}
+						itemName={getLocalizedText(categoryToDelete.name)}
+						itemDescription={getLocalizedText(categoryToDelete.description)}
+						isDeleting={deletingCategory === categoryToDelete._id}
+						type='category'
+					/>
 				)}
 
 				{/* Empty State */}

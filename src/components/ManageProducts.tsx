@@ -8,6 +8,7 @@ import { useProducts } from "../contexts/ProductsContext";
 import { useSubCategories } from "../hooks/useSubCategories";
 import { useNavigate } from "react-router-dom";
 import EditProductForm from "./EditProductForm";
+import DeletionModal from "./DeletionModal";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../contexts/LanguageContext";
 import { toast } from "react-hot-toast";
@@ -21,23 +22,27 @@ const ManageProducts: React.FC = () => {
 
 	// Helper function to get localized text
 	const getLocalizedText = (value: unknown): string => {
-		if (typeof value === 'string') return value;
-		if (typeof value === 'object' && value !== null) {
-			return value[currentLanguage] || value.en || value.ar || '';
+		if (typeof value === "string") return value;
+		if (typeof value === "object" && value !== null) {
+			return value[currentLanguage] || value.en || value.ar || "";
 		}
-		return '';
+		return "";
 	};
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedSubcategory, setSelectedSubcategory] = useState("");
 	const subcategoriesList = [
 		{ id: "all", name: "All Subcategories" },
-		...subcategories.map((sub: { _id: string; name: string | { en: string; ar: string } }) => ({ 
-			id: sub._id, 
-			name: getLocalizedText(sub.name) 
-		}))
+		...subcategories.map(
+			(sub: { _id: string; name: string | { en: string; ar: string } }) => ({
+				id: sub._id,
+				name: getLocalizedText(sub.name),
+			})
+		),
 	];
 	const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 	const [deletingProduct, setDeletingProduct] = useState<string | null>(null);
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
 	const filteredProducts = products.filter((product) => {
 		const productName = getLocalizedText(product.name);
@@ -48,9 +53,9 @@ const ManageProducts: React.FC = () => {
 		const matchesSubcategory =
 			selectedSubcategory === "" ||
 			selectedSubcategory === "all" ||
-			(selectedSubcategory !== "all" && 
-				(typeof product.subcategory === 'string' 
-					? product.subcategory === selectedSubcategory 
+			(selectedSubcategory !== "all" &&
+				(typeof product.subcategory === "string"
+					? product.subcategory === selectedSubcategory
 					: product.subcategory?._id === selectedSubcategory));
 		return matchesSearch && matchesSubcategory;
 	});
@@ -59,26 +64,36 @@ const ManageProducts: React.FC = () => {
 		setEditingProduct(product);
 	};
 
-	const handleDelete = async (productId: string) => {
-		const product = products.find((p) => p._id === productId);
-		if (!product) return;
+	const handleDelete = (product: Product) => {
+		setProductToDelete(product);
+		setShowDeleteModal(true);
+	};
 
-		if (
-			window.confirm(
-				`Are you sure you want to delete "${getLocalizedText(product.name)}"? This action cannot be undone.`
-			)
-		) {
-			setDeletingProduct(productId);
-			try {
-				// local state update only
-				deleteProduct(productId);
-			} catch (error) {
-				// Error deleting product
-				toast.error("Failed to delete product");
-			} finally {
-				setDeletingProduct(null);
-			}
+	const confirmDelete = async () => {
+		if (!productToDelete) return;
+
+		setDeletingProduct(productToDelete._id);
+		try {
+			// local state update only
+			deleteProduct(productToDelete._id);
+			setShowDeleteModal(false);
+			setProductToDelete(null);
+			toast.success(
+				t("productDeleted", { defaultValue: "Product deleted successfully" })
+			);
+		} catch (error) {
+			// Error deleting product
+			toast.error(
+				t("failedToDeleteProduct", { defaultValue: "Failed to delete product" })
+			);
+		} finally {
+			setDeletingProduct(null);
 		}
+	};
+
+	const cancelDelete = () => {
+		setShowDeleteModal(false);
+		setProductToDelete(null);
 	};
 
 	const handleView = (productId: string) => {
@@ -110,7 +125,7 @@ const ManageProducts: React.FC = () => {
 						onClick={() => navigate("/dashboard?tab=add-product")}
 						className='inline-flex items-center space-x-2 bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors'>
 						<Plus className='h-4 w-4' />
-													<span>{t('addProduct')}</span>
+						<span>{t("addProduct")}</span>
 					</button>
 				</div>
 
@@ -212,9 +227,10 @@ const ManageProducts: React.FC = () => {
 										</td>
 										<td className='px-6 py-4 whitespace-nowrap'>
 											<span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800'>
-												{typeof product.subcategory === 'string' 
-													? product.subcategory 
-													: getLocalizedText(product.subcategory?.name) || 'Uncategorized'}
+												{typeof product.subcategory === "string"
+													? product.subcategory
+													: getLocalizedText(product.subcategory?.name) ||
+													  "Uncategorized"}
 											</span>
 										</td>
 										<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
@@ -246,8 +262,8 @@ const ManageProducts: React.FC = () => {
 													<Edit className='h-4 w-4' />
 												</button>
 												<button
-																					onClick={() => handleDelete(product._id)}
-								disabled={deletingProduct === product._id}
+													onClick={() => handleDelete(product)}
+													disabled={deletingProduct === product._id}
 													className='text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
 													<Trash2 className='h-4 w-4' />
 												</button>
@@ -288,6 +304,24 @@ const ManageProducts: React.FC = () => {
 				<EditProductForm
 					product={editingProduct}
 					onClose={() => setEditingProduct(null)}
+				/>
+			)}
+
+			{/* Delete Confirmation Modal */}
+			{showDeleteModal && productToDelete && (
+				<DeletionModal
+					isOpen={showDeleteModal}
+					onClose={cancelDelete}
+					onConfirm={confirmDelete}
+					title={t("confirmDelete", { defaultValue: "Confirm Delete" })}
+					description={t("deleteProductWarning", {
+						defaultValue:
+							"Are you sure you want to delete this product? This action cannot be undone.",
+					})}
+					itemName={getLocalizedText(productToDelete.name)}
+					itemDescription={getLocalizedText(productToDelete.description)}
+					isDeleting={deletingProduct === productToDelete._id}
+					type='product'
 				/>
 			)}
 		</motion.div>
