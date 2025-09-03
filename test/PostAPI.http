@@ -1,10 +1,14 @@
 ### Post API Documentation
 ### Base URL: http://localhost:5000/api/posts
 
+# Language
+# - Use query param `?lang=en|ar` or header `Accept-Language: ar` to get localized fields under `localized`
+
 # ========================================
 # GET ALL POSTS (WITH PAGINATION & FILTERING)
 # ========================================
-GET {{baseUrl}}/?page=1&limit=10&status=published&featured=false
+
+GET {{baseUrl}}/?page=1&limit=10&status=published&featured=false&lang=ar
 Content-Type: application/json
 
 ### Response (200 OK)
@@ -13,23 +17,77 @@ Content-Type: application/json
   "posts": [
     {
       "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
-      "title": "Getting Started with Node.js",
-      "content": "Node.js is a powerful JavaScript runtime that allows you to build scalable server-side applications. In this comprehensive guide, we'll explore the fundamentals of Node.js development...",
+      "title": {"en":"The Future of Medical Technology: AI and Robotics in Healthcare","ar":"مستقبل التكنولوجيا الطبية: الذكاء الاصطناعي والروبوتات في الرعاية الصحية"},
+      "content": {
+        "en": [
+          {
+            "type": "paragraph",
+            "title": "Introduction to AI in Healthcare",
+            "text": "Artificial Intelligence is revolutionizing the healthcare industry, bringing unprecedented opportunities for improved patient care, diagnostic accuracy, and treatment outcomes."
+          },
+          {
+            "type": "image",
+            "imageUrl": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/ai-healthcare-robot.jpg",
+            "imageAlt": "AI-powered medical robot assisting in surgery",
+            "imageCaption": "Advanced AI systems are now capable of assisting surgeons with precision and accuracy."
+          },
+          {
+            "type": "paragraph",
+            "title": "Robotic Surgery Advancements",
+            "text": "Robotic surgery has evolved significantly over the past decade. Today's surgical robots offer enhanced precision, reduced invasiveness, and faster recovery times."
+          }
+        ],
+        "ar": [
+          {
+            "type": "paragraph",
+            "title": "مقدمة في الذكاء الاصطناعي في الرعاية الصحية",
+            "text": "يحدث الذكاء الاصطناعي ثورة في صناعة الرعاية الصحية، مما يجلب فرصًا غير مسبوقة لتحسين رعاية المرضى ودقة التشخيص ونتائج العلاج."
+          },
+          {
+            "type": "image",
+            "imageUrl": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/ai-healthcare-robot.jpg",
+            "imageAlt": "روبوت طبي مدعوم بالذكاء الاصطناعي يساعد في الجراحة",
+            "imageCaption": "الأنظمة المتقدمة للذكاء الاصطناعي قادرة الآن على مساعدة الجراحين بدقة وموثوقية."
+          },
+          {
+            "type": "paragraph",
+            "title": "تطورات الجراحة الروبوتية",
+            "text": "تطورت الجراحة الروبوتية بشكل كبير على مدى العقد الماضي. تقدم الروبوتات الجراحية اليوم دقة محسنة واجتياحًا أقل وأوقات تعافي أسرع."
+          }
+        ]
+      },
       "authorName": "John Doe",
       "authorEmail": "john.doe@example.com",
       "postImage": "https://example.com/nodejs-guide.jpg",
-      "category": {
-        "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
-        "name": "Programming",
-        "description": "Programming tutorials and guides"
-      },
+      "category": {"_id":"64f...","name":{"en":"Programming","ar":"البرمجة"},"description":{"en":"Programming tutorials and guides","ar":"شروحات ودروس البرمجة"}},
       "tags": ["Node.js", "JavaScript", "Backend"],
       "status": "published",
       "featured": false,
       "views": 1250,
       "likes": 45,
       "createdAt": "2024-01-15T10:30:00.000Z",
-      "updatedAt": "2024-01-15T10:30:00.000Z"
+      "updatedAt": "2024-01-15T10:30:00.000Z",
+      "localized": {
+        "title": "مستقبل التكنولوجيا الطبية: الذكاء الاصطناعي والروبوتات في الرعاية الصحية",
+        "content": [
+          {
+            "type": "paragraph",
+            "title": "مقدمة في الذكاء الاصطناعي في الرعاية الصحية",
+            "text": "يحدث الذكاء الاصطناعي ثورة في صناعة الرعاية الصحية، مما يجلب فرصًا غير مسبوقة لتحسين رعاية المرضى ودقة التشخيص ونتائج العلاج."
+          },
+          {
+            "type": "image",
+            "imageUrl": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/ai-healthcare-robot.jpg",
+            "imageAlt": "روبوت طبي مدعوم بالذكاء الاصطناعي يساعد في الجراحة",
+            "imageCaption": "الأنظمة المتقدمة للذكاء الاصطناعي قادرة الآن على مساعدة الجراحين بدقة وموثوقية."
+          },
+          {
+            "type": "paragraph",
+            "title": "تطورات الجراحة الروبوتية",
+            "text": "تطورت الجراحة الروبوتية بشكل كبير على مدى العقد الماضي. تقدم الروبوتات الجراحية اليوم دقة محسنة واجتياحًا أقل وأوقات تعافي أسرع."
+          }
+        ]
+      }
     }
   ],
   "totalPages": 5,
@@ -51,15 +109,42 @@ Content-Type: application/json
 # ========================================
 # GET POST BY ID
 # ========================================
-GET {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1
+GET {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1?lang=en
 Content-Type: application/json
 
 ### Response (200 OK)
 ```json
 {
   "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
-  "title": "Getting Started with Node.js",
-  "content": "Node.js is a powerful JavaScript runtime that allows you to build scalable server-side applications. In this comprehensive guide, we'll explore the fundamentals of Node.js development, including event-driven programming, non-blocking I/O, and the npm ecosystem. We'll also cover best practices for building production-ready applications and common pitfalls to avoid.",
+  "title": {"en":"The Future of Medical Technology: AI and Robotics in Healthcare","ar":"مستقبل التكنولوجيا الطبية: الذكاء الاصطناعي والروبوتات في الرعاية الصحية"},
+  "content": {
+    "en": [
+      {
+        "type": "paragraph",
+        "title": "Introduction to AI in Healthcare",
+        "text": "Artificial Intelligence is revolutionizing the healthcare industry, bringing unprecedented opportunities for improved patient care, diagnostic accuracy, and treatment outcomes."
+      },
+      {
+        "type": "image",
+        "imageUrl": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/ai-healthcare-robot.jpg",
+        "imageAlt": "AI-powered medical robot assisting in surgery",
+        "imageCaption": "Advanced AI systems are now capable of assisting surgeons with precision and accuracy."
+      }
+    ],
+    "ar": [
+      {
+        "type": "paragraph",
+        "title": "مقدمة في الذكاء الاصطناعي في الرعاية الصحية",
+        "text": "يحدث الذكاء الاصطناعي ثورة في صناعة الرعاية الصحية، مما يجلب فرصًا غير مسبوقة لتحسين رعاية المرضى ودقة التشخيص ونتائج العلاج."
+      },
+      {
+        "type": "image",
+        "imageUrl": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/ai-healthcare-robot.jpg",
+        "imageAlt": "روبوت طبي مدعوم بالذكاء الاصطناعي يساعد في الجراحة",
+        "imageCaption": "الأنظمة المتقدمة للذكاء الاصطناعي قادرة الآن على مساعدة الجراحين بدقة وموثوقية."
+      }
+    ]
+  },
   "authorName": "John Doe",
   "authorEmail": "john.doe@example.com",
   "postImage": "https://example.com/nodejs-guide.jpg",
@@ -74,7 +159,23 @@ Content-Type: application/json
   "views": 1251,
   "likes": 45,
   "createdAt": "2024-01-15T10:30:00.000Z",
-  "updatedAt": "2024-01-15T10:30:00.000Z"
+  "updatedAt": "2024-01-15T10:30:00.000Z",
+  "localized": {
+    "title": "The Future of Medical Technology: AI and Robotics in Healthcare",
+    "content": [
+      {
+        "type": "paragraph",
+        "title": "Introduction to AI in Healthcare",
+        "text": "Artificial Intelligence is revolutionizing the healthcare industry, bringing unprecedented opportunities for improved patient care, diagnostic accuracy, and treatment outcomes."
+      },
+      {
+        "type": "image",
+        "imageUrl": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/ai-healthcare-robot.jpg",
+        "imageAlt": "AI-powered medical robot assisting in surgery",
+        "imageCaption": "Advanced AI systems are now capable of assisting surgeons with precision and accuracy."
+      }
+    ]
+  }
 }
 ```
 
@@ -92,14 +193,51 @@ POST {{baseUrl}}/
 Content-Type: application/json
 
 {
-  "title": "Advanced MongoDB Aggregation",
-  "content": "MongoDB aggregation pipeline is a powerful framework for data processing and analysis. This tutorial covers advanced aggregation operators, pipeline optimization techniques, and real-world examples for complex data transformations.",
-  "authorName": "Jane Smith",
-  "authorEmail": "jane.smith@example.com",
-  "postImage": "https://example.com/mongodb-aggregation.jpg",
+  "title": {"en":"Essential Medical Equipment for Home Healthcare","ar":"المعدات الطبية الأساسية للرعاية الصحية المنزلية"},
+  "content": {
+    "en": [
+      {
+        "type": "paragraph",
+        "title": "Why Home Healthcare Equipment Matters",
+        "text": "With the growing trend of aging populations and the desire for patients to recover in the comfort of their own homes, having the right medical equipment at home has become increasingly important."
+      },
+      {
+        "type": "image",
+        "imageUrl": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/home-healthcare-setup.jpg",
+        "imageAlt": "Complete home healthcare equipment setup",
+        "imageCaption": "A well-equipped home healthcare setup can provide professional-level care in the comfort of home."
+      },
+      {
+        "type": "paragraph",
+        "title": "Essential Monitoring Devices",
+        "text": "Blood pressure monitors, pulse oximeters, and digital thermometers are fundamental tools for home healthcare."
+      }
+    ],
+    "ar": [
+      {
+        "type": "paragraph",
+        "title": "لماذا تهم معدات الرعاية الصحية المنزلية",
+        "text": "مع الاتجاه المتزايد لشيخوخة السكان والرغبة في تعافي المرضى في راحة منازلهم، أصبح امتلاك المعدات الطبية المناسبة في المنزل أمرًا مهمًا بشكل متزايد."
+      },
+      {
+        "type": "image",
+        "imageUrl": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/home-healthcare-setup.jpg",
+        "imageAlt": "إعداد كامل لمعدات الرعاية الصحية المنزلية",
+        "imageCaption": "يمكن لإعداد الرعاية الصحية المنزلية المجهز جيدًا توفير رعاية على مستوى مهني في راحة المنزل."
+      },
+      {
+        "type": "paragraph",
+        "title": "أجهزة المراقبة الأساسية",
+        "text": "مقاييس ضغط الدم وأجهزة قياس النبض ومقاييس الحرارة الرقمية هي أدوات أساسية للرعاية الصحية المنزلية."
+      }
+    ]
+  },
+  "authorName": "Dr. Ahmed Al-Rashid",
+  "authorEmail": "ahmed.alrashid@homehealth.com",
+  "postImage": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/home-healthcare-hero.jpg",
   "category": "64f1a2b3c4d5e6f7g8h9i0j3",
-  "tags": ["MongoDB", "Database", "Aggregation"],
-  "status": "draft",
+  "tags": ["Home Healthcare", "Medical Equipment", "Patient Care"],
+  "status": "published",
   "featured": false
 }
 
@@ -107,8 +245,35 @@ Content-Type: application/json
 ```json
 {
   "_id": "64f1a2b3c4d5e6f7g8h9i0j4",
-  "title": "Advanced MongoDB Aggregation",
-  "content": "MongoDB aggregation pipeline is a powerful framework for data processing and analysis. This tutorial covers advanced aggregation operators, pipeline optimization techniques, and real-world examples for complex data transformations.",
+  "title": {"en":"Essential Medical Equipment for Home Healthcare","ar":"المعدات الطبية الأساسية للرعاية الصحية المنزلية"},
+  "content": {
+    "en": [
+      {
+        "type": "paragraph",
+        "title": "Why Home Healthcare Equipment Matters",
+        "text": "With the growing trend of aging populations and the desire for patients to recover in the comfort of their own homes, having the right medical equipment at home has become increasingly important."
+      },
+      {
+        "type": "image",
+        "imageUrl": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/home-healthcare-setup.jpg",
+        "imageAlt": "Complete home healthcare equipment setup",
+        "imageCaption": "A well-equipped home healthcare setup can provide professional-level care in the comfort of home."
+      }
+    ],
+    "ar": [
+      {
+        "type": "paragraph",
+        "title": "لماذا تهم معدات الرعاية الصحية المنزلية",
+        "text": "مع الاتجاه المتزايد لشيخوخة السكان والرغبة في تعافي المرضى في راحة منازلهم، أصبح امتلاك المعدات الطبية المناسبة في المنزل أمرًا مهمًا بشكل متزايد."
+      },
+      {
+        "type": "image",
+        "imageUrl": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/home-healthcare-setup.jpg",
+        "imageAlt": "إعداد كامل لمعدات الرعاية الصحية المنزلية",
+        "imageCaption": "يمكن لإعداد الرعاية الصحية المنزلية المجهز جيدًا توفير رعاية على مستوى مهني في راحة المنزل."
+      }
+    ]
+  },
   "authorName": "Jane Smith",
   "authorEmail": "jane.smith@example.com",
   "postImage": "https://example.com/mongodb-aggregation.jpg",
@@ -123,7 +288,23 @@ Content-Type: application/json
   "views": 0,
   "likes": 0,
   "createdAt": "2024-01-16T12:00:00.000Z",
-  "updatedAt": "2024-01-16T12:00:00.000Z"
+  "updatedAt": "2024-01-16T12:00:00.000Z",
+  "localized": {
+    "title": "Essential Medical Equipment for Home Healthcare",
+    "content": [
+      {
+        "type": "paragraph",
+        "title": "Why Home Healthcare Equipment Matters",
+        "text": "With the growing trend of aging populations and the desire for patients to recover in the comfort of their own homes, having the right medical equipment at home has become increasingly important."
+      },
+      {
+        "type": "image",
+        "imageUrl": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/home-healthcare-setup.jpg",
+        "imageAlt": "Complete home healthcare equipment setup",
+        "imageCaption": "A well-equipped home healthcare setup can provide professional-level care in the comfort of home."
+      }
+    ]
+  }
 }
 ```
 
@@ -137,7 +318,7 @@ Content-Type: application/json
 ### Response (400 Bad Request - Content Too Short)
 ```json
 {
-  "message": "Content must be at least 10 characters long"
+  "message": "Content.en must be at least 10 characters long"
 }
 ```
 
@@ -151,11 +332,11 @@ Content-Type: application/json
 # ========================================
 # UPDATE POST
 # ========================================
-PATCH {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1
+PATCH {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1?lang=ar
 Content-Type: application/json
 
 {
-  "title": "Getting Started with Node.js - Updated",
+  "title": {"ar":"البدء مع نود.js - محدث"},
   "status": "published",
   "featured": true,
   "tags": ["Node.js", "JavaScript", "Backend", "Tutorial"]
@@ -165,8 +346,35 @@ Content-Type: application/json
 ```json
 {
   "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
-  "title": "Getting Started with Node.js - Updated",
-  "content": "Node.js is a powerful JavaScript runtime that allows you to build scalable server-side applications. In this comprehensive guide, we'll explore the fundamentals of Node.js development...",
+  "title": {"en":"The Future of Medical Technology: AI and Robotics in Healthcare","ar":"مستقبل التكنولوجيا الطبية: الذكاء الاصطناعي والروبوتات في الرعاية الصحية - محدث"},
+  "content": {
+    "en": [
+      {
+        "type": "paragraph",
+        "title": "Introduction to AI in Healthcare",
+        "text": "Artificial Intelligence is revolutionizing the healthcare industry, bringing unprecedented opportunities for improved patient care, diagnostic accuracy, and treatment outcomes."
+      },
+      {
+        "type": "image",
+        "imageUrl": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/ai-healthcare-robot.jpg",
+        "imageAlt": "AI-powered medical robot assisting in surgery",
+        "imageCaption": "Advanced AI systems are now capable of assisting surgeons with precision and accuracy."
+      }
+    ],
+    "ar": [
+      {
+        "type": "paragraph",
+        "title": "مقدمة في الذكاء الاصطناعي في الرعاية الصحية",
+        "text": "يحدث الذكاء الاصطناعي ثورة في صناعة الرعاية الصحية، مما يجلب فرصًا غير مسبوقة لتحسين رعاية المرضى ودقة التشخيص ونتائج العلاج."
+      },
+      {
+        "type": "image",
+        "imageUrl": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/ai-healthcare-robot.jpg",
+        "imageAlt": "روبوت طبي مدعوم بالذكاء الاصطناعي يساعد في الجراحة",
+        "imageCaption": "الأنظمة المتقدمة للذكاء الاصطناعي قادرة الآن على مساعدة الجراحين بدقة وموثوقية."
+      }
+    ]
+  },
   "authorName": "John Doe",
   "authorEmail": "john.doe@example.com",
   "postImage": "https://example.com/nodejs-guide.jpg",
@@ -181,7 +389,23 @@ Content-Type: application/json
   "views": 1251,
   "likes": 45,
   "createdAt": "2024-01-15T10:30:00.000Z",
-  "updatedAt": "2024-01-16T14:30:00.000Z"
+  "updatedAt": "2024-01-16T14:30:00.000Z",
+  "localized": {
+    "title": "مستقبل التكنولوجيا الطبية: الذكاء الاصطناعي والروبوتات في الرعاية الصحية - محدث",
+    "content": [
+      {
+        "type": "paragraph",
+        "title": "مقدمة في الذكاء الاصطناعي في الرعاية الصحية",
+        "text": "يحدث الذكاء الاصطناعي ثورة في صناعة الرعاية الصحية، مما يجلب فرصًا غير مسبوقة لتحسين رعاية المرضى ودقة التشخيص ونتائج العلاج."
+      },
+      {
+        "type": "image",
+        "imageUrl": "https://www.pmemedicalstore.ae/wp-content/uploads/2024/01/ai-healthcare-robot.jpg",
+        "imageAlt": "روبوت طبي مدعوم بالذكاء الاصطناعي يساعد في الجراحة",
+        "imageCaption": "الأنظمة المتقدمة للذكاء الاصطناعي قادرة الآن على مساعدة الجراحين بدقة وموثوقية."
+      }
+    ]
+  }
 }
 ```
 
@@ -231,7 +455,22 @@ Content-Type: application/json
   {
     "_id": "64f1a2b3c4d5e6f7g8h9i0j5",
     "title": "React Hooks Deep Dive",
-    "content": "Explore the power of React Hooks with practical examples and advanced patterns...",
+    "content": {
+      "en": [
+        {
+          "type": "paragraph",
+          "title": "React Hooks Deep Dive",
+          "text": "Explore the power of React Hooks with practical examples and advanced patterns that will transform your React development workflow."
+        }
+      ],
+      "ar": [
+        {
+          "type": "paragraph",
+          "title": "غوص عميق في React Hooks",
+          "text": "استكشف قوة React Hooks مع أمثلة عملية وأنماط متقدمة ستغير طريقة تطوير React الخاصة بك."
+        }
+      ]
+    },
     "authorName": "Alice Johnson",
     "authorEmail": "alice.johnson@example.com",
     "postImage": "https://example.com/react-hooks.jpg",
@@ -264,7 +503,22 @@ Content-Type: application/json
     {
       "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
       "title": "Getting Started with Node.js",
-      "content": "Node.js is a powerful JavaScript runtime...",
+      "content": {
+        "en": [
+          {
+            "type": "paragraph",
+            "title": "Getting Started with Node.js",
+            "text": "Node.js is a powerful JavaScript runtime that allows you to build scalable network applications."
+          }
+        ],
+        "ar": [
+          {
+            "type": "paragraph",
+            "title": "البدء مع نود.js",
+            "text": "نود.js عبارة عن بيئة تشغيل جافاسكريبت قوية تسمح لك ببناء تطبيقات شبكة قابلة للتوسع."
+          }
+        ]
+      },
       "authorName": "John Doe",
       "authorEmail": "john.doe@example.com",
       "category": {
@@ -306,7 +560,22 @@ Content-Type: application/json
     {
       "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
       "title": "Getting Started with Node.js",
-      "content": "Node.js is a powerful JavaScript runtime...",
+      "content": {
+        "en": [
+          {
+            "type": "paragraph",
+            "title": "Getting Started with Node.js",
+            "text": "Node.js is a powerful JavaScript runtime that allows you to build scalable network applications."
+          }
+        ],
+        "ar": [
+          {
+            "type": "paragraph",
+            "title": "البدء مع نود.js",
+            "text": "نود.js عبارة عن بيئة تشغيل جافاسكريبت قوية تسمح لك ببناء تطبيقات شبكة قابلة للتوسع."
+          }
+        ]
+      },
       "authorName": "John Doe",
       "authorEmail": "john.doe@example.com",
       "category": {
@@ -340,7 +609,22 @@ Content-Type: application/json
     {
       "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
       "title": "Getting Started with Node.js",
-      "content": "Node.js is a powerful JavaScript runtime...",
+      "content": {
+        "en": [
+          {
+            "type": "paragraph",
+            "title": "Getting Started with Node.js",
+            "text": "Node.js is a powerful JavaScript runtime that allows you to build scalable network applications."
+          }
+        ],
+        "ar": [
+          {
+            "type": "paragraph",
+            "title": "البدء مع نود.js",
+            "text": "نود.js عبارة عن بيئة تشغيل جافاسكريبت قوية تسمح لك ببناء تطبيقات شبكة قابلة للتوسع."
+          }
+        ]
+      },
       "authorName": "John Doe",
       "authorEmail": "john.doe@example.com",
       "category": {
@@ -473,3 +757,196 @@ GET {{baseUrl}}/?sortBy=likes&sortOrder=desc&page=1&limit=10
 # - Posts support draft, published, and archived statuses
 # - Featured posts can be highlighted on the frontend
 # - Content validation ensures minimum length requirements
+# - Bilingual fields support both English and Arabic content
+# - Use ?lang=ar or ?lang=en to get localized responses
+# - Title and content support bilingual objects with en/ar keys
+# - Content is now structured as arrays of objects with type, title, text, imageUrl, imageAlt, imageCaption
+# - Content types: "paragraph" and "image"
+# - Paragraphs can have optional titles and text content
+# - Images include URL, alt text, and caption for accessibility
+#
+# ========================================
+# LOCALIZATION EXAMPLES
+# ========================================
+#
+# English Request:
+# GET /api/posts?lang=en
+# Response includes: "localized": {"title": "The Future of Medical Technology", "content": [{"type": "paragraph", "title": "Introduction", "text": "AI is revolutionizing healthcare..."}]}
+#
+# Arabic Request:
+# GET /api/posts?lang=ar
+# Response includes: "localized": {"title": "مستقبل التكنولوجيا الطبية", "content": [{"type": "paragraph", "title": "مقدمة", "text": "يحدث الذكاء الاصطناعي ثورة في الرعاية الصحية..."}]}
+#
+# Header-based Language Detection:
+# GET /api/posts
+# Accept-Language: ar
+# Response includes Arabic localized content
+#
+# Bilingual Request Body Example:
+# POST /api/posts
+# {
+#   "title": {"en": "Post Title", "ar": "عنوان المقال"},
+#   "content": {
+#     "en": [
+#       {
+#         "type": "paragraph",
+#         "title": "Introduction",
+#         "text": "Post content in English..."
+#       },
+#       {
+#         "type": "image",
+#         "imageUrl": "https://example.com/image.jpg",
+#         "imageAlt": "Image description",
+#         "imageCaption": "Image caption"
+#       }
+#     ],
+#     "ar": [
+#       {
+#         "type": "paragraph",
+#         "title": "مقدمة",
+#         "text": "محتوى المقال بالعربية..."
+#       },
+#       {
+#         "type": "image",
+#         "imageUrl": "https://example.com/image.jpg",
+#         "imageAlt": "وصف الصورة",
+#         "imageCaption": "تعليق الصورة"
+#       }
+#     ]
+#   },
+#   "authorName": "Author Name",
+#   "authorEmail": "author@example.com",
+#   "category": "CATEGORY_ID"
+# }
+
+# ========================================
+# POST COMMENTS
+# ========================================
+
+POST {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1/comments
+Content-Type: application/json
+
+{
+  "authorName": "John Smith",
+  "authorEmail": "john.smith@example.com",
+  "content": "Great article! Very informative and well-written. Looking forward to more content like this."
+}
+
+### Response (201 Created)
+```json
+{
+  "message": "Comment added successfully",
+  "comment": {
+    "authorName": "John Smith",
+    "authorEmail": "john.smith@example.com",
+    "content": "Great article! Very informative and well-written. Looking forward to more content like this.",
+    "createdAt": "2024-01-15T14:30:00.000Z",
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2"
+  }
+}
+```
+
+### Response (400 Bad Request)
+```json
+{
+  "message": "Author name, email, and content are required"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Post not found"
+}
+```
+
+# ========================================
+# GET POST COMMENTS
+# ========================================
+
+GET {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1/comments?page=1&limit=10
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "comments": [
+    {
+      "authorName": "John Smith",
+      "authorEmail": "john.smith@example.com",
+      "content": "Great article! Very informative and well-written. Looking forward to more content like this.",
+      "createdAt": "2024-01-15T14:30:00.000Z",
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j2"
+    },
+    {
+      "authorName": "Sarah Johnson",
+      "authorEmail": "sarah.johnson@example.com",
+      "content": "Excellent insights! This really helped me understand the topic better.",
+      "createdAt": "2024-01-15T12:15:00.000Z",
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j3"
+    }
+  ],
+  "totalComments": 2,
+  "totalPages": 1,
+  "currentPage": 1,
+  "hasNext": false,
+  "hasPrev": false
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Post not found"
+}
+```
+
+# ========================================
+# DELETE POST COMMENT
+# ========================================
+
+DELETE {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1/comments/64f1a2b3c4d5e6f7g8h9i0j2
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "message": "Comment deleted successfully"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Comment not found"
+}
+```
+
+### Response (404 Not Found - Post)
+```json
+{
+  "message": "Post not found"
+}
+```
+
+# ========================================
+# COMMENT NOTES
+# ========================================
+# - Comments are stored as embedded documents within posts
+# - Comments support pagination with page and limit parameters
+# - Comments are sorted by creation date (newest first)
+# - Author email is automatically converted to lowercase
+# - Comment content is trimmed of whitespace
+# - Comments can be added without authentication
+# - Comment deletion requires authentication (Bearer token)
+# - Comments include author name, email, content, and creation timestamp
+# - Comments support both English and Arabic content
+# - Comment validation ensures content is not empty
+# - Comments are automatically assigned unique IDs
+
+
+
+
+
+

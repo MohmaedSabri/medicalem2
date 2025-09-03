@@ -1,155 +1,130 @@
-import { apiRepo } from "../config/apiRepo";
-import { Post, CreatePostData, UpdatePostData, PostFilters, PostsResponse } from "../types";
-
-// Base URL for posts API
-const POSTS_BASE_URL = "/posts";
+import axiosClient from "../config/axiosClient";
+import { endpoints } from "../config/endpoints";
+import { Post, CreatePostData, UpdatePostData, PostFilters, PostsResponse, Comment, CreateCommentData } from "../types";
 
 // Post API service
 export const postApi = {
   // Get all posts with filters
-  async getAllPosts(filters: PostFilters = {}): Promise<PostsResponse> {
-    try {
-      const queryParams = new URLSearchParams();
-      
-      if (filters.page) queryParams.append('page', filters.page.toString());
-      if (filters.limit) queryParams.append('limit', filters.limit.toString());
-      if (filters.status) queryParams.append('status', filters.status);
-      if (filters.featured !== undefined) queryParams.append('featured', filters.featured.toString());
-      if (filters.category) queryParams.append('category', filters.category);
-      if (filters.search) queryParams.append('search', filters.search);
-      if (filters.sortBy) queryParams.append('sortBy', filters.sortBy);
-      if (filters.sortOrder) queryParams.append('sortOrder', filters.sortOrder);
+  async getAllPosts(filters: PostFilters = {}, language?: string): Promise<PostsResponse> {
+    const queryParams = new URLSearchParams();
+    
+    if (filters.page) queryParams.append('page', filters.page.toString());
+    if (filters.limit) queryParams.append('limit', filters.limit.toString());
+    if (filters.status) queryParams.append('status', filters.status);
+    if (filters.featured !== undefined) queryParams.append('featured', filters.featured.toString());
+    if (filters.category) queryParams.append('category', filters.category);
+    if (filters.search) queryParams.append('search', filters.search);
+    if (filters.sortBy) queryParams.append('sortBy', filters.sortBy);
+    if (filters.sortOrder) queryParams.append('sortOrder', filters.sortOrder);
+    if (language) queryParams.append('lang', language);
 
-      const url = queryParams.toString() ? `${POSTS_BASE_URL}/?${queryParams.toString()}` : POSTS_BASE_URL;
-      const response = await apiRepo.GET(url);
-      return response.data;
-    } catch (error) {
-      // Error fetching posts
-      throw error;
-    }
+    const url = queryParams.toString() ? `${endpoints.POSTS}/?${queryParams.toString()}` : endpoints.POSTS;
+    const response = await axiosClient.get(url);
+    return response.data;
   },
 
   // Get post by ID
-  async getPostById(id: string): Promise<Post> {
-    try {
-      const response = await apiRepo.GET(`${POSTS_BASE_URL}/${id}`);
-      return response.data;
-    } catch (error) {
-      // Error fetching post
-      throw error;
-    }
+  async getPostById(id: string, language?: string): Promise<Post> {
+    const queryParams = new URLSearchParams();
+    if (language) queryParams.append('lang', language);
+    
+    const url = queryParams.toString() 
+      ? `${endpoints.POSTS_BY_ID.replace(':id', id)}?${queryParams.toString()}`
+      : endpoints.POSTS_BY_ID.replace(':id', id);
+    
+    const response = await axiosClient.get(url);
+    return response.data;
   },
 
   // Create new post
   async createPost(postData: CreatePostData): Promise<Post> {
-    try {
-      const response = await apiRepo.POST(POSTS_BASE_URL, postData);
-      return response.data;
-    } catch (error) {
-      // Error creating post
-      throw error;
-    }
+    const response = await axiosClient.post(endpoints.POSTS, postData);
+    return response.data;
   },
 
   // Update post
-  async updatePost(id: string, postData: UpdatePostData): Promise<Post> {
-    try {
-      const response = await apiRepo.PATCH(`${POSTS_BASE_URL}/${id}`, postData);
-      return response.data;
-    } catch (error) {
-      // Error updating post
-      throw error;
-    }
+  async updatePost(id: string, postData: UpdatePostData, language?: string): Promise<Post> {
+    const queryParams = new URLSearchParams();
+    if (language) queryParams.append('lang', language);
+    
+    const url = queryParams.toString() 
+      ? `${endpoints.POSTS_BY_ID.replace(':id', id)}?${queryParams.toString()}`
+      : endpoints.POSTS_BY_ID.replace(':id', id);
+    
+    const response = await axiosClient.patch(url, postData);
+    return response.data;
   },
 
   // Delete post
   async deletePost(id: string): Promise<{ message: string }> {
-    try {
-      const response = await apiRepo.DELETE(`${POSTS_BASE_URL}/${id}`);
-      return response.data;
-    } catch (error) {
-      // Error deleting post
-      throw error;
-    }
+    const response = await axiosClient.delete(endpoints.POSTS_BY_ID.replace(':id', id));
+    return response.data;
   },
 
   // Get featured posts
-  async getFeaturedPosts(limit: number = 5): Promise<Post[]> {
-    try {
-      const response = await apiRepo.GET(`${POSTS_BASE_URL}/featured?limit=${limit}`);
-      return response.data;
-    } catch (error) {
-      // Error fetching featured posts
-      throw error;
-    }
+  async getFeaturedPosts(limit: number = 5, language?: string): Promise<Post[]> {
+    const queryParams = new URLSearchParams();
+    queryParams.append('limit', limit.toString());
+    if (language) queryParams.append('lang', language);
+    
+    const response = await axiosClient.get(`${endpoints.POSTS_FEATURED}?${queryParams.toString()}`);
+    return response.data;
   },
 
   // Search posts
-  async searchPosts(query: string, page: number = 1, limit: number = 10): Promise<PostsResponse> {
-    try {
-      const response = await apiRepo.GET(`${POSTS_BASE_URL}/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
-      return response.data;
-    } catch (error) {
-      // Error searching posts
-      throw error;
-    }
+  async searchPosts(query: string, page: number = 1, limit: number = 10, language?: string): Promise<PostsResponse> {
+    const queryParams = new URLSearchParams();
+    queryParams.append('q', query);
+    queryParams.append('page', page.toString());
+    queryParams.append('limit', limit.toString());
+    if (language) queryParams.append('lang', language);
+    
+    const response = await axiosClient.get(`${endpoints.POSTS_SEARCH}?${queryParams.toString()}`);
+    return response.data;
   },
 
   // Get posts by category
-  async getPostsByCategory(categoryId: string, filters: Omit<PostFilters, 'category'> = {}): Promise<PostsResponse> {
-    try {
-      const queryParams = new URLSearchParams();
-      
-      if (filters.page) queryParams.append('page', filters.page.toString());
-      if (filters.limit) queryParams.append('limit', filters.limit.toString());
-      if (filters.status) queryParams.append('status', filters.status);
-      if (filters.sortBy) queryParams.append('sortBy', filters.sortBy);
-      if (filters.sortOrder) queryParams.append('sortOrder', filters.sortOrder);
+  async getPostsByCategory(categoryId: string, filters: Omit<PostFilters, 'category'> = {}, language?: string): Promise<PostsResponse> {
+    const queryParams = new URLSearchParams();
+    
+    if (filters.page) queryParams.append('page', filters.page.toString());
+    if (filters.limit) queryParams.append('limit', filters.limit.toString());
+    if (filters.status) queryParams.append('status', String(filters.status));
+    if (filters.sortBy) queryParams.append('sortBy', String(filters.sortBy));
+    if (filters.sortOrder) queryParams.append('sortOrder', String(filters.sortOrder));
+    if (language) queryParams.append('lang', language);
 
-      const url = queryParams.toString() 
-        ? `${POSTS_BASE_URL}/category/${categoryId}?${queryParams.toString()}`
-        : `${POSTS_BASE_URL}/category/${categoryId}`;
-      
-      const response = await apiRepo.GET(url);
-      return response.data;
-    } catch (error) {
-      // Error fetching posts by category
-      throw error;
-    }
+    const url = queryParams.toString() 
+      ? `${endpoints.POSTS_BY_CATEGORY.replace(':category', categoryId)}?${queryParams.toString()}`
+      : endpoints.POSTS_BY_CATEGORY.replace(':category', categoryId);
+    
+    const response = await axiosClient.get(url);
+    return response.data;
   },
 
   // Get posts by author
-  async getPostsByAuthor(email: string, filters: Omit<PostFilters, 'search'> = {}): Promise<PostsResponse> {
-    try {
-      const queryParams = new URLSearchParams();
-      
-      if (filters.page) queryParams.append('page', filters.page.toString());
-      if (filters.limit) queryParams.append('limit', filters.limit.toString());
-      if (filters.status) queryParams.append('status', filters.status);
-      if (filters.sortBy) queryParams.append('sortBy', filters.sortBy);
-      if (filters.sortOrder) queryParams.append('sortOrder', filters.sortOrder);
+  async getPostsByAuthor(email: string, filters: Omit<PostFilters, 'search'> = {}, language?: string): Promise<PostsResponse> {
+    const queryParams = new URLSearchParams();
+    
+    if (filters.page) queryParams.append('page', filters.page.toString());
+    if (filters.limit) queryParams.append('limit', filters.limit.toString());
+    if (filters.status) queryParams.append('status', String(filters.status));
+    if (filters.sortBy) queryParams.append('sortBy', String(filters.sortBy));
+    if (filters.sortOrder) queryParams.append('sortOrder', String(filters.sortOrder));
+    if (language) queryParams.append('lang', language);
 
-      const url = queryParams.toString() 
-        ? `${POSTS_BASE_URL}/author/${encodeURIComponent(email)}?${queryParams.toString()}`
-        : `${POSTS_BASE_URL}/author/${encodeURIComponent(email)}`;
-      
-      const response = await apiRepo.GET(url);
-      return response.data;
-    } catch (error) {
-      // Error fetching posts by author
-      throw error;
-    }
+    const url = queryParams.toString() 
+      ? `${endpoints.POSTS_BY_AUTHOR.replace(':email', encodeURIComponent(email))}?${queryParams.toString()}`
+      : endpoints.POSTS_BY_AUTHOR.replace(':email', encodeURIComponent(email));
+    
+    const response = await axiosClient.get(url);
+    return response.data;
   },
 
   // Like a post
   async likePost(id: string): Promise<{ message: string; likes: number }> {
-    try {
-      const response = await apiRepo.POST(`${POSTS_BASE_URL}/${id}/like`);
-      return response.data;
-    } catch (error) {
-      // Error liking post
-      throw error;
-    }
+    const response = await axiosClient.post(endpoints.POSTS_LIKE.replace(':id', id));
+    return response.data;
   },
 
   // Get post statistics
@@ -163,13 +138,38 @@ export const postApi = {
     };
     byStatus: Array<{ _id: string; count: number }>;
   }> {
-    try {
-      const response = await apiRepo.GET(`${POSTS_BASE_URL}/stats`);
-      return response.data;
-    } catch (error) {
-      // Error fetching post stats
-      throw error;
-    }
+    const response = await axiosClient.get(endpoints.POSTS_STATS);
+    return response.data;
+  },
+
+  // Comment functionality
+  // Add comment to post
+  async addComment(postId: string, commentData: CreateCommentData): Promise<{ message: string; comment: Comment }> {
+    const response = await axiosClient.post(endpoints.POSTS_COMMENTS.replace(':id', postId), commentData);
+    return response.data;
+  },
+
+  // Get post comments
+  async getPostComments(postId: string, page: number = 1, limit: number = 10): Promise<{
+    comments: Comment[];
+    totalComments: number;
+    totalPages: number;
+    currentPage: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  }> {
+    const queryParams = new URLSearchParams();
+    queryParams.append('page', page.toString());
+    queryParams.append('limit', limit.toString());
+    
+    const response = await axiosClient.get(`${endpoints.POSTS_COMMENTS.replace(':id', postId)}?${queryParams.toString()}`);
+    return response.data;
+  },
+
+  // Delete post comment
+  async deleteComment(postId: string, commentId: string): Promise<{ message: string }> {
+    const response = await axiosClient.delete(endpoints.POSTS_COMMENT_BY_ID.replace(':postId', postId).replace(':commentId', commentId));
+    return response.data;
   },
 };
 

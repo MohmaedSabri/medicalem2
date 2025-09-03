@@ -14,7 +14,17 @@ const AddProductForm: React.FC = () => {
 	const { addProduct } = useProducts();
 	const { data: subcategories = [] } = useSubCategories();
 	const { t } = useTranslation();
-	const { isRTL } = useLanguage();
+	const { currentLanguage, isRTL } = useLanguage();
+
+	// Helper function to get localized text
+	const getLocalizedText = (value: unknown): string => {
+		if (typeof value === 'string') return value;
+		if (typeof value === 'object' && value !== null) {
+			const valueObj = value as Record<string, string>;
+			return valueObj[currentLanguage] || valueObj.en || valueObj.ar || '';
+		}
+		return '';
+	};
 	const [form, setForm] = useState<ProductFormData>({
 		name: "",
 		description: "",
@@ -44,6 +54,22 @@ const AddProductForm: React.FC = () => {
 	}));
 	const [featuresInput, setFeaturesInput] = useState("");
 	const [certificationsInput, setCertificationsInput] = useState("");
+
+	// Bilingual fields (like Add Post form)
+	const [i18nFields, setI18nFields] = useState({
+		nameEn: "",
+		nameAr: "",
+		descEn: "",
+		descAr: "",
+		longEn: "",
+		longAr: "",
+		shippingEn: "",
+		shippingAr: "",
+		warrantyEn: "",
+		warrantyAr: "",
+	});
+
+	const setField = (key: keyof typeof i18nFields, value: string) => setI18nFields(prev => ({ ...prev, [key]: value }));
 
 	const handleChange = (
 		e: React.ChangeEvent<
@@ -186,12 +212,28 @@ const AddProductForm: React.FC = () => {
 				});
 			}
 
+			const buildLocalized = (fallback: string, en?: string, ar?: string): { en: string; ar: string } => ({
+				en: (en ?? '').trim() || fallback,
+				ar: (ar ?? '').trim() || fallback,
+			});
+
 			const newProduct = {
-				...form,
-				id: Date.now(), // Generate temporary ID
-				image: form.images[0] || "", // Use first image as main image
+				name: buildLocalized(form.name, i18nFields.nameEn, i18nFields.nameAr),
+				description: buildLocalized(form.description, i18nFields.descEn, i18nFields.descAr),
+				longDescription: buildLocalized(form.longDescription, i18nFields.longEn, i18nFields.longAr),
+				price: form.price,
+				subcategory: form.subcategory,
+				image: form.images[0] || "",
+				images: form.images,
+				features: (form.features as string[]).map((f) => ({ en: f, ar: f })),
 				specifications: specificationsObj,
-				reviews: [], // Convert reviews to empty array to match Product type
+				inStock: form.inStock,
+				stockQuantity: form.stockQuantity,
+				shipping: buildLocalized(form.shipping, i18nFields.shippingEn, i18nFields.shippingAr),
+				warranty: buildLocalized(form.warranty, i18nFields.warrantyEn, i18nFields.warrantyAr),
+				certifications: form.certifications,
+				id: Date.now(),
+				reviews: [],
 			};
 
 			// Save to context
@@ -216,6 +258,18 @@ const AddProductForm: React.FC = () => {
 					shipping: "",
 					warranty: "",
 					certifications: [],
+				});
+				setI18nFields({
+					nameEn: "",
+					nameAr: "",
+					descEn: "",
+					descAr: "",
+					longEn: "",
+					longAr: "",
+					shippingEn: "",
+					shippingAr: "",
+					warrantyEn: "",
+					warrantyAr: "",
 				});
 			} else {
 				toast.error("Failed to add product. Please try again.");
@@ -252,6 +306,29 @@ const AddProductForm: React.FC = () => {
 					{/* Basic Information */}
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
 						<div>
+							<label className='block text-sm font-medium text-gray-700 mb-2'>Name (EN)</label>
+							<input
+								type='text'
+								value={i18nFields.nameEn}
+								onChange={(e) => setField('nameEn', e.target.value)}
+								className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+								placeholder='Product name in English'
+							/>
+						</div>
+						<div>
+							<label className='block text-sm font-medium text-gray-700 mb-2'>الاسم (AR)</label>
+							<input
+								type='text'
+								value={i18nFields.nameAr}
+								onChange={(e) => setField('nameAr', e.target.value)}
+								className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+								placeholder='اسم المنتج بالعربية'
+								dir='auto'
+							/>
+						</div>
+					</div>
+					<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+						<div>
 							<label className='block text-sm font-medium text-gray-700 mb-2'>
 								{t('productName')} *
 							</label>
@@ -284,7 +361,7 @@ const AddProductForm: React.FC = () => {
 								<option value=''>Select a subcategory</option>
 								{subcategoriesList.map((subcategory) => (
 									<option key={subcategory.id} value={subcategory.id}>
-										{subcategory.name}
+										{getLocalizedText(subcategory.name)}
 									</option>
 								))}
 							</select>
@@ -295,6 +372,29 @@ const AddProductForm: React.FC = () => {
 					</div>
 
 					{/* Description */}
+					<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+						<div>
+							<label className='block text-sm font-medium text-gray-700 mb-2'>Description (EN)</label>
+							<textarea
+								value={i18nFields.descEn}
+								onChange={(e) => setField('descEn', e.target.value)}
+								rows={3}
+								className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+								placeholder='Short description in English'
+							/>
+						</div>
+						<div>
+							<label className='block text-sm font-medium text-gray-700 mb-2'>الوصف (AR)</label>
+							<textarea
+								value={i18nFields.descAr}
+								onChange={(e) => setField('descAr', e.target.value)}
+								rows={3}
+								className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+								placeholder='الوصف المختصر بالعربية'
+								dir='auto'
+							/>
+						</div>
+					</div>
 					<div>
 						<label className='block text-sm font-medium text-gray-700 mb-2'>
 							Short Description *
@@ -333,6 +433,29 @@ const AddProductForm: React.FC = () => {
 								{errors.longDescription}
 							</p>
 						)}
+					</div>
+					<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+						<div>
+							<label className='block text-sm font-medium text-gray-700 mb-2'>Long Description (EN)</label>
+							<textarea
+								value={i18nFields.longEn}
+								onChange={(e) => setField('longEn', e.target.value)}
+								rows={4}
+								className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+								placeholder='Detailed product description in English'
+							/>
+						</div>
+						<div>
+							<label className='block text-sm font-medium text-gray-700 mb-2'>الوصف المطول (AR)</label>
+							<textarea
+								value={i18nFields.longAr}
+								onChange={(e) => setField('longAr', e.target.value)}
+								rows={4}
+								className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+								placeholder='الوصف المطول بالعربية'
+								dir='auto'
+							/>
+						</div>
 					</div>
 
 					{/* Price and Stock */}
@@ -486,9 +609,26 @@ const AddProductForm: React.FC = () => {
 								name='shipping'
 								value={form.shipping}
 								onChange={handleChange}
-								className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+								className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
 								placeholder='e.g., Free shipping, $10 flat rate'
 							/>
+							<div className='grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3'>
+								<input
+									type='text'
+									value={i18nFields.shippingEn}
+									onChange={(e) => setField('shippingEn', e.target.value)}
+									className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+									placeholder='Shipping (EN)'
+								/>
+								<input
+									type='text'
+									value={i18nFields.shippingAr}
+									onChange={(e) => setField('shippingAr', e.target.value)}
+									className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+									placeholder='الشحن (AR)'
+									dir='auto'
+								/>
+							</div>
 						</div>
 
 						<div>
@@ -500,9 +640,26 @@ const AddProductForm: React.FC = () => {
 								name='warranty'
 								value={form.warranty}
 								onChange={handleChange}
-								className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+								className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
 								placeholder='e.g., 1 year warranty'
 							/>
+							<div className='grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3'>
+								<input
+									type='text'
+									value={i18nFields.warrantyEn}
+									onChange={(e) => setField('warrantyEn', e.target.value)}
+									className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+									placeholder='Warranty (EN)'
+								/>
+								<input
+									type='text'
+									value={i18nFields.warrantyAr}
+									onChange={(e) => setField('warrantyAr', e.target.value)}
+									className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+									placeholder='الضمان (AR)'
+									dir='auto'
+								/>
+							</div>
 						</div>
 					</div>
 
@@ -620,7 +777,7 @@ const AddProductForm: React.FC = () => {
 					</div>
 
 					{/* Submit Button */}
-					<div className='flex justify-end space-x-4'>
+					<div className={`flex justify-end ${isRTL ? 'space-x-reverse space-x-4' : 'space-x-4'}`}>
 						<button
 							type='submit'
 							disabled={isSubmitting}

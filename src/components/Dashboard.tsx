@@ -34,6 +34,16 @@ const Dashboard: React.FC = () => {
 	const location = useLocation();
 	const { t } = useTranslation();
 	const { isRTL, currentLanguage, changeLanguage } = useLanguage();
+
+	// Helper function to get localized text
+	const getLocalizedText = (value: unknown): string => {
+		if (typeof value === 'string') return value;
+		if (typeof value === 'object' && value !== null) {
+			const valueObj = value as Record<string, any>;
+			return valueObj[currentLanguage] || valueObj.en || valueObj.ar || '';
+		}
+		return '';
+	};
 	const [activeTab, setActiveTab] = useState("dashboard");
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -47,15 +57,13 @@ const Dashboard: React.FC = () => {
 	const { data: subcategories = [], isLoading: subcategoriesLoading } =
 		useSubCategories();
 
-	// Use the posts hook to get real-time data
-	const { data: postsData = { posts: [] }, isLoading: postsLoading } = usePosts(
-		{ limit: 100 }
-	);
+	// Use the posts hook to get real-time data with language support
+	const { data: postsData = { posts: [] }, isLoading: postsLoading } = usePosts({ limit: 100 }, currentLanguage);
 
 	// Transform API products to local format for display
 	const products = (apiProducts || []).map((product) => ({
 		id: product._id,
-		name: product.name,
+		name: getLocalizedText(product.name),
 		price: product.price,
 		image: product.image,
 		inStock: product.inStock,
@@ -81,18 +89,16 @@ const Dashboard: React.FC = () => {
 			| { _id: string; name: string; description: string }
 	): string => {
 		if (typeof subcategoryValue === "string") {
-			const subcategory = subcategories.find(
-				(sub) => sub._id === subcategoryValue
-			);
-			return subcategory ? subcategory.name : subcategoryValue;
+			const subcategory = subcategories.find((sub) => sub._id === subcategoryValue);
+			return subcategory ? getLocalizedText(subcategory.name) : subcategoryValue;
 		}
-		return subcategoryValue.name;
+		return getLocalizedText(subcategoryValue.name);
 	};
 
 	// Helper function to get product count for a category (using subcategories)
 	const getProductCountForCategory = (category: {
 		_id: string;
-		name: string;
+		name: string | { en: string; ar: string };
 	}): number => {
 		// Get all subcategories that belong to this category
 		const categorySubcategories = subcategories.filter((sub) =>
@@ -244,16 +250,7 @@ const Dashboard: React.FC = () => {
 				loading: productsLoading,
 			},
 		];
-	}, [
-		products,
-		productsLoading,
-		categories,
-		categoriesLoading,
-		subcategories,
-		subcategoriesLoading,
-		postsData.posts,
-		postsLoading,
-	]);
+	}, [products, productsLoading, categories, categoriesLoading, subcategories, subcategoriesLoading, postsData.posts, postsLoading, t]);
 
 	const renderContent = () => {
 		switch (activeTab) {
@@ -367,7 +364,7 @@ const Dashboard: React.FC = () => {
 														{product.name}
 													</p>
 													<p className='text-sm text-gray-500'>
-														${product.price.toLocaleString()}
+														{t('currencySymbol')} {product.price.toLocaleString()}
 													</p>
 													<p className='text-xs text-gray-400'>
 														{getSubcategoryName(product.subcategory)}
@@ -442,7 +439,7 @@ const Dashboard: React.FC = () => {
 															isRTL ? "text-right" : "text-left"
 														}`}>
 														<p className='font-medium text-gray-900'>
-															{category.name}
+															{getLocalizedText(category.name)}
 														</p>
 														<p className='text-sm text-gray-500'>
 															{productCount} {t("products")}
@@ -511,13 +508,13 @@ const Dashboard: React.FC = () => {
 													isRTL ? "text-right" : "text-left"
 												}`}>
 												<p className='font-medium text-gray-900 line-clamp-1'>
-													{post.title}
+													{getLocalizedText(post.title)}
 												</p>
 												<p className='text-sm text-gray-500'>
 													{post.authorName}
 												</p>
 												<p className='text-xs text-gray-400'>
-													{getSubcategoryName(post.category)}
+													{getLocalizedText(post.category)}
 												</p>
 											</div>
 											<div
@@ -632,8 +629,8 @@ const Dashboard: React.FC = () => {
 
 			{/* Sidebar */}
 			<div
-				className={`fixed inset-y-0 right-0 z-50 w-72 bg-white shadow-xl transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:order-last ${
-					sidebarOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
+				className={`fixed inset-y-0 ${isRTL ? 'right-0' : 'left-0'} z-50 w-72 bg-white shadow-xl transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+					sidebarOpen ? "translate-x-0" : `${isRTL ? 'translate-x-full' : '-translate-x-full'} lg:translate-x-0`
 				}`}>
 				<div className='flex flex-col h-screen'>
 					{/* Header */}
@@ -650,13 +647,13 @@ const Dashboard: React.FC = () => {
 
 					{/* User Info */}
 					<div className='p-6 border-b border-gray-200'>
-						<div className='flex items-center space-x-3'>
+						<div className={`flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse space-x-3' : 'space-x-3'}`}>
 							<div className='w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center'>
 								<span className='text-white font-semibold text-sm'>
 									{user?.name?.charAt(0).toUpperCase()}
 								</span>
 							</div>
-							<div>
+							<div className={`${isRTL ? 'text-right' : 'text-left'}`}>
 								<p className='font-medium text-gray-900'>{user?.name}</p>
 								<p className='text-sm text-gray-500'>{user?.email}</p>
 							</div>
@@ -733,7 +730,7 @@ const Dashboard: React.FC = () => {
 							<Menu className='h-6 w-6' />
 						</button>
 
-						<div className='flex items-center space-x-4'>
+						<div className={`flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse space-x-4' : 'space-x-4'}`}>
 							<h1 className='text-xl font-semibold text-gray-900'>
 								{titleByTab[activeTab] || t("dashboard")}
 							</h1>

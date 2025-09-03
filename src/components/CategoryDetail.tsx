@@ -6,12 +6,26 @@ import { Tag, ArrowLeft, Edit, Trash2 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCategory } from "../hooks/useCategories";
 import { useProducts } from "../contexts/ProductsContext";
+import { useLanguage } from "../contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const CategoryDetail: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const { data: category, isLoading, error } = useCategory(id || "");
 	const { products } = useProducts();
+	const { currentLanguage } = useLanguage();
+	const { t } = useTranslation();
+
+	// Helper function to get localized text
+	const getLocalizedText = (value: any): string => {
+		if (!value) return "";
+		if (typeof value === "string") return value;
+		if (typeof value === "object") {
+			return value[currentLanguage as "en" | "ar"] || value.en || value.ar || "";
+		}
+		return "";
+	};
 
 	// Filter products by this category
 	const categoryProducts = products.filter(product => 
@@ -141,17 +155,17 @@ const CategoryDetail: React.FC = () => {
 									{product.image ? (
 										<img
 											src={product.image}
-											alt={product.name}
+											alt={getLocalizedText(product.name)}
 											className="w-full h-full object-cover rounded-lg"
 										/>
 									) : (
 										<Tag className="h-8 w-8 text-gray-400" />
 									)}
 								</div>
-								<h3 className="font-medium text-gray-900 mb-1 truncate">{product.name}</h3>
-								<p className="text-sm text-gray-600 mb-2 line-clamp-2">{product.description}</p>
+								<h3 className="font-medium text-gray-900 mb-1 truncate">{getLocalizedText(product.name)}</h3>
+								<p className="text-sm text-gray-600 mb-2 line-clamp-2">{getLocalizedText(product.description)}</p>
 								<div className="flex items-center justify-between">
-									<span className="font-semibold text-teal-600">${product.price}</span>
+									<span className="font-semibold text-teal-600">{t('currencySymbol')} {product.price?.toLocaleString()}</span>
 									<span className={`text-sm px-2 py-1 rounded-full ${
 										product.inStock 
 											? "bg-green-100 text-green-800" 

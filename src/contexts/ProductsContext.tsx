@@ -41,7 +41,7 @@ interface ProductsProviderProps {
 export const ProductsProvider: React.FC<ProductsProviderProps> = ({
 	children,
 }) => {
-	// Use React Query hooks
+	// Use React Query hooks with error handling
 	const {
 		data: apiProducts = [],
 		isLoading: loading,
@@ -52,15 +52,22 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
 	const deleteProductMutation = useDeleteProduct();
 
 	// Transform API products to local Product format
-	const products: Product[] = apiProducts.map(transformApiProduct);
+	// Handle case where apiProducts might be undefined or empty
+	let products: Product[] = [];
+	try {
+		products = Array.isArray(apiProducts) ? apiProducts.map(transformApiProduct) : [];
+	} catch (transformError) {
+		console.warn('Error transforming products:', transformError);
+		products = [];
+	}
 
 	const addProduct = async (productData: Omit<Product, "_id">) => {
 		try {
 			const apiProductData = transformToApiProduct(productData);
 			await createProductMutation.mutateAsync(apiProductData);
 			return true;
-		} catch {
-			// Error adding product
+		} catch (error) {
+			console.warn('Error adding product:', error);
 			return false;
 		}
 	};
@@ -69,16 +76,17 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
 		try {
 			const response = await updateProductMutation.mutateAsync({ id, data: transformToApiProduct(productData) });
 			return response;
-		} catch {
-			// Error updating product
+		} catch (error) {
+			console.warn('Error updating product:', error);
+			return null;
 		}
 	};
 
 	const deleteProduct = async (id: string) => {
 		try {
 			await deleteProductMutation.mutateAsync(id);
-		} catch {
-			// Error deleting product
+		} catch (error) {
+			console.warn('Error deleting product:', error);
 		}
 	};
 

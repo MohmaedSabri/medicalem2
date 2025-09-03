@@ -1,59 +1,71 @@
 /** @format */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Heart, ArrowRight, Star, Zap } from "lucide-react";
 import { Product } from "../types";
-import { productApi } from "../services/productApi";
+import { useProducts } from "../hooks/useProducts";
 import { getFavorites, isFavorite, toggleFavorite } from "../utils/favorites";
 import { toast } from "react-hot-toast";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const Favorites: React.FC = () => {
 	const navigate = useNavigate();
-	const [products, setProducts] = useState<Product[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+	const { currentLanguage } = useLanguage();
 	const [favoriteIds, setFavoriteIds] = useState<string[]>(getFavorites());
+	
+	// Use the same hook as ProductsPage for consistency
+	const { data: apiProducts = [], isLoading: loading, error } = useProducts();
 
-	// Load products from API
+	// Helper: get localized text from string or {en, ar}
+	const getLocalizedProductField = (value: any): string => {
+		if (!value) return "";
+		if (typeof value === "string") return value;
+		if (typeof value === "object") {
+			return value[currentLanguage as "en" | "ar"] || value.en || value.ar || "";
+		}
+		return "";
+	};
+
+	// Transform API products to display format using useMemo for performance
+	const products = useMemo(() => 
+		apiProducts.map(product => ({
+			_id: product._id,
+			name: getLocalizedProductField(product.name),
+			description: getLocalizedProductField(product.description),
+			longDescription: getLocalizedProductField(product.longDescription),
+			image: product.image,
+			images: product.images,
+			category: typeof product.subcategory === 'string' ? product.subcategory : getLocalizedProductField(product.subcategory?.name),
+			price: product.price,
+			rating: product.averageRating || 0,
+			reviews: product.reviews || [],
+			features: (product.features || []).map(f => getLocalizedProductField(f)),
+			specifications: product.specifications,
+			inStock: product.inStock,
+			stockQuantity: product.stockQuantity,
+			shipping: getLocalizedProductField(product.shipping),
+			warranty: getLocalizedProductField(product.warranty),
+			certifications: product.certifications,
+		})), [apiProducts, currentLanguage]);
+
+	// Update favorites when localStorage changes (e.g., from other pages)
 	useEffect(() => {
-		const loadProducts = async () => {
-			try {
-				setLoading(true);
-				const apiProducts = await productApi.getAllProducts();
-				
-				// Transform API products to local Product format
-				const transformedProducts = apiProducts.map(product => ({
-					_id: product._id,
-					name: product.name,
-					description: product.description,
-					longDescription: product.longDescription,
-					image: product.image,
-					images: product.images,
-					category: typeof product.category === 'string' ? product.category : product.category.name,
-					price: product.price,
-					rating: product.rating,
-					reviews: product.reviews,
-					features: product.features,
-					specifications: product.specifications,
-					inStock: product.inStock,
-					stockQuantity: product.stockQuantity,
-					shipping: product.shipping,
-					warranty: product.warranty,
-					certifications: product.certifications,
-				}));
-				
-				setProducts(transformedProducts);
-			} catch (err) {
-				// Error loading products
-				toast.error("Failed to load favorite products");
-			} finally {
-				setLoading(false);
-			}
+		const handleStorageChange = () => {
+			setFavoriteIds(getFavorites());
 		};
 
-		loadProducts();
+		// Listen for storage events (changes from other tabs/windows)
+		window.addEventListener('storage', handleStorageChange);
+		
+		// Also check for changes when the page gains focus
+		window.addEventListener('focus', handleStorageChange);
+
+		return () => {
+			window.removeEventListener('storage', handleStorageChange);
+			window.removeEventListener('focus', handleStorageChange);
+		};
 	}, []);
 
 	const handleToggleFavorite = (id: string) => {
@@ -61,10 +73,23 @@ const Favorites: React.FC = () => {
 		setFavoriteIds(next);
 	};
 
-	// Filter products to show only favorites
-	const favoriteProducts = products.filter((product) =>
-		isFavorite(product._id)
+	// Filter products to show only favorites using useMemo for performance
+	const favoriteProducts = useMemo(() => 
+		products.filter((product) => favoriteIds.includes(product._id)),
+		[products, favoriteIds]
 	);
+
+	// Debug logging
+	useEffect(() => {
+		console.log('Favorites Debug Info:');
+		console.log('favoriteIds:', favoriteIds);
+		console.log('products count:', products.length);
+		console.log('favoriteProducts count:', favoriteProducts.length);
+		console.log('localStorage favorites:', getFavorites());
+		if (products.length > 0) {
+			console.log('Sample product ID:', products[0]._id);
+		}
+	}, [favoriteIds, products, favoriteProducts]);
 
 	const formatPrice = (price: number) => {
 		return new Intl.NumberFormat("en-US", {
@@ -74,6 +99,33 @@ const Favorites: React.FC = () => {
 			maximumFractionDigits: 0,
 		}).format(price);
 	};
+
+	// Error state
+	if (error) {
+		return (
+			<div className='min-h-screen bg-gray-50 pt-20'>
+				<div className='container mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+					<div className='text-center py-20'>
+						<div className='text-red-500 mb-4'>
+							<Heart className='w-16 h-16 mx-auto mb-4' />
+						</div>
+						<h3 className='text-2xl font-semibold text-gray-900 mb-2'>
+							Error loading products
+						</h3>
+						<p className='text-gray-600 mb-6'>
+							Failed to load your favorite products. Please try again.
+						</p>
+						<button
+							onClick={() => window.location.reload()}
+							className='bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors'
+						>
+							Retry
+						</button>
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	// Loading state
 	if (loading) {
@@ -171,9 +223,9 @@ const Favorites: React.FC = () => {
 										<button
 											onClick={() => handleToggleFavorite(p._id)}
 											className={`absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-full p-2.5 transition-all duration-300 shadow-lg ${
-												isFavorite(p._id) ? "hover:bg-red-100 text-red-500" : "hover:bg-red-50 text-gray-600"
+												favoriteIds.includes(p._id) ? "hover:bg-red-100 text-red-500" : "hover:bg-red-50 text-gray-600"
 											}`}>
-											<Heart className={`h-4 w-4 ${isFavorite(p._id) ? "fill-red-500 text-red-500" : ""}`} />
+											<Heart className={`h-4 w-4 ${favoriteIds.includes(p._id) ? "fill-red-500 text-red-500" : ""}`} />
 										</button>
 									</div>
 									<div className='p-4'>

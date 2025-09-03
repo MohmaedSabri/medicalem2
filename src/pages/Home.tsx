@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Ceo from "../components/Ceo";
 import Products from "../components/Products";
+import OurTeam from "../components/OurTeam";
 import WhyChooseUs from "../components/WhyChooseUs";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
@@ -53,7 +54,7 @@ const Home: React.FC = () => {
 		<>
 			<FloatingSocialSidebar isVisible={showSocialSidebar} />
 			
-			<div className='min-h-screen bg-white'>
+			<div className='min-h-screen bg-white max-w-full overflow-x-hidden'>
 				<Header />
 				<Hero />
 				<Ceo />
@@ -65,10 +66,14 @@ const Home: React.FC = () => {
 					style={{ height: "80px" }}></svg>
 
 				<Products />
-				{/* Enhanced Diagonal Divider - Products to WhyChooseUs */}
+				
+				{/* Why Choose Us Section */}
 				<WhyChooseUs />
+				
+				{/* Our Team Section - Moved after Why Choose Us */}
+				<OurTeam />
 				{/* Complementary Diagonal Divider - WhyChooseUs to Contact */}
-				<SectionDivider variant='wave' color='url(#gradientWave)' height={120} />
+			
 
 				<svg width='0' height='0'>
 					<defs>
@@ -83,11 +88,6 @@ const Home: React.FC = () => {
 				{/* Simple Bridge */}
 				<SectionBridge variant='gradient'>
 					<div className='text-center py-6'>
-						<div className='flex items-center justify-center space-x-3 mb-3'>
-							<div className='w-2 h-2 bg-teal-500 rounded-full' />
-							<div className='w-2 h-2 bg-blue-500 rounded-full' />
-							<div className='w-2 h-2 bg-purple-500 rounded-full' />
-						</div>
 						<p className='text-sm text-gray-500'>
 							{t('connectingHealthcare')}
 						</p>

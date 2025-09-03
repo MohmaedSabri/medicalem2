@@ -28,11 +28,17 @@ axiosClient.interceptors.request.use(
   (config) => {
     // Get token from cookie
     const token = getCookie('authToken');
+    // Get preferred language from localStorage (defaults to 'en')
+    const preferredLanguage = typeof window !== 'undefined'
+      ? (localStorage.getItem('language') || 'en')
+      : 'en';
     
     // If token exists, add it to Authorization header
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    // Always send Accept-Language so backend can localize
+    config.headers['Accept-Language'] = preferredLanguage;
     
     return config;
   },

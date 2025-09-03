@@ -9,12 +9,24 @@ import { EMAILJS_CONFIG, initEmailJS } from "../config/emailjs";
 import { useSearchParams } from "react-router-dom";
 import { useProducts } from "../contexts/ProductsContext";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "../contexts/LanguageContext";
 import { toast } from "react-hot-toast";
 
 const Contact: React.FC = () => {
 	const { products } = useProducts();
 	const { t } = useTranslation();
+	const { currentLanguage, isRTL } = useLanguage();
 	const [searchParams] = useSearchParams();
+
+	// Helper: get localized text from string or {en, ar}
+	const getLocalizedText = (value: any): string => {
+		if (!value) return "";
+		if (typeof value === "string") return value;
+		if (typeof value === "object") {
+			return value[currentLanguage as "en" | "ar"] || value.en || value.ar || "";
+		}
+		return "";
+	};
 	const productIdFromQuery = searchParams.get("productId");
 	const preselectedProductId = productIdFromQuery || undefined;
 
@@ -27,9 +39,9 @@ const Contact: React.FC = () => {
 
 	const categories = useMemo(
 		() => ["All", ...Array.from(new Set(products.map((p) => 
-		typeof p.subcategory === 'string' ? p.subcategory : p.subcategory?.name
+		getLocalizedText(typeof p.subcategory === 'string' ? p.subcategory : p.subcategory?.name)
 	)))],
-		[products]
+		[products, getLocalizedText]
 	);
 	const [selectedCategory, setSelectedCategory] = useState<string>("All");
 	const [selectedProductId, setSelectedProductId] = useState<string | undefined>(
@@ -53,7 +65,7 @@ const Contact: React.FC = () => {
 			const product = products.find((p) => p._id === preselectedProductId);
 			if (product) {
 				setSelectedProductId(product._id);
-				setSelectedCategory(typeof product.subcategory === 'string' ? product.subcategory : product.subcategory?.name || "");
+				setSelectedCategory(getLocalizedText(typeof product.subcategory === 'string' ? product.subcategory : product.subcategory?.name));
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,7 +82,7 @@ const Contact: React.FC = () => {
 					? products.find((p) => p._id === selectedProductId)
 					: undefined;
 			const orderDetails = selectedProduct
-				? `\n\nOrder Details:\n- Product: ${selectedProduct.name}\n- Category: ${typeof selectedProduct.subcategory === 'string' ? selectedProduct.subcategory : selectedProduct.subcategory?.name || ""}\n- Quantity: ${quantity}`
+				? `\n\nOrder Details:\n- Product: ${getLocalizedText(selectedProduct.name)}\n- Category: ${getLocalizedText(typeof selectedProduct.subcategory === 'string' ? selectedProduct.subcategory : selectedProduct.subcategory?.name)}\n- Quantity: ${quantity}`
 				: selectedCategory !== "All"
 				? `\n\nOrder Details:\n- Category: ${selectedCategory}\n- Product: (not selected)\n- Quantity: ${quantity}`
 				: "";
@@ -80,7 +92,7 @@ const Contact: React.FC = () => {
 				from_email: form.email,
 				from_phone: form.phone,
 				message: `${form.message}${orderDetails}`,
-				to_name: "MedEquip Pro Team",
+				to_name: "Dorar Team",
 			};
 
 			// Send email using EmailJS
@@ -121,7 +133,7 @@ const Contact: React.FC = () => {
 		{
 			icon: Mail,
 			title: t('emailUs'),
-			value: "info@medequippro.com",
+			value: "info@dorarmed.com",
 			description: t('sendUsQuestions'),
 		},
 		{
@@ -237,7 +249,7 @@ const Contact: React.FC = () => {
 							<form onSubmit={handleSubmit} className='space-y-6'>
 								<div className='grid sm:grid-cols-2 gap-6'>
 									<motion.div whileFocus={{ scale: 1.02 }}>
-										<label className='block text-sm font-bold text-gray-800 mb-3 flex items-center space-x-2'>
+										<label className={`block text-sm font-bold text-gray-800 mb-3 flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse space-x-2' : 'space-x-2'}`}>
 											<User className='h-4 w-4 text-teal-600' />
 											<span>{t('fullName')} *</span>
 										</label>
@@ -255,7 +267,7 @@ const Contact: React.FC = () => {
 									</motion.div>
 
 									<motion.div whileFocus={{ scale: 1.02 }}>
-										<label className='block text-sm font-bold text-gray-800 mb-3 flex items-center space-x-2'>
+										<label className={`block text-sm font-bold text-gray-800 mb-3 flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse space-x-2' : 'space-x-2'}`}>
 											<AtSign className='h-4 w-4 text-teal-600' />
 											<span>{t('emailAddress')} *</span>
 										</label>
@@ -274,7 +286,7 @@ const Contact: React.FC = () => {
 								</div>
 
 								<motion.div whileFocus={{ scale: 1.02 }}>
-																			<label className='block text-sm font-bold text-gray-800 mb-3 flex items-center space-x-2'>
+																			<label className={`block text-sm font-bold text-gray-800 mb-3 flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse space-x-2' : 'space-x-2'}`}>
 											<Phone className='h-4 w-4 text-teal-600' />
 											<span>{t('phoneNumber')}</span>
 										</label>
@@ -298,14 +310,14 @@ const Contact: React.FC = () => {
 								{t('category')}
 							</label>
 							<div className='relative'>
-								<Layers className='absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none' />
+								<Layers className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none`} />
 								<select
 									value={selectedCategory}
 									onChange={(e) => {
 										setSelectedCategory(e.target.value);
 										setSelectedProductId(undefined);
 									}}
-									className='appearance-none w-full pl-10 pr-10 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-white hover:border-teal-300'
+									className={`appearance-none w-full ${isRTL ? 'pr-10 pl-10' : 'pl-10 pr-10'} py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-white hover:border-teal-300`}
 								>
 									{categories.map((cat, index) => (
 										<option key={`${cat}-${index}`} value={cat}>
@@ -313,7 +325,7 @@ const Contact: React.FC = () => {
 										</option>
 									))}
 								</select>
-								<ChevronDown className='absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none' />
+								<ChevronDown className={`absolute ${isRTL ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none`} />
 							</div>
 						</motion.div>
 
@@ -322,7 +334,7 @@ const Contact: React.FC = () => {
 								{t('product')}
 							</label>
 							<div className='relative'>
-								<Package className='absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none' />
+								<Package className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none`} />
 								<select
 									value={selectedProductId ?? ""}
 									onChange={(e) =>
@@ -330,21 +342,21 @@ const Contact: React.FC = () => {
 											e.target.value || undefined
 										)
 									}
-									className='appearance-none w-full pl-10 pr-10 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-white hover:border-teal-300'
+									className={`appearance-none w-full ${isRTL ? 'pr-10 pl-10' : 'pl-10 pr-10'} py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-white hover:border-teal-300`}
 								>
 									<option key="select-product" value=''>{t('selectProductOptional')}</option>
 									{products
 										.filter((p) =>
 											selectedCategory === "All" ? true : 
-											(typeof p.subcategory === 'string' ? p.subcategory === selectedCategory : p.subcategory?.name === selectedCategory)
+											getLocalizedText(typeof p.subcategory === 'string' ? p.subcategory : p.subcategory?.name) === selectedCategory
 										)
 										.map((p) => (
 											<option key={p._id} value={p._id}>
-												{p.name}
+												{getLocalizedText(p.name)}
 											</option>
 										))}
 								</select>
-								<ChevronDown className='absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none' />
+								<ChevronDown className={`absolute ${isRTL ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none`} />
 							</div>
 						</motion.div>
 					</div>
@@ -367,6 +379,43 @@ const Contact: React.FC = () => {
 										</div>
 									</motion.div>
 								</div>
+
+								{/* Order Summary */}
+								<motion.div 
+									initial={{ opacity: 0, y: 20 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.5 }}
+									className='bg-[#00B4C1]/5 border-2 border-[#00B4C1]/20 rounded-xl p-6 mb-6'
+								>
+									<div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'} mb-4`}>
+										<div className='w-8 h-8 bg-[#00B4C1] rounded-lg flex items-center justify-center'>
+											<Package className='h-4 w-4 text-white' />
+										</div>
+										<h3 className='text-lg font-bold text-gray-900'>{t('orderSummary')}</h3>
+									</div>
+									
+									<div className='space-y-3'>
+										<div className='flex justify-between items-center py-2 border-b border-[#00B4C1]/10'>
+											<span className='text-sm font-medium text-gray-600'>{t('product')}:</span>
+											<span className='text-sm font-semibold text-gray-900'>
+												{selectedProductId ? 
+													getLocalizedText(products.find(p => p._id === selectedProductId)?.name) || t('noProductSelected')
+													: t('noProductSelected')
+												}
+											</span>
+										</div>
+										
+										<div className='flex justify-between items-center py-2 border-b border-[#00B4C1]/10'>
+											<span className='text-sm font-medium text-gray-600'>{t('quantity')}:</span>
+											<span className='text-sm font-semibold text-gray-900'>{quantity}</span>
+										</div>
+										
+										<div className='flex justify-between items-center py-2'>
+											<span className='text-sm font-medium text-gray-600'>{t('category')}:</span>
+											<span className='text-sm font-semibold text-gray-900'>{selectedCategory}</span>
+										</div>
+									</div>
+								</motion.div>
 
 								<motion.div whileFocus={{ scale: 1.02 }}>
 									<label className='block text-sm font-semibold text-gray-800 mb-2'>
@@ -434,70 +483,141 @@ const Contact: React.FC = () => {
 						<div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-teal-400/10 to-blue-400/10 rounded-full translate-y-12 translate-x-12"></div>
 						
 						<div className="relative">
-							<div className="flex items-center space-x-3 mb-8">
-								<div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-									<Package className="h-6 w-6 text-white" />
+							{/* Location Header */}
+							<div className={`flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse space-x-3' : 'space-x-3'} mb-6`}>
+								<div className='w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center'>
+									<MapPin className='h-5 w-5 text-white' />
 								</div>
-								<h3 className='text-2xl font-bold bg-gradient-to-r from-gray-900 to-blue-700 bg-clip-text text-transparent'>
-									{t('orderSummary')}
+								<h3 className={`text-2xl font-semibold text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
+									{t('ourLocation')}
 								</h3>
 							</div>
-						<div className='space-y-4 mb-8'>
-							<div className='flex items-center gap-3 text-gray-700'>
-								<Package className='h-5 w-5 text-teal-600' />
-								<span className='font-medium'>
-									{selectedProductId ? products.find((p) => p._id === selectedProductId)?.name : t('noProductSelected')}
-								</span>
-							</div>
-							<div className='flex items-center gap-3 text-gray-700'>
-								<MapPin className='h-5 w-5 text-teal-600' />
-								<span className='font-medium'>{t('category')}: {selectedCategory}</span>
-							</div>
-							<div className='flex items-center gap-3 text-gray-700'>
-								<span className='inline-flex items-center justify-center w-6 h-6 rounded-full bg-teal-50 text-teal-700 border border-teal-100 text-sm'>#</span>
-								<span className='font-medium'>{t('quantity')}: {quantity}</span>
-							</div>
-						</div>
 
-						<h3 className='text-2xl font-semibold text-gray-900 mb-6'>
-							{t('ourLocation')}
-						</h3>
-						<div className='relative h-64 bg-gray-100 rounded-lg overflow-hidden'>
-							<img
-								src='https://images.pexels.com/photos/1692693/pexels-photo-1692693.jpeg?auto=compress&cs=tinysrgb&w=800'
-								alt='Medical facility'
-								className='w-full h-full object-cover'
-							/>
-							<div className='absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end'>
-								<div className='p-4 text-white'>
-									<p className='font-semibold'>{t('medEquipProHeadquarters')}</p>
-									<p className='text-sm opacity-90'>
-										{t('medicalDistrictNewYork')}
-									</p>
+							{/* Map Section */}
+							<div className='relative h-80 bg-gray-100 rounded-xl overflow-hidden mb-6 shadow-lg'>
+								<iframe
+									src="https://maps.google.com/maps?q=25.233028,55.319222&hl=en&z=16&output=embed"
+									width="100%"
+									height="100%"
+									style={{ border: 0 }}
+									allowFullScreen
+									loading="lazy"
+									referrerPolicy="no-referrer-when-downgrade"
+									title="Dorar Medical Equipment Location"
+								/>
+								<div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent'>
+									<div className={`p-4 text-white ${isRTL ? 'text-right' : 'text-left'}`}>
+										<p className='font-bold text-lg flex items-center'>
+											<MapPin className={`h-5 w-5 ${isRTL ? 'ml-2' : 'mr-2'} text-red-400`} />
+											{t('medEquipProHeadquarters')}
+										</p>
+										<p className='text-sm opacity-90 mt-1'>
+											{t('medicalDistrictNewYork')}
+										</p>
+									</div>
 								</div>
 							</div>
-						</div>
 
-						<div className='mt-6 space-y-4'>
-							<div className='flex items-center space-x-3'>
-								<Clock className='h-5 w-5 text-teal-600' />
-								<div>
-									<p className='font-medium text-gray-900'>{t('businessHours')}</p>
-									<p className='text-sm text-gray-600'>
-										{t('mondayFriday')}
-									</p>
+							{/* Contact Information Section */}
+							<div className='space-y-4 mb-6'>
+								{/* Sales Phone Number */}
+								<a 
+									href="tel:+971556707773" 
+									className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''} bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all duration-200 cursor-pointer group`}
+								>
+									<div className='flex-shrink-0'>
+										<div className='w-12 h-12 bg-green-100 rounded-full flex items-center justify-center group-hover:bg-green-200 transition-colors'>
+											<Phone className='h-6 w-6 text-green-600' />
+										</div>
+									</div>
+									<div className={`${isRTL ? 'mr-4 text-right' : 'ml-4 text-left'} flex-1`}>
+										<p className='text-sm text-gray-500 font-medium group-hover:text-gray-600'>
+											{currentLanguage === 'ar' ? 'رقم المبيعات 📞' : 'Sales Number 📞'}
+										</p>
+										<p className='text-lg font-semibold text-gray-900 group-hover:text-green-600 transition-colors' dir="ltr">
+											+971 55 670 7773
+										</p>
+									</div>
+								</a>
+
+								{/* Email Address */}
+								<a 
+									href="mailto:info@dorarmed.com" 
+									className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''} bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-blue-200 transition-all duration-200 cursor-pointer group`}
+								>
+									<div className='flex-shrink-0'>
+										<div className='w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors'>
+											<Mail className='h-6 w-6 text-blue-600' />
+										</div>
+									</div>
+									<div className={`${isRTL ? 'mr-4 text-right' : 'ml-4 text-left'} flex-1`}>
+										<p className='text-sm text-gray-500 font-medium group-hover:text-gray-600'>
+											{currentLanguage === 'ar' ? 'الإيميل ✉️' : 'Email ✉️'}
+										</p>
+										<p className='text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors'>
+											info@dorarmed.com
+										</p>
+									</div>
+								</a>
+
+								{/* Written Address */}
+								<a 
+									href="https://maps.google.com/maps?q=25.233028,55.319222&hl=en&z=16" 
+									target="_blank" 
+									rel="noopener noreferrer"
+									className={`flex items-start ${isRTL ? 'flex-row-reverse' : ''} bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-red-200 transition-all duration-200 cursor-pointer group`}
+								>
+									<div className='flex-shrink-0'>
+										<div className='w-12 h-12 bg-red-100 rounded-full flex items-center justify-center group-hover:bg-red-200 transition-colors'>
+											<MapPin className='h-6 w-6 text-red-600' />
+										</div>
+									</div>
+									<div className={`${isRTL ? 'mr-4 text-right' : 'ml-4 text-left'} flex-1`}>
+										<p className='text-sm text-gray-500 font-medium group-hover:text-gray-600'>
+											{currentLanguage === 'ar' ? 'العنوان 📍' : 'Address 📍'}
+										</p>
+										<p className='text-lg font-semibold text-gray-900 group-hover:text-red-600 transition-colors leading-relaxed'>
+											{t('medicalDistrictNewYork')}
+										</p>
+										<p className='text-xs text-gray-400 mt-1 group-hover:text-gray-500'>
+											{currentLanguage === 'ar' ? 'انقر للحصول على الاتجاهات' : 'Click for directions'}
+										</p>
+									</div>
+								</a>
+							</div>
+
+							{/* Info Cards */}
+							<div className='space-y-4'>
+								{/* Business Hours Card */}
+								<div className={`bg-white rounded-xl p-4 shadow-sm border border-gray-100 ${isRTL ? 'text-right' : 'text-left'}`}>
+									<div className={`flex items-start ${isRTL ? 'flex-row-reverse space-x-reverse space-x-3' : 'space-x-3'}`}>
+										<div className='w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0'>
+											<Clock className='h-4 w-4 text-blue-600' />
+										</div>
+										<div className='flex-1'>
+											<p className='font-semibold text-gray-900 text-sm'>{t('businessHours')}</p>
+											<p className='text-xs text-gray-600 mt-1'>
+												{t('mondayFriday')}
+											</p>
+										</div>
+									</div>
+								</div>
+
+								{/* Emergency Support Card */}
+								<div className={`bg-white rounded-xl p-4 shadow-sm border border-gray-100 ${isRTL ? 'text-right' : 'text-left'}`}>
+									<div className={`flex items-start ${isRTL ? 'flex-row-reverse space-x-reverse space-x-3' : 'space-x-3'}`}>
+										<div className='w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0'>
+											<Phone className='h-4 w-4 text-red-600' />
+										</div>
+										<div className='flex-1'>
+											<p className='font-semibold text-gray-900 text-sm'>{t('emergencySupport')}</p>
+											<p className='text-xs text-gray-600 mt-1'>
+												{t('available247')}
+											</p>
+										</div>
+									</div>
 								</div>
 							</div>
-							<div className='flex items-center space-x-3'>
-								<Phone className='h-5 w-5 text-teal-600' />
-								<div>
-									<p className='font-medium text-gray-900'>{t('emergencySupport')}</p>
-									<p className='text-sm text-gray-600'>
-										{t('available247')}
-									</p>
-								</div>
-							</div>
-						</div>
 						</div>
 					</motion.div>
 				</div>

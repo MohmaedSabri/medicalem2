@@ -14,19 +14,44 @@ import {
 	User,
 	Calendar,
 	Plus,
-	Eye,
 } from "lucide-react";
 import { Product, Review } from "../types";
 import { reviewApi } from "../services/reviewApi";
 import axiosClient from "../config/axiosClient";
 import { endpoints } from "../config/endpoints";
 import { useSubCategories } from "../hooks/useSubCategories";
+import { useLanguage } from "../contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const ProductDetail: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
+	const { currentLanguage } = useLanguage();
+	const { t } = useTranslation();
 	const [product, setProduct] = useState<Product | null>(null);
 	const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+
+	// Helper: get localized text from string or {en, ar}
+	const getLocalizedProductField = (value: any): string => {
+		if (!value) return "";
+		if (typeof value === "string") return value;
+		if (typeof value === "object") {
+			return value[currentLanguage as "en" | "ar"] || value.en || value.ar || "";
+		}
+		return "";
+	};
+
+	// Helper: get localized category name
+	const getLocalizedCategoryName = (category: any): string => {
+		if (!category) return "";
+		return getLocalizedProductField(category.name);
+	};
+
+	// Helper: get localized text (alias for getLocalizedProductField)
+	const getLocalizedText = (value: any): string => {
+		return getLocalizedProductField(value);
+	};
+
 	const [loading, setLoading] = useState(false);
 	const [selectedImage, setSelectedImage] = useState(0);
 	const [reviews, setReviews] = useState<Review[]>([]);
@@ -37,7 +62,7 @@ const ProductDetail: React.FC = () => {
 		comment: "",
 		user: "",
 	});
-	const [viewCount, setViewCount] = useState(0);
+
 	const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 	const [selectedModalImage, setSelectedModalImage] = useState("");
 	
@@ -50,6 +75,16 @@ const ProductDetail: React.FC = () => {
 		name: sub.name,
 	}));
 
+	const resolveText = (value: any, localized?: string): string => {
+		if (localized && typeof localized === 'string') return localized;
+		if (value == null) return '';
+		if (typeof value === 'string') return value;
+		if (typeof value === 'object') {
+			return value[currentLanguage as 'en' | 'ar'] || value.en || value.ar || '';
+		}
+		return String(value);
+	};
+
 	// Load product data
 	useEffect(() => {
 		if (!id) return;
@@ -59,8 +94,19 @@ const ProductDetail: React.FC = () => {
 			try {
 				// Fetch product by ID using axios client and endpoints
 				const productResponse = await axiosClient.get(endpoints.PRODUCTS_BY_ID.replace(':id', id));
-				const productData = productResponse.data;
-				setProduct(productData);
+				const raw = productResponse.data;
+				// Normalize localized fields into Product type
+				const normalized: Product = {
+					...raw,
+					name: raw.localized?.name || resolveText(raw.name),
+					description: raw.localized?.description || resolveText(raw.description),
+					longDescription: raw.localized?.longDescription || resolveText(raw.longDescription),
+					features: (raw.localized?.features || raw.features || []).map((f: any) => resolveText(f)),
+					specifications: Object.fromEntries(Object.entries(raw.specifications || {}).map(([k, v]) => [k, resolveText(v)])),
+					shipping: raw.localized?.shipping || resolveText(raw.shipping),
+					warranty: raw.localized?.warranty || resolveText(raw.warranty),
+				};
+				setProduct(normalized);
 
 				// Fetch reviews using reviewApi service
 				try {
@@ -76,43 +122,33 @@ const ProductDetail: React.FC = () => {
 						setTotalReviews(reviewsData.totalReviews);
 					}
 				} catch {
-					// If reviews endpoint fails, try to get reviews from product data
-					if (productData.reviews) {
-						setReviews(productData.reviews);
-					}
-					if (productData.averageRating !== undefined) {
-						setAverageRating(productData.averageRating);
-					}
-					if (productData.totalReviews !== undefined) {
-						setTotalReviews(productData.totalReviews);
-					}
+					// Fallback to product data
+					if (raw.reviews) setReviews(raw.reviews);
+					if (raw.averageRating !== undefined) setAverageRating(raw.averageRating);
+					if (raw.totalReviews !== undefined) setTotalReviews(raw.totalReviews);
 				}
 
 				// Reset selected image to 0 when product changes
 				setSelectedImage(0);
-				
-
-
-				// Set view count from product data
-				setViewCount(productData.viewCount || 0);
 
 
 
 				// Get related products from the same subcategory
 				const allProductsResponse = await axiosClient.get(endpoints.PRODUCTS);
-				const allProducts = allProductsResponse.data;
-				const subcategoryName =
-					typeof productData.subcategory === "string"
-						? productData.subcategory
-						: productData.subcategory?.name || "Unknown";
+				const allProducts = allProductsResponse.data as Product[];
+				const subcategoryName = typeof raw.subcategory === "string" ? raw.subcategory : (typeof raw.subcategory?.name === 'object' ? resolveText(raw.subcategory?.name) : (raw.subcategory?.name || "Unknown"));
 				const related = allProducts
-					.filter((p: Product) => {
-						const pSubcategory =
-							typeof p.subcategory === "string" ? p.subcategory : p.subcategory?.name || "Unknown";
-						return pSubcategory === subcategoryName && p._id !== productData._id;
+					.map((p: any) => ({
+						...p,
+						name: p.localized?.name || resolveText(p.name),
+						description: p.localized?.description || resolveText(p.description),
+					}))
+					.filter((p: any) => {
+						const pSubcategory = typeof p.subcategory === "string" ? p.subcategory : (typeof p.subcategory?.name === 'object' ? resolveText(p.subcategory?.name) : (p.subcategory?.name || "Unknown"));
+						return pSubcategory === subcategoryName && p._id !== raw._id;
 					})
 					.slice(0, 4);
-				setRelatedProducts(related);
+				setRelatedProducts(related as Product[]);
 					} catch {
 			// Error loading product
 		} finally {
@@ -121,7 +157,7 @@ const ProductDetail: React.FC = () => {
 		};
 
 		loadProduct();
-	}, [id]);
+	}, [id, currentLanguage]);
 
 	// Loading state
 	if (loading) {
@@ -195,7 +231,9 @@ const ProductDetail: React.FC = () => {
 		subcategory: string | { _id: string; name: string; description?: string } | undefined | null
 	) => {
 		const subcategoryName = getSubcategoryName(subcategory);
-		return subcategoryName.split(" ")[0];
+		// Handle localized content
+		const displayName = getLocalizedText(subcategoryName);
+		return displayName.split(" ")[0];
 	};
 
 	const handleAddReview = async () => {
@@ -286,7 +324,7 @@ const ProductDetail: React.FC = () => {
 
 							<img
 								src={product.images && product.images.length > 0 ? product.images[selectedImage] : "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zMCAzMEg3MFY3MEgzMFYzMFoiIGZpbGw9IiNEMUQ1REIiLz4KPHBhdGggZD0iTTM1IDM1VjY1SDY1VjM1SDM1WiIgZmlsbD0iI0M3Q0ZEMiIvPgo8L3N2Zz4K"}
-								alt={`${product.name} - Main product image`}
+								alt={`${getLocalizedProductField(product.name)} - Main product image`}
 								className='w-full h-64 sm:h-80 md:h-96 lg:h-[500px] object-cover transition-transform duration-300 hover:scale-105'
 								onClick={() => handleImageClick(product.images && product.images.length > 0 ? product.images[selectedImage] : "")}
 								onError={(e) => {
@@ -303,14 +341,14 @@ const ProductDetail: React.FC = () => {
 										{(() => {
 											const productSubcategoryId = typeof product.subcategory === 'string' ? product.subcategory : product.subcategory?._id;
 											const matchedSubcategory = subcategoriesList.find(sub => sub.id === productSubcategoryId);
-											return matchedSubcategory ? matchedSubcategory.name : "Loading...";
+											return matchedSubcategory ? getLocalizedText(getLocalizedCategoryName(matchedSubcategory)) : "Loading...";
 										})()}
 									</span>
 									<span className='sm:hidden'>
 										{(() => {
 											const productSubcategoryId = typeof product.subcategory === 'string' ? product.subcategory : product.subcategory?._id;
 											const matchedSubcategory = subcategoriesList.find(sub => sub.id === productSubcategoryId);
-											return matchedSubcategory ? matchedSubcategory.name.split(" ")[0] : "Loading...";
+											return matchedSubcategory ? getLocalizedText(getLocalizedCategoryName(matchedSubcategory)).split(" ")[0] : "Loading...";
 										})()}
 									</span>
 								</span>
@@ -335,7 +373,7 @@ const ProductDetail: React.FC = () => {
 									>
 										<img
 											src={image}
-											alt={`${product.name} ${index + 1}`}
+											alt={`${getLocalizedProductField(product.name)} ${index + 1}`}
 											className='w-full h-16 sm:h-20 object-cover'
 											onError={(e) => {
 												e.currentTarget.src =
@@ -376,7 +414,7 @@ const ProductDetail: React.FC = () => {
 								animate={{ opacity: 1, y: 0 }}
 								transition={{ delay: 0.4 }}
 								className='text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 mb-2 sm:mb-3 lg:mb-4 leading-tight'>
-								{product.name}
+								{getLocalizedProductField(product.name)}
 							</motion.h1>
 
 							{/* Rating and Views */}
@@ -402,12 +440,7 @@ const ProductDetail: React.FC = () => {
 										{averageRating.toFixed(1)} ({totalReviews} reviews)
 									</span>
 								</div>
-								<div className='flex items-center space-x-1 text-gray-500'>
-									<Eye className='w-4 h-4 sm:w-5 sm:h-5' />
-									<span className='text-xs sm:text-sm'>
-										{viewCount.toLocaleString()} views
-									</span>
-								</div>
+
 							</motion.div>
 
 							{/* Price */}
@@ -417,7 +450,7 @@ const ProductDetail: React.FC = () => {
 								transition={{ delay: 0.6 }}
 								className='mb-3 sm:mb-4 lg:mb-6'>
 								<div className='text-3xl sm:text-4xl md:text-5xl font-bold text-teal-600'>
-									${product.price.toLocaleString()}
+									{t('currencySymbol')} {product.price.toLocaleString()}
 								</div>
 								<div className='text-xs sm:text-sm text-gray-500 mt-1'>
 									Financing available • Bulk pricing available
@@ -435,7 +468,7 @@ const ProductDetail: React.FC = () => {
 								Description
 							</h3>
 							<p className='text-gray-600 leading-relaxed text-sm sm:text-base'>
-								{product.longDescription}
+								{getLocalizedProductField(product.longDescription)}
 							</p>
 						</motion.div>
 
@@ -453,7 +486,7 @@ const ProductDetail: React.FC = () => {
 									<div key={key} className='flex items-center space-x-3'>
 										<div className='w-2 h-2 bg-blue-500 rounded-full'></div>
 										<span className='text-gray-700 capitalize'>
-											{key.replace(/([A-Z])/g, " $1").trim()}: {value}
+											{key.replace(/([A-Z])/g, " $1").trim()}: {getLocalizedProductField(value)}
 										</span>
 									</div>
 								))}
@@ -643,7 +676,7 @@ const ProductDetail: React.FC = () => {
 										<Truck className='w-6 h-6 text-orange-600' />
 									</div>
 									<h4 className='font-semibold text-gray-900 mb-1'>Shipping</h4>
-									<p className='text-sm text-gray-600'>{product.shipping}</p>
+									<p className='text-sm text-gray-600'>{getLocalizedProductField(product.shipping)}</p>
 								</div>
 
 								<div className='text-center'>
@@ -651,7 +684,7 @@ const ProductDetail: React.FC = () => {
 										<Shield className='w-6 h-6 text-blue-600' />
 									</div>
 									<h4 className='font-semibold text-gray-900 mb-1'>Warranty</h4>
-									<p className='text-sm text-gray-600'>{product.warranty}</p>
+									<p className='text-sm text-gray-600'>{getLocalizedProductField(product.warranty)}</p>
 								</div>
 
 								<div className='text-center'>
@@ -699,7 +732,7 @@ const ProductDetail: React.FC = () => {
 									<div className='relative overflow-hidden rounded-t-xl'>
 										<img
 											src={relatedProduct.image}
-											alt={`${relatedProduct.name} - Related medical equipment`}
+											alt={`${getLocalizedProductField(relatedProduct.name)} - Related medical equipment`}
 											className='w-full h-32 sm:h-40 lg:h-48 object-cover transition-transform duration-300 hover:scale-105'
 											loading="lazy"
 											onError={(e) => {
@@ -710,7 +743,7 @@ const ProductDetail: React.FC = () => {
 											<span className='inline-flex items-center space-x-1 bg-white/95 backdrop-blur-sm text-gray-800 px-2 py-1 rounded-lg text-xs font-medium'>
 												<Zap className='w-3 h-3 text-teal-600' />
 												<span className='hidden sm:inline'>
-													{getSubcategoryName(relatedProduct.subcategory)}
+													{getLocalizedText(getSubcategoryName(relatedProduct.subcategory))}
 												</span>
 												<span className='sm:hidden'>
 													{getSubcategoryDisplayText(relatedProduct.subcategory)}
@@ -720,7 +753,7 @@ const ProductDetail: React.FC = () => {
 									</div>
 									<div className='p-2.5 sm:p-3 lg:p-4'>
 										<h3 className='font-semibold text-gray-900 mb-1.5 sm:mb-2 line-clamp-2 text-sm sm:text-base'>
-											{relatedProduct.name}
+											{getLocalizedProductField(relatedProduct.name)}
 										</h3>
 										<div className='flex items-center justify-between'>
 											<span className='text-teal-600 font-bold text-sm sm:text-base'>
@@ -802,7 +835,7 @@ const ProductDetail: React.FC = () => {
 							<div className="flex-1 flex items-center justify-center px-20" style={{ width: 'calc(100% - 160px)' }}>
 								<img
 									src={selectedModalImage}
-									alt={product?.name}
+									alt={getLocalizedProductField(product?.name)}
 									className="max-w-full max-h-full object-contain rounded-lg"
 									style={{ 
 										maxWidth: '80%', 

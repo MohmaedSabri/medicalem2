@@ -8,7 +8,6 @@ import {
 	Heart, 
 	Calendar, 
 	User, 
-	Tag, 
 	ArrowLeft, 
 	Share2, 
 	BookOpen,
@@ -17,21 +16,30 @@ import {
 	FileText,
 	Star
 } from "lucide-react";
-import { usePost, useLikePost } from "../hooks/usePosts";
+import { usePost, useLikePost, usePostComments, useAddComment } from "../hooks/usePosts";
 import { useCategories } from "../contexts/CategoriesContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "../contexts/LanguageContext";
+import { Post, ContentBlock } from "../types";
 
 const BlogDetail: React.FC = () => {
 	const { t } = useTranslation();
+	const { currentLanguage } = useLanguage();
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const { user } = useAuth();
 	const [isLiked, setIsLiked] = useState(false);
 
-	const { data: post, isLoading, error } = usePost(id!);
+	const { data: post, isLoading, error } = usePost(id!, currentLanguage);
 	const { mutate: likePost, isPending: isLiking } = useLikePost();
 	const { categories } = useCategories();
+	
+	// Comment functionality
+	const [commentPage, setCommentPage] = useState(1);
+	const [newComment, setNewComment] = useState({ authorName: '', authorEmail: '', content: '' });
+	const { data: commentsData, isLoading: commentsLoading } = usePostComments(id!, commentPage, 10);
+	const { mutate: addComment, isPending: isAddingComment } = useAddComment();
 
 	// Handle like
 	const handleLike = () => {
@@ -47,6 +55,28 @@ const BlogDetail: React.FC = () => {
 		}
 	};
 
+	// Handle comment submission
+	const handleAddComment = (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!newComment.authorName.trim() || !newComment.authorEmail.trim() || !newComment.content.trim()) {
+			return;
+		}
+
+		if (id) {
+			addComment({
+				postId: id,
+				commentData: {
+					authorName: newComment.authorName.trim(),
+					authorEmail: newComment.authorEmail.trim(),
+					content: newComment.content.trim()
+				}
+			});
+			setNewComment({ authorName: '', authorEmail: '', content: '' });
+		}
+	};
+
+
+
 	// Format date
 	const formatDate = (dateString: string) => {
 		return new Date(dateString).toLocaleDateString("en-US", {
@@ -56,32 +86,87 @@ const BlogDetail: React.FC = () => {
 		});
 	};
 
-	// Get category name
-	const getCategoryName = (category: string | { _id: string; name: string; description: string }) => {
+	// Get category name with localization support
+	const getCategoryName = (category: string | { _id: string; name: string | { en: string; ar: string }; description: string | { en: string; ar: string } }) => {
 		if (typeof category === "string") {
 			const cat = categories.find(c => c._id === category);
-			return cat ? cat.name : category;
+			if (!cat) return category;
+			
+			// Handle localized category names
+			if (typeof cat.name === 'string') return cat.name;
+			if (cat.name && typeof cat.name === 'object') {
+				return cat.name[currentLanguage as 'en' | 'ar'] || cat.name.en || cat.name.ar || '';
+			}
+			return category;
 		}
-		return category.name;
+		
+		// Handle localized category names from API
+		if (typeof category.name === 'string') return category.name;
+		if (category.name && typeof category.name === 'object') {
+			return category.name[currentLanguage as 'en' | 'ar'] || category.name.en || category.name.ar || '';
+		}
+		return '';
 	};
 
 	// Calculate reading time
-	const calculateReadingTime = (content: string) => {
+	const calculateReadingTime = (content: ContentBlock[]) => {
 		const wordsPerMinute = 200;
-		const words = content.trim().split(/\s+/).length;
-		return Math.ceil(words / wordsPerMinute);
+		let totalWords = 0;
+		
+		content.forEach(block => {
+			if (block.type === 'paragraph') {
+				const words = block.text.trim().split(/\s+/).length;
+				totalWords += words;
+				if (block.title) {
+					const titleWords = block.title.trim().split(/\s+/).length;
+					totalWords += titleWords;
+				}
+			}
+		});
+		
+		return Math.ceil(totalWords / wordsPerMinute);
+	};
+
+	// Localized field helpers
+	const getTitle = (): string => {
+		if (!post) return '';
+		const postWithLocalized = post as Post & { localized?: { title?: string; content?: ContentBlock[] } };
+		if (postWithLocalized.localized?.title) return postWithLocalized.localized.title;
+		const value = postWithLocalized.title;
+		if (typeof value === 'string') return value;
+		if (value && typeof value === 'object') {
+			return value[currentLanguage as 'en' | 'ar'] || value.en || value.ar || '';
+		}
+		return '';
+	};
+	const getContent = (): ContentBlock[] => {
+		if (!post) return [];
+		const postWithLocalized = post as Post & { localized?: { title?: string; content?: ContentBlock[] } };
+		if (postWithLocalized.localized?.content) return postWithLocalized.localized.content;
+		const value = postWithLocalized.content;
+		if (Array.isArray(value)) return value;
+		if (value && typeof value === 'object') {
+			return value[currentLanguage as 'en' | 'ar'] || value.en || value.ar || [];
+		}
+		return [];
 	};
 
 	// Share post
 	const handleShare = async () => {
 		if (navigator.share && post) {
 			try {
+				const content = getContent();
+				const firstParagraph = content.find(block => block.type === 'paragraph');
+				const excerpt = firstParagraph && firstParagraph.type === 'paragraph' 
+					? firstParagraph.text.substring(0, 100) + "..." 
+					: "";
+				
 				await navigator.share({
-					title: post.title,
-					text: post.content.substring(0, 100) + "...",
+					title: getTitle(),
+					text: excerpt,
 					url: window.location.href,
 				});
-			} catch (error) {
+			} catch {
 				// Error sharing
 			}
 		} else {
@@ -173,7 +258,7 @@ const BlogDetail: React.FC = () => {
 						<div className="relative">
 							<img
 								src={post.postImage}
-								alt={post.title}
+								alt={getTitle()}
 								className="w-full h-96 object-cover"
 							/>
 							<div className="absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-teal-600/20"></div>
@@ -218,7 +303,7 @@ const BlogDetail: React.FC = () => {
 							{/* Header */}
 							<header className="mb-8">
 								<h1 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
-									{post.title}
+									{getTitle()}
 								</h1>
 								{/* Meta Information */}
 								<div className="flex flex-wrap items-center gap-6 text-gray-600 mb-6">
@@ -232,7 +317,7 @@ const BlogDetail: React.FC = () => {
 									</div>
 									<div className="flex items-center space-x-2">
 										<Clock className="w-5 h-5 text-teal-600" />
-										<span>{calculateReadingTime(post.content)} {t('minRead')}</span>
+										<span>{calculateReadingTime(getContent())} {t('minRead')}</span>
 									</div>
 									<div className="flex items-center space-x-2">
 										<Eye className="w-5 h-5 text-teal-600" />
@@ -259,8 +344,37 @@ const BlogDetail: React.FC = () => {
 							</header>
 							{/* Article Content */}
 							<article className="prose prose-lg max-w-none mb-8">
-								<div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-									{post.content}
+								<div className="text-gray-700 leading-relaxed">
+									{getContent().map((block, index) => (
+										<div key={index} className="mb-6">
+											{block.type === 'paragraph' ? (
+												<div>
+													{block.title && (
+														<h3 className="text-xl font-semibold text-gray-900 mb-3">
+															{block.title}
+														</h3>
+													)}
+													<p className="leading-relaxed">
+														{block.text}
+													</p>
+												</div>
+											) : block.type === 'image' ? (
+												<div className="my-8">
+													<img
+														src={block.imageUrl}
+														alt={block.imageAlt}
+														className="w-full h-auto rounded-lg shadow-lg"
+														loading="lazy"
+													/>
+													{block.imageCaption && (
+														<p className="text-sm text-gray-600 italic mt-2 text-center">
+															{block.imageCaption}
+														</p>
+													)}
+												</div>
+											) : null}
+										</div>
+									))}
 								</div>
 							</article>
 							{/* Action Buttons */}
@@ -294,14 +408,109 @@ const BlogDetail: React.FC = () => {
 						</div>
 					</motion.div>
 
-					{/* Author Section */}
+					{/* Comments Section */}
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.6, delay: 0.2 }}
-						className="mt-8 bg-white rounded-xl shadow-lg p-8 border border-gray-100 hidden"
+						className="mt-8 bg-white rounded-xl shadow-lg p-8 border border-gray-100"
 					>
-						{/* hidden since moved to top */}
+						<h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center space-x-2">
+							<MessageCircle className="w-6 h-6 text-teal-600" />
+							<span>{t('comments')} ({commentsData?.totalComments || 0})</span>
+						</h3>
+
+						{/* Add Comment Form */}
+						<form onSubmit={handleAddComment} className="mb-8 p-6 bg-gray-50 rounded-xl">
+							<h4 className="text-lg font-semibold text-gray-900 mb-4">{t('addComment')}</h4>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+								<input
+									type="text"
+									placeholder={t('yourName')}
+									value={newComment.authorName}
+									onChange={(e) => setNewComment(prev => ({ ...prev, authorName: e.target.value }))}
+									className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+									required
+								/>
+								<input
+									type="email"
+									placeholder={t('yourEmail')}
+									value={newComment.authorEmail}
+									onChange={(e) => setNewComment(prev => ({ ...prev, authorEmail: e.target.value }))}
+									className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+									required
+								/>
+							</div>
+							<textarea
+								placeholder={t('writeComment')}
+								value={newComment.content}
+								onChange={(e) => setNewComment(prev => ({ ...prev, content: e.target.value }))}
+								rows={4}
+								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent mb-4"
+								required
+							/>
+							<button
+								type="submit"
+								disabled={isAddingComment}
+								className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+							>
+								{isAddingComment ? t('adding') : t('addComment')}
+							</button>
+						</form>
+
+						{/* Comments List */}
+						{commentsLoading ? (
+							<div className="space-y-4">
+								{Array.from({ length: 3 }).map((_, index) => (
+									<div key={index} className="p-4 bg-gray-50 rounded-lg animate-pulse">
+										<div className="h-4 bg-gray-200 rounded mb-2 w-1/4"></div>
+										<div className="h-3 bg-gray-200 rounded mb-2 w-1/6"></div>
+										<div className="h-3 bg-gray-200 rounded w-3/4"></div>
+									</div>
+								))}
+							</div>
+						) : commentsData?.comments && commentsData.comments.length > 0 ? (
+							<div className="space-y-6">
+								{commentsData.comments.map((comment) => (
+									<div key={comment._id} className="p-6 bg-gray-50 rounded-xl border border-gray-100">
+										<div className="mb-3">
+											<h5 className="font-semibold text-gray-900">{comment.authorName}</h5>
+											<p className="text-sm text-gray-500">{formatDate(comment.createdAt)}</p>
+										</div>
+										<p className="text-gray-700 leading-relaxed">{comment.content}</p>
+									</div>
+								))}
+
+								{/* Pagination for comments */}
+								{commentsData.totalPages > 1 && (
+									<div className="flex items-center justify-center space-x-2 pt-4">
+										<button
+											onClick={() => setCommentPage(prev => Math.max(1, prev - 1))}
+											disabled={commentPage === 1}
+											className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+										>
+											{t('previous')}
+										</button>
+										<span className="px-4 py-2 text-gray-600">
+											{commentPage} / {commentsData.totalPages}
+										</span>
+										<button
+											onClick={() => setCommentPage(prev => Math.min(commentsData.totalPages, prev + 1))}
+											disabled={commentPage === commentsData.totalPages}
+											className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+										>
+											{t('next')}
+										</button>
+									</div>
+								)}
+							</div>
+						) : (
+							<div className="text-center py-8">
+								<MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+								<p className="text-gray-600">{t('noCommentsYet')}</p>
+								<p className="text-sm text-gray-500 mt-2">{t('beFirstToComment')}</p>
+							</div>
+						)}
 					</motion.div>
 				</div>
 			</div>

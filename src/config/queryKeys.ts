@@ -4,7 +4,7 @@ export const queryKeys = {
   products: {
     all: ['products'] as const,
     lists: () => [...queryKeys.products.all, 'list'] as const,
-    list: (filters: Record<string, string | number | boolean>) => [...queryKeys.products.lists(), filters] as const,
+    list: (filters: Record<string, string | number | boolean | undefined>) => [...queryKeys.products.lists(), filters] as const,
     details: () => [...queryKeys.products.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.products.details(), id] as const,
     reviews: (id: string) => [...queryKeys.products.detail(id), 'reviews'] as const,
@@ -14,7 +14,7 @@ export const queryKeys = {
   categories: {
     all: ['categories'] as const,
     lists: () => [...queryKeys.categories.all, 'list'] as const,
-    list: (filters: Record<string, string | number | boolean>) => [...queryKeys.categories.lists(), filters] as const,
+    list: (filters: Record<string, string | number | boolean | undefined>) => [...queryKeys.categories.lists(), filters] as const,
     details: () => [...queryKeys.categories.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.categories.details(), id] as const,
   },
@@ -39,14 +39,15 @@ export const queryKeys = {
   posts: {
     all: ['posts'] as const,
     lists: () => [...queryKeys.posts.all, 'list'] as const,
-    list: (filters: Record<string, string | number | boolean>) => [...queryKeys.posts.lists(), filters] as const,
+    list: (filters: Record<string, string | number | boolean | undefined>, language?: string) => [...queryKeys.posts.lists(), filters, language] as const,
     details: () => [...queryKeys.posts.all, 'detail'] as const,
-    detail: (id: string) => [...queryKeys.posts.details(), id] as const,
-    featured: () => [...queryKeys.posts.all, 'featured'] as const,
-    search: (query: string) => [...queryKeys.posts.all, 'search', query] as const,
-    byCategory: (categoryId: string) => [...queryKeys.posts.all, 'category', categoryId] as const,
-    byAuthor: (email: string) => [...queryKeys.posts.all, 'author', email] as const,
+    detail: (id: string, language?: string) => [...queryKeys.posts.details(), id, language] as const,
+    featured: (limit?: number, language?: string) => [...queryKeys.posts.all, 'featured', limit, language] as const,
+    search: (query: string, page?: number, limit?: number, language?: string) => [...queryKeys.posts.all, 'search', query, page, limit, language] as const,
+    byCategory: (categoryId: string, filters?: Record<string, string | number | boolean | undefined>, language?: string) => [...queryKeys.posts.all, 'category', categoryId, filters, language] as const,
+    byAuthor: (email: string, filters?: Record<string, string | number | boolean | undefined>, language?: string) => [...queryKeys.posts.all, 'author', email, filters, language] as const,
     stats: () => [...queryKeys.posts.all, 'stats'] as const,
+    comments: (postId: string, page?: number, limit?: number) => [...queryKeys.posts.detail(postId), 'comments', page, limit] as const,
   },
 };
 
