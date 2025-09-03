@@ -6,6 +6,7 @@ import Hero from "../components/Hero";
 import Ceo from "../components/Ceo";
 import Products from "../components/Products";
 import OurTeam from "../components/OurTeam";
+import Testimonials from "../components/Testimonials";
 import WhyChooseUs from "../components/WhyChooseUs";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
@@ -23,13 +24,13 @@ const Home: React.FC = () => {
 			const scrollY = window.scrollY;
 			const windowHeight = window.innerHeight;
 			const documentHeight = document.documentElement.scrollHeight;
-			
+
 			// Get the Contact section element
-			const contactSection = document.getElementById('contact');
-			
+			const contactSection = document.getElementById("contact");
+
 			if (contactSection) {
 				const contactTop = contactSection.offsetTop;
-				
+
 				// Show sidebar when scrolling down, hide when reaching Contact section or at top
 				if (scrollY > 100 && scrollY < contactTop - 200) {
 					setShowSocialSidebar(true);
@@ -46,14 +47,14 @@ const Home: React.FC = () => {
 			}
 		};
 
-		window.addEventListener('scroll', handleScroll);
-		return () => window.removeEventListener('scroll', handleScroll);
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
 	}, []);
 
 	return (
 		<>
 			<FloatingSocialSidebar isVisible={showSocialSidebar} />
-			
+
 			<div className='min-h-screen bg-white max-w-full overflow-x-hidden'>
 				<Header />
 				<Hero />
@@ -66,14 +67,17 @@ const Home: React.FC = () => {
 					style={{ height: "80px" }}></svg>
 
 				<Products />
-				
+
 				{/* Why Choose Us Section */}
 				<WhyChooseUs />
-				
+
 				{/* Our Team Section - Moved after Why Choose Us */}
 				<OurTeam />
+
+				{/* Testimonials Section - Added after Team Section */}
+				<Testimonials />
+
 				{/* Complementary Diagonal Divider - WhyChooseUs to Contact */}
-			
 
 				<svg width='0' height='0'>
 					<defs>
@@ -88,9 +92,7 @@ const Home: React.FC = () => {
 				{/* Simple Bridge */}
 				<SectionBridge variant='gradient'>
 					<div className='text-center py-6'>
-						<p className='text-sm text-gray-500'>
-							{t('connectingHealthcare')}
-						</p>
+						<p className='text-sm text-gray-500'>{t("connectingHealthcare")}</p>
 					</div>
 				</SectionBridge>
 				<Footer />

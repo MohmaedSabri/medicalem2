@@ -1,10 +1,15 @@
 /** @format */
 
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+	BrowserRouter as Router,
+	Routes,
+	Route,
+	useLocation,
+} from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Toaster } from 'react-hot-toast';
-import { Suspense, lazy } from 'react';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
+import { Suspense, lazy } from "react";
 import Header from "./components/Header";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
@@ -16,7 +21,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import TopBar from "./components/TopBar";
 
 // Import i18n configuration
-import './i18n';
+import "./i18n";
 
 // Lazy load components for better performance
 const Home = lazy(() => import("./pages/Home"));
@@ -27,12 +32,13 @@ const Contact = lazy(() => import("./components/Contact"));
 const Favorites = lazy(() => import("./pages/Favorites"));
 const ProductsPage = lazy(() => import("./components/ProductsPage"));
 const ProductDetail = lazy(() => import("./components/ProductDetail"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 
 // Loading component
 const LoadingSpinner = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-  </div>
+	<div className='flex items-center justify-center min-h-screen'>
+		<div className='animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600'></div>
+	</div>
 );
 
 // Create a client
@@ -257,6 +263,27 @@ function App() {
 										}
 									/>
 
+									{/* Privacy Policy Route */}
+									<Route
+										path='/privacy-policy'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='privacy-policy'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<PrivacyPolicy />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
+
 									{/* Home Route */}
 									<Route
 										path='/'
@@ -279,25 +306,25 @@ function App() {
 								</Routes>
 								{/* Toast Notifications */}
 								<Toaster
-									position="top-right"
+									position='top-right'
 									toastOptions={{
 										duration: 4000,
 										style: {
-											background: '#363636',
-											color: '#fff',
+											background: "#363636",
+											color: "#fff",
 										},
 										success: {
 											duration: 4000,
 											style: {
-												background: '#10b981',
-												color: '#fff',
+												background: "#10b981",
+												color: "#fff",
 											},
 										},
 										error: {
 											duration: 4000,
 											style: {
-												background: '#ef4444',
-												color: '#fff',
+												background: "#ef4444",
+												color: "#fff",
 											},
 										},
 									}}

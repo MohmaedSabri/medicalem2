@@ -226,34 +226,34 @@ const ManageSubCategories: React.FC = () => {
 	};
 
 	return (
-		<div className='space-y-6'>
+		<div className='space-y-4 sm:space-y-6'>
 			{/* Header */}
 			<div
-				className={`flex items-center justify-between ${
-					isRTL ? "flex-row-reverse" : ""
+				className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ${
+					isRTL ? "sm:flex-row-reverse" : ""
 				}`}>
 				<div className={`${isRTL ? "text-right" : "text-left"}`}>
 					<h2
-						className={`text-2xl font-bold text-gray-900 flex items-center ${
+						className={`text-xl sm:text-2xl font-bold text-gray-900 flex items-center ${
 							isRTL ? "flex-row-reverse space-x-reverse space-x-2" : "space-x-2"
 						}`}>
-						<FolderOpen className='w-6 h-6 text-teal-600' />
+						<FolderOpen className='w-5 h-5 sm:w-6 sm:h-6 text-teal-600' />
 						<span>{t("manageSubcategories")}</span>
 					</h2>
-					<p className='text-gray-600 mt-1'>
+					<p className='text-sm sm:text-base text-gray-600 mt-1'>
 						{t("manageSubcategoriesDescription")}
 					</p>
 				</div>
 			</div>
 
 			{/* Categories Tree View */}
-			<div className='bg-white rounded-xl shadow-sm border border-gray-200'>
-				<div className='p-6 border-b border-gray-200'>
+			<div className='bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200'>
+				<div className='p-4 sm:p-6 border-b border-gray-200'>
 					<h3
-						className={`text-lg font-semibold text-gray-900 flex items-center ${
+						className={`text-base sm:text-lg font-semibold text-gray-900 flex items-center ${
 							isRTL ? "flex-row-reverse space-x-reverse space-x-2" : "space-x-2"
 						}`}>
-						<Tag className='w-5 h-5 text-teal-600' />
+						<Tag className='w-4 h-4 sm:w-5 sm:h-5 text-teal-600' />
 						<span>{t("categoriesAndSubcategories")}</span>
 					</h3>
 				</div>
@@ -264,35 +264,38 @@ const ManageSubCategories: React.FC = () => {
 						const isExpanded = expandedCategories.has(category._id);
 
 						return (
-							<div key={category._id} className='p-4'>
+							<div key={category._id} className='p-3 sm:p-4'>
 								{/* Parent Category Row */}
 								<div
-									className={`flex items-center justify-between ${
-										isRTL ? "flex-row-reverse" : ""
+									className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ${
+										isRTL ? "sm:flex-row-reverse" : ""
 									}`}>
 									<div
 										className={`flex items-center ${
 											isRTL
-												? "flex-row-reverse space-x-reverse space-x-3"
-												: "space-x-3"
+												? "flex-row-reverse space-x-reverse space-x-2 sm:space-x-3"
+												: "space-x-2 sm:space-x-3"
 										}`}>
 										<button
 											onClick={() => toggleCategoryExpansion(category._id)}
-											className='p-1 hover:bg-gray-100 rounded transition-colors'>
+											className='p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0'>
 											{isExpanded ? (
 												<ChevronDown className='w-4 h-4 text-gray-600' />
 											) : (
 												<ChevronRight className='w-4 h-4 text-gray-600' />
 											)}
 										</button>
-										<div className='w-4 h-4 bg-teal-100 rounded-full flex items-center justify-center'>
+										<div className='w-4 h-4 bg-teal-100 rounded-full flex items-center justify-center flex-shrink-0'>
 											<Tag className='w-2.5 h-2.5 text-teal-600' />
 										</div>
-										<div className={`${isRTL ? "text-right" : "text-left"}`}>
-											<h4 className='font-medium text-gray-900'>
+										<div
+											className={`${
+												isRTL ? "text-right" : "text-left"
+											} min-w-0 flex-1`}>
+											<h4 className='font-medium text-gray-900 text-sm sm:text-base'>
 												{getLocalizedText(category.name)}
 											</h4>
-											<p className='text-sm text-gray-500'>
+											<p className='text-xs sm:text-sm text-gray-500 truncate'>
 												{getLocalizedText(category.description)}
 											</p>
 										</div>
@@ -300,8 +303,8 @@ const ManageSubCategories: React.FC = () => {
 
 									<button
 										onClick={() => handleCreateStart(category._id)}
-										className='flex items-center space-x-2 px-3 py-1.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm'>
-										<Plus className='w-4 h-4' />
+										className='flex items-center justify-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-xs sm:text-sm w-full sm:w-auto'>
+										<Plus className='w-3 h-3 sm:w-4 sm:h-4' />
 										<span>{t("addSubcategory")}</span>
 									</button>
 								</div>
@@ -313,43 +316,47 @@ const ManageSubCategories: React.FC = () => {
 										animate={{ opacity: 1, height: "auto" }}
 										exit={{ opacity: 0, height: 0 }}
 										transition={{ duration: 0.2 }}
-										className='mt-4 ml-8 space-y-3'>
+										className={`mt-3 sm:mt-4 space-y-2 sm:space-y-3 ${
+											isRTL ? "mr-4 sm:mr-8" : "ml-4 sm:ml-8"
+										}`}>
 										{subCategories.length === 0 ? (
-											<div className='text-gray-500 text-sm italic'>
+											<div className='text-gray-500 text-xs sm:text-sm italic p-2'>
 												{t("noSubcategoriesYet")}
 											</div>
 										) : (
 											subCategories.map((subcategory) => (
 												<div
 													key={subcategory._id}
-													className={`flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 ${
-														isRTL ? "flex-row-reverse" : ""
+													className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-2 sm:p-3 bg-gray-50 rounded-lg border border-gray-200 gap-2 sm:gap-0 ${
+														isRTL ? "sm:flex-row-reverse" : ""
 													}`}>
 													<div
-														className={`${isRTL ? "text-right" : "text-left"}`}>
-														<h5 className='font-medium text-gray-900'>
+														className={`${
+															isRTL ? "text-right" : "text-left"
+														} min-w-0 flex-1`}>
+														<h5 className='font-medium text-gray-900 text-sm sm:text-base'>
 															{getLocalizedText(subcategory.name)}
 														</h5>
-														<p className='text-sm text-gray-600'>
+														<p className='text-xs sm:text-sm text-gray-600 truncate'>
 															{getLocalizedText(subcategory.description)}
 														</p>
 													</div>
 
 													<div
-														className={`flex items-center ${
+														className={`flex items-center justify-end sm:justify-start ${
 															isRTL
-																? "flex-row-reverse space-x-reverse space-x-2"
-																: "space-x-2"
+																? "flex-row-reverse space-x-reverse space-x-1 sm:space-x-2"
+																: "space-x-1 sm:space-x-2"
 														}`}>
 														<button
 															onClick={() => handleEditStart(subcategory)}
-															className='p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors'>
-															<Edit className='w-4 h-4' />
+															className='p-1.5 sm:p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors'>
+															<Edit className='w-3 h-3 sm:w-4 sm:h-4' />
 														</button>
 														<button
 															onClick={() => handleDelete(subcategory)}
-															className='p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors'>
-															<Trash2 className='w-4 h-4' />
+															className='p-1.5 sm:p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors'>
+															<Trash2 className='w-3 h-3 sm:w-4 sm:h-4' />
 														</button>
 													</div>
 												</div>
@@ -369,31 +376,31 @@ const ManageSubCategories: React.FC = () => {
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					exit={{ opacity: 0, y: 20 }}
-					className='bg-white rounded-xl shadow-sm border border-gray-200 p-6'>
+					className='bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6'>
 					<div
 						className={`flex items-center justify-between mb-4 ${
 							isRTL ? "flex-row-reverse" : ""
 						}`}>
-						<h3 className='text-lg font-semibold text-gray-900'>
+						<h3 className='text-base sm:text-lg font-semibold text-gray-900'>
 							{isCreating ? t("createSubcategory") : t("editSubcategory")}
 						</h3>
 						<button
 							onClick={handleCancel}
-							className='p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors'>
-							<X className='w-5 h-5' />
+							className='p-1.5 sm:p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors'>
+							<X className='w-4 h-4 sm:w-5 sm:h-5' />
 						</button>
 					</div>
 
-					<form onSubmit={handleSubmit} className='space-y-4'>
+					<form onSubmit={handleSubmit} className='space-y-3 sm:space-y-4'>
 						<div>
-							<label className='block text-sm font-medium text-gray-700 mb-2'>
+							<label className='block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2'>
 								{t("parentCategory")}
 							</label>
 							<select
 								name='parentCategory'
 								value={formData.parentCategory}
 								onChange={handleInputChange}
-								className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500'
+								className='w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500'
 								required>
 								<option value=''>{t("selectParentCategory")}</option>
 								{(categories || []).map((category) => (
@@ -405,7 +412,7 @@ const ManageSubCategories: React.FC = () => {
 						</div>
 
 						<div>
-							<label className='block text-sm font-medium text-gray-700 mb-2'>
+							<label className='block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2'>
 								{t("subcategoryName")}
 							</label>
 							<input
@@ -413,14 +420,14 @@ const ManageSubCategories: React.FC = () => {
 								name='name'
 								value={formData.name}
 								onChange={handleInputChange}
-								className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500'
+								className='w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500'
 								placeholder={t("enterSubcategoryName")}
 								required
 							/>
 						</div>
 
 						<div>
-							<label className='block text-sm font-medium text-gray-700 mb-2'>
+							<label className='block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2'>
 								{t("description")}
 							</label>
 							<textarea
@@ -428,20 +435,20 @@ const ManageSubCategories: React.FC = () => {
 								value={formData.description}
 								onChange={handleInputChange}
 								rows={3}
-								className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500'
+								className='w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none'
 								placeholder={t("enterSubcategoryDescription")}
 								required
 							/>
 						</div>
 
 						<div
-							className={`flex items-center justify-end ${
-								isRTL ? "space-x-reverse space-x-3" : "space-x-3"
-							} pt-4`}>
+							className={`flex flex-col sm:flex-row items-stretch sm:items-center sm:justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 ${
+								isRTL ? "sm:space-x-reverse sm:space-x-3" : ""
+							}`}>
 							<button
 								type='button'
 								onClick={handleCancel}
-								className='px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors'>
+								className='w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors'>
 								{t("cancel")}
 							</button>
 							<button
@@ -449,8 +456,8 @@ const ManageSubCategories: React.FC = () => {
 								disabled={
 									createSubCategory.isPending || updateSubCategory.isPending
 								}
-								className='flex items-center space-x-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50'>
-								<Save className='w-4 h-4' />
+								className='w-full sm:w-auto flex items-center justify-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 text-sm sm:text-base bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50'>
+								<Save className='w-3 h-3 sm:w-4 sm:h-4' />
 								<span>
 									{createSubCategory.isPending || updateSubCategory.isPending
 										? t("saving")

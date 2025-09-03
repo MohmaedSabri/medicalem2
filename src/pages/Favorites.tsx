@@ -14,7 +14,7 @@ const Favorites: React.FC = () => {
 	const navigate = useNavigate();
 	const { currentLanguage } = useLanguage();
 	const [favoriteIds, setFavoriteIds] = useState<string[]>(getFavorites());
-	
+
 	// Use the same hook as ProductsPage for consistency
 	const { data: apiProducts = [], isLoading: loading, error } = useProducts();
 
@@ -23,32 +23,42 @@ const Favorites: React.FC = () => {
 		if (!value) return "";
 		if (typeof value === "string") return value;
 		if (typeof value === "object") {
-			return value[currentLanguage as "en" | "ar"] || value.en || value.ar || "";
+			return (
+				value[currentLanguage as "en" | "ar"] || value.en || value.ar || ""
+			);
 		}
 		return "";
 	};
 
 	// Transform API products to display format using useMemo for performance
-	const products = useMemo(() => 
-		apiProducts.map(product => ({
-			_id: product._id,
-			name: getLocalizedProductField(product.name),
-			description: getLocalizedProductField(product.description),
-			longDescription: getLocalizedProductField(product.longDescription),
-			image: product.image,
-			images: product.images,
-			category: typeof product.subcategory === 'string' ? product.subcategory : getLocalizedProductField(product.subcategory?.name),
-			price: product.price,
-			rating: product.averageRating || 0,
-			reviews: product.reviews || [],
-			features: (product.features || []).map(f => getLocalizedProductField(f)),
-			specifications: product.specifications,
-			inStock: product.inStock,
-			stockQuantity: product.stockQuantity,
-			shipping: getLocalizedProductField(product.shipping),
-			warranty: getLocalizedProductField(product.warranty),
-			certifications: product.certifications,
-		})), [apiProducts, currentLanguage]);
+	const products = useMemo(
+		() =>
+			apiProducts.map((product) => ({
+				_id: product._id,
+				name: getLocalizedProductField(product.name),
+				description: getLocalizedProductField(product.description),
+				longDescription: getLocalizedProductField(product.longDescription),
+				image: product.image,
+				images: product.images,
+				category:
+					typeof product.subcategory === "string"
+						? product.subcategory
+						: getLocalizedProductField(product.subcategory?.name),
+				price: product.price,
+				rating: product.averageRating || 0,
+				reviews: product.reviews || [],
+				features: (product.features || []).map((f) =>
+					getLocalizedProductField(f)
+				),
+				specifications: product.specifications,
+				inStock: product.inStock,
+				stockQuantity: product.stockQuantity,
+				shipping: getLocalizedProductField(product.shipping),
+				warranty: getLocalizedProductField(product.warranty),
+				certifications: product.certifications,
+			})),
+		[apiProducts, currentLanguage]
+	);
 
 	// Update favorites when localStorage changes (e.g., from other pages)
 	useEffect(() => {
@@ -57,14 +67,14 @@ const Favorites: React.FC = () => {
 		};
 
 		// Listen for storage events (changes from other tabs/windows)
-		window.addEventListener('storage', handleStorageChange);
-		
+		window.addEventListener("storage", handleStorageChange);
+
 		// Also check for changes when the page gains focus
-		window.addEventListener('focus', handleStorageChange);
+		window.addEventListener("focus", handleStorageChange);
 
 		return () => {
-			window.removeEventListener('storage', handleStorageChange);
-			window.removeEventListener('focus', handleStorageChange);
+			window.removeEventListener("storage", handleStorageChange);
+			window.removeEventListener("focus", handleStorageChange);
 		};
 	}, []);
 
@@ -74,20 +84,20 @@ const Favorites: React.FC = () => {
 	};
 
 	// Filter products to show only favorites using useMemo for performance
-	const favoriteProducts = useMemo(() => 
-		products.filter((product) => favoriteIds.includes(product._id)),
+	const favoriteProducts = useMemo(
+		() => products.filter((product) => favoriteIds.includes(product._id)),
 		[products, favoriteIds]
 	);
 
 	// Debug logging
 	useEffect(() => {
-		console.log('Favorites Debug Info:');
-		console.log('favoriteIds:', favoriteIds);
-		console.log('products count:', products.length);
-		console.log('favoriteProducts count:', favoriteProducts.length);
-		console.log('localStorage favorites:', getFavorites());
+		console.log("Favorites Debug Info:");
+		console.log("favoriteIds:", favoriteIds);
+		console.log("products count:", products.length);
+		console.log("favoriteProducts count:", favoriteProducts.length);
+		console.log("localStorage favorites:", getFavorites());
 		if (products.length > 0) {
-			console.log('Sample product ID:', products[0]._id);
+			console.log("Sample product ID:", products[0]._id);
 		}
 	}, [favoriteIds, products, favoriteProducts]);
 
@@ -103,7 +113,7 @@ const Favorites: React.FC = () => {
 	// Error state
 	if (error) {
 		return (
-			<div className='min-h-screen bg-gray-50 pt-20'>
+			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24'>
 				<div className='container mx-auto px-4 sm:px-6 lg:px-8 py-12'>
 					<div className='text-center py-20'>
 						<div className='text-red-500 mb-4'>
@@ -117,8 +127,7 @@ const Favorites: React.FC = () => {
 						</p>
 						<button
 							onClick={() => window.location.reload()}
-							className='bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors'
-						>
+							className='bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors'>
 							Retry
 						</button>
 					</div>
@@ -130,7 +139,7 @@ const Favorites: React.FC = () => {
 	// Loading state
 	if (loading) {
 		return (
-			<div className='min-h-screen bg-gray-50 pt-20'>
+			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24'>
 				<div className='container mx-auto px-4 sm:px-6 lg:px-8 py-12'>
 					<div className='text-center py-20'>
 						<div className='animate-spin rounded-full h-16 w-16 border-b-2 border-teal-600 mx-auto mb-4'></div>
@@ -144,18 +153,19 @@ const Favorites: React.FC = () => {
 	// Error state
 	if (error) {
 		return (
-			<div className='min-h-screen bg-gray-50 pt-20'>
+			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24'>
 				<div className='container mx-auto px-4 sm:px-6 lg:px-8 py-12'>
 					<div className='text-center py-20'>
 						<div className='w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4'>
 							<Zap className='w-8 h-8 text-red-600' />
 						</div>
-						<h3 className='text-xl font-semibold text-gray-900 mb-2'>Error Loading Products</h3>
+						<h3 className='text-xl font-semibold text-gray-900 mb-2'>
+							Error Loading Products
+						</h3>
 						<p className='text-gray-600 mb-4'>{error}</p>
-						<button 
+						<button
 							onClick={() => window.location.reload()}
-							className='bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors'
-						>
+							className='bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors'>
 							Retry
 						</button>
 					</div>
@@ -165,7 +175,7 @@ const Favorites: React.FC = () => {
 	}
 
 	return (
-		<div className='min-h-screen bg-gray-50 pt-20'>
+		<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24'>
 			<div className='container mx-auto px-4 sm:px-6 lg:px-8 py-12'>
 				{/* Header */}
 				<motion.div
@@ -180,9 +190,9 @@ const Favorites: React.FC = () => {
 						</h1>
 					</div>
 					<p className='text-xl text-gray-600 max-w-3xl mx-auto'>
-						Your saved medical equipment favorites for easy access and comparison.
+						Your saved medical equipment favorites for easy access and
+						comparison.
 					</p>
-
 				</motion.div>
 
 				{/* Favorites Content */}
@@ -223,9 +233,17 @@ const Favorites: React.FC = () => {
 										<button
 											onClick={() => handleToggleFavorite(p._id)}
 											className={`absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-full p-2.5 transition-all duration-300 shadow-lg ${
-												favoriteIds.includes(p._id) ? "hover:bg-red-100 text-red-500" : "hover:bg-red-50 text-gray-600"
+												favoriteIds.includes(p._id)
+													? "hover:bg-red-100 text-red-500"
+													: "hover:bg-red-50 text-gray-600"
 											}`}>
-											<Heart className={`h-4 w-4 ${favoriteIds.includes(p._id) ? "fill-red-500 text-red-500" : ""}`} />
+											<Heart
+												className={`h-4 w-4 ${
+													favoriteIds.includes(p._id)
+														? "fill-red-500 text-red-500"
+														: ""
+												}`}
+											/>
 										</button>
 									</div>
 									<div className='p-4'>

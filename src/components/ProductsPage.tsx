@@ -435,7 +435,7 @@ const ProductsPage: React.FC = () => {
 	// Loading state
 	if (loading) {
 		return (
-			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20'>
+			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24'>
 				<div className='container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12'>
 					<div className='text-center py-16 sm:py-20'>
 						<div className='animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-teal-600 mx-auto mb-4'></div>
@@ -451,7 +451,7 @@ const ProductsPage: React.FC = () => {
 	// Error state
 	if (error) {
 		return (
-			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20'>
+			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24'>
 				<div className='container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12'>
 					<div className='text-center py-16 sm:py-20'>
 						<div className='w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4'>
@@ -475,7 +475,7 @@ const ProductsPage: React.FC = () => {
 	}
 
 	return (
-		<div className='min-h-screen bg-gradient-to-br from-gray-50 to-white pt-16 sm:pt-20'>
+		<div className='min-h-screen bg-gradient-to-br from-gray-50 to-white pt-16 sm:pt-20 lg:pt-24'>
 			<div className='container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-7xl'>
 				{/* Header */}
 				<motion.div
@@ -499,10 +499,10 @@ const ProductsPage: React.FC = () => {
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.6, delay: 0.1 }}
-					className='bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 mb-6 sm:mb-8'>
-					<div className='flex flex-col lg:flex-row gap-4 items-center justify-between'>
-						{/* Search Bar */}
-						<div className='flex-1 w-full lg:w-auto'>
+					className='bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 lg:p-6 mb-6 sm:mb-8'>
+					<div className='space-y-4'>
+						{/* Search Bar - Full Width on Mobile */}
+						<div className='w-full'>
 							<div className='relative'>
 								<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5' />
 								<input
@@ -515,59 +515,74 @@ const ProductsPage: React.FC = () => {
 							</div>
 						</div>
 
-						{/* Category Filter and Controls */}
-						<div className='flex flex-col sm:flex-row gap-3 sm:gap-4 items-center w-full lg:w-auto'>
+						{/* Filter Controls - Responsive Grid */}
+						<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4'>
 							{/* Category Filter */}
-							<select
-								value={selectedCategory}
-								onChange={(e) => handleCategoryChange(e.target.value)}
-								className='w-full sm:w-auto px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 bg-white text-sm sm:text-base'>
-								{categories.map((category, index) => (
-									<option
-										key={`category-${index}-${category}`}
-										value={category}>
-										{category}
-									</option>
-								))}
-							</select>
+							<div className='w-full'>
+								<label className='block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2'>
+									{t("category")}
+								</label>
+								<select
+									value={selectedCategory}
+									onChange={(e) => handleCategoryChange(e.target.value)}
+									className='w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 bg-white text-sm sm:text-base'>
+									{categories.map((category, index) => (
+										<option
+											key={`category-${index}-${category}`}
+											value={category}>
+											{category}
+										</option>
+									))}
+								</select>
+							</div>
 
 							{/* Sort Options */}
-							<select
-								value={sortBy}
-								onChange={(e) => setSortBy(e.target.value)}
-								className='w-full sm:w-auto px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 bg-white text-sm sm:text-base'>
-								<option value='name'>{t("sortByName")}</option>
-								<option value='price-low'>{t("sortByPriceLow")}</option>
-								<option value='price-high'>{t("sortByPriceHigh")}</option>
-								<option value='rating'>{t("sortByRating")}</option>
-							</select>
+							<div className='w-full'>
+								<label className='block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2'>
+									{t("sortBy")}
+								</label>
+								<select
+									value={sortBy}
+									onChange={(e) => setSortBy(e.target.value)}
+									className='w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 bg-white text-sm sm:text-base'>
+									<option value='name'>{t("sortByName")}</option>
+									<option value='price-low'>{t("sortByPriceLow")}</option>
+									<option value='price-high'>{t("sortByPriceHigh")}</option>
+									<option value='rating'>{t("sortByRating")}</option>
+								</select>
+							</div>
 
 							{/* View Mode Toggle */}
-							<div className='flex bg-gray-100 rounded-lg sm:rounded-xl p-1'>
-								<button
-									onClick={() => setViewMode("grid")}
-									className={`px-3 py-2 sm:px-4 sm:py-2 rounded-md sm:rounded-lg transition-all duration-300 flex items-center space-x-1.5 ${
-										viewMode === "grid"
-											? "bg-white text-teal-600 shadow-md"
-											: "text-gray-600 hover:text-gray-900"
-									}`}>
-									<Grid3X3 className='w-3 h-3 sm:w-4 sm:h-4' />
-									<span className='text-xs sm:text-sm font-medium'>
-										{t("grid")}
-									</span>
-								</button>
-								<button
-									onClick={() => setViewMode("list")}
-									className={`px-3 py-2 hidden md:flex sm:px-4 sm:py-2 rounded-md sm:rounded-lg transition-all duration-300 flex items-center space-x-1.5 ${
-										viewMode === "list"
-											? "bg-white text-teal-600 shadow-md"
-											: "text-gray-600 hover:text-gray-900"
-									}`}>
-									<List className='w-3 h-3 sm:w-4 sm:h-4' />
-									<span className='text-xs sm:text-sm font-medium'>
-										{t("list")}
-									</span>
-								</button>
+							<div className='w-full'>
+								<label className='block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2'>
+									{t("view")}
+								</label>
+								<div className='flex bg-gray-100 rounded-lg sm:rounded-xl p-1 w-full'>
+									<button
+										onClick={() => setViewMode("grid")}
+										className={`flex-1 px-3 py-2 sm:px-4 sm:py-2 rounded-md sm:rounded-lg transition-all duration-300 flex items-center justify-center space-x-1.5 ${
+											viewMode === "grid"
+												? "bg-white text-teal-600 shadow-md"
+												: "text-gray-600 hover:text-gray-900"
+										}`}>
+										<Grid3X3 className='w-3 h-3 sm:w-4 sm:h-4' />
+										<span className='text-xs sm:text-sm font-medium'>
+											{t("grid")}
+										</span>
+									</button>
+									<button
+										onClick={() => setViewMode("list")}
+										className={`flex-1 px-3 py-2 sm:px-4 sm:py-2 rounded-md sm:rounded-lg transition-all duration-300 flex items-center justify-center space-x-1.5 ${
+											viewMode === "list"
+												? "bg-white text-teal-600 shadow-md"
+												: "text-gray-600 hover:text-gray-900"
+										}`}>
+										<List className='w-3 h-3 sm:w-4 sm:h-4' />
+										<span className='text-xs sm:text-sm font-medium'>
+											{t("list")}
+										</span>
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
