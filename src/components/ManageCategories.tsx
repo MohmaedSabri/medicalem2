@@ -6,15 +6,12 @@ import { Tag, Edit, Trash2, Search, Plus, Eye } from "lucide-react";
 import { Category } from "../types";
 import { useCategories } from "../contexts/CategoriesContext";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "../contexts/LanguageContext";
+
 import { toast } from "react-hot-toast";
 
 const ManageCategories: React.FC = () => {
 	const { categories, deleteCategory, loading, error } = useCategories();
 	const navigate = useNavigate();
-	const { t } = useTranslation();
-	const { isRTL } = useLanguage();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 	const [deletingCategory, setDeletingCategory] = useState<string | null>(null);
@@ -45,10 +42,10 @@ const ManageCategories: React.FC = () => {
 		) {
 			setDeletingCategory(categoryId);
 			try {
-				deleteCategory(categoryId);
+				await deleteCategory(categoryId);
 			} catch (error) {
-				// Error deleting category
-				toast.error("Failed to delete category");
+				// Error deleting category - the mutation hook will handle the error toast
+				console.error("Error deleting category:", error);
 			} finally {
 				setDeletingCategory(null);
 			}
@@ -84,27 +81,29 @@ const ManageCategories: React.FC = () => {
 		if (!editingCategory || !editForm.name) return;
 
 		try {
-			updateCategory(editingCategory._id, editForm);
+			await updateCategory(editingCategory._id, editForm);
 			setEditingCategory(null);
 			setEditForm({ name: "", description: "" });
 		} catch (error) {
-			// Error updating category
-			toast.error("Failed to update category");
+			// Error updating category - the mutation hook will handle the error toast
+			console.error("Error updating category:", error);
 		}
 	};
 
 	if (loading) {
 		return (
-			<div className="flex items-center justify-center min-h-64">
-				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600"></div>
+			<div className='flex items-center justify-center min-h-64'>
+				<div className='animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600'></div>
 			</div>
 		);
 	}
 
 	if (error) {
 		return (
-			<div className="text-center py-8">
-				<p className="text-red-600">Error loading categories: {error.message}</p>
+			<div className='text-center py-8'>
+				<p className='text-red-600'>
+					Error loading categories: {error.message}
+				</p>
 			</div>
 		);
 	}
@@ -156,46 +155,56 @@ const ManageCategories: React.FC = () => {
 
 				{/* Add Category Form */}
 				{showAddForm && (
-					<div className="mb-6 p-4 bg-gray-50 rounded-lg">
-						<h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Category</h3>
-						<form onSubmit={handleAddCategory} className="space-y-4">
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<div className='mb-6 p-4 bg-gray-50 rounded-lg'>
+						<h3 className='text-lg font-semibold text-gray-900 mb-4'>
+							Add New Category
+						</h3>
+						<form onSubmit={handleAddCategory} className='space-y-4'>
+							<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 								<div>
-									<label className="block text-sm font-medium text-gray-700 mb-1">
+									<label className='block text-sm font-medium text-gray-700 mb-1'>
 										Category Name *
 									</label>
 									<input
-										type="text"
+										type='text'
 										value={newCategory.name}
-										onChange={(e) => setNewCategory(prev => ({ ...prev, name: e.target.value }))}
-										className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+										onChange={(e) =>
+											setNewCategory((prev) => ({
+												...prev,
+												name: e.target.value,
+											}))
+										}
+										className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
 										required
 									/>
 								</div>
 								<div>
-									<label className="block text-sm font-medium text-gray-700 mb-1">
+									<label className='block text-sm font-medium text-gray-700 mb-1'>
 										Description
 									</label>
 									<input
-										type="text"
+										type='text'
 										value={newCategory.description}
-										onChange={(e) => setNewCategory(prev => ({ ...prev, description: e.target.value }))}
-										className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+										onChange={(e) =>
+											setNewCategory((prev) => ({
+												...prev,
+												description: e.target.value,
+											}))
+										}
+										className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
 									/>
 								</div>
 							</div>
-							<div className="flex space-x-3">
+							<div className='flex space-x-3'>
 								<button
-									type="submit"
-									className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors"
-								>
+									type='submit'
+									className='bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors'>
 									Add Category
 								</button>
 								<button
-									type="button"
+									type='button'
 									onClick={() => setShowAddForm(false)}
-									className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
-								>
+									className='bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors'>
 									Cancel
 								</button>
 							</div>
@@ -204,65 +213,62 @@ const ManageCategories: React.FC = () => {
 				)}
 
 				{/* Categories List */}
-				<div className="overflow-x-auto">
-					<table className="min-w-full divide-y divide-gray-200">
-						<thead className="bg-gray-50">
+				<div className='overflow-x-auto'>
+					<table className='min-w-full divide-y divide-gray-200'>
+						<thead className='bg-gray-50'>
 							<tr>
-								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+								<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
 									Category
 								</th>
-								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+								<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
 									Description
 								</th>
-								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+								<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
 									Created
 								</th>
-								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+								<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
 									Actions
 								</th>
 							</tr>
 						</thead>
-						<tbody className="bg-white divide-y divide-gray-200">
+						<tbody className='bg-white divide-y divide-gray-200'>
 							{filteredCategories.map((category) => (
-								<tr key={category._id} className="hover:bg-gray-50">
-									<td className="px-6 py-4 whitespace-nowrap">
-										<div className="text-sm font-medium text-gray-900">
+								<tr key={category._id} className='hover:bg-gray-50'>
+									<td className='px-6 py-4 whitespace-nowrap'>
+										<div className='text-sm font-medium text-gray-900'>
 											{category.name}
 										</div>
 									</td>
-									<td className="px-6 py-4">
-										<div className="text-sm text-gray-900 max-w-xs truncate">
+									<td className='px-6 py-4'>
+										<div className='text-sm text-gray-900 max-w-xs truncate'>
 											{category.description || "No description"}
 										</div>
 									</td>
-									<td className="px-6 py-4 whitespace-nowrap">
-										<div className="text-sm text-gray-500">
+									<td className='px-6 py-4 whitespace-nowrap'>
+										<div className='text-sm text-gray-500'>
 											{new Date(category.createdAt).toLocaleDateString()}
 										</div>
 									</td>
-									<td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-										<div className="flex space-x-2">
+									<td className='px-6 py-4 whitespace-nowrap text-sm font-medium'>
+										<div className='flex space-x-2'>
 											<button
 												onClick={() => handleView(category._id)}
-												className="text-blue-600 hover:text-blue-900 transition-colors"
-												title="View Category"
-											>
-												<Eye className="h-4 w-4" />
+												className='text-blue-600 hover:text-blue-900 transition-colors'
+												title='View Category'>
+												<Eye className='h-4 w-4' />
 											</button>
 											<button
 												onClick={() => handleEdit(category)}
-												className="text-indigo-600 hover:text-indigo-900 transition-colors"
-												title="Edit Category"
-											>
-												<Edit className="h-4 w-4" />
+												className='text-indigo-600 hover:text-indigo-900 transition-colors'
+												title='Edit Category'>
+												<Edit className='h-4 w-4' />
 											</button>
 											<button
 												onClick={() => handleDelete(category._id)}
 												disabled={deletingCategory === category._id}
-												className="text-red-600 hover:text-red-900 transition-colors disabled:opacity-50"
-												title="Delete Category"
-											>
-												<Trash2 className="h-4 w-4" />
+												className='text-red-600 hover:text-red-900 transition-colors disabled:opacity-50'
+												title='Delete Category'>
+												<Trash2 className='h-4 w-4' />
 											</button>
 										</div>
 									</td>
@@ -274,48 +280,55 @@ const ManageCategories: React.FC = () => {
 
 				{/* Edit Category Modal */}
 				{editingCategory && (
-					<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-						<div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-							<h3 className="text-lg font-semibold text-gray-900 mb-4">Edit Category</h3>
-							<form onSubmit={handleUpdateCategory} className="space-y-4">
+					<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
+						<div className='bg-white rounded-lg p-6 w-full max-w-md mx-4'>
+							<h3 className='text-lg font-semibold text-gray-900 mb-4'>
+								Edit Category
+							</h3>
+							<form onSubmit={handleUpdateCategory} className='space-y-4'>
 								<div>
-									<label className="block text-sm font-medium text-gray-700 mb-1">
+									<label className='block text-sm font-medium text-gray-700 mb-1'>
 										Category Name *
 									</label>
 									<input
-										type="text"
+										type='text'
 										value={editForm.name}
-										onChange={(e) => setEditForm(prev => ({ ...prev, name: e.target.value }))}
-										className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+										onChange={(e) =>
+											setEditForm((prev) => ({ ...prev, name: e.target.value }))
+										}
+										className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
 										required
 									/>
 								</div>
 								<div>
-									<label className="block text-sm font-medium text-gray-700 mb-1">
+									<label className='block text-sm font-medium text-gray-700 mb-1'>
 										Description
 									</label>
 									<input
-										type="text"
+										type='text'
 										value={editForm.description}
-										onChange={(e) => setEditForm(prev => ({ ...prev, description: e.target.value }))}
-										className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+										onChange={(e) =>
+											setEditForm((prev) => ({
+												...prev,
+												description: e.target.value,
+											}))
+										}
+										className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
 									/>
 								</div>
-								<div className="flex space-x-3">
+								<div className='flex space-x-3'>
 									<button
-										type="submit"
-										className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors"
-									>
+										type='submit'
+										className='bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors'>
 										Update Category
 									</button>
 									<button
-										type="button"
+										type='button'
 										onClick={() => {
 											setEditingCategory(null);
 											setEditForm({ name: "", description: "" });
 										}}
-										className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
-									>
+										className='bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors'>
 										Cancel
 									</button>
 								</div>
@@ -326,11 +339,15 @@ const ManageCategories: React.FC = () => {
 
 				{/* Empty State */}
 				{filteredCategories.length === 0 && (
-					<div className="text-center py-12">
-						<Tag className="mx-auto h-12 w-12 text-gray-400" />
-						<h3 className="mt-2 text-sm font-medium text-gray-900">No categories found</h3>
-						<p className="mt-1 text-sm text-gray-500">
-							{searchTerm ? "Try adjusting your search terms." : "Get started by creating your first category."}
+					<div className='text-center py-12'>
+						<Tag className='mx-auto h-12 w-12 text-gray-400' />
+						<h3 className='mt-2 text-sm font-medium text-gray-900'>
+							No categories found
+						</h3>
+						<p className='mt-1 text-sm text-gray-500'>
+							{searchTerm
+								? "Try adjusting your search terms."
+								: "Get started by creating your first category."}
 						</p>
 					</div>
 				)}

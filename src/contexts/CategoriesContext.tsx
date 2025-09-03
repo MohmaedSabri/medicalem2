@@ -1,18 +1,21 @@
 /** @format */
 
-import React, {
-	createContext,
-	useContext,
-	ReactNode,
-} from "react";
+import React, { createContext, useContext, ReactNode } from "react";
 import { Category } from "../types";
-import { useCategories as useCategoriesQuery, useCreateCategory, useUpdateCategory, useDeleteCategory } from "../hooks/useCategories";
+import {
+	useCategories as useCategoriesQuery,
+	useCreateCategory,
+	useUpdateCategory,
+	useDeleteCategory,
+} from "../hooks/useCategories";
 
 interface CategoriesContextType {
 	categories: Category[];
-	addCategory: (category: Omit<Category, "_id" | "createdAt" | "updatedAt">) => Promise<boolean>;
-	updateCategory: (id: string, updates: Partial<Category>) => void;
-	deleteCategory: (id: string) => void;
+	addCategory: (
+		category: Omit<Category, "_id" | "createdAt" | "updatedAt">
+	) => Promise<boolean>;
+	updateCategory: (id: string, updates: Partial<Category>) => Promise<void>;
+	deleteCategory: (id: string) => Promise<void>;
 	getCategoryById: (id: string) => Category | undefined;
 	getCategoryByName: (name: string) => Category | undefined;
 	loading: boolean;
@@ -39,12 +42,18 @@ export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({
 	children,
 }) => {
 	// Use React Query hooks
-	const { data: categories = [], isLoading: loading, error } = useCategoriesQuery();
+	const {
+		data: categories = [],
+		isLoading: loading,
+		error,
+	} = useCategoriesQuery();
 	const createCategoryMutation = useCreateCategory();
 	const updateCategoryMutation = useUpdateCategory();
 	const deleteCategoryMutation = useDeleteCategory();
 
-	const addCategory = async (categoryData: Omit<Category, "_id" | "createdAt" | "updatedAt">) => {
+	const addCategory = async (
+		categoryData: Omit<Category, "_id" | "createdAt" | "updatedAt">
+	) => {
 		try {
 			await createCategoryMutation.mutateAsync(categoryData);
 			return true;
@@ -55,19 +64,11 @@ export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({
 	};
 
 	const updateCategory = async (id: string, updates: Partial<Category>) => {
-		try {
-			await updateCategoryMutation.mutateAsync({ id, data: updates });
-		} catch {
-			// Error updating category
-		}
+		await updateCategoryMutation.mutateAsync({ id, data: updates });
 	};
 
 	const deleteCategory = async (id: string) => {
-		try {
-			await deleteCategoryMutation.mutateAsync(id);
-		} catch {
-			// Error deleting category
-		}
+		await deleteCategoryMutation.mutateAsync(id);
 	};
 
 	const getCategoryById = (id: string) => {
@@ -75,7 +76,9 @@ export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({
 	};
 
 	const getCategoryByName = (name: string) => {
-		return categories.find((category) => category.name.toLowerCase() === name.toLowerCase());
+		return categories.find(
+			(category) => category.name.toLowerCase() === name.toLowerCase()
+		);
 	};
 
 	const value: CategoriesContextType = {
