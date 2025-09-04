@@ -32,7 +32,7 @@ const Home: React.FC = () => {
 				const contactTop = contactSection.offsetTop;
 
 				// Show sidebar when scrolling down, hide when reaching Contact section or at top
-				if (scrollY > 100 && scrollY < contactTop - 200) {
+				if (scrollY > 700 && scrollY < contactTop + 600) {
 					setShowSocialSidebar(true);
 				} else {
 					setShowSocialSidebar(false);

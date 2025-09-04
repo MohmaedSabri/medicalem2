@@ -30,7 +30,7 @@ const FloatingSocialSidebar: React.FC<FloatingSocialSidebarProps> = ({ isVisible
             ease: "easeOut",
             type: "tween"
           }}
-          className="fixed left-4 top-[50vh] transform  z-50 hidden lg:block"
+          className="fixed left-4 top-[30vh] transform  z-50 hidden lg:block"
         >
           <div className="flex flex-col space-y-4">
             {socialLinks.map((social, index) => (
