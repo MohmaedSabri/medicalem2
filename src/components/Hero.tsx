@@ -48,7 +48,7 @@ const Hero: React.FC = () => {
 	// Hero tri-image rotating state with continuous smooth orbital motion
 	const heroImages = React.useMemo(
 		() => [
-			"https://i.postimg.cc/hGFsChm7/hero1.png",
+			"https://i.postimg.cc/5NhhnfVk/hero1.png",
 			"https://i.postimg.cc/qvcbn3YV/hero2.png",
 			"https://i.postimg.cc/qqfDyxkr/hero3.png",
 		],

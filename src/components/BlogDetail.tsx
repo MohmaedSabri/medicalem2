@@ -27,6 +27,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../contexts/LanguageContext";
 import { Post, ContentBlock } from "../types";
+import toast from "react-hot-toast";
 
 const BlogDetail: React.FC = () => {
 	const { t } = useTranslation();
@@ -35,6 +36,14 @@ const BlogDetail: React.FC = () => {
 	const navigate = useNavigate();
 	const { user } = useAuth();
 	const [isLiked, setIsLiked] = useState(false);
+
+	// Check if post is already liked (for non-authenticated users)
+	React.useEffect(() => {
+		if (!user && id) {
+			const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
+			setIsLiked(likedPosts.includes(id));
+		}
+	}, [user, id]);
 
 	const { data: post, isLoading, error } = usePost(id!, currentLanguage);
 	const { mutate: likePost, isPending: isLiking } = useLikePost();
@@ -56,15 +65,32 @@ const BlogDetail: React.FC = () => {
 
 	// Handle like
 	const handleLike = () => {
-		if (!user) {
-			// Redirect to login if not authenticated
-			navigate("/login");
-			return;
-		}
-
 		if (id) {
-			likePost(id);
-			setIsLiked(true);
+			// Check if user is authenticated
+			if (user) {
+				// Use API for authenticated users
+				likePost(id);
+				setIsLiked(true);
+			} else {
+				// For non-authenticated users, use local storage
+				const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
+				if (!likedPosts.includes(id)) {
+					likedPosts.push(id);
+					localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+					setIsLiked(true);
+					
+					// Show success message
+					toast.success('Post liked! 💖');
+				} else {
+					toast('You have already liked this post!', {
+						icon: '💖',
+						style: {
+							background: '#f0f9ff',
+							color: '#0369a1',
+						},
+					});
+				}
+			}
 		}
 	};
 
@@ -218,7 +244,7 @@ const BlogDetail: React.FC = () => {
 		} else {
 			// Fallback: copy to clipboard
 			navigator.clipboard.writeText(window.location.href);
-			// You could add a toast notification here
+			toast.success('Link copied to clipboard!');
 		}
 	};
 
@@ -457,16 +483,21 @@ const BlogDetail: React.FC = () => {
 								<div className='flex flex-col xs:flex-row items-stretch xs:items-center gap-3 xs:gap-4'>
 									<button
 										onClick={handleLike}
-										disabled={isLiking || isLiked}
+										disabled={isLiking || (!!user && isLiked)}
 										className={`flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition-colors text-sm sm:text-base ${
 											isLiked
 												? "bg-red-100 text-red-600 border border-red-200"
 												: "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
-										}`}>
+										} ${!user && isLiked ? "cursor-default" : "cursor-pointer"}`}>
 										<Heart
 											className={`w-4 h-4 sm:w-5 sm:h-5 ${isLiked ? "fill-current" : ""}`}
 										/>
-										<span>{isLiked ? t("liked") : t("like")}</span>
+										<span>
+											{isLiked 
+												? (user ? t("liked") : "Liked!") 
+												: t("like")
+											}
+										</span>
 									</button>
 
 									<button
