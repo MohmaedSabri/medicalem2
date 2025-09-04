@@ -97,13 +97,13 @@ export interface Category {
 }
 
 export interface CreateCategoryData {
-	name: string;
-	description?: string;
+	name: string | { en: string; ar: string };
+	description?: string | { en: string; ar: string };
 }
 
 export interface UpdateCategoryData {
-	name?: string;
-	description?: string;
+	name?: string | { en: string; ar: string };
+	description?: string | { en: string; ar: string };
 }
 
 // Content structure types
@@ -222,13 +222,13 @@ export interface SubCategory {
 }
 
 export interface CreateSubCategoryData {
-	name: string;
-	description: string;
+	name: string | { en: string; ar: string };
+	description: string | { en: string; ar: string };
 	parentCategory: string;
 }
 
 export interface UpdateSubCategoryData {
-	name?: string;
-	description?: string;
+	name?: string | { en: string; ar: string };
+	description?: string | { en: string; ar: string };
 	parentCategory?: string;
 }

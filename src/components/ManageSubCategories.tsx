@@ -20,7 +20,7 @@ import {
 	useUpdateSubCategory,
 	useDeleteSubCategory,
 } from "../hooks/useSubCategories";
-import { SubCategory, CreateSubCategoryData } from "../types";
+import { SubCategory, UpdateSubCategoryData } from "../types";
 
 import { useLanguage } from "../contexts/LanguageContext";
 import { useTranslation } from "react-i18next";
@@ -40,6 +40,18 @@ const ManageSubCategories: React.FC = () => {
 		}
 		return "";
 	};
+
+	// Helper function to build localized object
+	const buildLocalized = (fallback: string, en?: string, ar?: string) => {
+		return {
+			en: (en ?? '').trim() || fallback,
+			ar: (ar ?? '').trim() || fallback,
+		};
+	};
+
+	// Helper function to set i18n field
+	const setField = (key: keyof typeof i18nFields, value: string) => 
+		setI18nFields(prev => ({ ...prev, [key]: value }));
 	const [isCreating, setIsCreating] = useState(false);
 	const [editingId, setEditingId] = useState<string | null>(null);
 	const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
@@ -50,10 +62,18 @@ const ManageSubCategories: React.FC = () => {
 		useState<SubCategory | null>(null);
 
 	// Form states
-	const [formData, setFormData] = useState<CreateSubCategoryData>({
+	const [formData, setFormData] = useState({
 		name: "",
 		description: "",
 		parentCategory: "",
+	});
+
+	// Bilingual fields
+	const [i18nFields, setI18nFields] = useState({
+		nameEn: "",
+		nameAr: "",
+		descEn: "",
+		descAr: "",
 	});
 
 	const { categories } = useCategories();
@@ -104,12 +124,22 @@ const ManageSubCategories: React.FC = () => {
 			description: "",
 			parentCategory: parentCategoryId,
 		});
+		setI18nFields({
+			nameEn: "",
+			nameAr: "",
+			descEn: "",
+			descAr: "",
+		});
 		setIsCreating(true);
 		setEditingId(null);
 	};
 
 	// Start editing subcategory
 	const handleEditStart = (subcategory: SubCategory) => {
+		// Extract localized values
+		const nameObj = typeof subcategory.name === 'object' ? subcategory.name : { en: subcategory.name, ar: subcategory.name };
+		const descObj = typeof subcategory.description === 'object' ? subcategory.description : { en: subcategory.description, ar: subcategory.description };
+		
 		setFormData({
 			name: getLocalizedText(subcategory.name as unknown),
 			description: getLocalizedText(subcategory.description as unknown),
@@ -120,6 +150,15 @@ const ManageSubCategories: React.FC = () => {
 						: subcategory.parentCategory._id)) ||
 				"",
 		});
+		
+		// Populate bilingual fields
+		setI18nFields({
+			nameEn: nameObj.en || "",
+			nameAr: nameObj.ar || "",
+			descEn: descObj.en || "",
+			descAr: descObj.ar || "",
+		});
+		
 		setEditingId(subcategory._id);
 		setIsCreating(false);
 	};
@@ -133,6 +172,12 @@ const ManageSubCategories: React.FC = () => {
 			description: "",
 			parentCategory: "",
 		});
+		setI18nFields({
+			nameEn: "",
+			nameAr: "",
+			descEn: "",
+			descAr: "",
+		});
 	};
 
 	// Handle form submission
@@ -140,8 +185,8 @@ const ManageSubCategories: React.FC = () => {
 		e.preventDefault();
 
 		if (
-			!formData.name.trim() ||
-			!formData.description.trim() ||
+			(!formData.name.trim() && !i18nFields.nameEn && !i18nFields.nameAr) ||
+			(!formData.description.trim() && !i18nFields.descEn && !i18nFields.descAr) ||
 			!formData.parentCategory
 		) {
 			return;
@@ -150,41 +195,24 @@ const ManageSubCategories: React.FC = () => {
 		try {
 			if (isCreating) {
 				await createSubCategory.mutateAsync({
-					name: { en: formData.name, ar: formData.name },
-					description: { en: formData.description, ar: formData.description },
+					name: buildLocalized(formData.name, i18nFields.nameEn, i18nFields.nameAr),
+					description: buildLocalized(formData.description, i18nFields.descEn, i18nFields.descAr),
 					parentCategory: formData.parentCategory,
 				});
 				toast.success(t("added", { defaultValue: "Added successfully" }));
 			} else if (editingId) {
-				// Find original for merge
-				const original = (allSubCategories || []).find(
-					(s) => s._id === editingId
-				);
-				const mergeLocalized = (value: string, originalValue: unknown) => {
-					const prev =
-						originalValue && typeof originalValue === "object"
-							? (originalValue as { en?: string; ar?: string })
-							: {};
-					return {
-						en: currentLanguage === "en" ? value : prev.en ?? value,
-						ar: currentLanguage === "ar" ? value : prev.ar ?? value,
-					};
-				};
 				await updateSubCategory.mutateAsync({
 					id: editingId,
 					subcategoryData: {
-						name: mergeLocalized(formData.name, original?.name),
-						description: mergeLocalized(
-							formData.description,
-							original?.description
-						),
+						name: buildLocalized(formData.name, i18nFields.nameEn, i18nFields.nameAr),
+						description: buildLocalized(formData.description, i18nFields.descEn, i18nFields.descAr),
 						parentCategory: formData.parentCategory,
-					},
+					} as UpdateSubCategoryData,
 				});
 				toast.success(t("updated", { defaultValue: "Updated successfully" }));
 			}
 			handleCancel();
-		} catch (error) {
+		} catch {
 			// Error saving subcategory
 			toast.error(
 				t("failedToSave", { defaultValue: "Failed to save subcategory" })
@@ -210,7 +238,7 @@ const ManageSubCategories: React.FC = () => {
 			);
 			setShowDeleteModal(false);
 			setSubcategoryToDelete(null);
-		} catch (error) {
+		} catch {
 			// Error deleting subcategory
 			toast.error(
 				t("failedToDeleteSubcategory", {
@@ -411,34 +439,72 @@ const ManageSubCategories: React.FC = () => {
 							</select>
 						</div>
 
+						{/* Subcategory Name - Bilingual */}
 						<div>
 							<label className='block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2'>
 								{t("subcategoryName")}
 							</label>
-							<input
-								type='text'
-								name='name'
-								value={formData.name}
-								onChange={handleInputChange}
-								className='w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500'
-								placeholder={t("enterSubcategoryName")}
-								required
-							/>
+							<div className='grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4'>
+								<div>
+									<label className='block text-xs font-medium text-gray-600 mb-1'>
+										English (EN)
+									</label>
+									<input
+										type='text'
+										value={i18nFields.nameEn}
+										onChange={(e) => setField('nameEn', e.target.value)}
+										className='w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500'
+										placeholder='Subcategory name in English'
+									/>
+								</div>
+								<div>
+									<label className='block text-xs font-medium text-gray-600 mb-1'>
+										العربية (AR)
+									</label>
+									<input
+										type='text'
+										value={i18nFields.nameAr}
+										onChange={(e) => setField('nameAr', e.target.value)}
+										className='w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500'
+										placeholder='اسم الفئة الفرعية بالعربية'
+										dir='auto'
+									/>
+								</div>
+							</div>
 						</div>
 
+						{/* Description - Bilingual */}
 						<div>
 							<label className='block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2'>
 								{t("description")}
 							</label>
-							<textarea
-								name='description'
-								value={formData.description}
-								onChange={handleInputChange}
-								rows={3}
-								className='w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none'
-								placeholder={t("enterSubcategoryDescription")}
-								required
-							/>
+							<div className='grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4'>
+								<div>
+									<label className='block text-xs font-medium text-gray-600 mb-1'>
+										English (EN)
+									</label>
+									<textarea
+										value={i18nFields.descEn}
+										onChange={(e) => setField('descEn', e.target.value)}
+										rows={3}
+										className='w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none'
+										placeholder='Subcategory description in English'
+									/>
+								</div>
+								<div>
+									<label className='block text-xs font-medium text-gray-600 mb-1'>
+										العربية (AR)
+									</label>
+									<textarea
+										value={i18nFields.descAr}
+										onChange={(e) => setField('descAr', e.target.value)}
+										rows={3}
+										className='w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none'
+										placeholder='وصف الفئة الفرعية بالعربية'
+										dir='auto'
+									/>
+								</div>
+							</div>
 						</div>
 
 						<div

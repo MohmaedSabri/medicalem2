@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
 	Save,
 	X,
-	Plus,
 	Star,
 	Edit,
 	Trash2,
@@ -18,7 +17,6 @@ import { useSubCategories } from "../hooks/useSubCategories";
 import { reviewApi } from "../services/reviewApi";
 import { useLanguage } from "../contexts/LanguageContext";
 import toast from "react-hot-toast";
-import { useClickOutside } from "../hooks/useClickOutside";
 
 interface EditProductFormProps {
 	product: Product;
@@ -671,7 +669,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 												<div
 													key={index}
 													className='flex items-center gap-2 bg-teal-100 text-teal-800 px-3 py-1 rounded-full'>
-													<span className='text-sm'>{feature.en}</span>
+													<span className='text-sm'>{feature}</span>
 													<button
 														type='button'
 														onClick={() => handleRemoveFeature(index)}
@@ -758,7 +756,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 												<div
 													key={index}
 													className='flex items-center gap-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full'>
-													<span className='text-sm'>{cert.en}</span>
+													<span className='text-sm'>{cert}</span>
 													<button
 														type='button'
 														onClick={() => handleRemoveCertification(index)}

@@ -26,12 +26,34 @@ const ManageCategories: React.FC = () => {
 		}
 		return "";
 	};
+
+	// Helper function to build localized object
+	const buildLocalized = (fallback: string, en?: string, ar?: string) => {
+		return {
+			en: (en ?? '').trim() || fallback,
+			ar: (ar ?? '').trim() || fallback,
+		};
+	};
+
+	// Helper function to set i18n field
+	const setField = (key: keyof typeof i18nFields, value: string) => 
+		setI18nFields(prev => ({ ...prev, [key]: value }));
+
 	const [searchTerm, setSearchTerm] = useState("");
 	const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 	const [deletingCategory, setDeletingCategory] = useState<string | null>(null);
 	const [showAddForm, setShowAddForm] = useState(false);
 	const [newCategory, setNewCategory] = useState({ name: "", description: "" });
 	const [editForm, setEditForm] = useState({ name: "", description: "" });
+	
+	// Bilingual fields for new category
+	const [i18nFields, setI18nFields] = useState({
+		nameEn: "",
+		nameAr: "",
+		descEn: "",
+		descAr: "",
+	});
+	
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
@@ -48,11 +70,6 @@ const ManageCategories: React.FC = () => {
 		setEditForm({ name: "", description: "" });
 	}, !!editingCategory);
 
-	// Build localized object for add; for update we only overwrite current language
-	const toLocalized = (value: string): { en: string; ar: string } => ({
-		en: value,
-		ar: value,
-	});
 	const mergeLocalized = (
 		value: string,
 		original: unknown
@@ -96,7 +113,7 @@ const ManageCategories: React.FC = () => {
 			await deleteCategory(categoryToDelete._id);
 			setShowDeleteModal(false);
 			setCategoryToDelete(null);
-		} catch (error) {
+		} catch {
 			// Error deleting category - the mutation hook will handle the error toast
 		} finally {
 			setDeletingCategory(null);
@@ -112,23 +129,25 @@ const ManageCategories: React.FC = () => {
 
 	const handleAddCategory = async (e: React.FormEvent) => {
 		e.preventDefault();
-		if (!newCategory.name) return;
+		if (!newCategory.name && !i18nFields.nameEn && !i18nFields.nameAr) return;
 
 		try {
 			const payload = {
-				name: toLocalized(newCategory.name),
-				description: newCategory.description
-					? toLocalized(newCategory.description)
-					: undefined,
+				name: buildLocalized(newCategory.name, i18nFields.nameEn, i18nFields.nameAr),
+				description: newCategory.description || i18nFields.descEn || i18nFields.descAr
+					? buildLocalized(newCategory.description, i18nFields.descEn, i18nFields.descAr)
+					: "",
 			};
-			const success = await addCategory(payload as any);
+			const success = await addCategory(payload);
 			if (success) {
 				setNewCategory({ name: "", description: "" });
+				setI18nFields({ nameEn: "", nameAr: "", descEn: "", descAr: "" });
 				setShowAddForm(false);
+				toast.success("Category added successfully!");
 			} else {
 				toast.error("Failed to add category");
 			}
-		} catch (error) {
+		} catch {
 			// Error adding category
 			toast.error("Failed to add category");
 		}
@@ -147,7 +166,7 @@ const ManageCategories: React.FC = () => {
 					editingCategory.description
 				),
 			};
-			const success = await updateCategory(editingCategory._id, payload as any);
+			const success = await updateCategory(editingCategory._id, payload);
 			if (success) {
 				setEditingCategory(null);
 				setEditForm({ name: "", description: "" });
@@ -161,7 +180,7 @@ const ManageCategories: React.FC = () => {
 					})
 				);
 			}
-		} catch (error) {
+		} catch {
 			// Error updating category
 			toast.error(
 				t("failedToUpdateCategory", {
@@ -269,39 +288,71 @@ const ManageCategories: React.FC = () => {
 							{t("addNewCategory", { defaultValue: "Add New Category" })}
 						</h3>
 						<form onSubmit={handleAddCategory} className='space-y-4'>
-							<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-								<div>
-									<label className='block text-sm font-medium text-gray-700 mb-1'>
-										{t("categoryName", { defaultValue: "Category Name" })} *
-									</label>
-									<input
-										type='text'
-										value={newCategory.name}
-										onChange={(e) =>
-											setNewCategory((prev) => ({
-												...prev,
-												name: e.target.value,
-											}))
-										}
-										className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-										required
-									/>
+							{/* Category Name - Bilingual */}
+							<div>
+								<label className='block text-sm font-medium text-gray-700 mb-2'>
+									{t("categoryName", { defaultValue: "Category Name" })} *
+								</label>
+								<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+									<div>
+										<label className='block text-xs font-medium text-gray-600 mb-1'>
+											English (EN)
+										</label>
+										<input
+											type='text'
+											value={i18nFields.nameEn}
+											onChange={(e) => setField('nameEn', e.target.value)}
+											className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+											placeholder='Category name in English'
+										/>
+									</div>
+									<div>
+										<label className='block text-xs font-medium text-gray-600 mb-1'>
+											العربية (AR)
+										</label>
+										<input
+											type='text'
+											value={i18nFields.nameAr}
+											onChange={(e) => setField('nameAr', e.target.value)}
+											className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+											placeholder='اسم الفئة بالعربية'
+											dir='auto'
+										/>
+									</div>
 								</div>
-								<div>
-									<label className='block text-sm font-medium text-gray-700 mb-1'>
-										{t("description", { defaultValue: "Description" })}
-									</label>
-									<input
-										type='text'
-										value={newCategory.description}
-										onChange={(e) =>
-											setNewCategory((prev) => ({
-												...prev,
-												description: e.target.value,
-											}))
-										}
-										className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-									/>
+							</div>
+
+							{/* Description - Bilingual */}
+							<div>
+								<label className='block text-sm font-medium text-gray-700 mb-2'>
+									{t("description", { defaultValue: "Description" })}
+								</label>
+								<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+									<div>
+										<label className='block text-xs font-medium text-gray-600 mb-1'>
+											English (EN)
+										</label>
+										<textarea
+											value={i18nFields.descEn}
+											onChange={(e) => setField('descEn', e.target.value)}
+											rows={3}
+											className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none'
+											placeholder='Category description in English'
+										/>
+									</div>
+									<div>
+										<label className='block text-xs font-medium text-gray-600 mb-1'>
+											العربية (AR)
+										</label>
+										<textarea
+											value={i18nFields.descAr}
+											onChange={(e) => setField('descAr', e.target.value)}
+											rows={3}
+											className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none'
+											placeholder='وصف الفئة بالعربية'
+											dir='auto'
+										/>
+									</div>
 								</div>
 							</div>
 							<div
