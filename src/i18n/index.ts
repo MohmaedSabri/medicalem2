@@ -586,8 +586,8 @@ const arTranslations = {
 		register: "التسجيل",
 
 		// Hero Section
-		advancedMedicalEquipment: "خطوة نحو مستقبل",
-		equipment: "صحي أفضل",
+		advancedMedicalEquipment: "خطوة نحو ",
+		equipment:  "مستقبل صحي أفضل",
 		forHealthcareExcellence: "مع درر للمعدات الطبية",
 		heroDescription:
 			"منذ عام 2008، ونحن ملتزمون بالارتقاء بمعايير الرعاية الصحية في جميع أنحاء المنطقة، مقدمين حلولاً طبية متطورة يمكنك الوثوق بها. من أجهزة الأمراض الجلدية المتخصصة إلى تجهيزات غرف العمليات الكاملة وأنظمة الغازات الطبية المتقدمة.",

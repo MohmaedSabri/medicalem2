@@ -755,8 +755,8 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 								{/* Button content */}
 								<div className={`relative z-10 flex items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
 									<Phone className={`h-4 w-4 ${isRTL ? "ml-2" : "mr-2"} group-hover:scale-110 transition-all duration-300`} />
-									<span className='text-sm xl:text-base font-medium whitespace-nowrap group-hover:drop-shadow-lg transition-all duration-300'>
-										{currentLanguage === "ar" ? "اتصل بالبيع" : "Contact Sales"}
+									<span className='text-sm mx-2 xl:text-base font-medium whitespace-nowrap group-hover:drop-shadow-lg transition-all duration-300'>
+										{currentLanguage === "ar" ? "اتصل بنا" : "Contact Sales"}
 									</span>
 								</div>
 							</motion.button>
