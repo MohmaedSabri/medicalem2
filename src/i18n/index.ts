@@ -232,7 +232,7 @@ const enTranslations = {
 		weRiseInCare: '"We rise in care...',
 		toMakeAnImpact: 'to make an impact."',
 		drivenByOneGoal:
-			'"we\'ve been driven by one goal to elevate healthcare standards in the UAE and the GCC region"',
+			'"we\'ve been driven by one goal to elevate healthcare delivery standards in the UAE and the GCC region"',
 		getFreeConsultation: "Get Free Consultation",
 
 		// Footer

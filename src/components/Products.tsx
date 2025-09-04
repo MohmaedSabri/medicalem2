@@ -183,11 +183,8 @@ const Products: React.FC = () => {
 						</span>
 					</motion.div>
 
-					<h2 className='text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 mb-3 sm:mb-4 md:mb-6 px-2'>
+					<h2 className='text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-teal-600 mb-3 sm:mb-4 md:mb-6 px-2'>
 						{t('featured')}
-						<span className='block font-semibold text-teal-600 mt-1'>
-							{t('products')}
-						</span>
 					</h2>
 					<p className='text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 max-w-2xl lg:max-w-3xl mx-auto leading-relaxed px-4 sm:px-2 md:px-0'>
 						{t('featuredProductsDescription')}
@@ -303,12 +300,12 @@ const Products: React.FC = () => {
 												<div className='flex-1'>
 													{/* Product Title */}
 													<motion.h3
-														initial={{ opacity: 0, y: 15 }}
-														animate={{ opacity: 1, y: 0 }}
-														transition={{ delay: 0.4 }}
-														className={`text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light text-gray-900 mb-2 sm:mb-3 md:mb-4 lg:mb-6 leading-tight line-clamp-2 ${isArabicText(getLocalizedText(displayProducts[currentIndex]?.name)) ? 'text-right' : 'text-left'}`}>
-														{getLocalizedText(displayProducts[currentIndex]?.name)}
-													</motion.h3>
+										initial={{ opacity: 0, y: 15 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ delay: 0.4 }}
+										className={`text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light text-gray-900 mb-2 sm:mb-3 md:mb-4 lg:mb-6 ${isArabicText(getLocalizedText(displayProducts[currentIndex]?.name)) ? 'text-right leading-[1.9] whitespace-normal break-words overflow-visible' : 'text-left leading-tight line-clamp-2'}`}>
+										{getLocalizedText(displayProducts[currentIndex]?.name)}
+									</motion.h3>
 
 													{/* Product Description */}
 													<motion.p
