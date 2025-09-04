@@ -201,15 +201,10 @@ const Ceo: React.FC = () => {
 					{/* CEO Info */}
 					<motion.div variants={containerVariants}>
 						<motion.h2
-							className='text-3xl sm:text-4xl font-bold text-[#0f172a] mb-4'
-							variants={item}>
-							{t("meetOurCEO")}
-						</motion.h2>
-						<motion.p
 							className='text-[#00796a] font-semibold text-xl sm:text-2xl mb-2'
 							variants={item}>
 							{t("ceoName")}
-						</motion.p>
+						</motion.h2>
 						<motion.p className='text-slate-600 mb-4' variants={item}>
 							{t("ceoDescription1")}
 						</motion.p>
