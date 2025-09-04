@@ -88,7 +88,7 @@ const Hero: React.FC = () => {
 			
 			<section
 				id='home'
-				className='relative min-h-[600px] md:min-h-[700px] lg:min-h-[800px] pb-8 xl:min-h-screen pt-20 xl:px-[180px] xl:pt-28 sm:pt-8 md:pt-12 xl:pb-20 bg-[#00796a] overflow-hidden max-w-full'>
+				className='relative min-h-[600px] md:min-h-[700px] lg:min-h-[800px] pb-24 xl:min-h-screen pt-20 xl:px-[180px] xl:pt-28 sm:pt-8 md:pt-12 xl:pb-24 bg-[#00796a] overflow-hidden max-w-full'>
 				{/* Enhanced Medical Equipment Background Textures */}
 				<div className='absolute inset-0 -z-20 opacity-25'>
 					{/* Medical Crosses Pattern */}
@@ -404,7 +404,7 @@ const Hero: React.FC = () => {
 					</svg>
 				</div>
 
-				<div className='container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 pb-8 pt-6 md:pt-8 max-w-full overflow-hidden'>
+				<div className='container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 pb-24 pt-6 sm:pt-4  xl:pt-16 max-w-full overflow-hidden'>
 					<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12 items-center min-h-[65vh] md:min-h-[65vh] xl:min-h-[75vh] max-w-full'>
 						{/* Content Side - Responsive to RTL */}
 						<div className={`text-white text-center ${isRTL ? 'md:text-right lg:text-right' : 'md:text-left lg:text-left'} order-2 md:order-1 lg:order-1 md:col-span-1 lg:col-span-2 ${isRTL ? 'md:pr-4 lg:pr-4' : 'md:pl-4 lg:pl-4'} max-w-full overflow-hidden`}>
