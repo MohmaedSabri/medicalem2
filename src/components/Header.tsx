@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -192,7 +192,7 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 				if (category) {
 					const categoryName =
 						typeof category.name === "object"
-							? category.name[currentLanguage] || category.name.en
+							? (category.name as { [key: string]: string })[currentLanguage] || (category.name as { en: string; ar: string }).en
 							: category.name;
 					navigate(`/products?category=${encodeURIComponent(categoryName)}`);
 					setShowProductsMenu(false);
@@ -208,7 +208,7 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 			if (category) {
 				const categoryName =
 					typeof category.name === "object"
-						? category.name[currentLanguage] || category.name.en
+						? (category.name as { [key: string]: string })[currentLanguage] || (category.name as { en: string; ar: string }).en
 						: category.name;
 				navigate(`/products?category=${encodeURIComponent(categoryName)}`);
 				setShowProductsMenu(false);
@@ -230,23 +230,7 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 		return filtered;
 	};
 
-	// Animation variants (removed headerVariants as no longer needed)
-
-	const mobileMenuVariants = {
-		hidden: { opacity: 0, y: -20, scale: 0.95 },
-		visible: {
-			opacity: 1,
-			y: 0,
-			scale: 1,
-			transition: { duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] },
-		},
-		exit: {
-			opacity: 0,
-			y: -20,
-			scale: 0.95,
-			transition: { duration: 0.15, ease: [0.25, 0.46, 0.45, 0.94] },
-		},
-	};
+	// Animation variants
 
 	const dropdownVariants = {
 		hidden: { opacity: 0, y: 10, scale: 0.95 },
@@ -254,13 +238,13 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 			opacity: 1,
 			y: 0,
 			scale: 1,
-			transition: { duration: 0.15, ease: [0.25, 0.46, 0.45, 0.94] },
+			transition: { duration: 0.15, ease: "easeOut" as const },
 		},
 		exit: {
 			opacity: 0,
 			y: 10,
 			scale: 0.95,
-			transition: { duration: 0.1, ease: [0.25, 0.46, 0.45, 0.94] },
+			transition: { duration: 0.1, ease: "easeIn" as const },
 		},
 	};
 
@@ -271,7 +255,7 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 			transition: {
 				duration: 3,
 				repeat: Infinity,
-				ease: "easeInOut",
+				ease: "easeInOut" as const,
 			},
 		},
 	};
@@ -282,7 +266,7 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 			transition: {
 				duration: 2.5,
 				repeat: Infinity,
-				ease: "easeInOut",
+				ease: "easeInOut" as const,
 				delay: 0.5,
 			},
 		},
@@ -439,8 +423,8 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 																				);
 																			const categoryName =
 																				typeof category.name === "object"
-																					? category.name[currentLanguage] ||
-																					  category.name.en
+																					? (category.name as { [key: string]: string })[currentLanguage] ||
+																					  (category.name as { en: string; ar: string }).en
 																					: category.name;
 
 																			return (

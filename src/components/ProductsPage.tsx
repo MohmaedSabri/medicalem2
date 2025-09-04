@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Search, Filter, ArrowRight, Heart, Grid3X3, List } from "lucide-react";
@@ -27,7 +27,7 @@ const ProductsPage: React.FC = () => {
 	const [favorites, setFavorites] = useState<string[]>(() => getFavorites());
 
 	// Helper: get localized text from string or {en, ar}
-	const getLocalizedProductField = (value: any): string => {
+	const getLocalizedProductField = useCallback((value: string | { en?: string; ar?: string } | null | undefined): string => {
 		if (!value) return "";
 		if (typeof value === "string") return value;
 		if (typeof value === "object") {
@@ -36,13 +36,13 @@ const ProductsPage: React.FC = () => {
 			);
 		}
 		return "";
-	};
+	}, [currentLanguage]);
 
 	// Helper: get localized category name
-	const getLocalizedCategoryName = (category: any): string => {
+	const getLocalizedCategoryName = useCallback((category: { name?: string | { en?: string; ar?: string } } | null | undefined): string => {
 		if (!category) return "";
 		return getLocalizedProductField(category.name);
-	};
+	}, [getLocalizedProductField]);
 
 	// Sync favorites with localStorage
 	useEffect(() => {
@@ -62,18 +62,58 @@ const ProductsPage: React.FC = () => {
 		}
 	}, [searchParams]);
 
+	// Handle language change - update selected category to current language
+	useEffect(() => {
+		if (selectedCategory && selectedCategory !== "All") {
+			const categoryFromUrl = searchParams.get("category");
+			const subcategoryFromUrl = searchParams.get("subcategory");
+			
+			if (categoryFromUrl || subcategoryFromUrl) {
+				const urlParam = subcategoryFromUrl || categoryFromUrl;
+				
+				// Find the category/subcategory object that matches the URL parameter in any language
+				const matchingCategory = (allCategories || []).find((cat) => {
+					const nameObj = cat.name;
+					if (typeof nameObj === 'object' && nameObj && 'en' in nameObj && 'ar' in nameObj) {
+						const typedNameObj = nameObj as { en?: string; ar?: string };
+						return typedNameObj.en === urlParam || typedNameObj.ar === urlParam;
+					}
+					return nameObj === urlParam;
+				});
+
+				const matchingSubcategory = (allSubcategories || []).find((sub) => {
+					const nameObj = sub.name;
+					if (typeof nameObj === 'object' && nameObj && 'en' in nameObj && 'ar' in nameObj) {
+						const typedNameObj = nameObj as { en?: string; ar?: string };
+						return typedNameObj.en === urlParam || typedNameObj.ar === urlParam;
+					}
+					return nameObj === urlParam;
+				});
+
+				// Update selectedCategory to the current language version
+				if (matchingCategory) {
+					const localizedName = getLocalizedCategoryName(matchingCategory);
+					setSelectedCategory(localizedName);
+				} else if (matchingSubcategory) {
+					const localizedName = getLocalizedProductField(matchingSubcategory.name);
+					setSelectedCategory(localizedName);
+				}
+			}
+		}
+	}, [currentLanguage, allCategories, allSubcategories, searchParams, selectedCategory, getLocalizedCategoryName, getLocalizedProductField]);
+
 	// Update URL when category changes
 	const handleCategoryChange = (category: string) => {
 		setSelectedCategory(category);
 		if (category === "All") {
 			setSearchParams({});
 		} else {
-			// Check if this is a parent category or subcategory
+			// Check if this is a parent category or subcategory by comparing localized names
 			const isParentCategory = (allCategories || []).some(
-				(cat) => cat?.name === category
+				(cat) => getLocalizedCategoryName(cat) === category
 			);
 			const isSubcategory = (allSubcategories || []).some(
-				(sub) => sub?.name === category
+				(sub) => getLocalizedProductField(sub.name) === category
 			);
 
 			if (isParentCategory) {
@@ -88,7 +128,7 @@ const ProductsPage: React.FC = () => {
 	};
 
 	// Transform API products to local Product format with localization resolution
-	const resolveText = (value: any): string => {
+	const resolveText = (value: string | { en?: string; ar?: string } | null | undefined): string => {
 		if (!value) return "";
 		if (typeof value === "string") return value;
 		if (typeof value === "object") {
@@ -116,7 +156,7 @@ const ProductsPage: React.FC = () => {
 		averageRating: product.averageRating || 0,
 		totalReviews: product.totalReviews || 0,
 		reviews: product.reviews,
-		features: (product.features || []).map((f: any) => resolveText(f)),
+		features: (product.features || []).map((f: string | { en?: string; ar?: string }) => resolveText(f)),
 		specifications: Object.fromEntries(
 			Object.entries(product.specifications || {}).map(([k, v]) => [
 				k,
@@ -211,6 +251,8 @@ const ProductsPage: React.FC = () => {
 		sortBy,
 		allCategories,
 		allSubcategories,
+		getLocalizedProductField,
+		getLocalizedCategoryName,
 	]);
 
 	const handleToggleFavorite = (id: string) => {

@@ -18,7 +18,7 @@ const CategoryDetail: React.FC = () => {
 	const { t } = useTranslation();
 
 	// Helper function to get localized text
-	const getLocalizedText = (value: any): string => {
+	const getLocalizedText = (value: string | { en?: string; ar?: string } | null | undefined): string => {
 		if (!value) return "";
 		if (typeof value === "string") return value;
 		if (typeof value === "object") {
@@ -29,7 +29,10 @@ const CategoryDetail: React.FC = () => {
 
 	// Filter products by this category
 	const categoryProducts = products.filter(product => 
-		product.category === category?.name || product.category === category?._id
+		(product as any).category === category?.name || 
+		(product as any).category === category?._id ||
+		(product as any).subcategory === category?.name || 
+		(product as any).subcategory === category?._id
 	);
 
 	if (isLoading) {
@@ -147,9 +150,9 @@ const CategoryDetail: React.FC = () => {
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 						{categoryProducts.map((product) => (
 							<div
-								key={product.id}
+								key={(product as any)._id}
 								className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
-								onClick={() => navigate(`/product/${product.id}`)}
+								onClick={() => navigate(`/product/${(product as any)._id}`)}
 							>
 								<div className="aspect-square bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
 									{product.image ? (

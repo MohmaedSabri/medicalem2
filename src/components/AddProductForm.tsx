@@ -274,7 +274,7 @@ const AddProductForm: React.FC = () => {
 			} else {
 				toast.error("Failed to add product. Please try again.");
 			}
-		} catch (error) {
+		} catch {
 			toast.error("Failed to add product. Please try again.");
 		} finally {
 			setIsSubmitting(false);

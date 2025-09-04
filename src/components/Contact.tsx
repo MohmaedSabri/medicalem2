@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send, Clock, User, AtSign, Package, ChevronDown, Layers } from "lucide-react";
 import { ContactForm } from "../types";
@@ -19,14 +19,14 @@ const Contact: React.FC = () => {
 	const [searchParams] = useSearchParams();
 
 	// Helper: get localized text from string or {en, ar}
-	const getLocalizedText = (value: any): string => {
+	const getLocalizedText = useCallback((value: string | { en?: string; ar?: string } | null | undefined): string => {
 		if (!value) return "";
 		if (typeof value === "string") return value;
 		if (typeof value === "object") {
 			return value[currentLanguage as "en" | "ar"] || value.en || value.ar || "";
 		}
 		return "";
-	};
+	}, [currentLanguage]);
 	const productIdFromQuery = searchParams.get("productId");
 	const preselectedProductId = productIdFromQuery || undefined;
 

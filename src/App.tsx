@@ -22,6 +22,7 @@ import TopBar from "./components/TopBar";
 
 // Import i18n configuration
 import "./i18n";
+import { ScrollToTop } from "./components/ScrollToTop";
 
 // Lazy load components for better performance
 const Home = lazy(() => import("./pages/Home"));
@@ -37,7 +38,7 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 // Loading component
 const LoadingSpinner = () => (
 	<div className='flex items-center justify-center min-h-screen'>
-		<div className='animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600'></div>
+		<div className='animate-spin rounded-full h-32 w-32 border-b-2 border-teal-600'></div>
 	</div>
 );
 
@@ -75,6 +76,7 @@ function App() {
 				<CategoriesProvider>
 					<LanguageProvider>
 						<Router>
+							<ScrollToTop />
 							<AuthProvider>
 								<AppContent />
 								<Routes>

@@ -8,10 +8,6 @@ import {
 	ArrowLeft,
 	BookOpen,
 	Tag,
-	Heart,
-	Share2,
-	User,
-	Clock,
 } from "lucide-react";
 import { usePosts, useFeaturedPosts } from "../hooks/usePosts";
 import { Link } from "react-router-dom";
@@ -236,45 +232,7 @@ const Blog: React.FC = () => {
 	const validPosts = postsData?.posts?.filter(isValidPostContent) || [];
 	const validFeaturedPosts = featuredPosts.filter(isValidPostContent);
 
-	// Loading skeleton
-	const PostSkeleton = () => (
-		<div className='bg-white rounded-xl shadow-sm overflow-hidden animate-pulse border border-gray-100'>
-			<div className='h-48 bg-gradient-to-br from-gray-100 to-gray-200'></div>
-			<div className='p-6'>
-				<div className='h-4 bg-gray-200 rounded mb-2'></div>
-				<div className='h-3 bg-gray-200 rounded mb-4 w-3/4'></div>
-				<div className='h-3 bg-gray-200 rounded mb-2'></div>
-				<div className='h-3 bg-gray-200 rounded mb-4 w-2/3'></div>
-				<div className='flex items-center space-x-4'>
-					<div className='h-3 bg-gray-200 rounded w-20'></div>
-					<div className='h-3 bg-gray-200 rounded w-16'></div>
-				</div>
-			</div>
-
-			{/* Call to Action */}
-			<section className='bg-gradient-to-r from-teal-500 to-emerald-500 py-16'>
-				<div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
-					<h2 className='text-3xl font-bold text-white mb-4'>
-						Stay Updated with Medical Innovation
-					</h2>
-					<p className='text-xl text-white/90 mb-8'>
-						Subscribe to our newsletter for the latest insights on medical
-						equipment and healthcare technology.
-					</p>
-					<div className='flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto'>
-						<input
-							type='email'
-							placeholder='Enter your email'
-							className='flex-1 px-4 py-3 rounded-lg border-0 focus:ring-2 focus:ring-yellow-300 focus:outline-none'
-						/>
-						<button className='bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-medium px-6 py-3 rounded-lg transition-colors duration-200'>
-							Subscribe
-						</button>
-					</div>
-				</div>
-			</section>
-		</div>
-	);
+	
 
 	return (
 		<div className='min-h-screen bg-white'>
@@ -527,11 +485,7 @@ const Blog: React.FC = () => {
 
 							{/* Posts Grid */}
 							{postsLoading ? (
-								<div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
-									{Array.from({ length: 6 }).map((_, index) => (
-										<PostSkeleton key={index} />
-									))}
-								</div>
+								""
 							) : validPosts.length > 0 ? (
 								<>
 									<div className='text-center mb-12'>

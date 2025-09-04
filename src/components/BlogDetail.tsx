@@ -416,10 +416,6 @@ const BlogDetail: React.FC = () => {
 														className='w-full h-auto rounded-lg shadow-lg'
 														loading='lazy'
 														onError={(e) => {
-															console.error(
-																"Image failed to load:",
-																block.imageUrl
-															);
 															e.currentTarget.style.display = "none";
 															const fallback = e.currentTarget
 																.nextElementSibling as HTMLElement;
@@ -427,12 +423,7 @@ const BlogDetail: React.FC = () => {
 																fallback.style.display = "block";
 															}
 														}}
-														onLoad={() => {
-															console.log(
-																"Image loaded successfully:",
-																block.imageUrl
-															);
-														}}
+														onLoad={() => {}}
 													/>
 													<div
 														className='w-full h-48 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg shadow-lg flex items-center justify-center text-gray-500 border-2 border-dashed border-gray-200'

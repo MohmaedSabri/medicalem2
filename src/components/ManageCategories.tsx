@@ -98,7 +98,6 @@ const ManageCategories: React.FC = () => {
 			setCategoryToDelete(null);
 		} catch (error) {
 			// Error deleting category - the mutation hook will handle the error toast
-			console.error("Error deleting category:", error);
 		} finally {
 			setDeletingCategory(null);
 		}
@@ -173,6 +172,7 @@ const ManageCategories: React.FC = () => {
 			setIsUpdating(false);
 		}
 	};
+	//
 
 	if (loading) {
 		return (
