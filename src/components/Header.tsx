@@ -288,8 +288,6 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 						onClick={() => setIsMenuOpen(false)}>
 						<motion.div
 							className='relative flex-shrink-0'
-							variants={floatingVariants}
-							animate='animate'
 							whileHover={{ scale: 1.3, rotate: 5 }}
 							whileTap={{ scale: 0.95 }}>
 							<div
