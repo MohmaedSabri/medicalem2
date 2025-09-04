@@ -589,32 +589,36 @@ const Contact: React.FC = () => {
 							{/* Info Cards */}
 							<div className='space-y-4'>
 								{/* Business Hours Card */}
-								<div className={`bg-white rounded-xl p-4 shadow-sm border border-gray-100 ${isRTL ? 'text-right' : 'text-left'}`}>
-									<div className={`flex items-start ${isRTL ? 'flex-row-reverse space-x-reverse space-x-3' : 'space-x-3'}`}>
-										<div className='w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0'>
-											<Clock className='h-4 w-4 text-blue-600' />
+								<div className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''} bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-blue-200 transition-all duration-200 cursor-pointer group`}>
+									<div className='flex-shrink-0'>
+										<div className='w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors'>
+											<Clock className='h-6 w-6 text-blue-600' />
 										</div>
-										<div className='flex-1'>
-											<p className='font-semibold text-gray-900 text-sm'>{t('businessHours')}</p>
-											<p className='text-xs text-gray-600 mt-1'>
-												{t('mondayFriday')}
-											</p>
-										</div>
+									</div>
+									<div className={`${isRTL ? 'mr-4 text-right' : 'ml-4 text-left'} flex-1`}>
+										<p className='text-sm text-gray-500 font-medium group-hover:text-gray-600'>
+											{currentLanguage === 'ar' ? 'ساعات العمل 🕒' : 'Business Hours 🕒'}
+										</p>
+										<p className='text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors leading-relaxed'>
+											{t('mondayFriday')}
+										</p>
 									</div>
 								</div>
 
 								{/* Emergency Support Card */}
-								<div className={`bg-white rounded-xl p-4 shadow-sm border border-gray-100 ${isRTL ? 'text-right' : 'text-left'}`}>
-									<div className={`flex items-start ${isRTL ? 'flex-row-reverse space-x-reverse space-x-3' : 'space-x-3'}`}>
-										<div className='w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0'>
-											<Phone className='h-4 w-4 text-red-600' />
+								<div className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''} bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-red-200 transition-all duration-200 cursor-pointer group`}>
+									<div className='flex-shrink-0'>
+										<div className='w-12 h-12 bg-red-100 rounded-full flex items-center justify-center group-hover:bg-red-200 transition-colors'>
+											<Phone className='h-6 w-6 text-red-600' />
 										</div>
-										<div className='flex-1'>
-											<p className='font-semibold text-gray-900 text-sm'>{t('emergencySupport')}</p>
-											<p className='text-xs text-gray-600 mt-1'>
-												{t('available247')}
-											</p>
-										</div>
+									</div>
+									<div className={`${isRTL ? 'mr-4 text-right' : 'ml-4 text-left'} flex-1`}>
+										<p className='text-sm text-gray-500 font-medium group-hover:text-gray-600'>
+											{currentLanguage === 'ar' ? 'الدعم الطارئ 🚨' : 'Emergency Support 🚨'}
+										</p>
+										<p className='text-lg font-semibold text-gray-900 group-hover:text-red-600 transition-colors leading-relaxed'>
+											{t('available247')}
+										</p>
 									</div>
 								</div>
 							</div>
