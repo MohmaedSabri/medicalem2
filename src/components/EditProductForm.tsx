@@ -79,6 +79,44 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 	const [certificationsInput, setCertificationsInput] = useState("");
 	const [imageInput, setImageInput] = useState("");
 
+	// Bilingual fields for all localizable content
+	const [i18nFields, setI18nFields] = useState({
+		nameEn: "",
+		nameAr: "",
+		descEn: "",
+		descAr: "",
+		longEn: "",
+		longAr: "",
+		shippingEn: "",
+		shippingAr: "",
+		warrantyEn: "",
+		warrantyAr: "",
+	});
+
+	// Helper function to set i18n field
+	const setField = (key: keyof typeof i18nFields, value: string) => {
+		setI18nFields(prev => ({ ...prev, [key]: value }));
+		
+		// Clear related errors when user starts typing
+		if (key.includes('name') && errors.name) {
+			setErrors(prev => ({ ...prev, name: "" }));
+		}
+		if (key.includes('desc') && errors.description) {
+			setErrors(prev => ({ ...prev, description: "" }));
+		}
+		if (key.includes('long') && errors.longDescription) {
+			setErrors(prev => ({ ...prev, longDescription: "" }));
+		}
+	};
+
+	// Helper function to build localized object
+	const buildLocalized = (fallback: string, en?: string, ar?: string) => {
+		return {
+			en: (en ?? '').trim() || fallback,
+			ar: (ar ?? '').trim() || fallback,
+		};
+	};
+
 	// Review management state
 	const [reviews, setReviews] = useState<Review[]>([]);
 	const [editingReview, setEditingReview] = useState<Review | null>(null);
@@ -124,6 +162,33 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 			document.body.style.overflow = "unset";
 		};
 	}, []);
+
+	// Initialize bilingual fields with existing data
+	useEffect(() => {
+		// Extract name data
+		const nameObj = typeof product.name === 'object' ? product.name : { en: product.name || "", ar: product.name || "" };
+		// Extract description data
+		const descObj = typeof product.description === 'object' ? product.description : { en: product.description || "", ar: product.description || "" };
+		// Extract long description data
+		const longDescObj = typeof product.longDescription === 'object' ? product.longDescription : { en: product.longDescription || "", ar: product.longDescription || "" };
+		// Extract shipping data
+		const shippingObj = typeof product.shipping === 'object' ? product.shipping : { en: product.shipping || "", ar: product.shipping || "" };
+		// Extract warranty data
+		const warrantyObj = typeof product.warranty === 'object' ? product.warranty : { en: product.warranty || "", ar: product.warranty || "" };
+		
+		setI18nFields({
+			nameEn: nameObj.en || "",
+			nameAr: nameObj.ar || "",
+			descEn: descObj.en || "",
+			descAr: descObj.ar || "",
+			longEn: longDescObj.en || "",
+			longAr: longDescObj.ar || "",
+			shippingEn: shippingObj.en || "",
+			shippingAr: shippingObj.ar || "",
+			warrantyEn: warrantyObj.en || "",
+			warrantyAr: warrantyObj.ar || "",
+		});
+	}, [product]);
 
 	// Load reviews when component mounts
 	useEffect(() => {
@@ -246,16 +311,16 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 	const validateForm = (): boolean => {
 		const newErrors: Partial<Record<keyof ProductFormData, string>> = {};
 
-		if (!form.name.trim()) {
-			newErrors.name = "Product name is required";
+		if (!i18nFields.nameEn.trim() && !i18nFields.nameAr.trim()) {
+			newErrors.name = "Product name is required in at least one language";
 		}
 
-		if (!form.description.trim()) {
-			newErrors.description = "Description is required";
+		if (!i18nFields.descEn.trim() && !i18nFields.descAr.trim()) {
+			newErrors.description = "Description is required in at least one language";
 		}
 
-		if (!form.longDescription.trim()) {
-			newErrors.longDescription = "Long description is required";
+		if (!i18nFields.longEn.trim() && !i18nFields.longAr.trim()) {
+			newErrors.longDescription = "Long description is required in at least one language";
 		}
 
 		if (form.price <= 0) {
@@ -299,50 +364,21 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 				});
 			}
 
-			const toLocalized = (
-				value: string,
-				original: unknown
-			): { en: string; ar: string } => {
-				const prev =
-					original && typeof original === "object"
-						? (original as { en?: string; ar?: string })
-						: {};
-				return {
-					en: currentLanguage === "en" ? value : prev.en ?? value,
-					ar: currentLanguage === "ar" ? value : prev.ar ?? value,
-				};
-			};
 
 			const updatedProduct = {
-				name: toLocalized(form.name, product.name),
-				description: toLocalized(form.description, product.description),
-				longDescription: toLocalized(
-					form.longDescription,
-					product.longDescription
-				),
+				name: buildLocalized("", i18nFields.nameEn, i18nFields.nameAr),
+				description: buildLocalized("", i18nFields.descEn, i18nFields.descAr),
+				longDescription: buildLocalized("", i18nFields.longEn, i18nFields.longAr),
 				price: form.price,
 				subcategory: form.subcategory,
 				image: form.images[0] || "",
 				images: form.images,
-				features: (form.features as string[]).map((f, idx) => {
-					const prev = Array.isArray(product.features)
-						? product.features[idx]
-						: undefined;
-					const prevObj =
-						prev && typeof prev === "object"
-							? (prev as { en?: string; ar?: string })
-							: {};
-					const prevStr = typeof prev === "string" ? prev : undefined;
-					return {
-						en: currentLanguage === "en" ? f : prevObj.en ?? prevStr ?? f,
-						ar: currentLanguage === "ar" ? f : prevObj.ar ?? prevStr ?? f,
-					};
-				}),
+				features: (form.features as string[]).map((f) => ({ en: f, ar: f })),
 				specifications: specificationsObj,
 				inStock: form.inStock,
 				stockQuantity: form.stockQuantity,
-				shipping: toLocalized(form.shipping as string, product.shipping),
-				warranty: toLocalized(form.warranty as string, product.warranty),
+				shipping: buildLocalized("", i18nFields.shippingEn, i18nFields.shippingAr),
+				warranty: buildLocalized("", i18nFields.warrantyEn, i18nFields.warrantyAr),
 				certifications: form.certifications,
 			};
 
@@ -455,20 +491,42 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 						<form onSubmit={handleSubmit} className='space-y-6'>
 							{/* Basic Information */}
 							<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-								<div>
+								{/* Product Name - Bilingual */}
+								<div className='md:col-span-2'>
 									<label className='block text-sm font-medium text-gray-700 mb-2'>
 										Product Name *
 									</label>
-									<input
-										type='text'
-										name='name'
-										value={form.name}
-										onChange={handleChange}
-										className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-											errors.name ? "border-red-500" : "border-gray-300"
-										}`}
-										placeholder='Enter product name'
-									/>
+									<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
+										<div>
+											<label className='block text-xs font-medium text-gray-600 mb-1'>
+												English (EN)
+											</label>
+											<input
+												type='text'
+												value={i18nFields.nameEn}
+												onChange={(e) => setField('nameEn', e.target.value)}
+												className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+													errors.name ? "border-red-500" : "border-gray-300"
+												}`}
+												placeholder='Product name in English'
+											/>
+										</div>
+										<div>
+											<label className='block text-xs font-medium text-gray-600 mb-1'>
+												العربية (AR)
+											</label>
+											<input
+												type='text'
+												value={i18nFields.nameAr}
+												onChange={(e) => setField('nameAr', e.target.value)}
+												className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+													errors.name ? "border-red-500" : "border-gray-300"
+												}`}
+												placeholder='اسم المنتج بالعربية'
+												dir='auto'
+											/>
+										</div>
+									</div>
 									{errors.name && (
 										<p className='mt-1 text-sm text-red-600'>{errors.name}</p>
 									)}
@@ -545,22 +603,44 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 								</div>
 							</div>
 
-							{/* Descriptions */}
-							<div className='space-y-4'>
+							{/* Descriptions - Bilingual */}
+							<div className='space-y-6'>
+								{/* Short Description - Bilingual */}
 								<div>
 									<label className='block text-sm font-medium text-gray-700 mb-2'>
 										Short Description *
 									</label>
-									<textarea
-										name='description'
-										value={form.description}
-										onChange={handleChange}
-										rows={3}
-										className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-											errors.description ? "border-red-500" : "border-gray-300"
-										}`}
-										placeholder='Brief product description'
-									/>
+									<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
+										<div>
+											<label className='block text-xs font-medium text-gray-600 mb-1'>
+												English (EN)
+											</label>
+											<textarea
+												value={i18nFields.descEn}
+												onChange={(e) => setField('descEn', e.target.value)}
+												rows={3}
+												className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+													errors.description ? "border-red-500" : "border-gray-300"
+												}`}
+												placeholder='Brief product description in English'
+											/>
+										</div>
+										<div>
+											<label className='block text-xs font-medium text-gray-600 mb-1'>
+												العربية (AR)
+											</label>
+											<textarea
+												value={i18nFields.descAr}
+												onChange={(e) => setField('descAr', e.target.value)}
+												rows={3}
+												className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+													errors.description ? "border-red-500" : "border-gray-300"
+												}`}
+												placeholder='وصف مختصر للمنتج بالعربية'
+												dir='auto'
+											/>
+										</div>
+									</div>
 									{errors.description && (
 										<p className='mt-1 text-sm text-red-600'>
 											{errors.description}
@@ -568,22 +648,42 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 									)}
 								</div>
 
+								{/* Long Description - Bilingual */}
 								<div>
 									<label className='block text-sm font-medium text-gray-700 mb-2'>
 										Long Description *
 									</label>
-									<textarea
-										name='longDescription'
-										value={form.longDescription}
-										onChange={handleChange}
-										rows={4}
-										className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-											errors.longDescription
-												? "border-red-500"
-												: "border-gray-300"
-										}`}
-										placeholder='Detailed product description'
-									/>
+									<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
+										<div>
+											<label className='block text-xs font-medium text-gray-600 mb-1'>
+												English (EN)
+											</label>
+											<textarea
+												value={i18nFields.longEn}
+												onChange={(e) => setField('longEn', e.target.value)}
+												rows={4}
+												className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+													errors.longDescription ? "border-red-500" : "border-gray-300"
+												}`}
+												placeholder='Detailed product description in English'
+											/>
+										</div>
+										<div>
+											<label className='block text-xs font-medium text-gray-600 mb-1'>
+												العربية (AR)
+											</label>
+											<textarea
+												value={i18nFields.longAr}
+												onChange={(e) => setField('longAr', e.target.value)}
+												rows={4}
+												className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+													errors.longDescription ? "border-red-500" : "border-gray-300"
+												}`}
+												placeholder='وصف مفصل للمنتج بالعربية'
+												dir='auto'
+											/>
+										</div>
+									</div>
 									{errors.longDescription && (
 										<p className='mt-1 text-sm text-red-600'>
 											{errors.longDescription}
@@ -698,34 +798,74 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 								/>
 							</div>
 
-							{/* Additional Information */}
+							{/* Additional Information - Bilingual */}
 							<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+								{/* Shipping Information - Bilingual */}
 								<div>
 									<label className='block text-sm font-medium text-gray-700 mb-2'>
 										Shipping Information
 									</label>
-									<input
-										type='text'
-										name='shipping'
-										value={form.shipping}
-										onChange={handleChange}
-										className='w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500'
-										placeholder='Shipping details'
-									/>
+									<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
+										<div>
+											<label className='block text-xs font-medium text-gray-600 mb-1'>
+												English (EN)
+											</label>
+											<input
+												type='text'
+												value={i18nFields.shippingEn}
+												onChange={(e) => setField('shippingEn', e.target.value)}
+												className='w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500'
+												placeholder='Shipping information in English'
+											/>
+										</div>
+										<div>
+											<label className='block text-xs font-medium text-gray-600 mb-1'>
+												العربية (AR)
+											</label>
+											<input
+												type='text'
+												value={i18nFields.shippingAr}
+												onChange={(e) => setField('shippingAr', e.target.value)}
+												className='w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500'
+												placeholder='معلومات الشحن بالعربية'
+												dir='auto'
+											/>
+										</div>
+									</div>
 								</div>
 
+								{/* Warranty - Bilingual */}
 								<div>
 									<label className='block text-sm font-medium text-gray-700 mb-2'>
 										Warranty
 									</label>
-									<input
-										type='text'
-										name='warranty'
-										value={form.warranty}
-										onChange={handleChange}
-										className='w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500'
-										placeholder='Warranty information'
-									/>
+									<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
+										<div>
+											<label className='block text-xs font-medium text-gray-600 mb-1'>
+												English (EN)
+											</label>
+											<input
+												type='text'
+												value={i18nFields.warrantyEn}
+												onChange={(e) => setField('warrantyEn', e.target.value)}
+												className='w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500'
+												placeholder='Warranty information in English'
+											/>
+										</div>
+										<div>
+											<label className='block text-xs font-medium text-gray-600 mb-1'>
+												العربية (AR)
+											</label>
+											<input
+												type='text'
+												value={i18nFields.warrantyAr}
+												onChange={(e) => setField('warrantyAr', e.target.value)}
+												className='w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500'
+												placeholder='معلومات الضمان بالعربية'
+												dir='auto'
+											/>
+										</div>
+									</div>
 								</div>
 							</div>
 

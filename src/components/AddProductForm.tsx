@@ -229,8 +229,8 @@ const AddProductForm: React.FC = () => {
 				specifications: specificationsObj,
 				inStock: form.inStock,
 				stockQuantity: form.stockQuantity,
-				shipping: buildLocalized(form.shipping, i18nFields.shippingEn, i18nFields.shippingAr),
-				warranty: buildLocalized(form.warranty, i18nFields.warrantyEn, i18nFields.warrantyAr),
+				shipping: buildLocalized("", i18nFields.shippingEn, i18nFields.shippingAr),
+				warranty: buildLocalized("", i18nFields.warrantyEn, i18nFields.warrantyAr),
 				certifications: form.certifications,
 				id: Date.now(),
 				reviews: [],
@@ -600,65 +600,71 @@ const AddProductForm: React.FC = () => {
 
 					{/* Additional Details */}
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+						{/* Shipping Information - Bilingual */}
 						<div>
 							<label className='block text-sm font-medium text-gray-700 mb-2'>
 								Shipping Information
 							</label>
-							<input
-								type='text'
-								name='shipping'
-								value={form.shipping}
-								onChange={handleChange}
-								className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-								placeholder='e.g., Free shipping, $10 flat rate'
-							/>
-							<div className='grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3'>
-								<input
-									type='text'
-									value={i18nFields.shippingEn}
-									onChange={(e) => setField('shippingEn', e.target.value)}
-									className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-									placeholder='Shipping (EN)'
-								/>
-								<input
-									type='text'
-									value={i18nFields.shippingAr}
-									onChange={(e) => setField('shippingAr', e.target.value)}
-									className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-									placeholder='الشحن (AR)'
-									dir='auto'
-								/>
+							<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
+								<div>
+									<label className='block text-xs font-medium text-gray-600 mb-1'>
+										English (EN)
+									</label>
+									<input
+										type='text'
+										value={i18nFields.shippingEn}
+										onChange={(e) => setField('shippingEn', e.target.value)}
+										className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+										placeholder='Shipping information in English'
+									/>
+								</div>
+								<div>
+									<label className='block text-xs font-medium text-gray-600 mb-1'>
+										العربية (AR)
+									</label>
+									<input
+										type='text'
+										value={i18nFields.shippingAr}
+										onChange={(e) => setField('shippingAr', e.target.value)}
+										className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+										placeholder='معلومات الشحن بالعربية'
+										dir='auto'
+									/>
+								</div>
 							</div>
 						</div>
 
+						{/* Warranty - Bilingual */}
 						<div>
 							<label className='block text-sm font-medium text-gray-700 mb-2'>
 								Warranty
 							</label>
-							<input
-								type='text'
-								name='warranty'
-								value={form.warranty}
-								onChange={handleChange}
-								className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-								placeholder='e.g., 1 year warranty'
-							/>
-							<div className='grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3'>
-								<input
-									type='text'
-									value={i18nFields.warrantyEn}
-									onChange={(e) => setField('warrantyEn', e.target.value)}
-									className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-									placeholder='Warranty (EN)'
-								/>
-								<input
-									type='text'
-									value={i18nFields.warrantyAr}
-									onChange={(e) => setField('warrantyAr', e.target.value)}
-									className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-									placeholder='الضمان (AR)'
-									dir='auto'
-								/>
+							<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
+								<div>
+									<label className='block text-xs font-medium text-gray-600 mb-1'>
+										English (EN)
+									</label>
+									<input
+										type='text'
+										value={i18nFields.warrantyEn}
+										onChange={(e) => setField('warrantyEn', e.target.value)}
+										className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+										placeholder='Warranty information in English'
+									/>
+								</div>
+								<div>
+									<label className='block text-xs font-medium text-gray-600 mb-1'>
+										العربية (AR)
+									</label>
+									<input
+										type='text'
+										value={i18nFields.warrantyAr}
+										onChange={(e) => setField('warrantyAr', e.target.value)}
+										className='w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+										placeholder='معلومات الضمان بالعربية'
+										dir='auto'
+									/>
+								</div>
 							</div>
 						</div>
 					</div>
