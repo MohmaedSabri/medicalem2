@@ -82,11 +82,6 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 			icon: Info,
 		},
 		{
-			path: "/favorites",
-			label: currentLanguage === "ar" ? "المفضلة" : "Favorites",
-			icon: Heart,
-		},
-		{
 			path: "/contact",
 			label: currentLanguage === "ar" ? "اتصل بنا" : "Contact",
 			icon: Phone,
@@ -248,17 +243,6 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 		},
 	};
 
-	// Floating animation variants
-	const floatingVariants = {
-		animate: {
-			y: [0, -8, 0],
-			transition: {
-				duration: 3,
-				repeat: Infinity,
-				ease: "easeInOut" as const,
-			},
-		},
-	};
 
 	const contactFloatingVariants = {
 		animate: {
@@ -300,7 +284,7 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 								}
               `}>
 								{/* Glow effect */}
-								<div className='absolute inset-0 bg-gradient-to-r from-teal-400 via-blue-500 to-purple-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full blur-sm'></div>
+								<div className='absolute inset-0 bg-gradient-to-r from-teal-400 to-teal-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full blur-sm'></div>
 
 								{/* Logo Image */}
 								<img
@@ -726,6 +710,56 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 								<div className='absolute inset-0 bg-gradient-to-r from-emerald-400 to-green-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full'></div>
 								<Phone className='relative  h-4 w-4 lg:h-5 lg:w-5 group-hover:scale-110 transition-transform duration-300' />
 							</motion.a>
+
+							{/* Favorites Icon */}
+							<motion.div
+								variants={contactFloatingVariants}
+								animate='animate'
+								whileHover={{ scale: 1.1, rotate: -3 }}
+								whileTap={{ scale: 0.95 }}
+								style={{ animationDelay: "0.6s" }}>
+								<Link
+									to="/favorites"
+									className={`
+										relative flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-full transition-all duration-300 group
+										${
+											isScrolled || isMobile
+												? "bg-white/95 backdrop-blur-lg border border-white/40 shadow-lg"
+												: "bg-white/90 backdrop-blur-md border border-white/30 shadow-xl"
+										}
+										text-gray-600 hover:text-red-500 overflow-hidden
+									`}>
+									{/* Glow effect */}
+									<div className='absolute inset-0 bg-gradient-to-r from-red-400 to-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full'></div>
+									<Heart className='relative h-4 w-4 lg:h-5 lg:w-5 group-hover:scale-110 transition-transform duration-300' />
+								</Link>
+							</motion.div>
+
+							{/* Contact Sales Button */}
+							<motion.button
+								onClick={() => navigate("/contact")}
+								className='group relative inline-flex items-center px-3 xl:px-4 py-2 xl:py-3 rounded-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white hover:from-teal-700 hover:to-emerald-700 transition-all duration-500 ease-out shadow-lg hover:shadow-2xl hover:shadow-teal-500/50 overflow-hidden'
+								whileHover={{ scale: 1.05, y: -3 }}
+								whileTap={{ scale: 0.95 }}>
+								{/* Animated background glow */}
+								<div className='absolute inset-0 bg-gradient-to-r from-teal-400 via-emerald-500 to-teal-600 opacity-0 group-hover:opacity-30 transition-opacity duration-500 ease-out rounded-full'></div>
+								
+								{/* Sparkle effects */}
+								<div className='absolute inset-0 overflow-hidden rounded-full'>
+									<div className='absolute top-1 left-3 w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300 delay-100'></div>
+									<div className='absolute top-2 right-4 w-1.5 h-1.5 bg-yellow-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-300 delay-200'></div>
+									<div className='absolute bottom-2 left-5 w-1 h-1 bg-blue-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-bounce transition-opacity duration-300 delay-300'></div>
+									<div className='absolute bottom-1 right-3 w-1.5 h-1.5 bg-pink-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300 delay-400'></div>
+								</div>
+
+								{/* Button content */}
+								<div className={`relative z-10 flex items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+									<Phone className={`h-4 w-4 ${isRTL ? "ml-2" : "mr-2"} group-hover:scale-110 transition-all duration-300`} />
+									<span className='text-sm xl:text-base font-medium whitespace-nowrap group-hover:drop-shadow-lg transition-all duration-300'>
+										{currentLanguage === "ar" ? "اتصل بالبيع" : "Contact Sales"}
+									</span>
+								</div>
+							</motion.button>
 						</div>
 
 						{/* Mobile Menu Button */}
@@ -883,7 +917,7 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 										</h3>
 
 										{/* Contact Links */}
-										<div className='grid grid-cols-2 gap-3 mb-6'>
+										<div className='grid grid-cols-3 gap-3 mb-6'>
 											<motion.a
 												href='mailto:info@dorarmed.com'
 												whileHover={{ scale: 1.05, y: -2 }}
@@ -904,6 +938,19 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 													{currentLanguage === "ar" ? "هاتف" : "Phone"}
 												</span>
 											</motion.a>
+											<Link
+												to="/favorites"
+												onClick={() => setIsMenuOpen(false)}>
+												<motion.div
+													whileHover={{ scale: 1.05, y: -2 }}
+													whileTap={{ scale: 0.95 }}
+													className='flex flex-col items-center p-4 bg-gradient-to-br from-red-50 to-pink-100 rounded-2xl text-red-600 hover:shadow-lg transition-all duration-300'>
+													<Heart className='h-6 w-6 mb-2' />
+													<span className='text-xs font-medium'>
+														{currentLanguage === "ar" ? "المفضلة" : "Favorites"}
+													</span>
+												</motion.div>
+											</Link>
 										</div>
 
 										{/* Language Switcher */}

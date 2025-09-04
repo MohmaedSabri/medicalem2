@@ -250,7 +250,7 @@ const enTranslations = {
 
 		// Featured Products Section
 		premiumMedicalEquipment: "Premium Medical Equipment",
-		featured: "Featured",
+		featured: "Featured Products",
 		featuredProductsDescription:
 			"Discover our cutting-edge medical devices designed to enhance patient care and improve healthcare outcomes with innovative technology.",
 		learnMore: "Learn More",
