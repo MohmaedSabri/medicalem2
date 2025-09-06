@@ -2,12 +2,17 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTopRatedDoctors } from '../hooks/useDoctors';
 import { 
   Heart,
   Shield,
   Zap,
-  Quote
+  Quote,
+  Star,
+  MapPin,
+  User
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface TeamMember {
   id: string;
@@ -19,6 +24,9 @@ interface TeamMember {
 const OurTeam: React.FC = () => {
   const { t } = useTranslation();
   const { currentLanguage, isRTL } = useLanguage();
+  
+  // Get top 3 doctors from API
+  const { data: doctors = [], isLoading } = useTopRatedDoctors(3, currentLanguage);
 
   // Helper function to get localized text
   const getLocalizedText = (value: any): string => {
@@ -30,7 +38,8 @@ const OurTeam: React.FC = () => {
     return "";
   };
 
-  const teamMembers: TeamMember[] = [
+  // Fallback team members if API fails
+  const fallbackTeamMembers: TeamMember[] = [
     {
       id: '1',
       name: { en: 'Eng. Mohamed Medhat', ar: 'م. محمد مدحت' },
@@ -50,6 +59,9 @@ const OurTeam: React.FC = () => {
       image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&h=400&fit=crop&crop=face',
     }
   ];
+
+  // Use doctors from API if available, otherwise use fallback - limit to first 3
+  const teamMembers = doctors.length > 0 ? doctors.slice(0, 3) : fallbackTeamMembers.slice(0, 3);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -184,11 +196,11 @@ const OurTeam: React.FC = () => {
           >
             <motion.div variants={itemVariants} className="mb-6">
               <motion.div 
-                className="inline-flex items-center space-x-2 bg-teal-100 text-teal-700 px-4 py-2 rounded-full text-sm font-medium mb-4"
+                className={`inline-flex items-center ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'} bg-teal-100 text-teal-700 px-4 py-2 rounded-full text-sm font-medium mb-4`}
                 whileHover={{ scale: 1.05, backgroundColor: "#0f766e", color: "#ffffff" }}
                 transition={{ duration: 0.2 }}
               >
-                <Heart className="w-4 h-4" />
+                <Heart className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                 <span>{t('ourTeam')}</span>
               </motion.div>
             </motion.div>
@@ -217,120 +229,100 @@ const OurTeam: React.FC = () => {
             whileInView="visible"
             exit="exit"
             viewport={{ once: false, margin: "-30px", amount: 0.2 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
           >
             {/* Team Members */}
-            {teamMembers.map((member, index) => (
-              <motion.div
-                key={member.id}
-                variants={cardVariants}
-                whileHover="hover"
-                className="group"
-                custom={index}
-                style={{ perspective: "1000px" }}
-              >
-                <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl hover:shadow-teal-500/30 hover:border-teal-300 transition-all duration-500 overflow-hidden border border-gray-100 relative">
-                  {/* Shimmer Effect */}
-                  <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
-                  
-                  {/* Profile Image */}
-                  <div className="relative h-64 bg-gradient-to-br from-teal-50 to-blue-50 overflow-hidden">
-                    <motion.img
-                      src={member.image}
-                      alt={getLocalizedText(member.name)}
-                      className="w-full h-full object-cover"
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.5, ease: "easeOut" }}
-                    />
-                    <motion.div 
-                      className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"
-                      initial={{ opacity: 0 }}
-                      whileHover={{ opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    ></motion.div>
-                  </div>
+            {teamMembers.map((member, index) => {
+              const isDoctor = 'rating' in member; // Check if it's a doctor object
+              const memberId = isDoctor ? member._id : member.id;
+              const memberName = getLocalizedText(member.name);
+              const memberPosition = isDoctor ? getLocalizedText(member.title) : getLocalizedText(member.position);
+              const memberImage = member.image;
+              const memberRating = isDoctor ? member.rating : null;
+              const memberLocation = isDoctor ? getLocalizedText(member.location) : null;
 
-                  {/* Content */}
-                  <motion.div 
-                    className="p-6 text-center"
-                    whileHover={{ y: -2 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <motion.h3 
-                      className={`text-lg font-bold text-gray-900 mb-1 group-hover:text-teal-700 transition-colors duration-300 ${isRTL ? 'text-right' : 'text-left'}`}
-                      whileHover={{ scale: 1.02 }}
-                    >
-                        {getLocalizedText(member.name)}
-                      </motion.h3>
-                    <motion.p 
-                      className={`text-teal-600 font-medium text-sm group-hover:text-teal-700 transition-colors duration-300 ${isRTL ? 'text-right' : 'text-left'}`}
-                      whileHover={{ scale: 1.02 }}
-                    >
-                        {getLocalizedText(member.position)}
-                        </motion.p>
-                      </motion.div>
+              return (
+                <motion.div
+                  key={memberId}
+                  variants={cardVariants}
+                  whileHover="hover"
+                  className="group"
+                  custom={index}
+                  style={{ perspective: "1000px" }}
+                >
+                  <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl hover:shadow-teal-500/30 hover:border-teal-300 transition-all duration-500 overflow-hidden border border-gray-100 relative">
+                    {/* Shimmer Effect */}
+                    <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
+                    
+                    {/* Profile Image */}
+                    <div className="relative h-64 bg-gradient-to-br from-teal-50 to-blue-50 overflow-hidden">
+                      <motion.img
+                        src={memberImage}
+                        alt={memberName}
+                        className="w-full h-full object-cover"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                      />
+                      <motion.div 
+                        className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"
+                        initial={{ opacity: 0 }}
+                        whileHover={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      ></motion.div>
+                      
                     </div>
-              </motion.div>
-            ))}
 
-            {/* Quote Card */}
-            <motion.div
-              variants={cardVariants}
-              whileHover="hover"
-              className="group"
-              style={{ perspective: "1000px" }}
-            >
-              <div className="bg-gradient-to-br from-teal-500 via-teal-600 to-emerald-600 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-teal-500/50 transition-all duration-500 overflow-hidden h-full flex flex-col justify-center p-6 text-white relative">
-                {/* Animated Background Pattern */}
-                <div className="absolute inset-0 opacity-10">
-                  <div className="absolute top-0 left-0 w-32 h-32 bg-white/20 rounded-full -translate-x-16 -translate-y-16 group-hover:scale-150 transition-transform duration-1000"></div>
-                  <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/10 rounded-full translate-x-12 translate-y-12 group-hover:scale-125 transition-transform duration-1000 delay-200"></div>
-                </div>
-                
-                {/* Decorative Icons */}
-                <motion.div 
-                  className="absolute top-4 right-4 flex space-x-2"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <motion.div 
-                    className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center"
-                    whileHover={{ rotate: 180 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <Heart className="w-3 h-3" />
-                      </motion.div>
-                  <motion.div 
-                    className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center"
-                    whileHover={{ rotate: -180 }}
-                    transition={{ duration: 0.5, delay: 0.1 }}
-                  >
-                    <Shield className="w-3 h-3" />
-                      </motion.div>
+                    {/* Content */}
+                    <motion.div 
+                      className="p-6 text-center"
+                      whileHover={{ y: -2 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <motion.h3 
+                        className={`text-lg font-bold text-gray-900 mb-1 group-hover:text-teal-700 transition-colors duration-300 ${isRTL ? 'text-right' : 'text-left'}`}
+                        whileHover={{ scale: 1.02 }}
+                      >
+                        {memberName}
+                      </motion.h3>
+                      <motion.p 
+                        className={`text-teal-600 font-medium text-sm group-hover:text-teal-700 transition-colors duration-300 ${isRTL ? 'text-right' : 'text-left'}`}
+                        whileHover={{ scale: 1.02 }}
+                      >
+                        {memberPosition}
+                      </motion.p>
+                      
+                      {/* Location for Doctors */}
+                      {isDoctor && memberLocation && (
+                        <motion.div 
+                          className={`flex items-center justify-center mt-2 text-gray-500 text-xs ${isRTL ? 'space-x-reverse space-x-1' : 'space-x-1'}`}
+                          whileHover={{ scale: 1.02 }}
+                        >
+                          <MapPin className={`w-3 h-3 ${isRTL ? 'ml-1' : 'mr-1'}`} />
+                          <span>{memberLocation}</span>
+                        </motion.div>
+                      )}
+                      
+                      {/* Link for Doctors */}
+                      {isDoctor && (
+                        <Link
+                          to={`/doctors/${memberId}`}
+                          className={`group relative mt-4 inline-block bg-teal-500 text-white py-2 px-4 rounded-lg text-sm font-semibold hover:bg-teal-600 transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-md hover:shadow-lg hover:shadow-teal-500/40 ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}
+                        >
+                          {/* Hover effect overlay */}
+                          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-lg"></div>
+                          
+                          {/* Button content */}
+                          <div className="relative z-10 flex items-center">
+                            <User className={`w-4 h-4 transition-transform duration-300 group-hover:scale-110 ${isRTL ? 'ml-2' : 'mr-2'}`} />
+                            <span className="transition-all duration-300 group-hover:font-bold">{t('viewProfile')}</span>
+                          </div>
+                        </Link>
+                      )}
                     </motion.div>
-
-                {/* Quote Content */}
-                <motion.div 
-                  className="text-center relative z-10"
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <motion.div
-                    whileHover={{ rotate: 360, scale: 1.1 }}
-                    transition={{ duration: 0.8 }}
-                  >
-                    <Quote className="w-8 h-8 mx-auto mb-4 opacity-80" />
-                  </motion.div>
-                  <blockquote className="text-lg font-medium mb-4 leading-relaxed">
-                    {t('teamQuote')}
-                  </blockquote>
-                  <div className="text-sm opacity-90">
-                    <p className="font-semibold">"Dorar"</p>
-                    <p className="text-xs mt-1">{t('innovationTeam')}</p>
-                      </div>
-                  </motion.div>
-                </div>
-              </motion.div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </AnimatePresence>
 

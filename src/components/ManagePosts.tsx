@@ -1379,7 +1379,7 @@ const ManagePosts: React.FC = () => {
 												</div>
 												<div className='flex items-center space-x-1'>
 													<div className='w-4 h-4 bg-gray-100 rounded-full flex items-center justify-center'>
-														<span className='text-xs'>❤</span>
+														<span className='text-xs'>♥</span>
 													</div>
 													<span>{post.likes || 0}</span>
 												</div>

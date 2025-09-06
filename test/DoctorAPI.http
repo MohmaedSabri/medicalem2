@@ -1,0 +1,411 @@
+re### Doctor API Documentation
+### Base URL: http://localhost:5000/api/doctors
+
+# Language
+# - Use query param `?lang=en|ar` or header `Accept-Language: ar` to get localized fields under `localized`
+
+# ========================================
+# GET ALL DOCTORS
+# ========================================
+GET http://localhost:5000/api/doctors/?lang=ar
+Content-Type: application/json
+
+### With search filters
+GET http://localhost:5000/api/doctors/?search=cardiology&location=riyadh&rating=4&lang=en
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+    "name": {"en":"Dr. Ahmed Al-Rashid","ar":"د. أحمد الراشد"},
+    "title": {"en":"Cardiologist","ar":"أخصائي قلب"},
+    "description": {"en":"Expert heart surgeon with 15+ years experience","ar":"جراح قلب خبير مع أكثر من 15 سنة خبرة"},
+    "image": "https://example.com/doctor1.jpg",
+    "skills": [
+      {"en":"Heart Surgery","ar":"جراحة القلب"},
+      {"en":"Cardiac Catheterization","ar":"قسطرة القلب"}
+    ],
+    "qualifications": [
+      {"en":"MD from Harvard Medical School","ar":"دكتوراه في الطب من جامعة هارفارد"},
+      {"en":"Board Certified Cardiologist","ar":"أخصائي قلب معتمد"}
+    ],
+    "experience": [
+      {"en":"Head of Cardiology at King Faisal Hospital","ar":"رئيس قسم القلب في مستشفى الملك فيصل"},
+      {"en":"15 years in cardiac surgery","ar":"15 سنة في جراحة القلب"}
+    ],
+    "location": {"en":"Riyadh, Saudi Arabia","ar":"الرياض، المملكة العربية السعودية"},
+    "contact": "+966501234567",
+    "socialMedia": ["https://linkedin.com/in/ahmed-alrashid"],
+    "specialization": {"en":"Cardiology","ar":"أمراض القلب"},
+    "rating": 4.8,
+    "reviewCount": 156,
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z",
+    "localized": {
+      "name": "د. أحمد الراشد",
+      "title": "أخصائي قلب",
+      "description": "جراح قلب خبير مع أكثر من 15 سنة خبرة",
+      "location": "الرياض، المملكة العربية السعودية",
+      "specialization": "أمراض القلب",
+      "skills": ["جراحة القلب", "قسطرة القلب"],
+      "qualifications": ["دكتوراه في الطب من جامعة هارفارد", "أخصائي قلب معتمد"],
+      "experience": ["رئيس قسم القلب في مستشفى الملك فيصل", "15 سنة في جراحة القلب"]
+    }
+  }
+]
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error fetching doctors",
+  "error": "Database connection failed"
+}
+```
+
+# ========================================
+# GET DOCTOR BY ID
+# ========================================
+GET http://localhost:5000/api/doctors/64f1a2b3c4d5e6f7g8h9i0j2?lang=en
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+  "name": {"en":"Dr. Ahmed Al-Rashid","ar":"د. أحمد الراشد"},
+  "title": {"en":"Cardiologist","ar":"أخصائي قلب"},
+  "description": {"en":"Expert heart surgeon with 15+ years experience","ar":"جراح قلب خبير مع أكثر من 15 سنة خبرة"},
+  "image": "https://example.com/doctor1.jpg",
+  "skills": [
+    {"en":"Heart Surgery","ar":"جراحة القلب"},
+    {"en":"Cardiac Catheterization","ar":"قسطرة القلب"}
+  ],
+  "qualifications": [
+    {"en":"MD from Harvard Medical School","ar":"دكتوراه في الطب من جامعة هارفارد"},
+    {"en":"Board Certified Cardiologist","ar":"أخصائي قلب معتمد"}
+  ],
+  "experience": [
+    {"en":"Head of Cardiology at King Faisal Hospital","ar":"رئيس قسم القلب في مستشفى الملك فيصل"},
+    {"en":"15 years in cardiac surgery","ar":"15 سنة في جراحة القلب"}
+  ],
+  "location": {"en":"Riyadh, Saudi Arabia","ar":"الرياض، المملكة العربية السعودية"},
+  "contact": "+966501234567",
+  "socialMedia": ["https://linkedin.com/in/ahmed-alrashid"],
+  "specialization": {"en":"Cardiology","ar":"أمراض القلب"},
+  "rating": 4.8,
+  "reviewCount": 156,
+  "createdAt": "2024-01-10T08:00:00.000Z",
+  "updatedAt": "2024-01-10T08:00:00.000Z",
+  "localized": {
+    "name": "Dr. Ahmed Al-Rashid",
+    "title": "Cardiologist",
+    "description": "Expert heart surgeon with 15+ years experience",
+    "location": "Riyadh, Saudi Arabia",
+    "specialization": "Cardiology",
+    "skills": ["Heart Surgery", "Cardiac Catheterization"],
+    "qualifications": ["MD from Harvard Medical School", "Board Certified Cardiologist"],
+    "experience": ["Head of Cardiology at King Faisal Hospital", "15 years in cardiac surgery"]
+  }
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Doctor not found"
+}
+```
+
+# ========================================
+# SEARCH DOCTORS BY TEXT
+# ========================================
+GET http://localhost:5000/api/doctors/search?q=cardiology&lang=en
+Content-Type: application/json
+
+### Response (200 OK) - Same format as GET ALL DOCTORS
+
+### Response (400 Bad Request)
+```json
+{
+  "message": "Search query is required"
+}
+```
+
+# ========================================
+# GET DOCTORS BY SPECIALIZATION
+# ========================================
+GET http://localhost:5000/api/doctors/specialization/cardiology?lang=ar
+Content-Type: application/json
+
+### Response (200 OK) - Same format as GET ALL DOCTORS
+
+# ========================================
+# CREATE NEW DOCTOR (Requires Authentication)
+# ========================================
+POST http://localhost:5000/api/doctors/
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Request Body (bilingual fields supported)
+```json
+{
+  "name": {"en":"Dr. Sarah Johnson","ar":"د. سارة جونسون"},
+  "title": {"en":"Pediatrician","ar":"أخصائي أطفال"},
+  "description": {"en":"Experienced pediatrician specializing in child healthcare","ar":"أخصائي أطفال ذو خبرة متخصص في رعاية الأطفال"},
+  "image": "https://example.com/doctor2.jpg",
+  "skills": [
+    {"en":"Child Care","ar":"رعاية الأطفال"},
+    {"en":"Vaccination","ar":"التطعيم"}
+  ],
+  "qualifications": [
+    {"en":"MD in Pediatrics","ar":"دكتوراه في طب الأطفال"},
+    {"en":"Board Certified Pediatrician","ar":"أخصائي أطفال معتمد"}
+  ],
+  "experience": [
+    {"en":"10 years at Children's Hospital","ar":"10 سنوات في مستشفى الأطفال"}
+  ],
+  "location": {"en":"Jeddah, Saudi Arabia","ar":"جدة، المملكة العربية السعودية"},
+  "contact": "+966509876543",
+  "socialMedia": ["https://linkedin.com/in/sarah-johnson"],
+  "specialization": {"en":"Pediatrics","ar":"طب الأطفال"}
+}
+```
+
+### Response (201 Created)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j8",
+  "name": {"en":"Dr. Sarah Johnson","ar":"د. سارة جونسون"},
+  "title": {"en":"Pediatrician","ar":"أخصائي أطفال"},
+  "description": {"en":"Experienced pediatrician specializing in child healthcare","ar":"أخصائي أطفال ذو خبرة متخصص في رعاية الأطفال"},
+  "image": "https://example.com/doctor2.jpg",
+  "skills": [
+    {"en":"Child Care","ar":"رعاية الأطفال"},
+    {"en":"Vaccination","ar":"التطعيم"}
+  ],
+  "qualifications": [
+    {"en":"MD in Pediatrics","ar":"دكتوراه في طب الأطفال"},
+    {"en":"Board Certified Pediatrician","ar":"أخصائي أطفال معتمد"}
+  ],
+  "experience": [
+    {"en":"10 years at Children's Hospital","ar":"10 سنوات في مستشفى الأطفال"}
+  ],
+  "location": {"en":"Jeddah, Saudi Arabia","ar":"جدة، المملكة العربية السعودية"},
+  "contact": "+966509876543",
+  "socialMedia": ["https://linkedin.com/in/sarah-johnson"],
+  "specialization": {"en":"Pediatrics","ar":"طب الأطفال"},
+  "rating": 0,
+  "reviewCount": 0,
+  "createdAt": "2024-01-15T12:00:00.000Z",
+  "updatedAt": "2024-01-15T12:00:00.000Z",
+  "localized": {
+    "name": "Dr. Sarah Johnson",
+    "title": "Pediatrician", 
+    "description": "Experienced pediatrician specializing in child healthcare",
+    "location": "Jeddah, Saudi Arabia",
+    "specialization": "Pediatrics",
+    "skills": ["Child Care", "Vaccination"],
+    "qualifications": ["MD in Pediatrics", "Board Certified Pediatrician"],
+    "experience": ["10 years at Children's Hospital"]
+  }
+}
+```
+
+### Response (400 Bad Request)
+```json
+{
+  "message": "Error creating doctor",
+  "error": "Validation failed: name.en: Path `name.en` is required"
+}
+```
+
+### Response (401 Unauthorized)
+```json
+{
+  "message": "Access denied. No token provided."
+}
+```
+
+# ========================================
+# UPDATE DOCTOR (Requires Authentication)
+# ========================================
+PATCH http://localhost:5000/api/doctors/64f1a2b3c4d5e6f7g8h9i0j2
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Request Body (Partial update, bilingual)
+```json
+{
+  "description": {"ar":"جراح قلب متخصص مع خبرة واسعة في العمليات المعقدة"},
+  "rating": 4.9,
+  "reviewCount": 200
+}
+```
+
+### Response (200 OK) - Same format as GET BY ID
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Doctor not found"
+}
+```
+
+### Response (400 Bad Request)
+```json
+{
+  "message": "Error updating doctor",
+  "error": "Validation failed: contact: Path `contact` is required"
+}
+```
+
+# ========================================
+# UPDATE DOCTOR RATING (Internal Use)
+# ========================================
+PATCH http://localhost:5000/api/doctors/64f1a2b3c4d5e6f7g8h9i0j2/rating
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Request Body (Add new rating)
+```json
+{
+  "rating": 5,
+  "increment": true
+}
+```
+
+### Request Body (Recalculate rating)
+```json
+{
+  "rating": 4.7,
+  "reviewCount": 180,
+  "increment": false
+}
+```
+
+### Response (200 OK) - Same format as GET BY ID
+
+# ========================================
+# DELETE DOCTOR (Requires Authentication)
+# ========================================
+DELETE http://localhost:5000/api/doctors/64f1a2b3c4d5e6f7g8h9i0j2
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Response (200 OK)
+```json
+{
+  "message": "Doctor deleted successfully"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Doctor not found"
+}
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error deleting doctor",
+  "error": "Database operation failed"
+}
+```
+
+# ========================================
+# NOTES
+# ========================================
+# 
+# 1. All text fields support Arabic (ar) and English (en) localization
+# 2. Timestamps are automatically added (createdAt, updatedAt)
+# 3. Text fields are trimmed to remove whitespace
+# 4. Rating is calculated automatically based on reviews (0-5 scale)
+# 5. Search functionality supports both Arabic and English text
+# 6. Social media accepts array of URLs
+# 7. Contact should be a valid phone number or email
+#
+# ========================================
+# ERROR CODES
+# ========================================
+# 200: Success
+# 201: Created
+# 400: Bad Request (validation errors)
+# 401: Unauthorized (missing/invalid token)
+# 404: Not Found
+# 500: Internal Server Error
+#
+# ========================================
+# VALIDATION RULES
+# ========================================
+# - name.en: Required, trimmed string
+# - title.en: Required, trimmed string  
+# - description.en: Required string
+# - location.en: Required, trimmed string
+# - image: Required string (URL)
+# - contact: Required string
+# - rating: Number 0-5, default 0
+# - reviewCount: Number >= 0, default 0
+# - skills, qualifications, experience: Arrays of bilingual objects
+#
+# ========================================
+# QUERY PARAMETERS
+# ========================================
+# 
+# GET /api/doctors supports:
+# - lang: Language preference (en|ar)
+# - search: Search in name, title, specialization
+# - specialization: Filter by specialization
+# - location: Filter by location  
+# - rating: Minimum rating filter
+#
+# GET /api/doctors/search supports:
+# - q: Search query (required)
+# - lang: Language preference
+#
+# ========================================
+# EXAMPLE USAGE SCENARIOS
+# ========================================
+#
+# 1. Get all cardiologists in Riyadh:
+# GET /api/doctors?specialization=cardiology&location=riyadh&lang=en
+#
+# 2. Search for heart doctors:
+# GET /api/doctors/search?q=heart surgery&lang=ar
+#
+# 3. Get top-rated doctors:
+# GET /api/doctors?rating=4.5&lang=en
+#
+# 4. Get doctor profile for patient:
+# GET /api/doctors/64f1a2b3c4d5e6f7g8h9i0j2?lang=ar
+#
+# 5. Create new doctor profile (admin):
+# POST /api/doctors with bilingual data
+#
+# 6. Update doctor information (admin):
+# PATCH /api/doctors/64f1a2b3c4d5e6f7g8h9i0j2
+#
+# 7. Update rating after review:
+# PATCH /api/doctors/64f1a2b3c4d5e6f7g8h9i0j2/rating
+#
+# ========================================
+# LOCALIZATION EXAMPLES
+# ========================================
+#
+# English Request:
+# GET /api/doctors?lang=en
+# Response includes: "localized": {"name": "Dr. Ahmed Al-Rashid", "title": "Cardiologist"}
+#
+# Arabic Request:  
+# GET /api/doctors?lang=ar
+# Response includes: "localized": {"name": "د. أحمد الراشد", "title": "أخصائي قلب"}
+#
+# Header-based Language Detection:
+# GET /api/doctors
+# Accept-Language: ar
+# Response includes Arabic localized content
+#

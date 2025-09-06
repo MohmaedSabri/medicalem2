@@ -36,4 +36,11 @@ export const endpoints = {
 	POSTS_LIKE: "/posts/:id/like",
 	POSTS_COMMENTS: "/posts/:id/comments",
 	POSTS_COMMENT_BY_ID: "/posts/:postId/comments/:commentId",
+	
+	// Doctors
+	DOCTORS: "/doctors",
+	DOCTORS_BY_ID: "/doctors/:id",
+	DOCTORS_SEARCH: "/doctors/search",
+	DOCTORS_BY_SPECIALIZATION: "/doctors/specialization/:specialization",
+	DOCTORS_RATING: "/doctors/:id/rating",
 };

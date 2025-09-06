@@ -49,6 +49,18 @@ export const queryKeys = {
     stats: () => [...queryKeys.posts.all, 'stats'] as const,
     comments: (postId: string, page?: number, limit?: number) => [...queryKeys.posts.detail(postId), 'comments', page, limit] as const,
   },
+
+  // Doctor related queries
+  doctors: {
+    all: ['doctors'] as const,
+    lists: () => [...queryKeys.doctors.all, 'list'] as const,
+    list: (filters: Record<string, string | number | boolean | undefined>, language?: string) => [...queryKeys.doctors.lists(), filters, language] as const,
+    details: () => [...queryKeys.doctors.all, 'detail'] as const,
+    detail: (id: string, language?: string) => [...queryKeys.doctors.details(), id, language] as const,
+    search: (query: string, language?: string) => [...queryKeys.doctors.all, 'search', query, language] as const,
+    bySpecialization: (specialization: string, language?: string) => [...queryKeys.doctors.all, 'specialization', specialization, language] as const,
+    topRated: (limit?: number, language?: string) => [...queryKeys.doctors.all, 'top-rated', limit, language] as const,
+  },
 };
 
 export default queryKeys;

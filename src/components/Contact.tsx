@@ -532,7 +532,7 @@ const Contact: React.FC = () => {
 									</div>
 									<div className={`${isRTL ? 'mr-4 text-right' : 'ml-4 text-left'} flex-1`}>
 										<p className='text-sm text-gray-500 font-medium group-hover:text-gray-600'>
-											{currentLanguage === 'ar' ? 'رقم المبيعات 📞' : 'Sales Number 📞'}
+											{currentLanguage === 'ar' ? 'رقم المبيعات' : 'Sales Number'}
 										</p>
 										<p className='text-lg font-semibold text-gray-900 group-hover:text-green-600 transition-colors' dir="ltr">
 											+971 55 670 7773
@@ -552,7 +552,7 @@ const Contact: React.FC = () => {
 									</div>
 									<div className={`${isRTL ? 'mr-4 text-right' : 'ml-4 text-left'} flex-1`}>
 										<p className='text-sm text-gray-500 font-medium group-hover:text-gray-600'>
-											{currentLanguage === 'ar' ? 'الإيميل ✉️' : 'Email ✉️'}
+											{currentLanguage === 'ar' ? 'الإيميل' : 'Email'}
 										</p>
 										<p className='text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors'>
 											info@dorarmed.com

@@ -383,7 +383,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 			};
 
 			await updateProduct(product._id, updatedProduct);
-			toast.success("Product updated successfully! 🎉");
+			toast.success("Product updated successfully!");
 			onClose();
 		} catch (error) {
 			// Error updating product
@@ -419,7 +419,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 			await reviewApi.updateReview(editingReview._id, editForm);
 			await loadReviews();
 			closeReviewModal();
-			toast.success("Review updated successfully! 🎉");
+			toast.success("Review updated successfully!");
 		} catch (error) {
 			// Error updating review
 			setReviewError("Error updating review. Please try again.");
@@ -435,7 +435,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 		try {
 			await reviewApi.deleteReview(reviewId);
 			await loadReviews();
-			toast.success("Review deleted successfully! 🗑️");
+			toast.success("Review deleted successfully!");
 		} catch (error) {
 			// Error deleting review
 			toast.error("Failed to delete review. Please try again.");

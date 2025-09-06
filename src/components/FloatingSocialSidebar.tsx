@@ -8,10 +8,7 @@ interface FloatingSocialSidebarProps {
 
 const FloatingSocialSidebar: React.FC<FloatingSocialSidebarProps> = ({ isVisible }) => {
   const socialLinks = [
-    { icon: Mail, href: 'mailto:info@dorarmed.com', label: 'Email', color: 'hover:bg-red-500' },
-    { icon: Phone, href: 'tel:+971556707773', label: 'Phone', color: 'hover:bg-green-500' },
     { icon: Facebook, href: 'https://facebook.com', label: 'Facebook', color: 'hover:bg-blue-600' },
-    { icon: Twitter, href: 'https://twitter.com', label: 'Twitter', color: 'hover:bg-blue-400' },
     { icon: Instagram, href: 'https://instagram.com', label: 'Instagram', color: 'hover:bg-pink-500' },
     { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn', color: 'hover:bg-blue-700' },
     { icon: MessageCircle, href: '/contact', label: 'Contact', color: 'hover:bg-teal-500' },

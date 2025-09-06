@@ -34,6 +34,8 @@ const Favorites = lazy(() => import("./pages/Favorites"));
 const ProductsPage = lazy(() => import("./components/ProductsPage"));
 const ProductDetail = lazy(() => import("./components/ProductDetail"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const Doctors = lazy(() => import("./pages/Doctors"));
+const DoctorDetail = lazy(() => import("./pages/DoctorDetail"));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -280,6 +282,48 @@ function App() {
 													<Header />
 													<Suspense fallback={<LoadingSpinner />}>
 														<PrivacyPolicy />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
+
+									{/* Doctors Route */}
+									<Route
+										path='/doctors'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='doctors'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<Doctors />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
+
+									{/* Doctor Detail Route */}
+									<Route
+										path='/doctors/:id'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='doctor-detail'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<DoctorDetail />
 													</Suspense>
 												</motion.div>
 											</AnimatePresence>

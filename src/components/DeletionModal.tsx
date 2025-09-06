@@ -43,17 +43,17 @@ const DeletionModal: React.FC<DeletionModalProps> = ({
 	const getTypeIcon = () => {
 		switch (type) {
 			case "product":
-				return "📦";
+				return "P";
 			case "category":
-				return "🏷️";
+				return "C";
 			case "subcategory":
-				return "📁";
+				return "S";
 			case "post":
-				return "📄";
+				return "A";
 			case "comment":
-				return "💬";
+				return "M";
 			default:
-				return "⚠️";
+				return "!";
 		}
 	};
 

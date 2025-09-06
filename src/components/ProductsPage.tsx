@@ -377,7 +377,7 @@ const ProductsPage: React.FC = () => {
 					{/* Rating Badge - Top Left */}
 					<div className='absolute top-3 left-3 sm:top-4 sm:left-4'>
 						<span className='bg-white/30 border border-white/30 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-bold shadow-lg flex items-center space-x-1 sm:space-x-1.5'>
-							<span className='text-yellow-300 drop-shadow-sm'>⭐</span>
+							<span className='text-yellow-300 drop-shadow-sm'>★</span>
 							<span className='font-semibold text-black'>
 								{(() => {
 									// Calculate average rating from reviews if averageRating is not available

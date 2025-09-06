@@ -12,6 +12,7 @@ import {
 	Tag,
 	FileText,
 	Globe,
+	User,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -25,8 +26,12 @@ import ManageCategories from "./ManageCategories";
 import ManageSubCategories from "./ManageSubCategories";
 import AddPostForm from "./AddPostForm";
 import ManagePosts from "./ManagePosts";
+import AddDoctorForm from "./AddDoctorForm";
+import ManageDoctors from "./ManageDoctors";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../contexts/LanguageContext";
+import { useDoctors } from "../hooks/useDoctors";
+import { Doctor } from "../types";
 
 const Dashboard: React.FC = () => {
 	const { user, logout } = useAuth();
@@ -39,7 +44,7 @@ const Dashboard: React.FC = () => {
 	const getLocalizedText = (value: unknown): string => {
 		if (typeof value === "string") return value;
 		if (typeof value === "object" && value !== null) {
-			const valueObj = value as Record<string, any>;
+			const valueObj = value as Record<string, string>;
 			return valueObj[currentLanguage] || valueObj.en || valueObj.ar || "";
 		}
 		return "";
@@ -62,6 +67,11 @@ const Dashboard: React.FC = () => {
 		{ limit: 100 },
 		currentLanguage
 	);
+
+	// Use the doctors hook to get real-time data
+	const { data: doctors = [], isLoading: doctorsLoading } = useDoctors({ 
+		lang: currentLanguage 
+	}) as { data: Doctor[], isLoading: boolean };
 
 	// Transform API products to local format for display
 	const products = (apiProducts || []).map((product) => ({
@@ -157,6 +167,8 @@ const Dashboard: React.FC = () => {
 		{ id: "subcategories", label: t("manageSubCategories"), icon: Tag },
 		{ id: "add-post", label: t("addPost"), icon: FileText },
 		{ id: "posts", label: t("managePosts"), icon: FileText },
+		{ id: "add-doctor", label: t("addDoctor"), icon: User },
+		{ id: "doctors", label: t("manageDoctors"), icon: User },
 	];
 
 	const titleByTab = useMemo<Record<string, string>>(
@@ -168,6 +180,8 @@ const Dashboard: React.FC = () => {
 			subcategories: t("manageSubCategories"),
 			"add-post": t("addPost"),
 			posts: t("managePosts"),
+			"add-doctor": t("addDoctor"),
+			doctors: t("manageDoctors"),
 		}),
 		[t]
 	);
@@ -193,6 +207,8 @@ const Dashboard: React.FC = () => {
 			(p) => p.status === "published"
 		).length;
 		const featuredPosts = postsData.posts.filter((p) => p.featured).length;
+		const totalDoctors = doctors.length;
+		const topRatedDoctors = doctors.filter((d: Doctor) => d.rating >= 4.5).length;
 
 		return [
 			{
@@ -258,16 +274,31 @@ const Dashboard: React.FC = () => {
 				icon: Package,
 				loading: productsLoading,
 			},
+			{
+				label: t("totalDoctors"),
+				value: totalDoctors.toString(),
+				color: "bg-cyan-500",
+				icon: User,
+				loading: doctorsLoading,
+			},
+			{
+				label: t("topRatedDoctors"),
+				value: topRatedDoctors.toString(),
+				color: "bg-emerald-500",
+				icon: User,
+				loading: doctorsLoading,
+			},
 		];
 	}, [
 		products,
 		productsLoading,
 		categories,
 		categoriesLoading,
-		subcategories,
 		subcategoriesLoading,
 		postsData.posts,
 		postsLoading,
+		doctors,
+		doctorsLoading,
 		t,
 	]);
 
@@ -285,6 +316,10 @@ const Dashboard: React.FC = () => {
 				return <AddPostForm onClose={() => setActiveTab("dashboard")} />;
 			case "posts":
 				return <ManagePosts />;
+			case "add-doctor":
+				return <AddDoctorForm onClose={() => setActiveTab("dashboard")} />;
+			case "doctors":
+				return <ManageDoctors />;
 			case "dashboard":
 			default:
 				return (

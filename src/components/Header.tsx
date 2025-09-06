@@ -17,6 +17,7 @@ import {
 	ChevronDown,
 	ChevronRight,
 	Zap,
+	User,
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useCategories } from "../hooks/useCategories";
@@ -68,8 +69,13 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 	const navigationItems = [
 		{
 			path: "/",
-			label: currentLanguage === "ar" ? "دورر" : "Dorar",
+			label: currentLanguage === "ar" ? "درر" : "Dorar",
 			icon: Home,
+		},
+		{
+			path: "/doctors",
+			label: currentLanguage === "ar" ? "الأطباء" : "Doctors",
+			icon: User,
 		},
 		{
 			path: "/blog",
@@ -738,7 +744,7 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 							{/* Contact Sales Button */}
 							<motion.button
 								onClick={() => navigate("/contact")}
-								className='group relative inline-flex items-center px-3 xl:px-4 py-2 xl:py-3 rounded-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white hover:from-teal-700 hover:to-emerald-700 transition-all duration-500 ease-out shadow-lg hover:shadow-2xl hover:shadow-teal-500/50 overflow-hidden'
+								className='group relative inline-flex hidden 2xl:flex items-center px-3 xl:px-4 py-2 xl:py-3 rounded-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white hover:from-teal-700 hover:to-emerald-700 transition-all duration-500 ease-out shadow-lg hover:shadow-2xl hover:shadow-teal-500/50 overflow-hidden'
 								whileHover={{ scale: 1.05, y: -3 }}
 								whileTap={{ scale: 0.95 }}>
 								{/* Animated background glow */}
@@ -765,7 +771,7 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 						{/* Mobile Menu Button */}
 						<motion.button
 							className={`
-                lg:hidden flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300
+                lg:hidden flex items-center justify-center w-10 h-10 rounded-full  transition-all duration-300
                 ${
 									isScrolled || isMobile
 										? "bg-white/90 backdrop-blur-md border border-white/30 shadow-lg"

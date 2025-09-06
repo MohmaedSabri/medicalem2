@@ -232,3 +232,82 @@ export interface UpdateSubCategoryData {
 	description?: string | { en: string; ar: string };
 	parentCategory?: string;
 }
+
+// Doctor interfaces
+export interface Doctor {
+	_id: string;
+	name: { en: string; ar: string };
+	title: { en: string; ar: string };
+	description: { en: string; ar: string };
+	image: string;
+	skills: Array<{ en: string; ar: string }>;
+	qualifications: Array<{ en: string; ar: string }>;
+	experience: Array<{ en: string; ar: string }>;
+	location: { en: string; ar: string };
+	contact: string;
+	socialMedia: string[];
+	specialization: { en: string; ar: string };
+	rating: number;
+	reviewCount: number;
+	createdAt: string;
+	updatedAt: string;
+	localized?: {
+		name?: string;
+		title?: string;
+		description?: string;
+		location?: string;
+		specialization?: string;
+		skills?: string[];
+		qualifications?: string[];
+		experience?: string[];
+	};
+}
+
+export interface CreateDoctorData {
+	name: { en: string; ar: string };
+	title: { en: string; ar: string };
+	description: { en: string; ar: string };
+	image: string;
+	skills: Array<{ en: string; ar: string }>;
+	qualifications: Array<{ en: string; ar: string }>;
+	experience: Array<{ en: string; ar: string }>;
+	location: { en: string; ar: string };
+	contact: string;
+	socialMedia: string[];
+	specialization: { en: string; ar: string };
+}
+
+export interface UpdateDoctorData {
+	name?: { en: string; ar: string };
+	title?: { en: string; ar: string };
+	description?: { en: string; ar: string };
+	image?: string;
+	skills?: Array<{ en: string; ar: string }>;
+	qualifications?: Array<{ en: string; ar: string }>;
+	experience?: Array<{ en: string; ar: string }>;
+	location?: { en: string; ar: string };
+	contact?: string;
+	socialMedia?: string[];
+	specialization?: { en: string; ar: string };
+	rating?: number;
+	reviewCount?: number;
+}
+
+export interface DoctorFilters {
+	search?: string;
+	specialization?: string;
+	location?: string;
+	rating?: number;
+	lang?: string;
+	page?: number;
+	limit?: number;
+}
+
+export interface DoctorsResponse {
+	doctors: Doctor[];
+	totalPages?: number;
+	currentPage?: number;
+	totalDoctors?: number;
+	hasNext?: boolean;
+	hasPrev?: boolean;
+}
