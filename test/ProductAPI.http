@@ -1,522 +1,211 @@
-### Product API Documentation
-### Base URL: http://localhost:5000/api/products
+### Product API (Full document payloads; PATCH used for updates)
+@baseUrl = http://localhost:5000/api/products
+@productId = 64f1a2b3c4d5e6f7g8h9i0j1
 
-# Language
-# - Use query param `?lang=en|ar` or header `Accept-Language: ar` to get localized fields under `localized`
+# GET all
+GET {{baseUrl}}/
 
-# ========================================
-# GET ALL PRODUCTS
-# ========================================
-GET {{baseUrl}}/?lang=ar
-Content-Type: application/json
-
-### Response (200 OK)
-```json
+### Response (200)
 [
   {
-    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
-    "name": {"en":"iPhone 15 Pro","ar":"ايفون 15 برو"},
-    "description": {"en":"Latest iPhone with advanced features","ar":"اخر ميزات الايفون"},
-    "longDescription": "The iPhone 15 Pro features the most advanced camera system ever on iPhone, A17 Pro chip for incredible performance, and a stunning Super Retina XDR display.",
-    "image": "https://example.com/iphone15pro.jpg",
-    "images": [
-      "https://example.com/iphone15pro-1.jpg",
-      "https://example.com/iphone15pro-2.jpg"
-    ],
-    "subcategory": {"_id":"...","name":{"en":"Phones","ar":"هواتف"},"description":{"en":"","ar":""}},
-    "price": 999.99,
-    "rating": 4.5,
-    "reviews": [
-      {
-        "_id": "64f1a2b3c4d5e6f7g8h9i0j3",
-        "user": "John Doe",
-        "rating": 5,
-        "comment": "Excellent phone!",
-        "date": "2024-01-15T10:30:00.000Z"
-      }
-    ],
+    "_id": "{{productId}}",
+    "name": { "en": "Air Compressing Nebulizers", "ar": "" },
+    "description": { "en": "Compact and efficient...", "ar": "" },
+    "longDescription": { "en": "Long description...", "ar": "" },
+    "image": "https://example.com/main.jpg",
+    "images": ["https://example.com/1.jpg", "https://example.com/2.jpg"],
+    "subcategory": "68b80fd166807473737cd37f",
+    "price": 84,
     "features": [
-      {"en":"A17 Pro chip","ar":"شريحة A17 برو"},
-      {"en":"48MP camera","ar":"كاميرا 48 ميجابكسل"},
-      {"en":"USB-C port","ar":"منفذ USB-C"}
+      { "en": "Latex free", "ar": "" },
+      { "en": "Easy to clean", "ar": "" }
     ],
     "specifications": {
-      "storage": {"en":"128GB","ar":"128 جيجابايت"},
-      "color": {"en":"Natural Titanium","ar":"تيتانيوم طبيعي"},
-      "screen": {"en":"6.1 inch","ar":"6.1 بوصة"}
+      "Unit Size": { "en": "190x171x59mm", "ar": "" },
+      "Weight": { "en": "1.2kg", "ar": "" }
     },
     "inStock": true,
-    "stockQuantity": 50,
-    "shipping": {"en":"Free 2-day","ar":"توصيل مجاني خلال يومين"},
-    "warranty": {"en":"1 year","ar":"سنة واحدة"},
-    "certifications": [
-      "FCC approved",
-      "CE certified"
-    ],
-    "createdAt": "2024-01-10T08:00:00.000Z",
-    "updatedAt": "2024-01-15T10:30:00.000Z",
-    "localized": {
-      "name":"ايفون 15 برو",
-      "description":"اخر ميزات الايفون",
-      "longDescription":"...",
-      "features": ["شريحة A17 برو","كاميرا 48 ميجابكسل","منفذ USB-C"],
-      "specifications": {"storage":"128 جيجابايت","color":"تيتانيوم طبيعي","screen":"6.1 بوصة"},
-      "shipping": "توصيل مجاني خلال يومين",
-      "warranty": "سنة واحدة"
-    }
+    "stockQuantity": 20,
+    "shipping": { "en": "Standard", "ar": "" },
+    "warranty": { "en": "1 year", "ar": "" },
+    "certifications": ["CE Certified"],
+    "createdAt": "2025-01-10T08:00:00.000Z",
+    "updatedAt": "2025-01-10T08:00:00.000Z"
   }
 ]
-```
 
-### Response (500 Internal Server Error)
-```json
+# GET by id
+GET {{baseUrl}}/{{productId}}
+
+### Response (200)
 {
-  "message": "Error fetching products",
-  "error": "Database connection failed"
-}
-```
-
-# ========================================
-# GET PRODUCT BY ID
-# ========================================
-GET {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1?lang=en
-Content-Type: application/json
-
-### Response (200 OK)
-```json
-{
-  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
-  "name": {"en":"iPhone 15 Pro","ar":"ايفون 15 برو"},
-  "description": {"en":"Latest iPhone with advanced features","ar":"اخر ميزات الايفون"},
-  "longDescription": "The iPhone 15 Pro features the most advanced camera system ever on iPhone, A17 Pro chip for incredible performance, and a stunning Super Retina XDR display.",
-  "image": "https://example.com/iphone15pro.jpg",
-  "images": [
-    "https://example.com/iphone15pro-1.jpg",
-    "https://example.com/iphone15pro-2.jpg"
-  ],
-  "category": {
-    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
-    "name": "Smartphones",
-    "description": "Mobile phones and smartphones"
-  },
-  "price": 999.99,
-  "rating": 4.5,
-  "reviews": [
-    {
-      "_id": "64f1a2b3c4d5e6f7g8h9i0j3",
-      "user": "John Doe",
-      "rating": 5,
-      "comment": "Excellent phone!",
-      "date": "2024-01-15T10:30:00.000Z"
-    }
-  ],
+  "_id": "{{productId}}",
+  "name": { "en": "Air Compressing Nebulizers", "ar": "" },
+  "description": { "en": "Compact and efficient...", "ar": "" },
+  "longDescription": { "en": "Long description...", "ar": "" },
+  "image": "https://example.com/main.jpg",
+  "images": ["https://example.com/1.jpg", "https://example.com/2.jpg"],
+  "subcategory": "68b80fd166807473737cd37f",
+  "price": 84,
   "features": [
-    "A17 Pro chip",
-    "48MP camera",
-    "USB-C port"
+    { "en": "Latex free", "ar": "" },
+    { "en": "Easy to clean", "ar": "" }
   ],
   "specifications": {
-    "storage": "128GB",
-    "color": "Natural Titanium",
-    "screen": "6.1 inch"
+    "Unit Size": { "en": "190x171x59mm", "ar": "" },
+    "Weight": { "en": "1.2kg", "ar": "" }
   },
   "inStock": true,
-  "stockQuantity": 50,
-  "shipping": "Free 2-day",
-  "warranty": "1 year",
-  "certifications": [
-    "FCC approved",
-    "CE certified"
-  ],
-  "createdAt": "2024-01-10T08:00:00.000Z",
-  "updatedAt": "2024-01-15T10:30:00.000Z",
-  "localized": {"name":"iPhone 15 Pro","description":"Latest iPhone with advanced features","longDescription":"..."}
+  "stockQuantity": 20,
+  "shipping": { "en": "Standard", "ar": "" },
+  "warranty": { "en": "1 year", "ar": "" },
+  "certifications": ["CE Certified"],
+  "createdAt": "2025-01-10T08:00:00.000Z",
+  "updatedAt": "2025-01-10T08:00:00.000Z"
 }
-```
 
-### Response (404 Not Found)
-```json
-{
-  "message": "Product not found"
-}
-```
-
-### Response (500 Internal Server Error)
-```json
-{
-  "message": "Error fetching product",
-  "error": "Invalid ObjectId format"
-}
-```
-
-# ========================================
-# CREATE NEW PRODUCT
-# ========================================
+# CREATE (send full schema as stored)
 POST {{baseUrl}}/
 Content-Type: application/json
 
-### Request Body (bilingual fields supported)
-```json
 {
-  "name": {"en":"MacBook Pro M3","ar":"ماكبوك برو M3"},
-  "description": {"en":"Powerful laptop for professionals","ar":"لابتوب قوي للمحترفين"},
-  "longDescription": {"en":"The MacBook Pro with M3 chip ...","ar":"ماكبوك برو بشريحة M3 ..."},
-  "image": "https://example.com/macbook-pro-m3.jpg",
+  "name": {"en":"Air Compressing Nebulizers","ar":""},
+  "description": {"en":"Compact and efficient air compressing nebulizer suitable for all ages.","ar":""},
+  "longDescription": {"en":"The Air Compressing Nebulizer is latex free, easy to clean, and designed for patients of all ages.","ar":""},
+  "image": "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-600x760.jpg",
   "images": [
-    "https://example.com/macbook-pro-m3-1.jpg",
-    "https://example.com/macbook-pro-m3-2.jpg"
+    "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-600x760.jpg",
+    "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-808x1024.jpg"
   ],
-  "subcategory": "64f1a2b3c4d5e6f7g8h9i0j4",
-  "price": 1999.99,
+  "subcategory": "68b80fd166807473737cd37f",
+  "price": 84,
   "features": [
-    {"en":"M3 chip","ar":"شريحة M3"},
-    {"en":"14-inch display","ar":"شاشة 14 بوصة"},
-    {"en":"16GB RAM","ar":"ذاكرة 16 جيجابايت"}
+    {"en":"Latex free","ar":""},
+    {"en":"Easy to clean","ar":""},
+    {"en":"Ideal for all ages","ar":""}
   ],
   "specifications": {
-    "storage": {"en":"512GB SSD","ar":"512 جيجابايت SSD"},
-    "memory": {"en":"16GB unified memory","ar":"ذاكرة موحدة 16 جيجابايت"},
-    "display": {"en":"14-inch Liquid Retina XDR","ar":"شاشة ليكويد ريتنا XDR 14 بوصة"}
+    "Unit Size": {"en":"190x171x59mm","ar":""},
+    "Weight": {"en":"1.2kg","ar":""},
+    "Brand": {"en":"CL MEDICAL","ar":""},
+    "Color": {"en":"White","ar":""},
+    "Country of Origin": {"en":"China","ar":""},
+    "SKU": {"en":"NHU01","ar":""}
   },
   "inStock": true,
-  "stockQuantity": 25,
-  "shipping": {"en":"Free next-day","ar":"توصيل مجاني في اليوم التالي"},
-  "warranty": {"en":"1 year AppleCare+","ar":"سنة واحدة AppleCare+"},
-  "certifications": [
-    "Energy Star",
-    "EPEAT Gold"
-  ]
+  "stockQuantity": 20,
+  "shipping": {"en":"Standard","ar":""},
+  "warranty": {"en":"1 year","ar":""},
+  "certifications": ["CE Certified"]
 }
-```
 
-### Response (201 Created)
-```json
+### Response (201)
 {
-  "_id": "64f1a2b3c4d5e6f7g8h9i0j5",
-  "name": {"en":"MacBook Pro M3","ar":"ماكبوك برو M3"},
-  "description": {"en":"Powerful laptop for professionals","ar":"لابتوب قوي للمحترفين"},
-  "longDescription": "The MacBook Pro with M3 chip delivers exceptional performance for demanding workflows, with up to 22 hours of battery life and a stunning Liquid Retina XDR display.",
-  "image": "https://example.com/macbook-pro-m3.jpg",
+  "_id": "{{productId}}",
+  "name": {"en":"Air Compressing Nebulizers","ar":""},
+  "description": {"en":"Compact and efficient air compressing nebulizer suitable for all ages.","ar":""},
+  "longDescription": {"en":"The Air Compressing Nebulizer is latex free, easy to clean, and designed for patients of all ages.","ar":""},
+  "image": "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-600x760.jpg",
   "images": [
-    "https://example.com/macbook-pro-m3-1.jpg",
-    "https://example.com/macbook-pro-m3-2.jpg"
+    "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-600x760.jpg",
+    "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-808x1024.jpg"
   ],
-  "subcategory": "64f1a2b3c4d5e6f7g8h9i0j4",
-  "price": 1999.99,
-  "rating": 0,
-  "reviews": [],
+  "subcategory": "68b80fd166807473737cd37f",
+  "price": 84,
   "features": [
-    {"en":"M3 chip","ar":"شريحة M3"},
-    {"en":"14-inch display","ar":"شاشة 14 بوصة"},
-    {"en":"16GB RAM","ar":"ذاكرة 16 جيجابايت"}
+    {"en":"Latex free","ar":""},
+    {"en":"Easy to clean","ar":""},
+    {"en":"Ideal for all ages","ar":""}
   ],
   "specifications": {
-    "storage": {"en":"512GB SSD","ar":"512 جيجابايت SSD"},
-    "memory": {"en":"16GB unified memory","ar":"ذاكرة موحدة 16 جيجابايت"},
-    "display": {"en":"14-inch Liquid Retina XDR","ar":"شاشة ليكويد ريتنا XDR 14 بوصة"}
+    "Unit Size": {"en":"190x171x59mm","ar":""},
+    "Weight": {"en":"1.2kg","ar":""},
+    "Brand": {"en":"CL MEDICAL","ar":""},
+    "Color": {"en":"White","ar":""},
+    "Country of Origin": {"en":"China","ar":""},
+    "SKU": {"en":"NHU01","ar":""}
   },
   "inStock": true,
-  "stockQuantity": 25,
-  "shipping": {"en":"Free next-day","ar":"توصيل مجاني في اليوم التالي"},
-  "warranty": {"en":"1 year AppleCare+","ar":"سنة واحدة AppleCare+"},
-  "certifications": [
-    "Energy Star",
-    "EPEAT Gold"
-  ],
-  "createdAt": "2024-01-15T12:00:00.000Z",
-  "updatedAt": "2024-01-15T12:00:00.000Z"
+  "stockQuantity": 20,
+  "shipping": {"en":"Standard","ar":""},
+  "warranty": {"en":"1 year","ar":""},
+  "certifications": ["CE Certified"],
+  "createdAt": "2025-01-10T08:00:00.000Z",
+  "updatedAt": "2025-01-10T08:00:00.000Z"
 }
-```
 
-### Response (400 Bad Request)
-```json
-{
-  "message": "Error creating product",
-  "error": "Validation failed: price: Path `price` (-100) is less than minimum allowed value (0)"
-}
-```
-
-# ========================================
-# UPDATE PRODUCT
-# ========================================
-PATCH {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1
+# UPDATE (PATCH; controller replaces document – send full document)
+PATCH {{baseUrl}}/{{productId}}
 Content-Type: application/json
 
-### Request Body (Partial update, bilingual)
-```json
 {
-  "price": 899.99,
-  "stockQuantity": 30,
-  "inStock": true,
-  "name": {"ar":"ايفون 15 برو"}
-}
-```
-
-### Response (200 OK)
-```json
-{
-  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
-  "name": "iPhone 15 Pro",
-  "description": "Latest iPhone with advanced features",
-  "longDescription": "The iPhone 15 Pro features the most advanced camera system ever on iPhone, A17 Pro chip for incredible performance, and a stunning Super Retina XDR display.",
-  "image": "https://example.com/iphone15pro.jpg",
+  "name": {"en":"Air Compressing Nebulizers - Updated","ar":""},
+  "description": {"en":"Compact and efficient air compressing nebulizer suitable for all ages.","ar":""},
+  "longDescription": {"en":"Updated long description...","ar":""},
+  "image": "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-600x760.jpg",
   "images": [
-    "https://example.com/iphone15pro-1.jpg",
-    "https://example.com/iphone15pro-2.jpg"
+    "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-808x1024.jpg"
   ],
-  "category": "64f1a2b3c4d5e6f7g8h9i0j2",
-  "price": 899.99,
-  "rating": 4.5,
-  "reviews": [
-    {
-      "_id": "64f1a2b3c4d5e6f7g8h9i0j3",
-      "user": "John Doe",
-      "rating": 5,
-      "comment": "Excellent phone!",
-      "date": "2024-01-15T10:30:00.000Z"
-    }
-  ],
+  "subcategory": "68b80fd166807473737cd37f",
+  "price": 89,
   "features": [
-    "A17 Pro chip",
-    "48MP camera",
-    "USB-C port"
+    {"en":"Latex free","ar":""},
+    {"en":"Easy to clean","ar":""}
   ],
   "specifications": {
-    "storage": "128GB",
-    "color": "Natural Titanium",
-    "screen": "6.1 inch"
+    "Unit Size": {"en":"190x171x59mm","ar":""},
+    "Weight": {"en":"1.2kg","ar":""}
   },
   "inStock": true,
-  "stockQuantity": 30,
-  "shipping": "Free 2-day",
-  "warranty": "1 year",
-  "certifications": [
-    "FCC approved",
-    "CE certified"
+  "stockQuantity": 15,
+  "shipping": {"en":"Standard","ar":""},
+  "warranty": {"en":"1 year","ar":""},
+  "certifications": ["CE Certified"]
+}
+
+### Response (200)
+{
+  "_id": "{{productId}}",
+  "name": {"en":"Air Compressing Nebulizers - Updated","ar":""},
+  "description": {"en":"Compact and efficient air compressing nebulizer suitable for all ages.","ar":""},
+  "longDescription": {"en":"Updated long description...","ar":""},
+  "image": "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-600x760.jpg",
+  "images": [
+    "https://www.pmemedicalstore.ae/wp-content/uploads/2025/02/IMG-20241218-WA0011-808x1024.jpg"
   ],
-  "createdAt": "2024-01-10T08:00:00.000Z",
-  "updatedAt": "2024-01-15T13:00:00.000Z"
+  "subcategory": "68b80fd166807473737cd37f",
+  "price": 89,
+  "features": [
+    {"en":"Latex free","ar":""},
+    {"en":"Easy to clean","ar":""}
+  ],
+  "specifications": {
+    "Unit Size": {"en":"190x171x59mm","ar":""},
+    "Weight": {"en":"1.2kg","ar":""}
+  },
+  "inStock": true,
+  "stockQuantity": 15,
+  "shipping": {"en":"Standard","ar":""},
+  "warranty": {"en":"1 year","ar":""},
+  "certifications": ["CE Certified"],
+  "createdAt": "2025-01-10T08:00:00.000Z",
+  "updatedAt": "2025-01-11T08:00:00.000Z"
 }
-```
 
-### Response (404 Not Found)
-```json
-{
-  "message": "Product not found"
-}
-```
+# DELETE
+DELETE {{baseUrl}}/{{productId}}
 
-### Response (400 Bad Request)
-```json
-{
-  "message": "Error updating product",
-  "error": "Validation failed: price: Path `price` (-50) is less than minimum allowed value (0)"
-}
-```
-
-# ========================================
-# DELETE PRODUCT
-# ========================================
-DELETE {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1
-Content-Type: application/json
-
-### Response (200 OK)
-```json
+### Response (200)
 {
   "message": "Product deleted successfully"
 }
-```
 
-### Response (404 Not Found)
-```json
-{
-  "message": "Product not found"
-}
-```
-
-### Response (500 Internal Server Error)
-```json
-{
-  "message": "Error deleting product",
-  "error": "Database operation failed"
-}
-```
-
-# ========================================
-# ADD REVIEW TO PRODUCT
-# ========================================
-POST {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1/reviews
+# ADD REVIEW
+POST {{baseUrl}}/{{productId}}/reviews
 Content-Type: application/json
 
-### Request Body
-```json
 {
   "user": "Jane Smith",
   "rating": 4,
-  "comment": "Great phone, but expensive"
+  "comment": "Great product!"
 }
-```
-
-### Response (201 Created)
-```json
-{
-  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
-  "name": "iPhone 15 Pro",
-  "description": "Latest iPhone with advanced features",
-  "longDescription": "The iPhone 15 Pro features the most advanced camera system ever on iPhone, A17 Pro chip for incredible performance, and a stunning Super Retina XDR display.",
-  "image": "https://example.com/iphone15pro.jpg",
-  "images": [
-    "https://example.com/iphone15pro-1.jpg",
-    "https://example.com/iphone15pro-2.jpg"
-  ],
-  "category": "64f1a2b3c4d5e6f7g8h9i0j2",
-  "price": 999.99,
-  "rating": 4.5,
-  "reviews": [
-    {
-      "_id": "64f1a2b3c4d5e6f7g8h9i0j3",
-      "user": "John Doe",
-      "rating": 5,
-      "comment": "Excellent phone!",
-      "date": "2024-01-15T10:30:00.000Z"
-    },
-    {
-      "_id": "64f1a2b3c4d5e6f7g8h9i0j6",
-      "user": "Jane Smith",
-      "rating": 4,
-      "comment": "Great phone, but expensive",
-      "date": "2024-01-15T14:00:00.000Z"
-    }
-  ],
-  "features": [
-    "A17 Pro chip",
-    "48MP camera",
-    "USB-C port"
-  ],
-  "specifications": {
-    "storage": "128GB",
-    "color": "Natural Titanium",
-    "screen": "6.1 inch"
-  },
-  "inStock": true,
-  "stockQuantity": 50,
-  "shipping": "Free 2-day",
-  "warranty": "1 year",
-  "certifications": [
-    "FCC approved",
-    "CE certified"
-  ],
-  "createdAt": "2024-01-10T08:00:00.000Z",
-  "updatedAt": "2024-01-15T14:00:00.000Z"
-}
-```
-
-### Response (400 Bad Request - Missing required fields)
-```json
-{
-  "message": "User and rating are required"
-}
-```
-
-### Response (400 Bad Request - Invalid rating)
-```json
-{
-  "message": "Rating must be between 1 and 5"
-}
-```
-
-### Response (404 Not Found)
-```json
-{
-  "message": "Product not found"
-}
-```
-
-# ========================================
-# GET PRODUCT REVIEWS
-# ========================================
-GET {{baseUrl}}/64f1a2b3c4d5e6f7g8h9i0j1/reviews
-Content-Type: application/json
-
-### Response (200 OK)
-```json
-{
-  "reviews": [
-    {
-      "_id": "64f1a2b3c4d5e6f7g8h9i0j3",
-      "user": "John Doe",
-      "rating": 5,
-      "comment": "Excellent phone!",
-      "date": "2024-01-15T10:30:00.000Z"
-    },
-    {
-      "_id": "64f1a2b3c4d5e6f7g8h9i0j6",
-      "user": "Jane Smith",
-      "rating": 4,
-      "comment": "Great phone, but expensive",
-      "date": "2024-01-15T14:00:00.000Z"
-    }
-  ],
-  "averageRating": 4.5,
-  "totalReviews": 2
-}
-```
-
-### Response (404 Not Found)
-```json
-{
-  "message": "Product not found"
-}
-```
-
-### Response (500 Internal Server Error)
-```json
-{
-  "message": "Error fetching reviews",
-  "error": "Database connection failed"
-}
-```
-
-# ========================================
-# NOTES
-# ========================================
-# 
-# 1. All fields in the Product schema are optional
-# 2. Category field expects a valid ObjectId from the Category collection
-# 3. Rating is automatically calculated based on reviews
-# 4. Reviews are stored as subdocuments in the Product collection
-# 5. Timestamps are automatically added (createdAt, updatedAt)
-# 6. Price must be >= 0
-# 7. Rating must be between 0 and 5
-# 8. Stock quantity must be >= 0
-# 9. Review rating must be between 1 and 5
-# 10. User and rating are required when adding a review
-#
-# ========================================
-# ERROR CODES
-# ========================================
-# 200: Success
-# 201: Created
-# 400: Bad Request (validation errors)
-# 404: Not Found
-# 500: Internal Server Error
-#
-# ========================================
-# VALIDATION RULES
-# ========================================
-# - name: String, trimmed
-# - description: String
-# - longDescription: String
-# - image: String
-# - images: Array of strings
-# - category: ObjectId (references Category)
-# - price: Number >= 0
-# - rating: Number 0-5 (auto-calculated)
-# - reviews: Array of review subdocuments
-# - features: Array of strings
-# - specifications: Map of string key-value pairs
-# - inStock: Boolean (default: true)
-# - stockQuantity: Number >= 0 (default: 0)
-# - shipping: String (default: "Standard")
-# - warranty: String (default: "1 year")
-# - certifications: Array of strings

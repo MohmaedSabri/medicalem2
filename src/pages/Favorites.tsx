@@ -7,6 +7,7 @@ import { Heart, ArrowRight, Zap } from "lucide-react";
 import { useProducts } from "../hooks/useProducts";
 import { getFavorites, toggleFavorite } from "../utils/favorites";
 import { useLanguage } from "../contexts/LanguageContext";
+import Footer from "../components/layout/Footer";
 
 const Favorites: React.FC = () => {
 	const navigate = useNavigate();
@@ -259,6 +260,7 @@ const Favorites: React.FC = () => {
 					</div>
 				)}
 			</div>
+			<Footer />
 		</div>
 	);
 };

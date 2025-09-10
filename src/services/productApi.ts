@@ -1,18 +1,21 @@
 import { apiRepo } from "../config/apiRepo";
 import { endpoints } from "../config/endpoints";
 
+// Localized value type
+type LocalizedValue = string | { en: string; ar: string };
+
 // Product interface based on the API documentation
 export interface ApiProduct {
   _id: string;
-  name: string;
-  description: string;
-  longDescription: string;
+  name: LocalizedValue;
+  description: LocalizedValue;
+  longDescription: LocalizedValue;
   image: string;
   images: string[];
   subcategory: {
     _id: string;
-    name: string;
-    description: string;
+    name: LocalizedValue;
+    description?: LocalizedValue;
   } | string;
   price: number;
   reviews?: Array<{
@@ -24,32 +27,32 @@ export interface ApiProduct {
   }>;
   averageRating?: number;
   totalReviews?: number;
-  features: string[];
-  specifications: Record<string, string>;
+  features: Array<LocalizedValue>;
+  specifications: Record<string, LocalizedValue>;
   inStock: boolean;
   stockQuantity: number;
-  shipping: string;
-  warranty: string;
+  shipping: LocalizedValue;
+  warranty: LocalizedValue;
   certifications: string[];
   createdAt: string;
   updatedAt: string;
 }
 
-// Product creation interface
+// Product creation interface (accept localized fields per API spec)
 export interface CreateProductData {
-  name?: string;
-  description?: string;
-  longDescription?: string;
+  name?: LocalizedValue;
+  description?: LocalizedValue;
+  longDescription?: LocalizedValue;
   image?: string;
   images?: string[];
   subcategory?: string;
   price?: number;
-  features?: string[];
-  specifications?: Record<string, string>;
+  features?: Array<LocalizedValue>;
+  specifications?: Record<string, LocalizedValue>;
   inStock?: boolean;
   stockQuantity?: number;
-  shipping?: string;
-  warranty?: string;
+  shipping?: LocalizedValue;
+  warranty?: LocalizedValue;
   certifications?: string[];
 }
 
@@ -67,68 +70,38 @@ export interface ReviewData {
 export const productApi = {
   // Get all products
   async getAllProducts(): Promise<ApiProduct[]> {
-    try {
-      const response = await apiRepo.GET(endpoints.PRODUCTS);
-      return response.data;
-    } catch (error) {
-      // Error fetching products
-      throw error;
-    }
+    const response = await apiRepo.GET(endpoints.PRODUCTS);
+    return response.data;
   },
 
   // Get product by ID
   async getProductById(id: string): Promise<ApiProduct> {
-    try {
-      const response = await apiRepo.GET(endpoints.PRODUCTS_BY_ID.replace(':id', id));
-      return response.data;
-    } catch (error) {
-      // Error fetching product
-      throw error;
-    }
+    const response = await apiRepo.GET(endpoints.PRODUCTS_BY_ID.replace(':id', id));
+    return response.data;
   },
 
   // Create new product
   async createProduct(productData: CreateProductData): Promise<ApiProduct> {
-    try {
-      const response = await apiRepo.POST(endpoints.PRODUCTS, productData);
-      return response.data;
-    } catch (error) {
-      // Error creating product
-      throw error;
-    }
+    const response = await apiRepo.POST(endpoints.PRODUCTS, productData);
+    return response.data;
   },
 
   // Update product
   async updateProduct(id: string, productData: UpdateProductData): Promise<ApiProduct> {
-    try {
-      const response = await apiRepo.PATCH(endpoints.PRODUCTS_BY_ID.replace(':id', id), productData);
-      return response.data;
-    } catch (error) {
-      // Error updating product
-      throw error;
-    }
+    const response = await apiRepo.PATCH(endpoints.PRODUCTS_BY_ID.replace(':id', id), productData);
+    return response.data;
   },
 
   // Delete product
   async deleteProduct(id: string): Promise<{ message: string }> {
-    try {
-      const response = await apiRepo.DELETE(endpoints.PRODUCTS_BY_ID.replace(':id', id));
-      return response.data;
-    } catch (error) {
-      // Error deleting product
-      throw error;
-    }
+    const response = await apiRepo.DELETE(endpoints.PRODUCTS_BY_ID.replace(':id', id));
+    return response.data;
   },
 
   // Add review to product
   async addReview(productId: string, reviewData: ReviewData): Promise<ApiProduct> {
-    try {
-      const response = await apiRepo.POST(endpoints.PRODUCT_REVIEWS.replace(':productId', productId), reviewData);
-      return response.data;
-    } catch (error) {
-      // Error adding review
-      throw error;
-    }
+    const response = await apiRepo.POST(endpoints.PRODUCT_REVIEWS.replace(':productId', productId), reviewData);
+    return response.data;
   },
 
   // Get product reviews
@@ -143,13 +116,8 @@ export const productApi = {
     averageRating: number;
     totalReviews: number;
   }> {
-    try {
-      const response = await apiRepo.GET(endpoints.PRODUCT_REVIEWS.replace(':productId', productId));
-      return response.data;
-    } catch (error) {
-      // Error fetching reviews
-      throw error;
-    }
+    const response = await apiRepo.GET(endpoints.PRODUCT_REVIEWS.replace(':productId', productId));
+    return response.data;
   }
 };
 

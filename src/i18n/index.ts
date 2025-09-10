@@ -2,6 +2,7 @@
 
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import Contactinfo from "../constant/Contactinfo";
 
 // English translations
 const enTranslations = {
@@ -85,13 +86,12 @@ const enTranslations = {
 		noProductSelected: "No product selected",
 		ourLocation: "Our Location",
 		medEquipProHeadquarters: "Dorar Medical Equipment",
-		medicalDistrictNewYork:
-			"Dubai Healthcare City, Building 40, Office 503, P.O Box: 29968 RAK",
+		medicalDistrictNewYork: Contactinfo.address,
 		businessHours: "Business Hours",
 		mondayFriday: "Monday - Friday: 8:00 AM - 6:00 PM",
 		emergencySupport: "Emergency Support",
 		available247: "Available 24/7 for urgent issues",
-		phoneNumberValue: "+971 55 670 7773",
+		phoneNumberValue: Contactinfo.phone,
 		phoneNumberPlaceholder: "+971 55 670 7773",
 
 		// About
@@ -423,20 +423,20 @@ const enTranslations = {
 		autoPlayOn: "Auto-play On",
 		autoPlayOff: "Auto-play Off",
 
-		// Doctors Section
-		doctors: "Doctors",
-		ourExpertDoctors: "Our Expert Doctors",
+		// Partners Section
+		doctors: "Partners",
+		ourExpertDoctors: "Our Expert Partners",
 		meetOurQualifiedMedicalProfessionals: "Meet Our Qualified Medical Professionals",
-		searchDoctors: "Search Doctors",
+		searchDoctors: "Search Partners",
 		allSpecializations: "All Specializations",
 		allLocations: "All Locations",
 		all: "All",
-		noDoctorsFound: "No Doctors Found",
+		noDoctorsFound: "No Partners Found",
 		tryAdjustingYourFilters: "Try adjusting your filters",
 		viewProfile: "View Profile",
 		doctorNotFound: "Doctor Not Found",
 		theDoctorYouAreLookingForDoesNotExist: "The doctor you are looking for does not exist",
-		backToDoctors: "Back to Doctors",
+		backToDoctors: "Back to Partners",
 		specialization: "Specialization",
 		skills: "Skills",
 		qualifications: "Qualifications",
@@ -444,16 +444,16 @@ const enTranslations = {
 		contactInformation: "Contact Information",
 		socialMedia: "Social Media",
 		visitProfile: "Visit Profile",
-		errorLoadingDoctors: "Error Loading Doctors",
+		errorLoadingDoctors: "Error Loading Partners",
 		pleaseTryAgainLater: "Please try again later",
 
 		// Doctor Management
-		addDoctor: "Add Doctor",
-		manageDoctors: "Manage Doctors",
-		manageDoctorsDescription: "View, edit, and delete your doctors",
-		totalDoctors: "Total Doctors",
-		topRatedDoctors: "Top Rated Doctors",
-		noDoctorsYet: "No doctors yet",
+		addDoctor: "Add Partner",
+		manageDoctors: "Manage Partners",
+		manageDoctorsDescription: "View, edit, and delete your partners",
+		totalDoctors: "Total Partners",
+		topRatedDoctors: "Top Rated Partners",
+		noDoctorsYet: "No partners yet",
 		addYourFirstDoctor: "Add your first doctor to get started!",
 		doctorAddedSuccessfully: "Doctor added successfully",
 		failedToAddDoctor: "Failed to add doctor",
@@ -567,7 +567,7 @@ const arTranslations = {
 		mondayFriday: "الاثنين - الجمعة: 8:00 صباحاً - 6:00 مساءً",
 		emergencySupport: "الدعم الطارئ",
 		available247: "متاح على مدار الساعة للمشاكل العاجلة",
-		phoneNumberValue: "+971 55 670 7773",
+		phoneNumberValue: Contactinfo.phone,
 		phoneNumberPlaceholder: "+971 55 670 7773",
 
 		// About
@@ -893,20 +893,20 @@ const arTranslations = {
 		autoPlayOn: "التشغيل التلقائي مفعل",
 		autoPlayOff: "التشغيل التلقائي معطل",
 
-		// Doctors Section
-		doctors: "الأطباء",
-		ourExpertDoctors: "أطباؤنا الخبراء",
+		// Partners Section
+		doctors: "الشركاء",
+		ourExpertDoctors: "شركاؤنا الخبراء",
 		meetOurQualifiedMedicalProfessionals: "تعرف على المتخصصين الطبيين المؤهلين لدينا",
-		searchDoctors: "البحث في الأطباء",
+		searchDoctors: "البحث في الشركاء",
 		allSpecializations: "جميع التخصصات",
 		allLocations: "جميع المواقع",
 		all: "الكل",
-		noDoctorsFound: "لم يتم العثور على أطباء",
+		noDoctorsFound: "لم يتم العثور على شركاء",
 		tryAdjustingYourFilters: "حاول تعديل المرشحات",
 		viewProfile: "عرض الملف الشخصي",
 		doctorNotFound: "الطبيب غير موجود",
 		theDoctorYouAreLookingForDoesNotExist: "الطبيب الذي تبحث عنه غير موجود",
-		backToDoctors: "العودة إلى الأطباء",
+		backToDoctors: "العودة إلى الشركاء",
 		specialization: "التخصص",
 		skills: "المهارات",
 		qualifications: "المؤهلات",
@@ -914,16 +914,16 @@ const arTranslations = {
 		contactInformation: "معلومات الاتصال",
 		socialMedia: "وسائل التواصل الاجتماعي",
 		visitProfile: "زيارة الملف الشخصي",
-		errorLoadingDoctors: "خطأ في تحميل الأطباء",
+		errorLoadingDoctors: "خطأ في تحميل الشركاء",
 		pleaseTryAgainLater: "يرجى المحاولة مرة أخرى لاحقاً",
 
 		// Doctor Management
-		addDoctor: "إضافة طبيب",
-		manageDoctors: "إدارة الأطباء",
-		manageDoctorsDescription: "عرض وتحرير وحذف الأطباء",
-		totalDoctors: "إجمالي الأطباء",
-		topRatedDoctors: "الأطباء الأعلى تقييماً",
-		noDoctorsYet: "لا يوجد أطباء بعد",
+		addDoctor: "إضافة شريك",
+		manageDoctors: "إدارة الشركاء",
+		manageDoctorsDescription: "عرض وتحرير وحذف الشركاء",
+		totalDoctors: "إجمالي الشركاء",
+		topRatedDoctors: "الشركاء الأعلى تقييماً",
+		noDoctorsYet: "لا يوجد شركاء بعد",
 		addYourFirstDoctor: "أضف أول طبيب للبدء!",
 		doctorAddedSuccessfully: "تم إضافة الطبيب بنجاح",
 		failedToAddDoctor: "فشل في إضافة الطبيب",

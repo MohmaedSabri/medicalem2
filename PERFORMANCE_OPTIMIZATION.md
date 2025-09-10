@@ -110,7 +110,7 @@ The build process now includes:
 
 ### 2. LazyImage Component
 ```tsx
-import LazyImage from './components/LazyImage';
+import LazyImage from './components/ui/LazyImage';
 
 <LazyImage
   src="/path/to/image.jpg"

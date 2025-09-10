@@ -1,17 +1,20 @@
 /** @format */
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
+import { showToast } from "../utils/toast";
 import {
 	categoryApi,
-	Category,
-	CreateCategoryData,
-	UpdateCategoryData,
 } from "../services/categoryApi";
+import { CreateCategoryData, UpdateCategoryData } from "../types";
 import { queryKeys } from "../config/queryKeys";
 
+const getErrorMessage = (error: unknown): string => {
+	const err = error as { response?: { data?: { message?: string } } };
+	return err?.response?.data?.message ?? "An unexpected error occurred";
+};
+
 // Hook to get all categories
-export const useCategories = (filters?: Record<string, any>) => {
+export const useCategories = (filters?: Record<string, string | number | boolean | undefined>) => {
 	return useQuery({
 		queryKey: queryKeys.categories.list(filters || {}),
 		queryFn: () => categoryApi.getAllCategories(),
@@ -48,25 +51,16 @@ export const useCreateCategory = () => {
 				newCategory
 			);
 
-			toast.success("Category created successfully!", {
+			showToast("success", "category-create", "Category created successfully!", {
 				duration: 4000,
 				position: "top-right",
-				style: {
-					background: "#10b981",
-					color: "#fff",
-				},
 			});
 		},
-		onError: (error: any) => {
-			const errorMessage =
-				error.response?.data?.message || "Failed to create category";
-			toast.error(errorMessage, {
+		onError: (error: unknown) => {
+			const errorMessage = getErrorMessage(error) || "Failed to create category";
+			showToast("error", "category-create-error", errorMessage, {
 				duration: 4000,
 				position: "top-right",
-				style: {
-					background: "#ef4444",
-					color: "#fff",
-				},
 			});
 		},
 	});
@@ -89,9 +83,6 @@ export const useUpdateCategory = () => {
 			// Invalidate categories list to refresh any filtered views
 			queryClient.invalidateQueries({ queryKey: queryKeys.categories.lists() });
 		},
-		onError: (error: any) => {
-			// Error handling is done in the component
-		},
 	});
 };
 
@@ -110,25 +101,16 @@ export const useDeleteCategory = () => {
 			// Invalidate categories list to refresh any filtered views
 			queryClient.invalidateQueries({ queryKey: queryKeys.categories.lists() });
 
-			toast.success("Category deleted successfully!", {
+			showToast("success", "category-delete", "Category deleted successfully!", {
 				duration: 4000,
 				position: "top-right",
-				style: {
-					background: "#10b981",
-					color: "#fff",
-				},
 			});
 		},
-		onError: (error: any) => {
-			const errorMessage =
-				error.response?.data?.message || "Failed to delete category";
-			toast.error(errorMessage, {
+		onError: (error: unknown) => {
+			const errorMessage = getErrorMessage(error) || "Failed to delete category";
+			showToast("error", "category-delete-error", errorMessage, {
 				duration: 4000,
 				position: "top-right",
-				style: {
-					background: "#ef4444",
-					color: "#fff",
-				},
 			});
 		},
 	});

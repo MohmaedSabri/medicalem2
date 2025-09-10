@@ -1,13 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { subcategoryApi } from '../services/subcategoryApi';
 import { queryKeys } from '../config/queryKeys';
-import { SubCategory, CreateSubCategoryData, UpdateSubCategoryData } from '../types';
+import { CreateSubCategoryData, UpdateSubCategoryData } from '../types';
 import toast from 'react-hot-toast';
 
 // Hook for fetching all subcategories
-export const useSubCategories = () => {
+export const useSubCategories = (filters: Record<string, string | number | boolean | undefined> = {}) => {
   return useQuery({
-    queryKey: queryKeys.categories.all, // We can extend queryKeys later for subcategories
+    queryKey: queryKeys.subcategories.list(filters),
     queryFn: () => subcategoryApi.getAllSubCategories(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -16,7 +16,7 @@ export const useSubCategories = () => {
 // Hook for fetching a single subcategory
 export const useSubCategory = (id: string) => {
   return useQuery({
-    queryKey: ['subcategory', id],
+    queryKey: queryKeys.subcategories.detail(id),
     queryFn: () => subcategoryApi.getSubCategoryById(id),
     enabled: !!id,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -26,7 +26,7 @@ export const useSubCategory = (id: string) => {
 // Hook for fetching subcategories by parent category
 export const useSubCategoriesByParent = (parentCategoryId: string) => {
   return useQuery({
-    queryKey: ['subcategories', 'parent', parentCategoryId],
+    queryKey: queryKeys.subcategories.byParent(parentCategoryId),
     queryFn: () => subcategoryApi.getSubCategoriesByParent(parentCategoryId),
     enabled: !!parentCategoryId,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -39,9 +39,14 @@ export const useCreateSubCategory = () => {
 
   return useMutation({
     mutationFn: (subcategoryData: CreateSubCategoryData) => subcategoryApi.createSubCategory(subcategoryData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
-      queryClient.invalidateQueries({ queryKey: ['subcategories'] });
+    onSuccess: (created) => {
+      // Invalidate subcategory lists and related categories lists
+      queryClient.invalidateQueries({ queryKey: queryKeys.subcategories.lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.lists() });
+      // Prime detail cache
+      if (created?._id) {
+        queryClient.setQueryData(queryKeys.subcategories.detail(created._id), created);
+      }
       toast.success('SubCategory created successfully!');
     },
     onError: (error: Error) => {
@@ -58,9 +63,10 @@ export const useUpdateSubCategory = () => {
     mutationFn: ({ id, subcategoryData }: { id: string; subcategoryData: UpdateSubCategoryData }) =>
       subcategoryApi.updateSubCategory(id, subcategoryData),
     onSuccess: (updatedSubCategory) => {
-      queryClient.invalidateQueries({ queryKey: ['subcategory', updatedSubCategory._id] });
-      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
-      queryClient.invalidateQueries({ queryKey: ['subcategories'] });
+      // Update detail cache and invalidate lists
+      queryClient.setQueryData(queryKeys.subcategories.detail(updatedSubCategory._id), updatedSubCategory);
+      queryClient.invalidateQueries({ queryKey: queryKeys.subcategories.lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.lists() });
       toast.success('SubCategory updated successfully!');
     },
     onError: (error: Error) => {
@@ -75,9 +81,10 @@ export const useDeleteSubCategory = () => {
 
   return useMutation({
     mutationFn: (id: string) => subcategoryApi.deleteSubCategory(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
-      queryClient.invalidateQueries({ queryKey: ['subcategories'] });
+    onSuccess: (_, deletedId) => {
+      queryClient.removeQueries({ queryKey: queryKeys.subcategories.detail(deletedId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.subcategories.lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.lists() });
       toast.success('SubCategory deleted successfully!');
     },
     onError: (error: Error) => {

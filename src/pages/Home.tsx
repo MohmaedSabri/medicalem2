@@ -1,18 +1,18 @@
 /** @format */
 
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
-import Hero from "../components/Hero";
-import Ceo from "../components/Ceo";
-import Products from "../components/Products";
-import OurTeam from "../components/OurTeam";
-import Testimonials from "../components/Testimonials";
-import WhyChooseUs from "../components/WhyChooseUs";
-import Contact from "../components/Contact";
-import Footer from "../components/Footer";
-import SectionDivider from "../components/SectionDivider";
-import SectionBridge from "../components/SectionBridge";
-import FloatingSocialSidebar from "../components/FloatingSocialSidebar";
+
+import Header from "../components/layout/Header/Header";
+import Hero from "../components/common/Hero";
+import Ceo from "../components/common/Ceo";
+import Products from "../components/pages/Products";
+import OurTeam from "../components/common/OurTeam";
+import Testimonials from "../components/common/Testimonials";
+import WhyChooseUs from "../components/common/WhyChooseUs";
+import Contact from "../components/common/Contact";
+import Footer from "../components/layout/Footer";
+import SectionBridge from "../components/ui/SectionBridge";
+import FloatingSocialSidebar from "../components/layout/FloatingSocialSidebar";
 import { useTranslation } from "react-i18next";
 
 const Home: React.FC = () => {
@@ -55,7 +55,7 @@ const Home: React.FC = () => {
 		<>
 			<FloatingSocialSidebar isVisible={showSocialSidebar} />
 
-			<div className='min-h-screen bg-white max-w-full overflow-x-hidden'>
+			<div className='min-h-screen px-4 sm:px-6 md:px-10 lg:px-12 bg-white max-w-full overflow-x-hidden'>
 				<Header />
 				<Hero />
 				<Ceo />
@@ -95,8 +95,8 @@ const Home: React.FC = () => {
 						<p className='text-sm text-gray-500'>{t("connectingHealthcare")}</p>
 					</div>
 				</SectionBridge>
-				<Footer />
 			</div>
+			<Footer />
 		</>
 	);
 };

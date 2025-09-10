@@ -100,8 +100,12 @@ export const useCreatePost = () => {
 
 	return useMutation({
 		mutationFn: (postData: CreatePostData) => postApi.createPost(postData),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: queryKeys.posts.all });
+		onSuccess: (created) => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.posts.lists() });
+			const createdId = (created as unknown as { _id?: string })?._id;
+			if (createdId) {
+				queryClient.setQueryData(queryKeys.posts.detail(createdId), created);
+			}
 			toast.success("Post created successfully!");
 		},
 		onError: (error: Error) => {
@@ -118,10 +122,8 @@ export const useUpdatePost = () => {
 		mutationFn: ({ id, postData }: { id: string; postData: UpdatePostData }) =>
 			postApi.updatePost(id, postData),
 		onSuccess: (updatedPost) => {
-			queryClient.invalidateQueries({
-				queryKey: queryKeys.posts.detail(updatedPost._id),
-			});
-			queryClient.invalidateQueries({ queryKey: queryKeys.posts.all });
+			queryClient.setQueryData(queryKeys.posts.detail(updatedPost._id), updatedPost);
+			queryClient.invalidateQueries({ queryKey: queryKeys.posts.lists() });
 			toast.success("Post updated successfully!");
 		},
 		onError: (error: Error) => {
@@ -136,8 +138,10 @@ export const useDeletePost = () => {
 
 	return useMutation({
 		mutationFn: (id: string) => postApi.deletePost(id),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: queryKeys.posts.all });
+		onSuccess: (_, deletedId) => {
+			const idStr = String(deletedId);
+			queryClient.removeQueries({ queryKey: queryKeys.posts.detail(idStr) });
+			queryClient.invalidateQueries({ queryKey: queryKeys.posts.lists() });
 			toast.success("Post deleted successfully!");
 		},
 		onError: (error: Error) => {
@@ -156,7 +160,7 @@ export const useLikePost = () => {
 			queryClient.invalidateQueries({
 				queryKey: queryKeys.posts.detail(postId),
 			});
-			queryClient.invalidateQueries({ queryKey: queryKeys.posts.all });
+			queryClient.invalidateQueries({ queryKey: queryKeys.posts.lists() });
 		},
 		onError: (error: Error) => {
 			toast.error(error.message || "Failed to like post");

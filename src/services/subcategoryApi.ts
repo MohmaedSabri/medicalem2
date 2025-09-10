@@ -1,4 +1,4 @@
-import axiosClient from "../config/axiosClient";
+import { apiRepo } from "../config/apiRepo";
 import { endpoints } from "../config/endpoints";
 import { SubCategory, CreateSubCategoryData, UpdateSubCategoryData } from "../types";
 
@@ -6,71 +6,41 @@ import { SubCategory, CreateSubCategoryData, UpdateSubCategoryData } from "../ty
 export const subcategoryApi = {
   // Get all subcategories
   async getAllSubCategories(): Promise<SubCategory[]> {
-    try {
-      const response = await axiosClient.get(endpoints.SUBCATEGORIES);
-      return response.data;
-    } catch (error) {
-      // Error fetching subcategories
-      throw error;
-    }
+    const response = await apiRepo.GET(endpoints.SUBCATEGORIES);
+    return response.data;
   },
 
   // Get subcategory by ID
   async getSubCategoryById(id: string): Promise<SubCategory> {
-    try {
-      const url = endpoints.SUBCATEGORIES_BY_ID.replace(":id", id);
-      const response = await axiosClient.get(url);
-      return response.data;
-    } catch (error) {
-      // Error fetching subcategory
-      throw error;
-    }
+    const url = endpoints.SUBCATEGORIES_BY_ID.replace(":id", id);
+    const response = await apiRepo.GET(url);
+    return response.data;
   },
 
   // Get subcategories by parent category ID
   async getSubCategoriesByParent(parentCategoryId: string): Promise<SubCategory[]> {
-    try {
-      const url = endpoints.SUBCATEGORIES_BY_PARENT.replace(":parentId", parentCategoryId);
-      const response = await axiosClient.get(url);
-      return response.data;
-    } catch (error) {
-      // Error fetching subcategories by parent
-      throw error;
-    }
+    const url = endpoints.SUBCATEGORIES_BY_PARENT.replace(":parentId", parentCategoryId);
+    const response = await apiRepo.GET(url);
+    return response.data;
   },
 
   // Create new subcategory
   async createSubCategory(subcategoryData: CreateSubCategoryData): Promise<SubCategory> {
-    try {
-      const response = await axiosClient.post(endpoints.SUBCATEGORIES, subcategoryData);
-      return response.data;
-    } catch (error) {
-      // Error creating subcategory
-      throw error;
-    }
+    const response = await apiRepo.POST(endpoints.SUBCATEGORIES, subcategoryData);
+    return response.data;
   },
 
   // Update subcategory
   async updateSubCategory(id: string, subcategoryData: UpdateSubCategoryData): Promise<SubCategory> {
-    try {
-      const url = endpoints.SUBCATEGORIES_BY_ID.replace(":id", id);
-      const response = await axiosClient.patch(url, subcategoryData);
-      return response.data;
-    } catch (error) {
-      // Error updating subcategory
-      throw error;
-    }
+    const url = endpoints.SUBCATEGORIES_BY_ID.replace(":id", id);
+    const response = await apiRepo.PATCH(url, subcategoryData);
+    return response.data;
   },
 
   // Delete subcategory
   async deleteSubCategory(id: string): Promise<{ message: string }> {
-    try {
-      const url = endpoints.SUBCATEGORIES_BY_ID.replace(":id", id);
-      const response = await axiosClient.delete(url);
-      return response.data;
-    } catch (error) {
-      // Error deleting subcategory
-      throw error;
-    }
+    const url = endpoints.SUBCATEGORIES_BY_ID.replace(":id", id);
+    const response = await apiRepo.DELETE(url);
+    return response.data;
   },
 };

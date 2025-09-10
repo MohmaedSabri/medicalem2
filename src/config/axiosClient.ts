@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // Create axios instance
 const axiosClient = axios.create({
-  baseURL: 'https://zaher-backend.vercel.app/api',
+  baseURL: 'http://localhost:5000/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -59,8 +59,8 @@ axiosClient.interceptors.response.use(
       document.cookie = 'authToken=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
       
       // Redirect to login if not already there
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
+      if (window.location.pathname !== '/x7k9m2p4q8w1n5r3t6y0u9i8o7p6a5s4d3f2g1h0j9k8l7z6x5c4v3b2n1m0') {
+        window.location.href = '/x7k9m2p4q8w1n5r3t6y0u9i8o7p6a5s4d3f2g1h0j9k8l7z6x5c4v3b2n1m0';
       }
     }
     

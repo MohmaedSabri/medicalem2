@@ -10,32 +10,34 @@ import { motion, AnimatePresence } from "framer-motion";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import { Suspense, lazy } from "react";
-import Header from "./components/Header";
-import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
-import ProtectedRoute from "./components/ProtectedRoute";
+import Header from "./components/layout/Header/Header";
+import Login from "./components/common/Login";
+import Dashboard from "./components/common/Dashboard";
+import ProtectedRoute from "./components/ui/ProtectedRoute";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProductsProvider } from "./contexts/ProductsContext";
 import { CategoriesProvider } from "./contexts/CategoriesContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
-import TopBar from "./components/TopBar";
+import TopBar from "./components/layout/TopBar";
+import WhatsAppFloatingButton from "./components/common/WhatsAppFloatingButton";
 
 // Import i18n configuration
 import "./i18n";
-import { ScrollToTop } from "./components/ScrollToTop";
+import { ScrollToTop } from "./components/layout/ScrollToTop";
 
 // Lazy load components for better performance
 const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About"));
 const Blog = lazy(() => import("./pages/Blog"));
-const BlogDetail = lazy(() => import("./components/BlogDetail"));
-const Contact = lazy(() => import("./components/Contact"));
+const BlogDetail = lazy(() => import("./components/pages/Blog/BlogDetail"));
+const Contact = lazy(() => import("./pages/Contact"));
 const Favorites = lazy(() => import("./pages/Favorites"));
-const ProductsPage = lazy(() => import("./components/ProductsPage"));
-const ProductDetail = lazy(() => import("./components/ProductDetail"));
+const ProductsPage = lazy(() => import("./components/pages/ProductsPage"));
+const ProductDetail = lazy(() => import("./components/pages/ProductDetail"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Doctors = lazy(() => import("./pages/Doctors"));
 const DoctorDetail = lazy(() => import("./pages/DoctorDetail"));
+const Categories = lazy(() => import("./pages/Categories"));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -102,9 +104,9 @@ function App() {
 											</AnimatePresence>
 										}
 									/>
-									{/* Login Route */}
+									{/* Login Route - Completely Misleading */}
 									<Route
-										path='/login'
+										path='/x7k9m2p4q8w1n5r3t6y0u9i8o7p6a5s4d3f2g1h0j9k8l7z6x5c4v3b2n1m0'
 										element={
 											<AnimatePresence mode='wait'>
 												<motion.div
@@ -121,9 +123,9 @@ function App() {
 										}
 									/>
 
-									{/* Dashboard Route - Protected */}
+									{/* Dashboard Route - Completely Misleading */}
 									<Route
-										path='/dashboard'
+										path='/z9x8c7v6b5n4m3a2s1d4f5g6h7j8k9l0p1o2i3u4y5t6r7e8w9q0'
 										element={
 											<ProtectedRoute>
 												<AnimatePresence mode='wait'>
@@ -330,6 +332,27 @@ function App() {
 										}
 									/>
 
+									{/* Categories Route */}
+									<Route
+										path='/categories'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='categories'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<Categories />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
+
 									{/* Home Route */}
 									<Route
 										path='/'
@@ -350,6 +373,9 @@ function App() {
 										}
 									/>
 								</Routes>
+								{/* WhatsApp Floating Button */}
+								<WhatsAppFloatingButton />
+								
 								{/* Toast Notifications */}
 								<Toaster
 									position='top-right'
@@ -386,7 +412,7 @@ function App() {
 
 const AppContent = () => {
 	const location = useLocation();
-	const hideChrome = location.pathname.startsWith("/dashboard");
+	const hideChrome = location.pathname.startsWith("/z9x8c7v6b5n4m3a2s1d4f5g6h7j8k9l0p1o2i3u4y5t6r7e8w9q0");
 	return hideChrome ? null : <TopBar />;
 };
 

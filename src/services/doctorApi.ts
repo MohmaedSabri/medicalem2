@@ -1,6 +1,6 @@
 import axiosClient from '../config/axiosClient';
 import { endpoints } from '../config/endpoints';
-import { Doctor, CreateDoctorData, UpdateDoctorData, DoctorFilters, DoctorsResponse } from '../types';
+import { Doctor, CreateDoctorData, UpdateDoctorData, DoctorFilters, } from '../types';
 
 export const doctorApi = {
   // Get all doctors with optional filters

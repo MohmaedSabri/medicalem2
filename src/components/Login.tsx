@@ -62,14 +62,14 @@ const Login: React.FC = () => {
 				// Check if there's a redirect path stored
 				const redirectPath = sessionStorage.getItem('redirectAfterLogin');
 				
-				if (redirectPath && redirectPath !== '/login') {
+				if (redirectPath && redirectPath !== '/x7k9m2p4q8w1n5r3t6y0u9i8o7p6a5s4d3f2g1h0j9k8l7z6x5c4v3b2n1m0') {
 					// Navigate to the originally requested page
 					navigate(redirectPath);
 					// Clear the stored redirect path
 					sessionStorage.removeItem('redirectAfterLogin');
 				} else {
 					// Default redirect to dashboard
-					navigate("/dashboard");
+					navigate("/z9x8c7v6b5n4m3a2s1d4f5g6h7j8k9l0p1o2i3u4y5t6r7e8w9q0");
 				}
 			} else {
 				setLoginError("Invalid email or password. Please try again.");

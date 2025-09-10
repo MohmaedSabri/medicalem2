@@ -52,11 +52,10 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
 	const deleteProductMutation = useDeleteProduct();
 
 	// Transform API products to local Product format
-	// Handle case where apiProducts might be undefined or empty
 	let products: Product[] = [];
 	try {
-		products = Array.isArray(apiProducts) ? apiProducts.map(transformApiProduct) : [];
-	} catch (transformError) {
+		products = Array.isArray(apiProducts) ? apiProducts.map(transformApiProduct) as unknown as Product[] : [];
+	} catch {
 		products = [];
 	}
 
@@ -65,7 +64,7 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
 			const apiProductData = transformToApiProduct(productData);
 			await createProductMutation.mutateAsync(apiProductData);
 			return true;
-		} catch (error) {
+		} catch {
 			return false;
 		}
 	};
@@ -74,7 +73,7 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
 		try {
 			const response = await updateProductMutation.mutateAsync({ id, data: transformToApiProduct(productData) });
 			return response;
-		} catch (error) {
+		} catch {
 			return null;
 		}
 	};
@@ -82,7 +81,7 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
 	const deleteProduct = async (id: string) => {
 		try {
 			await deleteProductMutation.mutateAsync(id);
-		} catch (error) {
+		} catch {
 			// Error handled by mutation
 		}
 	};

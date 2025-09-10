@@ -113,7 +113,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(data.user);
         
         toast.success('Login successful!');
-        navigate('/dashboard');
+        navigate('/z9x8c7v6b5n4m3a2s1d4f5g6h7j8k9l0p1o2i3u4y5t6r7e8w9q0');
         return true;
       } else {
         toast.error(data.message || 'Login failed');

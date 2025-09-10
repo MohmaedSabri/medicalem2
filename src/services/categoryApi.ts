@@ -1,65 +1,48 @@
 import { apiRepo } from "../config/apiRepo";
+import { endpoints } from "../config/endpoints";
 import { Category, CreateCategoryData, UpdateCategoryData } from "../types";
-
-// Base URL for categories API
-const CATEGORIES_BASE_URL = "/categories";
 
 // Category API service
 export const categoryApi = {
   // Get all categories
   async getAllCategories(): Promise<Category[]> {
-    try {
-      const response = await apiRepo.GET(CATEGORIES_BASE_URL);
-      return response.data;
-    } catch (error) {
-      // Error fetching categories
-      throw error;
-    }
+    const response = await apiRepo.GET(endpoints.CATEGORIES);
+    return response.data;
   },
 
   // Get category by ID
   async getCategoryById(id: string): Promise<Category> {
-    try {
-      const response = await apiRepo.GET(`${CATEGORIES_BASE_URL}/${id}`);
-      return response.data;
-    } catch (error) {
-      // Error fetching category
-      throw error;
-    }
+    const response = await apiRepo.GET(
+      endpoints.CATEGORIES_BY_ID.replace(":id", id)
+    );
+    return response.data;
   },
 
   // Create new category
   async createCategory(categoryData: CreateCategoryData): Promise<Category> {
-    try {
-      const response = await apiRepo.POST(CATEGORIES_BASE_URL, categoryData);
-      return response.data;
-    } catch (error) {
-      // Error creating category
-      throw error;
-    }
+    const response = await apiRepo.POST(endpoints.CATEGORIES, categoryData);
+    return response.data;
   },
 
   // Update category
-  async updateCategory(id: string, categoryData: UpdateCategoryData): Promise<Category> {
-    try {
-      const response = await apiRepo.PATCH(`${CATEGORIES_BASE_URL}/${id}`, categoryData);
-      return response.data;
-    } catch (error) {
-      // Error updating category
-      throw error;
-    }
+  async updateCategory(
+    id: string,
+    categoryData: UpdateCategoryData
+  ): Promise<Category> {
+    const response = await apiRepo.PATCH(
+      endpoints.CATEGORIES_BY_ID.replace(":id", id),
+      categoryData
+    );
+    return response.data;
   },
 
   // Delete category
   async deleteCategory(id: string): Promise<{ message: string }> {
-    try {
-      const response = await apiRepo.DELETE(`${CATEGORIES_BASE_URL}/${id}`);
-      return response.data;
-    } catch (error) {
-      // Error deleting category
-      throw error;
-    }
-  }
+    const response = await apiRepo.DELETE(
+      endpoints.CATEGORIES_BY_ID.replace(":id", id)
+    );
+    return response.data;
+  },
 };
 
 export default categoryApi;

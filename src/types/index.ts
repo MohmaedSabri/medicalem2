@@ -159,6 +159,8 @@ export interface CreatePostData {
 export interface UpdatePostData {
 	title?: string | { en: string; ar: string };
 	content?: ContentBlock[] | { en: ContentBlock[]; ar: ContentBlock[] };
+	authorName?: string;
+	authorEmail?: string;
 	postImage?: string;
 	category?: string;
 	tags?: string[];

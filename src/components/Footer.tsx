@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useProducts } from "../hooks/useProducts";
 import { Link } from "react-router-dom";
+import Contactinfo from "../constant/Contactinfo";
 
 const Footer: React.FC = () => {
 	const { t } = useTranslation();
@@ -44,26 +45,22 @@ const Footer: React.FC = () => {
 	}));
 
 	const socialLinks = [
-		{ icon: Facebook, href: "#", label: "Facebook" },
-		{ icon: Twitter, href: "#", label: "Twitter" },
-		{ icon: Linkedin, href: "#", label: "LinkedIn" },
-		{ icon: Instagram, href: "#", label: "Instagram" },
+		{ icon: Facebook, href: Contactinfo.facebook, label: "Facebook" },
+		{ icon: Twitter, href: Contactinfo.twitter, label: "Twitter" },
+		{ icon: Linkedin, href: Contactinfo.linkedin, label: "LinkedIn" },
+		{ icon: Instagram, href: Contactinfo.instagram, label: "Instagram" },
 	];
 
 	return (
-		<footer className='bg-gray-900 text-white'>
-			<div className='container mx-auto px-4 sm:px-6 lg:px-8 py-16'>
+		<footer className='bg-gray-900 text-white w-full'>
+			<div className='w-full py-16 px-4 sm:px-6 lg:px-8 2xl:px-12'>
 				<div
 					className={`flex flex-col lg:flex-row lg:justify-between ${
-						isRTL ? "lg:space-x-reverse lg:space-x-28" : "lg:space-x-28"
+						isRTL ? "lg:space-x-reverse lg:space-x-8" : "lg:space-x-8"
 					} space-y-8 lg:space-y-0`}>
 					{/* Logo Section */}
-					<motion.div
-						initial={{ opacity: 0, y: 30 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true }}
-						transition={{ duration: 0.6 }}
-						className='flex flex-col items-center lg:items-start justify-start space-y-6 lg:w-1/4'>
+					
+					<div className='flex flex-col items-center justify-start space-y-6 lg:w-1/4 px-4 sm:px-6 lg:px-4 xl:px-6 2xl:px-8'>
 						<button
 							type='button'
 							aria-label='Scroll to top'
@@ -79,10 +76,14 @@ const Footer: React.FC = () => {
 							<img
 								src='https://i.postimg.cc/x1bkFGQh/logo.png'
 								alt='Dorar Logo'
-								className='h-32 w-32 lg:h-40 lg:w-40 object-cover rounded-xl shadow-xl transition-transform duration-200 group-hover:scale-[1.02]'
+								className='h-32 w-32 lg:h-40 lg:w-40 object-cover rounded-xl transition-all duration-500 ease-in-out group-hover:scale-110 group-hover:rotate-3'
+								onError={(e) => {
+									console.log('Logo image failed to load:', e);
+									e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMDA5OTk5Ii8+Cjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RE9SQVI8L3RleHQ+Cjwvc3ZnPgo=';
+								}}
 							/>
 						</button>
-					</motion.div>
+					</div>
 
 					{/* Company Info */}
 					<motion.div
@@ -90,50 +91,29 @@ const Footer: React.FC = () => {
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true }}
 						transition={{ duration: 0.6 }}
-						className='space-y-6 lg:w-1/4'>
-						<div
-							className={`flex items-center ${
-								isRTL
-									? "flex-row-reverse space-x-reverse space-x-3"
-									: "space-x-3"
-							}`}>
-							<Activity className='h-6 w-6 text-teal-400' />
-							<span className='text-lg font-bold'>Dorar</span>
+						className='space-y-6 lg:w-1/4 px-4 sm:px-6 lg:px-4 xl:px-6 2xl:px-8'>
+						<div className='flex items-center gap-2'>
+							<Activity className='h-6 w-6 text-teal-400 flex-shrink-0' />
+							<span className='text-lg font-bold'>{isRTL ? 'درر' : 'Dorar'}</span>
 						</div>
-						<p className='text-gray-400 leading-relaxed'>
+						<p className={`text-gray-400 leading-relaxed ${isRTL ? 'text-right' : 'text-left'}`}>
 							{t("leadingProvider")}
 						</p>
 						<div className='space-y-4'>
-							<div
-								className={`flex items-center ${
-									isRTL
-										? "flex-row-reverse space-x-reverse space-x-3"
-										: "space-x-3"
-								}`}>
-								<Mail className='h-4 w-4 mx-2 text-teal-400' />
-								<span className='text-sm text-gray-300'>info@dorarmed.com</span>
+							<div className='flex items-center gap-2'>
+								<Mail className='h-4 w-4 text-teal-400 flex-shrink-0' />
+								<span className='text-sm text-gray-300' dir="ltr">{Contactinfo.email}</span>
 							</div>
-							<div
-								className={`flex items-center ${
-									isRTL
-										? "flex-row-reverse space-x-reverse space-x-3"
-										: "space-x-3"
-								}`}>
-								<Phone className='h-4 w-4 mx-2 text-teal-400' />
+							<div className='flex items-center gap-2'>
+								<Phone className='h-4 w-4 text-teal-400 flex-shrink-0' />
 								<span className='text-sm text-gray-300' dir='ltr'>
-									+971 55 670 7773
+									{Contactinfo.phone}
 								</span>
 							</div>
-							<div
-								className={`flex items-center ${
-									isRTL
-										? "flex-row-reverse space-x-reverse space-x-3"
-										: "space-x-3"
-								}`}>
-								<MapPin className='h-4 mx-2 w-4 text-teal-400' />
+							<div className='flex items-center gap-2'>
+								<MapPin className='h-4 w-4 text-teal-400 flex-shrink-0' />
 								<span className='text-sm text-gray-300'>
-									Dubai Healthcare City, Building 40, Office 503, P.O Box: 29968
-									RAK
+									{Contactinfo.address}
 								</span>
 							</div>
 						</div>
@@ -145,7 +125,7 @@ const Footer: React.FC = () => {
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true }}
 						transition={{ duration: 0.6, delay: 0.2 }}
-						className='space-y-6 lg:w-1/4'>
+						className='space-y-6 lg:w-1/4 px-4 sm:px-6 lg:px-4 xl:px-6 2xl:px-8'>
 						<h3 className='text-lg font-semibold'>{t("products")}</h3>
 						<ul className='space-y-4'>
 							{footerProducts.map((product) => (
@@ -170,7 +150,7 @@ const Footer: React.FC = () => {
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true }}
 						transition={{ duration: 0.6, delay: 0.3 }}
-						className='space-y-6 lg:w-1/4'>
+						className='space-y-6 lg:w-1/4 px-4 sm:px-6 lg:px-4 xl:px-6 2xl:px-8'>
 						<h3 className='text-lg font-semibold'>{t("stayConnected")}</h3>
 						<p className='text-gray-400'>{t("newsletterDescription")}</p>
 
@@ -198,7 +178,7 @@ const Footer: React.FC = () => {
 					whileInView={{ opacity: 1 }}
 					viewport={{ once: true }}
 					transition={{ duration: 0.6, delay: 0.4 }}
-					className={`border-t border-gray-800 mt-16 pt-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 ${
+					className={`border-t border-gray-800 mt-16 pt-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 px-4 sm:px-6 lg:px-4 xl:px-6 2xl:px-8 ${
 						isRTL ? "sm:flex-row-reverse" : ""
 					}`}>
 					<p className='text-gray-400 text-sm'>{t("allRightsReserved")}</p>
@@ -213,18 +193,20 @@ const Footer: React.FC = () => {
 								{t("privacyPolicy")}
 							</motion.span>
 						</Link>
-						<motion.a
-							href='#'
-							whileHover={{ scale: 1.05 }}
-							className='text-gray-400 hover:text-teal-400 transition-colors'>
-							{t("termsOfService")}
-						</motion.a>
-						<motion.a
-							href='#'
-							whileHover={{ scale: 1.05 }}
-							className='text-gray-400 hover:text-teal-400 transition-colors'>
-							{t("cookiePolicy")}
-						</motion.a>
+						<Link to='/privacy-policy'>
+							<motion.span
+								whileHover={{ scale: 1.05 }}
+								className='text-gray-400 hover:text-teal-400 transition-colors cursor-pointer'>
+								{t("termsOfService")}
+							</motion.span>
+						</Link>
+						<Link to='/privacy-policy'>
+							<motion.span
+								whileHover={{ scale: 1.05 }}
+								className='text-gray-400 hover:text-teal-400 transition-colors cursor-pointer'>
+								{t("cookiePolicy")}
+							</motion.span>
+						</Link>
 					</div>
 				</motion.div>
 			</div>

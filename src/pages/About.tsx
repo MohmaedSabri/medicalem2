@@ -1,9 +1,9 @@
 /** @format */
 
 import React from "react";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import Ceo from "../components/Ceo";
+import Header from "../components/layout/Header/Header";
+import Footer from "../components/layout/Footer";
+import Ceo from "../components/common/Ceo";
 import { useTranslation } from "react-i18next";
 
 const About: React.FC = () => {

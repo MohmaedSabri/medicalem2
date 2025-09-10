@@ -17,6 +17,7 @@ import {
 	Phone,
 	ArrowRight,
 } from "lucide-react";
+import Footer from "../components/layout/Footer";
 
 const PrivacyPolicy: React.FC = () => {
 	const { t } = useTranslation();
@@ -324,6 +325,7 @@ const PrivacyPolicy: React.FC = () => {
 					</div>
 				</div>
 			</section>
+			<Footer />
 		</div>
 	);
 };

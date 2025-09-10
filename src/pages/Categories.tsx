@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Tag, Search, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCategories } from "../contexts/CategoriesContext";
+import Footer from "../components/layout/Footer";
 
 const Categories: React.FC = () => {
 	const { categories, loading, error } = useCategories();
@@ -80,7 +81,7 @@ const Categories: React.FC = () => {
 							/>
 						</div>
 						<button
-							onClick={() => navigate("/dashboard?tab=categories")}
+							onClick={() => navigate("/z9x8c7v6b5n4m3a2s1d4f5g6h7j8k9l0p1o2i3u4y5t6r7e8w9q0?tab=categories")}
 							className='inline-flex items-center justify-center space-x-2 bg-teal-600 text-white px-4 sm:px-6 py-2.5 sm:py-2 rounded-lg hover:bg-teal-700 transition-colors text-sm sm:text-base w-full sm:w-auto'>
 							<Plus className='h-4 w-4' />
 							<span>Manage Categories</span>
@@ -144,7 +145,7 @@ const Categories: React.FC = () => {
 						</p>
 						{!searchTerm && (
 							<button
-								onClick={() => navigate("/dashboard?tab=categories")}
+								onClick={() => navigate("/z9x8c7v6b5n4m3a2s1d4f5g6h7j8k9l0p1o2i3u4y5t6r7e8w9q0?tab=categories")}
 								className='inline-flex items-center space-x-2 bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors'>
 								<Plus className='h-4 w-4' />
 								<span>Create First Category</span>
@@ -167,7 +168,7 @@ const Categories: React.FC = () => {
 								product categories.
 							</p>
 							<button
-								onClick={() => navigate("/dashboard?tab=categories")}
+								onClick={() => navigate("/z9x8c7v6b5n4m3a2s1d4f5g6h7j8k9l0p1o2i3u4y5t6r7e8w9q0?tab=categories")}
 								className='inline-flex items-center space-x-2 bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors'>
 								<Tag className='h-4 w-4' />
 								<span>Go to Dashboard</span>
@@ -176,6 +177,7 @@ const Categories: React.FC = () => {
 					</div>
 				</div>
 			)}
+			<Footer />
 		</div>
 	);
 };

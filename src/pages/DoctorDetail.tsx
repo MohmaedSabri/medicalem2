@@ -15,6 +15,7 @@ import {
   CheckCircle,
   ExternalLink
 } from 'lucide-react';
+import Footer from '../components/layout/Footer';
 
 const DoctorDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -107,9 +108,6 @@ const DoctorDetail: React.FC = () => {
                     alt={getLocalizedText(doctorData?.name)}
                     className="w-full h-full object-cover"
                   />
-                </div>
-                <div className="absolute -bottom-4 -right-4 bg-white rounded-full p-3 shadow-lg">
-                  <Heart className="w-8 h-8 text-teal-500" />
                 </div>
               </motion.div>
             </div>
@@ -274,7 +272,7 @@ const DoctorDetail: React.FC = () => {
                 {doctorData?.socialMedia && doctorData.socialMedia.length > 0 && (
                   <div className="mt-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                      {t('socialMedia')}
+                      Contact Me
                     </h4>
                     <div className="space-y-2">
                       {doctorData.socialMedia.map((social: string, index: number) => (
@@ -286,7 +284,7 @@ const DoctorDetail: React.FC = () => {
                           className={`flex items-center ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'} text-teal-600 hover:text-teal-700 transition-colors duration-200`}
                         >
                           <ExternalLink className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
-                          <span className="text-sm">{t('visitProfile')}</span>
+                          <span className="text-sm">{social}</span>
                         </a>
                       ))}
                     </div>
@@ -298,6 +296,7 @@ const DoctorDetail: React.FC = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };

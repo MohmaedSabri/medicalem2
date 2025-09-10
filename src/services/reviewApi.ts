@@ -1,4 +1,5 @@
 import { apiRepo } from "../config/apiRepo";
+import { endpoints } from "../config/endpoints";
 import { Review } from "../types";
 
 // Review creation interface
@@ -19,79 +20,44 @@ export interface UpdateReviewData {
 export const reviewApi = {
   // Get all reviews
   async getAllReviews(): Promise<Review[]> {
-    try {
-      const response = await apiRepo.GET("/reviews");
-      return response.data;
-    } catch (error) {
-      // Error fetching reviews
-      throw error;
-    }
+    const response = await apiRepo.GET(endpoints.REVIEWS);
+    return response.data;
   },
 
   // Get review by ID
   async getReviewById(id: string): Promise<Review> {
-    try {
-      const response = await apiRepo.GET(`/reviews/${id}`);
-      return response.data;
-    } catch (error) {
-      // Error fetching review
-      throw error;
-    }
+    const response = await apiRepo.GET(endpoints.REVIEWS_BY_ID.replace(":id", id));
+    return response.data;
   },
 
   // Create new review
   async createReview(reviewData: CreateReviewData): Promise<Review> {
-    try {
-      const response = await apiRepo.POST("/reviews", reviewData);
-      return response.data;
-    } catch (error) {
-      // Error creating review
-      throw error;
-    }
+    const response = await apiRepo.POST(endpoints.REVIEWS, reviewData);
+    return response.data;
   },
 
   // Update review
   async updateReview(id: string, reviewData: UpdateReviewData): Promise<Review> {
-    try {
-      const response = await apiRepo.PATCH(`/reviews/${id}`, reviewData);
-      return response.data;
-    } catch (error) {
-      // Error updating review
-      throw error;
-    }
+    const response = await apiRepo.PATCH(endpoints.REVIEWS_BY_ID.replace(":id", id), reviewData);
+    return response.data;
   },
 
   // Delete review
   async deleteReview(id: string): Promise<{ message: string }> {
-    try {
-      const response = await apiRepo.DELETE(`/reviews/${id}`);
-      return response.data;
-    } catch (error) {
-      // Error deleting review
-      throw error;
-    }
+    const response = await apiRepo.DELETE(endpoints.REVIEWS_BY_ID.replace(":id", id));
+    return response.data;
   },
 
   // Get reviews by user
   async getReviewsByUser(user: string): Promise<Review[]> {
-    try {
-      const response = await apiRepo.GET(`/reviews/user/${encodeURIComponent(user)}`);
-      return response.data;
-    } catch (error) {
-      // Error fetching user reviews
-      throw error;
-    }
+    const response = await apiRepo.GET(endpoints.REVIEWS_BY_USER.replace(":user", encodeURIComponent(user)));
+    return response.data;
   },
 
   // Get reviews by rating
   async getReviewsByRating(rating: number): Promise<Review[]> {
-    try {
-      const response = await apiRepo.GET(`/reviews/rating/${rating}`);
-      return response.data;
-    } catch (error) {
-      // Error fetching reviews by rating
-      throw error;
-    }
+    const response = await apiRepo.GET(endpoints.REVIEWS_BY_RATING.replace(":rating", String(rating)));
+    return response.data;
   },
 
   // Get reviews for specific product
@@ -100,13 +66,8 @@ export const reviewApi = {
     averageRating: number;
     totalReviews: number;
   }> {
-    try {
-      const response = await apiRepo.GET(`/reviews/product/${productId}`);
-      return response.data;
-    } catch (error) {
-      // Error fetching product reviews
-      throw error;
-    }
+    const response = await apiRepo.GET(endpoints.REVIEWS_BY_PRODUCT.replace(":productId", productId));
+    return response.data;
   }
 };
 

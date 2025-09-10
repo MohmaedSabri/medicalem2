@@ -10,11 +10,12 @@ import {
 	Tag,
 } from "lucide-react";
 import { usePosts, useFeaturedPosts } from "../hooks/usePosts";
-import { Link } from "react-router-dom";
 import { useCategories } from "../contexts/CategoriesContext";
 import { PostFilters, Post, ContentBlock } from "../types";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../contexts/LanguageContext";
+import Footer from "../components/layout/Footer";
+import PostCard from "../components/pages/Post/PostCard";
 
 const Blog: React.FC = () => {
 	const { t } = useTranslation();
@@ -81,36 +82,6 @@ const Blog: React.FC = () => {
 		});
 	};
 
-	// Estimate read time based on content length (200 wpm)
-	const getReadTime = (content: ContentBlock[]) => {
-		let totalWords = 0;
-
-		content.forEach((block) => {
-			if (block.type === "paragraph") {
-				const words = block.text.trim().split(/\s+/).length;
-				totalWords += words;
-				if (block.title) {
-					const titleWords = block.title.trim().split(/\s+/).length;
-					totalWords += titleWords;
-				}
-			}
-		});
-
-		const minutes = Math.max(1, Math.ceil(totalWords / 200));
-		return `${minutes} min read`;
-	};
-
-	// Create an excerpt from structured content
-	const getExcerpt = (content: ContentBlock[], maxLength: number = 160) => {
-		const firstParagraph = content.find((block) => block.type === "paragraph");
-		if (!firstParagraph || firstParagraph.type !== "paragraph") return "";
-
-		const text = firstParagraph.text.trim();
-		if (text.length <= maxLength) return text;
-		const sliced = text.slice(0, maxLength);
-		const lastSpace = sliced.lastIndexOf(" ");
-		return `${sliced.slice(0, lastSpace > 0 ? lastSpace : maxLength)}...`;
-	};
 
 	// Get category name
 	const getCategoryName = (
@@ -287,48 +258,15 @@ const Blog: React.FC = () => {
 						</div>
 
 						<div className='grid md:grid-cols-2 gap-8 mb-16'>
-							{validFeaturedPosts.map((post) => (
-								<article
+							{validFeaturedPosts.map((post, index) => (
+								<PostCard
 									key={post._id}
-									className='bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1'>
-									<div className='relative overflow-hidden'>
-										<img
-											src={post.postImage}
-											alt={getTitle(post)}
-											className='w-full h-56 object-cover transition-transform duration-300 hover:scale-105'
-										/>
-										<div className='absolute top-3 left-3'>
-											<span className='bg-teal-500 text-white px-2 py-1 rounded-md text-xs font-medium'>
-												{getCategoryName(post.category)}
-											</span>
-										</div>
-									</div>
-
-									<div className='p-6'>
-										<div className='flex items-center text-xs text-gray-500 mb-2'>
-											<span className='mr-3'>{post.authorName}</span>
-											<span className='mr-3'>
-												{getReadTime(getContent(post))}
-											</span>
-											<span>{formatDate(post.createdAt)}</span>
-										</div>
-
-										<h3 className='text-lg font-bold text-gray-900 mb-2 line-clamp-2'>
-											{getTitle(post)}
-										</h3>
-
-										<p className='text-gray-600 text-sm mb-4 line-clamp-3'>
-											{getExcerpt(getContent(post), 140)}
-										</p>
-
-										<Link
-											to={`/blog/${post._id}`}
-											className='inline-flex items-center text-teal-600 hover:text-teal-700 font-medium text-sm transition-colors duration-200 group'>
-											{t("readArticle")}
-											<ArrowRight className='w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform duration-200' />
-										</Link>
-									</div>
-								</article>
+									post={post}
+									variant="featured"
+									getCategoryName={getCategoryName}
+									formatDate={formatDate}
+									index={index}
+								/>
 							))}
 						</div>
 					</div>
@@ -495,48 +433,15 @@ const Blog: React.FC = () => {
 										<div className='w-24 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto'></div>
 									</div>
 									<div className='grid md:grid-cols-2 gap-8'>
-										{validPosts.map((post) => (
-											<article
+										{validPosts.map((post, index) => (
+											<PostCard
 												key={post._id}
-												className='bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1'>
-												<div className='relative overflow-hidden'>
-													<img
-														src={post.postImage}
-														alt={getTitle(post)}
-														className='w-full h-56 object-cover transition-transform duration-300 hover:scale-105'
-													/>
-													<div className='absolute top-3 left-3'>
-														<span className='bg-teal-500 text-white px-2 py-1 rounded-md text-xs font-medium'>
-															{getCategoryName(post.category)}
-														</span>
-													</div>
-												</div>
-
-												<div className='p-6'>
-													<div className='flex items-center text-xs text-gray-500 mb-2'>
-														<span className='mr-3'>{post.authorName}</span>
-														<span className='mr-3'>
-															{getReadTime(getContent(post))}
-														</span>
-														<span>{formatDate(post.createdAt)}</span>
-													</div>
-
-													<h3 className='text-lg font-bold text-gray-900 mb-2 line-clamp-2'>
-														{getTitle(post)}
-													</h3>
-
-													<p className='text-gray-600 text-sm mb-4 line-clamp-3'>
-														{getExcerpt(getContent(post), 140)}
-													</p>
-
-													<Link
-														to={`/blog/${post._id}`}
-														className='inline-flex items-center text-teal-600 hover:text-teal-700 font-medium text-sm transition-colors duration-200 group'>
-														{t("readArticle")}
-														<ArrowRight className='w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform duration-200' />
-													</Link>
-												</div>
-											</article>
+												post={post}
+												variant="default"
+												getCategoryName={getCategoryName}
+												formatDate={formatDate}
+												index={index}
+											/>
 										))}
 									</div>
 
@@ -622,6 +527,7 @@ const Blog: React.FC = () => {
 					</div>
 				</div>
 			</section>
+			<Footer />
 		</div>
 	);
 };

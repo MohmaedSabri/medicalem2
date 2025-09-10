@@ -107,12 +107,13 @@ const PostCard: React.FC<PostCardProps> = ({
 	// Render different card variants
 	if (variant === "compact") {
 		return (
-			<motion.div
-				variants={cardVariants}
-				initial="hidden"
-				animate="visible"
-				className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 overflow-hidden hover:-translate-y-1"
-			>
+			<Link to={`/blog/${post._id}`} className="block">
+				<motion.div
+					variants={cardVariants}
+					initial="hidden"
+					animate="visible"
+					className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 overflow-hidden hover:-translate-y-1 cursor-pointer"
+				>
 				<div className="relative overflow-hidden h-32">
 					{post.postImage ? (
 						<img
@@ -152,6 +153,7 @@ const PostCard: React.FC<PostCardProps> = ({
 					</div>
 				</div>
 			</motion.div>
+			</Link>
 		);
 	}
 
@@ -292,14 +294,15 @@ const PostCard: React.FC<PostCardProps> = ({
 
 	// Default and featured variants
 	return (
-		<motion.div
-			variants={cardVariants}
-			initial="hidden"
-			animate="visible"
-			className={`group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden ${
-				variant === "featured" ? "ring-2 ring-yellow-200 shadow-lg" : ""
-			} hover:-translate-y-1`}
-		>
+		<Link to={`/blog/${post._id}`} className="block">
+			<motion.div
+				variants={cardVariants}
+				initial="hidden"
+				animate="visible"
+				className={`group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden cursor-pointer ${
+					variant === "featured" ? "shadow-lg" : ""
+				} hover:-translate-y-1`}
+			>
 			<div className="relative overflow-hidden h-48">
 				{post.postImage ? (
 					<img
@@ -369,19 +372,17 @@ const PostCard: React.FC<PostCardProps> = ({
 						</div>
 					</div>
 					
-					{/* Read More Link */}
+					{/* Read More Indicator */}
 					<div className="pt-2 border-t border-gray-100">
-						<Link
-							to={`/blog/${post._id}`}
-							className="inline-flex items-center space-x-2 text-teal-600 hover:text-teal-800 font-medium group-hover:translate-x-1 transition-transform"
-						>
+						<div className="inline-flex items-center space-x-2 text-teal-600 font-medium group-hover:translate-x-1 transition-transform">
 							<span>Read More</span>
 							<ArrowRight className="w-4 h-4" />
-						</Link>
+						</div>
 					</div>
 				</div>
 			</div>
 		</motion.div>
+		</Link>
 	);
 };
 
