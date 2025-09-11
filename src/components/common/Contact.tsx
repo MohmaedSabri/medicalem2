@@ -89,11 +89,17 @@ const Contact: React.FC = () => {
 				: "";
 			// EmailJS service configuration
 			const templateParams = {
-				from_name: form.name,
-				from_email: form.email,
-				from_phone: form.phone,
+				name: form.name,
+				email: form.email,
+				phone: form.phone,
 				message: `${form.message}${orderDetails}`,
 				to_name: "Dorar Team",
+				order_details: orderDetails,
+				quantity: quantity,
+				selected_category: selectedCategory,
+				selected_product: selectedProductId,
+				selected_product_name: selectedProduct?.name,
+				selected_product_category: selectedProduct?.subcategory,
 			};
 
 			// Send email using EmailJS
