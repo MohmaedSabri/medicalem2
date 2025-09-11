@@ -159,7 +159,7 @@ const WhyChooseUs: React.FC = () => {
 										viewport={{ once: true }}
 										transition={{ duration: 0.6, delay: 0.2 }}
 										className='mb-6'>
-										<p className='text-sm text-gray-500 font-medium tracking-wide uppercase mb-4 leading-[]'>
+										<p className={`text-sm text-gray-500 font-medium tracking-wide uppercase mb-4 ${isRTL ? 'text-right' : 'text-left'}`}>
 											{t('since2008')}
 										</p>
 										<h3 className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 ${isRTL ? 'text-right' : 'leading-tight'}`}>

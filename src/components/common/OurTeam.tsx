@@ -200,7 +200,6 @@ const OurTeam: React.FC = () => {
                 whileHover={{ scale: 1.05, backgroundColor: "#0f766e", color: "#ffffff" }}
                 transition={{ duration: 0.2 }}
               >
-                <Heart className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                 <span>{t('ourTeam')}</span>
               </motion.div>
             </motion.div>
@@ -295,7 +294,7 @@ const OurTeam: React.FC = () => {
                       {/* Location for Doctors */}
                       {isDoctor && memberLocation && (
                         <motion.div 
-                          className={`flex items-center justify-center mt-2 text-gray-500 text-xs ${isRTL ? 'space-x-reverse space-x-1' : 'space-x-1'}`}
+                          className={`flex items-center  mt-2 text-gray-500 text-xs ${isRTL ? 'space-x-reverse space-x-1' : 'space-x-1'}`}
                           whileHover={{ scale: 1.02 }}
                         >
                           <MapPin className={`w-3 h-3 ${isRTL ? 'ml-1' : 'mr-1'}`} />

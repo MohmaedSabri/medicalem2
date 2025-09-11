@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send, Clock, User, AtSign, Package, ChevronDown, Layers } from "lucide-react";
 import { ContactForm } from "../../types";
 import emailjs from "@emailjs/browser";
-import { EMAILJS_CONFIG, initEmailJS } from "../../config/emailjs";
+import { initEmailJS } from "../../config/emailjs";
 import { useSearchParams } from "react-router-dom";
 import { useProducts } from "../../contexts/ProductsContext";
 import { useTranslation } from "react-i18next";
@@ -82,30 +82,22 @@ const Contact: React.FC = () => {
 				selectedProductId !== undefined
 					? products.find((p) => p._id === selectedProductId)
 					: undefined;
-			const orderDetails = selectedProduct
-				? `\n\nOrder Details:\n- Product: ${getLocalizedText(selectedProduct.name)}\n- Category: ${getLocalizedText(typeof selectedProduct.subcategory === 'string' ? selectedProduct.subcategory : selectedProduct.subcategory?.name)}\n- Quantity: ${quantity}`
-				: selectedCategory !== "All"
-				? `\n\nOrder Details:\n- Category: ${selectedCategory}\n- Product: (not selected)\n- Quantity: ${quantity}`
-				: "";
-			// EmailJS service configuration
+			// Build template params as requested
 			const templateParams = {
 				name: form.name,
 				email: form.email,
 				phone: form.phone,
-				message: `${form.message}${orderDetails}`,
-				to_name: "Dorar Team",
-				order_details: orderDetails,
-				quantity: quantity,
-				selected_category: selectedCategory,
-				selected_product: selectedProductId,
-				selected_product_name: selectedProduct?.name,
-				selected_product_category: selectedProduct?.subcategory,
+				category: selectedCategory,
+				productName: selectedProduct ? getLocalizedText(selectedProduct.name) : "",
+				quantity: String(quantity),
+				message: form.message,
+				year: new Date().getFullYear(),
 			};
 
-			// Send email using EmailJS
+			// Send email using EmailJS with explicit IDs
 			await emailjs.send(
-				EMAILJS_CONFIG.SERVICE_ID,
-				EMAILJS_CONFIG.TEMPLATE_ID,
+				"service_ybah0n8",
+				"Oregon",
 				templateParams
 			);
 
@@ -172,14 +164,12 @@ const Contact: React.FC = () => {
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true }}
 					transition={{ duration: 0.6 }}
-					className='text-center mb-16'>
-					<div className="inline-flex items-center justify-center w-20 h-20 bg-teal-600 rounded-full mb-6 shadow-xl border-4 border-teal-100">
-						<Send className="h-10 w-10 text-white" />
-					</div>
-					<h2 className='text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4'>
+					className={`${isRTL ? 'text-right' : 'text-left'} mb-16`}>
+
+					<h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 ${isRTL ? 'text-right mr-0 ml-auto' : 'text-left ml-0 mr-auto'}`}>
 						{t('getInTouch')}
 					</h2>
-					<p className='text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed'>
+					<p className={`text-xl text-gray-600 max-w-3xl leading-relaxed ${isRTL ? 'text-right mr-0 ml-auto' : 'text-left ml-0 mr-auto'}`}>
 						{t('readyToUpgrade')}
 					</p>
 				</motion.div>
@@ -228,11 +218,11 @@ const Contact: React.FC = () => {
 						<div className="absolute bottom-0 left-0 w-24 h-24 bg-burgundy-100/50 rounded-full translate-y-12 -translate-x-12"></div>
 						
 						<div className="relative">
-							<div className="flex items-center space-x-3 mb-8">
+							<div className={`flex items-center ${isRTL ? 'gap-3' : 'gap-3'} mb-8`}>
 								<div className="w-12 h-12 bg-teal-600 rounded-xl flex items-center justify-center shadow-lg border-2 border-teal-100">
 									<Send className="h-6 w-6 text-white" />
 								</div>
-								<h3 className='text-2xl font-bold text-gray-900'>
+								<h3 className={`text-2xl font-bold text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
 									{t('sendUsMessage')}
 								</h3>
 							</div>
@@ -256,7 +246,7 @@ const Contact: React.FC = () => {
 							<form onSubmit={handleSubmit} className='space-y-6'>
 								<div className='grid sm:grid-cols-2 gap-6'>
 									<motion.div whileFocus={{ scale: 1.02 }}>
-										<label className={`block text-sm font-bold text-gray-800 mb-3 flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse space-x-2' : 'space-x-2'}`}>
+										<label className={`block text-sm font-bold text-gray-800 mb-3 flex items-center ${isRTL ? ' gap-2' : 'gap-2'}`}>
 											<User className='h-4 w-4 text-teal-600' />
 											<span>{t('fullName')} *</span>
 										</label>
@@ -274,7 +264,7 @@ const Contact: React.FC = () => {
 									</motion.div>
 
 									<motion.div whileFocus={{ scale: 1.02 }}>
-										<label className={`block text-sm font-bold text-gray-800 mb-3 flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse space-x-2' : 'space-x-2'}`}>
+										<label className={`block text-sm font-bold text-gray-800 mb-3 flex items-center ${isRTL ? ' gap-2' : 'gap-2'}`}>
 											<AtSign className='h-4 w-4 text-teal-600' />
 											<span>{t('emailAddress')} *</span>
 										</label>
@@ -293,10 +283,10 @@ const Contact: React.FC = () => {
 								</div>
 
 								<motion.div whileFocus={{ scale: 1.02 }}>
-																			<label className={`block text-sm font-bold text-gray-800 mb-3 flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse space-x-2' : 'space-x-2'}`}>
-											<Phone className='h-4 w-4 text-teal-600' />
-											<span>{t('phoneNumber')}</span>
-										</label>
+									<label className={`block text-sm font-bold text-gray-800 mb-3 flex items-center ${isRTL ? 'gap-2' : 'gap-2'}`}>
+										<Phone className='h-4 w-4 text-teal-600' />
+										<span>{t('phoneNumber')}</span>
+									</label>
 										<div className='relative group'>
 											<input
 												type='tel'
@@ -445,12 +435,12 @@ const Contact: React.FC = () => {
 									disabled={isSubmitting}
 									whileHover={{ scale: 1.02, y: -2 }}
 									whileTap={{ scale: 0.98 }}
-									className='w-full bg-teal-600 text-white py-5 rounded-2xl font-bold text-lg flex items-center justify-center space-x-3 hover:bg-teal-700 disabled:bg-gray-400 disabled:text-gray-600 disabled:cursor-not-allowed transition-all duration-300 relative overflow-hidden group shadow-lg hover:shadow-xl hover:shadow-teal-500/25 border-2 border-teal-100'>
+									className={`w-full bg-teal-600 text-white py-5 rounded-2xl font-bold text-lg flex items-center justify-center ${isRTL ? 'flex-row-reverse gap-3' : 'gap-3'} hover:bg-teal-700 disabled:bg-gray-400 disabled:text-gray-600 disabled:cursor-not-allowed transition-all duration-300 relative overflow-hidden group shadow-lg hover:shadow-xl hover:shadow-teal-500/25 border-2 border-teal-100`}>
 									{/* Shimmer effect */}
 									<div className='absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out bg-gradient-to-r from-transparent via-white/20 to-transparent'></div>
 
 									{/* Button content */}
-									<div className='relative z-10 flex items-center justify-center space-x-3'>
+									<div className={`relative z-10 flex items-center justify-center ${isRTL ? 'flex-row-reverse gap-3' : 'gap-3'}`}>
 										{isSubmitting ? (
 											<>
 												<div className='animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent'></div>
@@ -491,7 +481,7 @@ const Contact: React.FC = () => {
 						
 						<div className="relative">
 							{/* Location Header */}
-							<div className={`flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse space-x-3' : 'space-x-3'} mb-6`}>
+							<div className={`flex items-center ${isRTL ? ' space-x-reverse space-x-3' : 'space-x-3'} mb-6`}>
 								<div className='w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center'>
 									<MapPin className='h-5 w-5 text-white' />
 								</div>

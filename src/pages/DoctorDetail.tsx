@@ -268,26 +268,19 @@ const DoctorDetail: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Social Media */}
+                {/* Social Media - Single button to first link */}
                 {doctorData?.socialMedia && doctorData.socialMedia.length > 0 && (
                   <div className="mt-6">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                      Contact Me
-                    </h4>
-                    <div className="space-y-2">
-                      {doctorData.socialMedia.map((social: string, index: number) => (
-                        <a
-                          key={index}
-                          href={social}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`flex items-center ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'} text-teal-600 hover:text-teal-700 transition-colors duration-200`}
-                        >
-                          <ExternalLink className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
-                          <span className="text-sm">{social}</span>
-                        </a>
-                      ))}
-                    </div>
+                    <a
+                      href={doctorData.socialMedia[0]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center bg-teal-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors duration-200 ${isRTL ? 'flex-row-reverse gap-3' : 'gap-2'}`}
+                      aria-label={currentLanguage === 'ar' ? 'تواصل معي' : 'Contact Me'}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      <span>{currentLanguage === 'ar' ? 'تواصل معي' : 'Contact Me'}</span>
+                    </a>
                   </div>
                 )}
               </motion.div>

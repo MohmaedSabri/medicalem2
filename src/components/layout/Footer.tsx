@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import {
 	Activity,
 	Facebook,
-	Twitter,
 	Linkedin,
 	Instagram,
 	Mail,
@@ -46,7 +45,6 @@ const Footer: React.FC = () => {
 
 	const socialLinks = [
 		{ icon: Facebook, href: Contactinfo.facebook, label: "Facebook" },
-		{ icon: Twitter, href: Contactinfo.twitter, label: "Twitter" },
 		{ icon: Linkedin, href: Contactinfo.linkedin, label: "LinkedIn" },
 		{ icon: Instagram, href: Contactinfo.instagram, label: "Instagram" },
 	];

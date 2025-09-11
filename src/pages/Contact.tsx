@@ -162,16 +162,13 @@ const Contact: React.FC = () => {
 					<div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-teal-50/50 rounded-full blur-3xl"></div>
 				</div>
 				
-				<div className='container mx-auto px-4 sm:px-6 lg:px-8 relative z-10'>
+				<div className='container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mt-4'>
 					<motion.div
 						initial={{ opacity: 0, y: 30 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true }}
 						transition={{ duration: 0.6 }}
 						className='text-center mb-16'>
-						<div className="inline-flex items-center justify-center w-20 h-20 bg-teal-600 rounded-full mb-6 shadow-xl border-4 border-teal-100">
-							<Send className="h-10 w-10 text-white" />
-						</div>
 						<h2 className='text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4'>
 							{t('getInTouch')}
 						</h2>

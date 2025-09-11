@@ -149,7 +149,7 @@ const PrivacyPolicy: React.FC = () => {
 							animate={{ opacity: 1, scale: 1 }}
 							transition={{ duration: 0.6, delay: 0.6 }}
 							className='mt-12 inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 text-teal-100'>
-							<Clock className='h-4 w-4 mr-2' />
+							
 							<span className='text-sm font-medium'>
 								{t("lastUpdated")}: {t("lastUpdatedDate")}
 							</span>
@@ -182,8 +182,6 @@ const PrivacyPolicy: React.FC = () => {
 							transition={{ duration: 0.8 }}
 							className='mb-20'>
 							<div className='bg-white/80 backdrop-blur-sm rounded-3xl border border-white/50 p-10 lg:p-16 relative overflow-hidden'>
-								<div className='absolute top-0 left-0 w-full h-2 bg-teal-600'></div>
-
 								<div className='relative z-10'>
 									<h2 className='text-4xl md:text-5xl font-bold text-slate-900 mb-8 leading-tight'>
 										{t("introduction")}
@@ -219,10 +217,7 @@ const PrivacyPolicy: React.FC = () => {
 									className='group relative'>
 									<div
 										className={`bg-white/90 backdrop-blur-sm rounded-3xl border border-white/50 p-8 lg:p-12 relative overflow-hidden transition-all duration-500 ${section.bgColor}/20 hover:bg-opacity-100`}>
-										{/* Background Pattern */}
-										<div className='absolute top-0 right-0 w-32 h-32 opacity-5 group-hover:opacity-10 transition-opacity duration-500'>
-											<section.icon className='w-full h-full text-slate-400' />
-										</div>
+							
 
 										<div
 											className={`flex ${

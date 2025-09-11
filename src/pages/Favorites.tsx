@@ -8,10 +8,12 @@ import { useProducts } from "../hooks/useProducts";
 import { getFavorites, toggleFavorite } from "../utils/favorites";
 import { useLanguage } from "../contexts/LanguageContext";
 import Footer from "../components/layout/Footer";
+import { useTranslation } from "react-i18next";
 
 const Favorites: React.FC = () => {
 	const navigate = useNavigate();
 	const { currentLanguage } = useLanguage();
+	const { t } = useTranslation();
 	const [favoriteIds, setFavoriteIds] = useState<string[]>(getFavorites());
 
 	// Use the same hook as ProductsPage for consistency
@@ -107,15 +109,15 @@ const Favorites: React.FC = () => {
 							<Heart className='w-16 h-16 mx-auto mb-4' />
 						</div>
 						<h3 className='text-2xl font-semibold text-gray-900 mb-2'>
-							Error loading products
+							{t('errorLoadingFavoritesTitle')}
 						</h3>
 						<p className='text-gray-600 mb-6'>
-							Failed to load your favorite products. Please try again.
+							{t('errorLoadingFavoritesDescription')}
 						</p>
 						<button
 							onClick={() => window.location.reload()}
 							className='bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors'>
-							Retry
+							{t('retry')}
 						</button>
 					</div>
 				</div>
@@ -127,10 +129,10 @@ const Favorites: React.FC = () => {
 	if (loading) {
 		return (
 			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24'>
-				<div className='container mx-auto px-4 sm:px-6 lg:px-8 py-12'>
-					<div className='text-center py-20'>
-						<div className='animate-spin rounded-full h-16 w-16 border-b-2 border-teal-600 mx-auto mb-4'></div>
-						<p className='text-gray-600'>Loading favorites...</p>
+				<div className='flex items-center justify-center w-full h-[calc(100vh-6rem)] px-4 sm:px-6 lg:px-8'>
+					<div className='text-center'>
+						<div className='animate-spin rounded-full h-16 w-16 border-4 border-teal-200 border-t-teal-600 mx-auto mb-4'></div>
+						<p className='text-gray-600'>{t('loadingFavorites')}</p>
 					</div>
 				</div>
 			</div>
@@ -147,13 +149,13 @@ const Favorites: React.FC = () => {
 							<Zap className='w-8 h-8 text-red-600' />
 						</div>
 						<h3 className='text-xl font-semibold text-gray-900 mb-2'>
-							Error Loading Products
+							{t('errorLoadingProducts')}
 						</h3>
 						<p className='text-gray-600 mb-4'>{error}</p>
 						<button
 							onClick={() => window.location.reload()}
 							className='bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors'>
-							Retry
+							{t('retry')}
 						</button>
 					</div>
 				</div>
@@ -171,14 +173,12 @@ const Favorites: React.FC = () => {
 					transition={{ duration: 0.6 }}
 					className='text-center mb-12'>
 					<div className='inline-flex items-center space-x-3 bg-red-50 px-6 py-3 rounded-full border border-red-200 mb-6'>
-						<Heart className='w-8 h-8 text-red-500' />
 						<h1 className='text-4xl sm:text-5xl font-bold text-gray-900'>
-							My Favorites
+							{t('favoritesTitle')}
 						</h1>
 					</div>
 					<p className='text-xl text-gray-600 max-w-3xl mx-auto'>
-						Your saved medical equipment favorites for easy access and
-						comparison.
+						{t('favoritesSubtitle')}
 					</p>
 				</motion.div>
 
@@ -187,17 +187,17 @@ const Favorites: React.FC = () => {
 					<div className='text-center py-20'>
 						<Heart className='w-12 h-12 text-teal-600 mx-auto mb-4' />
 						<h3 className='text-2xl font-semibold text-gray-900 mb-2'>
-							No favorites yet
+							{t('noFavoritesYet')}
 						</h3>
 						<p className='text-gray-600 mb-6'>
-							Browse products and tap the heart to save them here.
+							{t('emptyFavoritesHint')}
 						</p>
 						<motion.button
 							whileHover={{ scale: 1.05 }}
 							whileTap={{ scale: 0.95 }}
 							onClick={() => navigate("/products")}
 							className='inline-flex items-center space-x-2 bg-teal-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-teal-700 transition-colors'>
-							<span>Browse Products</span>
+							<span>{t('browseProducts')}</span>
 							<ArrowRight className='w-5 h-5' />
 						</motion.button>
 					</div>
@@ -249,7 +249,7 @@ const Favorites: React.FC = () => {
 												whileTap={{ scale: 0.97 }}
 												onClick={() => navigate(`/product/${p._id}`)}
 												className='inline-flex items-center space-x-2 bg-teal-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors'>
-												<span>Details</span>
+												<span>{t('details')}</span>
 												<ArrowRight className='w-4 h-4' />
 											</motion.button>
 										</div>

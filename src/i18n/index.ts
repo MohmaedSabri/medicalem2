@@ -33,6 +33,19 @@ const enTranslations = {
 		contactSales: "Contact Sales",
 		professionalMedicalEquipment: "Professional Medical Equipment",
 
+		// Favorites Page
+		favoritesTitle: "My Favorites",
+		favoritesSubtitle:
+			"Your saved medical equipment favorites for easy access and comparison.",
+		loadingFavorites: "Loading favorites...",
+		errorLoadingFavoritesTitle: "Error loading products",
+		errorLoadingFavoritesDescription:
+			"Failed to load your favorite products. Please try again.",
+		noFavoritesYet: "No favorites yet",
+		emptyFavoritesHint:
+			"Browse products and tap the heart to save them here.",
+		browseProducts: "Browse Products",
+
 		// Product related
 		uncategorized: "Uncategorized",
 		more: "more",
@@ -508,6 +521,19 @@ const arTranslations = {
 		addOrder: "إضافة طلب",
 		contactSales: "تواصل مع المبيعات",
 		professionalMedicalEquipment: "معدات طبية احترافية",
+
+		// Favorites Page
+		favoritesTitle: "المفضلة",
+		favoritesSubtitle:
+			"قائمة معداتك الطبية المحفوظة للوصول السريع والمقارنة.",
+		loadingFavorites: "جاري تحميل المفضلة...",
+		errorLoadingFavoritesTitle: "خطأ في تحميل المنتجات",
+		errorLoadingFavoritesDescription:
+			"فشل في تحميل المنتجات المفضلة. يرجى المحاولة مرة أخرى.",
+		noFavoritesYet: "لا توجد مفضلات بعد",
+		emptyFavoritesHint:
+			"تصفح المنتجات واضغط على أيقونة القلب لحفظها هنا.",
+		browseProducts: "تصفح المنتجات",
 
 		// Product related
 		uncategorized: "غير مصنف",
