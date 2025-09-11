@@ -4,11 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTopRatedDoctors } from '../../hooks/useDoctors';
 import { 
-  Heart,
-  Shield,
-  Zap,
-  Quote,
-  Star,
   MapPin,
   User
 } from 'lucide-react';
@@ -26,10 +21,11 @@ const OurTeam: React.FC = () => {
   const { currentLanguage, isRTL } = useLanguage();
   
   // Get top 3 doctors from API
-  const { data: doctors = [], isLoading } = useTopRatedDoctors(3, currentLanguage);
+  const { data: doctorsData } = useTopRatedDoctors(3, currentLanguage);
 
+  type LocalizedValue = string | { en?: string; ar?: string };
   // Helper function to get localized text
-  const getLocalizedText = (value: any): string => {
+  const getLocalizedText = (value: LocalizedValue | undefined | null): string => {
     if (!value) return "";
     if (typeof value === "string") return value;
     if (typeof value === "object") {
@@ -60,8 +56,18 @@ const OurTeam: React.FC = () => {
     }
   ];
 
+  type DoctorLite = {
+    _id: string;
+    name: LocalizedValue;
+    title: LocalizedValue;
+    image: string;
+    rating?: number;
+    location?: LocalizedValue;
+  };
+  const doctors = (doctorsData ?? []) as DoctorLite[];
   // Use doctors from API if available, otherwise use fallback - limit to first 3
-  const teamMembers = doctors.length > 0 ? doctors.slice(0, 3) : fallbackTeamMembers.slice(0, 3);
+  const teamMembers: Array<TeamMember | DoctorLite> =
+    doctors.length > 0 ? doctors.slice(0, 3) : fallbackTeamMembers.slice(0, 3);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -71,7 +77,7 @@ const OurTeam: React.FC = () => {
         staggerChildren: 0.15,
         delayChildren: 0.2,
         duration: 0.6,
-        ease: "easeOut"
+        ease: [0.17, 0.55, 0.55, 1]
       }
     },
     exit: {
@@ -82,7 +88,7 @@ const OurTeam: React.FC = () => {
         duration: 0.4
       }
     }
-  };
+  } as const;
 
   const itemVariants = {
     hidden: { 
@@ -108,7 +114,7 @@ const OurTeam: React.FC = () => {
         ease: "easeIn"
       }
     }
-  };
+  } as const;
 
   const cardVariants = {
     hidden: { 
@@ -125,7 +131,7 @@ const OurTeam: React.FC = () => {
       transition: {
         duration: 0.7,
         ease: [0.25, 0.46, 0.45, 0.94],
-        type: "spring",
+        type: 'spring',
         stiffness: 100,
         damping: 15
       }
@@ -152,7 +158,7 @@ const OurTeam: React.FC = () => {
         damping: 20
       }
     }
-  };
+  } as const;
 
   const titleVariants = {
     hidden: { 
@@ -179,7 +185,7 @@ const OurTeam: React.FC = () => {
         ease: "easeIn"
       }
     }
-  };
+  } as const;
 
   return (
     <section className="py-16 lg:py-24 bg-gray-50 relative overflow-hidden">
@@ -231,13 +237,14 @@ const OurTeam: React.FC = () => {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
           >
             {/* Team Members */}
-            {teamMembers.map((member, index) => {
-              const isDoctor = 'rating' in member; // Check if it's a doctor object
+            {teamMembers.map((member: TeamMember | DoctorLite, index: number) => {
+              const isDoctor = '_id' in member; // DoctorLite has _id
               const memberId = isDoctor ? member._id : member.id;
               const memberName = getLocalizedText(member.name);
-              const memberPosition = isDoctor ? getLocalizedText(member.title) : getLocalizedText(member.position);
+              const memberPosition = isDoctor
+                ? getLocalizedText(member.title)
+                : getLocalizedText(member.position);
               const memberImage = member.image;
-              const memberRating = isDoctor ? member.rating : null;
               const memberLocation = isDoctor ? getLocalizedText(member.location) : null;
 
               return (

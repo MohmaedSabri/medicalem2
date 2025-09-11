@@ -169,22 +169,14 @@ const ProductDetail: React.FC = () => {
 		loadProduct();
 	}, [id, currentLanguage]);
 
-	// Loading state
+	// Loading state (reuse ProductsPage loading UI)
 	if (loading) {
 		return (
-			<div className='min-h-screen bg-gradient-to-br from-gray-50 to-white'>
-				<div className='container mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-24'>
-					<div className='flex items-center justify-center min-h-[60vh]'>
-						<motion.div
-							initial={{ opacity: 0, y: 30 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.6 }}
-							className='text-center'>
-							<div className='animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-4 border-teal-200 border-t-teal-600 mx-auto mb-4'></div>
-							<p className='text-gray-600 text-sm sm:text-base'>
-								Loading product...
-							</p>
-						</motion.div>
+			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24'>
+				<div className='container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12'>
+					<div className='text-center py-16 sm:py-20'>
+						<div className='animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-teal-600 mx-auto mb-4'></div>
+	
 					</div>
 				</div>
 			</div>
