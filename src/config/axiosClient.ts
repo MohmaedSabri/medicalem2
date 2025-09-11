@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // Create axios instance
 const axiosClient = axios.create({
-  baseURL: 'http://zaher-backend.vercel.app/api',
+  baseURL: 'https://zaher-backend.vercel.app/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Phone, Facebook, Twitter, Instagram, Linkedin, MessageCircle, MapPin, MessageSquare } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, MapPin, MessageSquare } from 'lucide-react';
 import Contactinfo from '../../constant/Contactinfo';
 
 interface FloatingSocialSidebarProps {
@@ -9,15 +9,11 @@ interface FloatingSocialSidebarProps {
 
 const FloatingSocialSidebar: React.FC<FloatingSocialSidebarProps> = ({ isVisible }) => {
   const socialLinks = [
-    { icon: Mail, href: `mailto:${Contactinfo.email}`, label: 'Email', color: 'hover:bg-red-500' },
-    { icon: Phone, href: `tel:${Contactinfo.phone}`, label: 'Phone', color: 'hover:bg-green-500' },
     { icon: MessageSquare, href: Contactinfo.whatsapp, label: 'WhatsApp', color: 'hover:bg-green-600' },
     { icon: Facebook, href: Contactinfo.facebook, label: 'Facebook', color: 'hover:bg-blue-600' },
     { icon: Instagram, href: Contactinfo.instagram, label: 'Instagram', color: 'hover:bg-pink-500' },
-    { icon: Twitter, href: Contactinfo.twitter, label: 'Twitter', color: 'hover:bg-sky-500' },
     { icon: Linkedin, href: Contactinfo.linkedin, label: 'LinkedIn', color: 'hover:bg-blue-700' },
     { icon: MapPin, href: Contactinfo.map, label: 'Location', color: 'hover:bg-purple-500' },
-    { icon: MessageCircle, href: '/contact', label: 'Contact Form', color: 'hover:bg-teal-500' },
   ];
 
   return (

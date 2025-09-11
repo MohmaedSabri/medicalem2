@@ -204,7 +204,7 @@ const Ceo: React.FC = () => {
 						<motion.h2
 							className='text-[#00796a] font-semibold text-xl sm:text-2xl mb-2'
 							variants={item}>
-							{Contactinfo.ceoname}
+							{t("ceoName")}
 						</motion.h2>
 						<motion.p className='text-slate-600 mb-4' variants={item}>
 							{t("ceoDescription1")}
