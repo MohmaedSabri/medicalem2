@@ -126,7 +126,7 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 								: 'space-x-1 sm:space-x-2'
 						}`}
 					>
-						{/* Contact Icons - Only visible on XL screens and bigger */}
+						{/* Contact Icons - Only visible on XL screens (1100px+) and bigger */}
 						<ContactIcons
 							isScrolled={state.isScrolled}
 							isMobile={state.isMobile}
@@ -134,10 +134,10 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 							currentLanguage={currentLanguage}
 						/>
 
-						{/* Mobile Menu Button */}
+						{/* Mobile Menu Button - Show when screen smaller than 1100px */}
 						<motion.button
 							className={`
-								lg:hidden flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300
+								xl:hidden flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300
 								${
 									state.isScrolled || state.isMobile
 										? 'bg-white/90 backdrop-blur-md border border-white/30 shadow-lg'

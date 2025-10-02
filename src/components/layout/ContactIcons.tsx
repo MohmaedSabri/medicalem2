@@ -33,7 +33,7 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
   };
 
   const iconBaseClasses = `
-    relative flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-full transition-all duration-300 group
+    relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full transition-all duration-300 group
     ${
       isScrolled || isMobile
         ? 'bg-white/95 backdrop-blur-lg border border-white/40 shadow-lg'
@@ -44,7 +44,7 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
 
   return (
     <div className={`hidden xl:flex items-center ${
-      isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'
+      isRTL ? 'space-x-reverse space-x-1 sm:space-x-2' : 'space-x-1 sm:space-x-2'
     }`}>
       {/* Cart Icon */}
       <motion.div
@@ -62,10 +62,10 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
         </Link>
       </motion.div>
 
-      {/* Phone Icon */}
+      {/* Phone Icon - Only visible on XL screens */}
       <motion.a
         href={`tel:${Contactinfo.phone}`}
-        className={`${iconBaseClasses} hover:text-emerald-600`}
+        className={`${iconBaseClasses} hover:text-emerald-600 hidden xl:flex`}
         variants={contactFloatingVariants}
         animate="animate"
         whileHover={{ scale: 1.1, rotate: 5 }}
@@ -93,12 +93,12 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
         </Link>
       </motion.div>
 
-      {/* Add to Cart Button */}
+      {/* Add to Cart Button - Only visible on XL screens */}
       <motion.button
         onClick={() => navigate('/cart')}
-        className="group relative inline-flex hidden xl:flex items-center px-3 py-3 rounded-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white 
+        className="group relative inline-flex items-center px-2 py-2 sm:px-3 sm:py-3 rounded-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white 
         hover:from-teal-700 hover:to-emerald-700 transition-all duration-500 ease-out
-         shadow-lg hover:shadow-2xl hover:shadow-teal-500/50 overflow-hidden"
+         shadow-lg hover:shadow-2xl hover:shadow-teal-500/50 overflow-hidden hidden xl:flex"
         whileHover={{ scale: 1.05, y: -3 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -115,8 +115,8 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
 
         {/* Button content */}
         <div className={`relative z-10 flex items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
-          <ShoppingCart className={`h-3 w-3 lg:h-4 mx-2 lg:w-4 group-hover:scale-110 transition-all duration-300`} />
-          <span className="text-xs lg:text-sm font-medium whitespace-nowrap group-hover:drop-shadow-lg transition-all duration-300">
+          <ShoppingCart className={`h-3 w-3 sm:h-4 sm:w-4 mx-1 sm:mx-2 group-hover:scale-110 transition-all duration-300`} />
+          <span className="text-xs sm:text-sm font-medium whitespace-nowrap group-hover:drop-shadow-lg transition-all duration-300 hidden sm:block">
             {currentLanguage === 'ar' ? 'السلة' : 'View Cart'}
           </span>
         </div>

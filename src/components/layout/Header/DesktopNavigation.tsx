@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import {
   Home,
   BookOpen,
@@ -8,8 +7,8 @@ import {
   Phone,
   Zap,
   User,
+  ShoppingCart,
 } from 'lucide-react';
-import { useLanguage } from '../../../contexts/LanguageContext';
 import ProductsDropdown from './ProductsDropdown';
 import LanguageDropdown from './LanguageDropdown';
 
@@ -78,13 +77,18 @@ const DesktopNavigation: React.FC<DesktopNavigationProps> = ({
       label: currentLanguage === 'ar' ? 'اتصل بنا' : 'Contact',
       icon: Phone,
     },
+    {
+      path: '/cart',
+      label: currentLanguage === 'ar' ? 'السلة' : 'Cart',
+      icon: ShoppingCart,
+    },
   ];
 
   return (
-    <nav className="hidden lg:flex items-center justify-end">
+    <nav className="hidden xl:flex items-center justify-end">
       <div
         className={`
-          flex items-center space-x-1 xl:space-x-2 rounded-full px-2 py-2 border transition-all duration-300
+          flex items-center space-x-1 sm:space-x-2 xl:space-x-2 rounded-full px-1 py-1 sm:px-2 sm:py-2 border transition-all duration-300
           bg-white/80 backdrop-blur-md border-white/20 shadow-xl
         `}
       >
@@ -98,7 +102,7 @@ const DesktopNavigation: React.FC<DesktopNavigationProps> = ({
               <Link
                 to={item.path}
                 className={`
-                  relative flex items-center px-3 xl:px-2 py-2 xl:py-3 rounded-full transition-all duration-200
+                  relative flex items-center px-2 sm:px-3 xl:px-2 py-1 sm:py-2 xl:py-3 rounded-full transition-all duration-200
                   ${
                     isActive
                       ? 'bg-teal-600 text-white shadow-md'
@@ -107,9 +111,9 @@ const DesktopNavigation: React.FC<DesktopNavigationProps> = ({
                 `}
               >
                 <IconComponent
-                  className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`}
+                  className={`h-3 w-3 sm:h-4 sm:w-4 ${isRTL ? 'ml-1 sm:ml-2' : 'mr-1 sm:mr-2'}`}
                 />
-                <span className="text-sm xl:text-base font-medium whitespace-nowrap">
+                <span className="text-xs sm:text-sm xl:text-base font-medium whitespace-nowrap hidden sm:block">
                   {item.label}
                 </span>
                 {isActive && (

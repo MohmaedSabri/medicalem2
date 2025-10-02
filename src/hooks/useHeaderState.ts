@@ -21,7 +21,7 @@ export const useHeaderState = () => {
   // Mobile detection
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 1100);
     };
 
     checkMobile();
