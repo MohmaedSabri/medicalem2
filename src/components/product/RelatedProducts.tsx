@@ -82,8 +82,13 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProducts }) =>
                 {getLocalizedText(relatedProduct.name)}
               </h3>
               <div className='flex items-center justify-between'>
-                <span className='text-teal-600 font-bold text-sm sm:text-base'>
-                  ${relatedProduct.price.toLocaleString()}
+                <span className='text-teal-600 font-bold text-sm sm:text-base inline-flex items-center gap-1.5'>
+                  {document?.documentElement?.dir === 'rtl' ? (
+                    <span>د.ا</span>
+                  ) : (
+                    <img src={'/Dirham%20Currency%20Symbol%20-%20Black.svg'} alt='AED' className='h-4 w-4' />
+                  )}
+                  <span>{relatedProduct.price.toLocaleString()}</span>
                 </span>
                 <div className='flex items-center space-x-1'>
                   <Star className='w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 fill-current' />

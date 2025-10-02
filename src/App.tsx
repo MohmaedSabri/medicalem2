@@ -32,6 +32,8 @@ const Blog = lazy(() => import("./pages/Blog"));
 const BlogDetail = lazy(() => import("./components/pages/Blog/BlogDetail"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Favorites = lazy(() => import("./pages/Favorites"));
+const Cart = lazy(() => import("./pages/Cart"));
+const Checkout = lazy(() => import("./pages/Checkout"));
 const ProductsPage = lazy(() => import("./components/pages/ProductsPage"));
 const ProductDetail = lazy(() => import("./components/pages/ProductDetail"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
@@ -106,7 +108,7 @@ function App() {
 									/>
 									{/* Login Route - Completely Misleading */}
 									<Route
-										path='/x7k9m2p4q8w1n5r3t6y0u9i8o7p6a5s4d3f2g1h0j9k8l7z6x5c4v3b2n1m0'
+										path='/dlogin'
 										element={
 											<AnimatePresence mode='wait'>
 												<motion.div
@@ -200,6 +202,48 @@ function App() {
 													<Header />
 													<Suspense fallback={<LoadingSpinner />}>
 														<Favorites />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
+
+									{/* Cart Route */}
+									<Route
+										path='/cart'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='cart'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<Cart />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
+
+									{/* Checkout Route */}
+									<Route
+										path='/checkout'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='checkout'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<Checkout />
 													</Suspense>
 												</motion.div>
 											</AnimatePresence>

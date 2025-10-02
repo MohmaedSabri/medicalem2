@@ -33,7 +33,7 @@ const HeroImages: React.FC<HeroImagesProps> = ({
 	};
 
 	return (
-		<div className='relative w-full flex justify-center items-center self-center order-1 md:order-2 lg:order-2 mb-6 md:mb-8 lg:mb-0 md:col-span-1 lg:col-span-1 max-w-full overflow-hidden'>
+		<div className='relative w-full flex justify-center items-center self-center mb-6 md:mb-8 lg:mb-0 max-w-full overflow-hidden'>
 			{/* Main Image Container */}
 			<div className='relative w-full max-w-[22rem] h-[22rem] sm:max-w-[26rem] sm:h-[26rem] md:max-w-[28rem] md:h-[28rem] lg:max-w-[32rem] lg:h-[32rem] mx-auto'>
 				{/* Rotating Hero Images */}
@@ -45,7 +45,7 @@ const HeroImages: React.FC<HeroImagesProps> = ({
 						<motion.div
 							key={`hero-image-${i}`}
 							className={`
-								absolute  rounded-full 
+								absolute rounded-[16px] md:rounded-[20px] lg:rounded-[24px]
 								backdrop-blur-md 
 								flex items-center justify-center
 								overflow-hidden cursor-pointer
@@ -55,7 +55,7 @@ const HeroImages: React.FC<HeroImagesProps> = ({
 							`}
 							style={{
 								width: slot === "center" ? "90%" : "64%",
-								height: slot === "center" ? "90%" : "64%",
+								height: slot === "center" ? "100%" : "64%",
 							}}
 							animate={slotStyles[slot]}
 							transition={{ 
@@ -74,7 +74,7 @@ const HeroImages: React.FC<HeroImagesProps> = ({
 							<LazyImage
 								src={src}
 								alt={`Hero medical equipment ${i + 1}`}
-								className='w-full h-full object-cover rounded-full'
+								className='w-full h-full object-cover rounded-[16px] md:rounded-[20px] lg:rounded-[24px]'
 								threshold={0.1}
 								rootMargin="100px"
 							/>
@@ -82,7 +82,7 @@ const HeroImages: React.FC<HeroImagesProps> = ({
 							{/* Active Image Indicator */}
 							{isActive && (
 								<motion.div
-									className="absolute inset-0 rounded-full border-2 border-white/20"
+									className="absolute inset-0 border-2 border-white/20 rounded-[16px] md:rounded-[20px] lg:rounded-[24px]"
 									initial={{ opacity: 0, scale: 0.8 }}
 									animate={{ opacity: 1, scale: 1 }}
 									transition={{ duration: 0.3 }}

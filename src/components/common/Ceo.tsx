@@ -261,7 +261,7 @@ const Ceo: React.FC = () => {
 								</div>
 
 								<img
-									src={Contactinfo.ceophoto}
+									src={Contactinfo.ceosmallphoto}
 									alt={`${Contactinfo.ceoname} - Deputy CEO`}
 									className='relative w-16 h-16 rounded-full object-cover border-2 border-teal-100/60 z-10'
 									style={{

@@ -3,12 +3,14 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Search, Filter, ArrowRight, Heart, Grid3X3, List } from "lucide-react";
+import { Search, Filter, ArrowRight, Heart, Grid3X3, List, ShoppingCart } from "lucide-react";
 import { Product } from "../../types";
 import { useProducts } from "../../hooks/useProducts";
 import { useCategories } from "../../contexts/CategoriesContext";
 import { useSubCategories } from "../../hooks/useSubCategories";
 import { toggleFavorite, getFavorites } from "../../utils/favorites";
+import { addToCart, isInCart } from "../../utils/cart";
+import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../../contexts/LanguageContext";
 import Footer from "../layout/Footer";
@@ -50,6 +52,7 @@ const ProductsPage: React.FC = () => {
 		const currentFavorites = getFavorites();
 		setFavorites(currentFavorites);
 	}, []);
+
 
 	// Handle URL parameters for category and subcategory filtering
 	useEffect(() => {
@@ -261,13 +264,24 @@ const ProductsPage: React.FC = () => {
 		setFavorites(newFavorites);
 	};
 
-	const formatPrice = (price: number) => {
-		return new Intl.NumberFormat("en-US", {
-			style: "currency",
-			currency: "USD",
-			minimumFractionDigits: 0,
-			maximumFractionDigits: 0,
-		}).format(price);
+	const handleAddToCart = (id: string) => {
+		addToCart(id, 1);
+		
+		// Find the product name for the toast
+		const product = products.find(p => p._id === id);
+		if (product) {
+			toast.success(
+				`${product.name} ${t('addedToCartMessage')}`,
+				{
+					duration: 3000,
+					icon: '🛒',
+					style: {
+						background: '#10b981',
+						color: '#fff',
+					},
+				}
+			);
+		}
 	};
 
 	const ProductCard = ({
@@ -340,6 +354,25 @@ const ProductsPage: React.FC = () => {
 							<Heart
 								className={`h-3 w-3 sm:h-4 sm:w-4 ${
 									favorites.includes(product._id) ? "fill-red-500" : ""
+								}`}
+							/>
+						</motion.button>
+
+						<motion.button
+							whileHover={{ scale: 1.1, rotate: -5 }}
+							whileTap={{ scale: 0.9 }}
+							onClick={(e) => {
+								e.stopPropagation();
+								handleAddToCart(product._id);
+							}}
+							className={`bg-white/95 backdrop-blur-sm rounded-full p-2 sm:p-2.5 transition-all duration-300 shadow-lg hover:shadow-xl ${
+								isInCart(product._id)
+									? "text-teal-600 hover:bg-teal-50"
+									: "text-gray-600 hover:bg-teal-50 hover:text-teal-600"
+							}`}>
+							<ShoppingCart
+								className={`h-3 w-3 sm:h-4 sm:w-4 ${
+									isInCart(product._id) ? "fill-teal-600" : ""
 								}`}
 							/>
 						</motion.button>
@@ -478,7 +511,14 @@ const ProductsPage: React.FC = () => {
 						{/* Price and Details Button Row */}
 						<div className='flex items-center justify-between mb-2 sm:mb-3'>
 							<div className='text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent'>
-								{formatPrice(product.price)}
+								<span className='inline-flex items-center gap-2'>
+									{currentLanguage === 'ar' ? (
+										<span>د.ا</span>
+									) : (
+										<img src={'/Dirham%20Currency%20Symbol%20-%20Black.svg'} alt='AED' className='h-4 w-4' />
+									)}
+									<span>{product.price.toLocaleString()}</span>
+								</span>
 							</div>
 							<motion.button
 								whileHover={{ scale: 1.05 }}
@@ -490,34 +530,24 @@ const ProductsPage: React.FC = () => {
 							</motion.button>
 						</div>
 
-						{/* Add Order Button - Full Width with Enhanced Hover Effect */}
+						{/* Add to Cart Button - Full Width with Enhanced Hover Effect */}
 						<motion.button
 							whileHover={{ scale: 1.05, y: -2 }}
 							whileTap={{ scale: 0.98 }}
 							onClick={(e) => {
 								e.stopPropagation();
-								navigate(`/contact?productId=${product._id}`);
+								handleAddToCart(product._id);
 							}}
-							className='group relative w-full bg-gray-100 text-gray-700 px-3 py-2.5 sm:px-4 sm:py-3 rounded-lg hover:bg-teal-600 hover:text-white transition-all duration-500 flex items-center justify-center space-x-2 sm:space-x-3 font-semibold border border-gray-200 hover:border-teal-600 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-teal-500/25 holographic-card'>
+							className={`group relative w-full px-3 py-2.5 sm:px-4 sm:py-3 rounded-lg transition-all duration-500 flex items-center justify-center space-x-2 sm:space-x-3 font-semibold border overflow-hidden shadow-sm hover:shadow-xl ${
+								isInCart(product._id)
+									? "bg-green-100 text-green-700 border-green-300 hover:bg-green-600 hover:text-white hover:border-green-600 hover:shadow-green-500/25"
+									: "bg-gray-100 text-gray-700 border-gray-200 hover:bg-teal-600 hover:text-white hover:border-teal-600 hover:shadow-teal-500/25"
+							}`}>
 							{/* Button content */}
 							<div className='relative z-10 flex items-center justify-center space-x-2 sm:space-x-3 w-full'>
-								<svg
-									xmlns='http://www.w3.org/2000/svg'
-									width='18'
-									height='18'
-									viewBox='0 0 24 24'
-									fill='none'
-									stroke='currentColor'
-									strokeWidth='2'
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									className='h-3 w-3 sm:h-4 sm:w-4 transition-all duration-500 group-hover:scale-125 group-hover:rotate-12 flex-shrink-0'>
-									<circle cx='8' cy='21' r='1'></circle>
-									<circle cx='19' cy='21' r='1'></circle>
-									<path d='M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12'></path>
-								</svg>
+								<ShoppingCart className='h-3 w-3 sm:h-4 sm:w-4 transition-all duration-500 group-hover:scale-125 group-hover:rotate-12 flex-shrink-0' />
 								<span className='font-semibold text-xs sm:text-sm transition-all duration-500 group-hover:tracking-wide flex-shrink-0'>
-									{t("contactSales")}
+									{isInCart(product._id) ? t("addedToCart") : t("addToCart")}
 								</span>
 							</div>
 						</motion.button>

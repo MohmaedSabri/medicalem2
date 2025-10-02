@@ -13,17 +13,40 @@ const Hero: React.FC = () => {
 	const { t } = useTranslation();
 	const { isRTL } = useLanguage();
 	const [counters, setCounters] = useState([0, 0, 0]);
+	const [isPageVisible, setIsPageVisible] = useState(false);
 
 	// Hero tri-image rotating state with continuous smooth orbital motion
 	const heroImages = React.useMemo(
 		() => [
-			"https://i.postimg.cc/5NhhnfVk/hero1.png",
-			"https://i.postimg.cc/qvcbn3YV/hero2.png",
-			"https://i.postimg.cc/qqfDyxkr/hero3.png",
+			"https://i.postimg.cc/zv42MvHP/20251003-0209-Futuristic-Operating-Room-simple-compose-01k6kjx17dff5txdbwbpnav0jt.png",
+			"https://i.postimg.cc/wjzYT434/20251002-2049-Modern-Medical-Clinic-simple-compose-01k6k0j7stee5rtwrntnkxhfwf.png",
+			"https://i.postimg.cc/W3CQRXQN/20251002-2046-Modern-Medical-Clinic-Interior-simple-compose-01k6k0cyc5fh1a5pzkwm98r6xr.png",
 		],
 		[]
 	);
 	const [activeIndex, setActiveIndex] = React.useState(0);
+	
+	// Check if page is visible and set initial state
+	React.useEffect(() => {
+		const handleVisibilityChange = () => {
+			if (document.visibilityState === 'visible') {
+				setIsPageVisible(true);
+			} else {
+				setIsPageVisible(false);
+			}
+		};
+
+		// Set initial visibility state
+		setIsPageVisible(document.visibilityState === 'visible');
+
+		// Listen for visibility changes
+		document.addEventListener('visibilitychange', handleVisibilityChange);
+
+		return () => {
+			document.removeEventListener('visibilitychange', handleVisibilityChange);
+		};
+	}, []);
+
 	React.useEffect(() => {
 		const t = setInterval(() => {
 			setActiveIndex((i) => (i + 1) % heroImages.length);
@@ -45,10 +68,8 @@ const Hero: React.FC = () => {
 				{/* Floating green card wrapper */}
 				<div className='relative mx-auto max-w-6xl lg:max-w-7xl
 				 rounded-[24px] md:rounded-[28px] lg:rounded-[32px] bg-[#00796a] 
-				 transform hover:-translate-y-2 transition-all duration-700 ease-out
 				 mx-auto
 				 mt-28
-				 animate-float
 				 '>
 
 				{/* New Enhanced Textures Layer */}
@@ -56,10 +77,10 @@ const Hero: React.FC = () => {
 				{/* Removed curved bottom to preserve floating card look */}
 
 				<div className=' px-4 sm:px-6 md:px-10 lg:px-12 pb-24 pt-8 sm:pt-4  xl:pt-16 max-w-full overflow-hidden '>
-					<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12 items-center max-w-full'>
+					<div className='grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center max-w-full'>
 						{/* Content Side - Responsive to RTL */}
-						<div className={`text-white text-center mt-8 ${isRTL ? 'md:text-right lg:text-right' : 'md:text-left lg:text-left'} 
-						order-2 md:order-1 lg:order-1 md:col-span-1 lg:col-span-2 ${isRTL ? 'md:pr-4 lg:pr-4' : 'md:pl-4 lg:pl-4'} max-w-full overflow-hidden`}>
+						<div className={`text-white text-center mt-8 ${isRTL ? 'md:text-right' : 'md:text-left'} 
+						order-2 md:order-1 md:col-span-1 ${isRTL ? 'md:pr-4' : 'md:pl-4'} max-w-full overflow-hidden`}>
 							<h1 className='text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-3 sm:mb-4'>
 								{t('advancedMedicalEquipment')}
 								<span className='block text-yellow-300 mb-1 sm:mb-2 md:mb-3'>{t('equipment')}</span>
@@ -79,15 +100,18 @@ const Hero: React.FC = () => {
 							<HeroStats
 								counters={counters}
 								setCounters={setCounters}
+								isPageVisible={isPageVisible}
 							/>
 						</div>
 
 						{/* Hero Images Section - Optimized */}
-						<HeroImages
-							heroImages={heroImages}
-							activeIndex={activeIndex}
-							setActiveIndex={setActiveIndex}
-						/>
+						<div className="order-1 md:order-2 md:col-span-1">
+							<HeroImages
+								heroImages={heroImages}
+								activeIndex={activeIndex}
+								setActiveIndex={setActiveIndex}
+							/>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -12,7 +12,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
 	children, 
-	redirectTo = '/x7k9m2p4q8w1n5r3t6y0u9i8o7p6a5s4d3f2g1h0j9k8l7z6x5c4v3b2n1m0' 
+	redirectTo = '/dlogin' 
 }) => {
 	const { user, isAuthenticated, isLoading, checkAuthStatus } = useAuth();
 	const location = useLocation();

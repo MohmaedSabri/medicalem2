@@ -14,7 +14,8 @@ const Contactinfo = {
 
     //ceo
 
-    ceophoto: "https://i.postimg.cc/QNbcpqNq/ceo.jpg",
+    ceophoto: "https://i.postimg.cc/Bbf8cnWP/M-Medhat.jpg",
+    ceosmallphoto: "https://i.postimg.cc/jqGHjRLf/M-M1.png",
 }
 
 export default Contactinfo;

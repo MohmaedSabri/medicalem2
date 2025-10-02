@@ -13,6 +13,8 @@ import { reviewApi } from "../../services/reviewApi";
 import { useAddReview } from "../../hooks/useProducts";
 import { Product, Review } from "../../types";
 import { Star, Plus, ShoppingCart, Truck, Shield, RotateCcw, Calendar, User, Zap } from "lucide-react";
+import { addToCart, isInCart } from "../../utils/cart";
+import { toast } from "react-hot-toast";
  
 
 const ProductDetail: React.FC = () => {
@@ -209,9 +211,21 @@ const ProductDetail: React.FC = () => {
 		);
 	}
 
-	const handleContactSales = () => {
-		// TODO: Implement contact sales functionality
-		alert("Contact sales functionality coming soon!");
+	const handleAddToCart = () => {
+		if (product && product.inStock) {
+			addToCart(product._id, 1);
+			toast.success(
+				`${product.name} ${t('addedToCartMessage')}`,
+				{
+					duration: 3000,
+					icon: '🛒',
+					style: {
+						background: '#10b981',
+						color: '#fff',
+					},
+				}
+			);
+		}
 	};
 
 	const handleImageClick = (imageUrl: string) => {
@@ -404,7 +418,18 @@ const ProductDetail: React.FC = () => {
 								transition={{ delay: 0.6 }}
 								className='mb-3 sm:mb-4 lg:mb-6'>
 								<div className='text-3xl sm:text-4xl md:text-5xl font-bold text-teal-600'>
-									{t('currencySymbol')} {product.price.toLocaleString()}
+									<span className='inline-flex items-center gap-2'>
+										{currentLanguage === 'ar' ? (
+											<span>د.ا</span>
+										) : (
+											<img
+												src={'/Dirham%20Currency%20Symbol%20-%20Black.svg'}
+												alt='AED'
+												className='h-6 w-6'
+											/>
+										)}
+										<span>{product.price.toLocaleString()}</span>
+									</span>
 								</div>
 								<div className='text-xs sm:text-sm text-gray-500 mt-1'>
 									Financing available • Bulk pricing available
@@ -599,18 +624,25 @@ const ProductDetail: React.FC = () => {
 							className='space-y-3 sm:space-y-4'>
 							<button
 								type="button"
-								onClick={handleContactSales}
+								onClick={handleAddToCart}
 								disabled={!product.inStock}
 								className={`w-full py-3 sm:py-4 px-4 sm:px-6 rounded-xl font-semibold text-base sm:text-lg transition-colors shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 ${
 									product.inStock
-										? "bg-teal-600 text-white hover:bg-teal-700"
+										? isInCart(product._id)
+											? "bg-green-600 text-white hover:bg-green-700"
+											: "bg-teal-600 text-white hover:bg-teal-700"
 										: "bg-gray-400 text-gray-200 cursor-not-allowed"
 								}`}
-								aria-label={product.inStock ? "Contact sales" : "Out of stock"}
-								title={product.inStock ? "Contact sales" : "Out of stock"}
+								aria-label={product.inStock ? (isInCart(product._id) ? "Added to cart" : "Add to cart") : "Out of stock"}
+								title={product.inStock ? (isInCart(product._id) ? "Added to cart" : "Add to cart") : "Out of stock"}
 							>
 								<ShoppingCart className='w-4 h-4 sm:w-5 sm:h-5' />
-								<span>{product.inStock ? "Contact Sales" : "Out of Stock"}</span>
+								<span>
+									{product.inStock 
+										? (isInCart(product._id) ? "Added to Cart" : "Add to Cart")
+										: "Out of Stock"
+									}
+								</span>
 							</button>
 						</motion.div>
 
@@ -710,8 +742,17 @@ const ProductDetail: React.FC = () => {
 											{getLocalizedProductField(relatedProduct.name)}
 										</h3>
 										<div className='flex items-center justify-between'>
-											<span className='text-teal-600 font-bold text-sm sm:text-base'>
-												${relatedProduct.price.toLocaleString()}
+											<span className='text-teal-600 font-bold text-sm sm:text-base inline-flex items-center gap-1.5'>
+												{currentLanguage === 'ar' ? (
+													<span>د.ا</span>
+												) : (
+													<img
+														src={'/Dirham%20Currency%20Symbol%20-%20Black.svg'}
+														alt='AED'
+														className='h-4 w-4'
+													/>
+												)}
+												<span>{relatedProduct.price.toLocaleString()}</span>
 											</span>
 											<div className='flex items-center space-x-1'>
 												<Star className='w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 fill-current' />

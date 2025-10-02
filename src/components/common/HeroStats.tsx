@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { Shield, Award, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -8,12 +8,15 @@ import { useTranslation } from "react-i18next";
 interface HeroStatsProps {
 	counters: number[];
 	setCounters: React.Dispatch<React.SetStateAction<number[]>>;
+	isPageVisible: boolean;
 }
 
-const HeroStats: React.FC<HeroStatsProps> = ({ counters, setCounters }) => {
+const HeroStats: React.FC<HeroStatsProps> = ({ counters, setCounters, isPageVisible }) => {
 	const { t } = useTranslation();
 	const statsRef = useRef<HTMLDivElement | null>(null);
 	const statsInView = useInView(statsRef, { margin: "-100px", amount: 0.3 });
+	const [isScrolling, setIsScrolling] = useState(false);
+	const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
 	const stats = [
 		{ label: t('yearsExperience'), value: 15, suffix: "+", icon: Shield },
@@ -35,13 +38,39 @@ const HeroStats: React.FC<HeroStatsProps> = ({ counters, setCounters }) => {
 		requestAnimationFrame(frame);
 	};
 
+	// Handle scroll detection
 	useEffect(() => {
-		if (statsInView) {
+		const handleScroll = () => {
+			setIsScrolling(true);
+			
+			// Clear existing timeout
+			if (scrollTimeoutRef.current) {
+				clearTimeout(scrollTimeoutRef.current);
+			}
+			
+			// Set timeout to detect when scrolling stops
+			scrollTimeoutRef.current = setTimeout(() => {
+				setIsScrolling(false);
+			}, 150); // 150ms delay after scroll stops
+		};
+
+		window.addEventListener('scroll', handleScroll, { passive: true });
+		
+		return () => {
+			window.removeEventListener('scroll', handleScroll);
+			if (scrollTimeoutRef.current) {
+				clearTimeout(scrollTimeoutRef.current);
+			}
+		};
+	}, []);
+
+	useEffect(() => {
+		if (statsInView && isPageVisible && !isScrolling) {
 			animateCounters();
 		} else {
 			setCounters([0, 0, 0]);
 		}
-	}, [statsInView]);
+	}, [statsInView, isPageVisible, isScrolling]);
 
 	return (
 		<div ref={statsRef} className='grid grid-cols-3 gap-4 sm:gap-6'>

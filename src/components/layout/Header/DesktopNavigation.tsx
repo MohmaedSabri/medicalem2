@@ -60,7 +60,7 @@ const DesktopNavigation: React.FC<DesktopNavigationProps> = ({
     },
     {
       path: '/doctors',
-      label: currentLanguage === 'ar' ? 'الشركاء' : 'Partners',
+      label: currentLanguage === 'ar' ? 'الفريق' : 'Team',
       icon: User,
     },
     {

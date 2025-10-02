@@ -8,7 +8,7 @@ import {
   Info,
   Heart,
   Phone,
-  Mail,
+  ShoppingCart,
   ChevronRight,
   X,
   Zap,
@@ -195,22 +195,23 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
 
                 {/* Contact Links */}
                 <div className="grid grid-cols-3 gap-3 mb-6">
-                  <motion.a
-                    href={`mailto:${Contactinfo.email}`}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex flex-col items-center p-4 bg-gradient-to-br from-teal-50 to-teal-100 rounded-2xl text-teal-600 hover:shadow-lg transition-all duration-300"
-                  >
-                    <Mail className="h-6 w-6 mb-2" />
-                    <span className="text-xs font-medium">
-                      {currentLanguage === 'ar' ? 'إيميل' : 'Email'}
-                    </span>
-                  </motion.a>
+                  <Link to="/cart" onClick={onClose}>
+                    <motion.div
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex flex-col items-center p-4 bg-gradient-to-br from-teal-50 to-teal-100 rounded-2xl text-teal-600 hover:shadow-lg transition-all duration-300"
+                    >
+                      <ShoppingCart className="h-6 w-6 mb-2" />
+                      <span className="text-xs font-medium">
+                        {currentLanguage === 'ar' ? 'السلة' : 'Cart'}
+                      </span>
+                    </motion.div>
+                  </Link>
                   <motion.a
                     href={`tel:${Contactinfo.phone}`}
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="flex flex-col items-center p-4 bg-gradient-to-br from-teal-50 to-teal-100 rounded-2xl text-teal-600 hover:shadow-lg transition-all duration-300"
+                    className="flex flex-col items-center p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl text-emerald-600 hover:shadow-lg transition-all duration-300"
                   >
                     <Phone className="h-6 w-6 mb-2" />
                     <span className="text-xs font-medium">
