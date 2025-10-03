@@ -239,9 +239,9 @@ const enTranslations = {
 		register: "Register",
 
 		// Hero Section
-		advancedMedicalEquipment: "Your Step Towards",
-		equipment: "A Healthier Future",
-		forHealthcareExcellence: "with Dorar Medical Equipment",
+		advancedMedicalEquipment: "Advanced Medical Equipment ",
+		equipment: "You Can Trust",
+		forHealthcareExcellence: "for Healthcare Excellence",
 		heroDescription:
 			"Since 2008, we have been committed to elevating healthcare standards across the region, providing advanced medical solutions you can trust. From specialized dermatology devices to complete operating room equipment and advanced medical gas systems.",
 		exploreProducts: "Explore Products",
@@ -781,9 +781,9 @@ const arTranslations = {
 		register: "التسجيل",
 
 		// Hero Section
-		advancedMedicalEquipment: "خطوة نحو ",
-		equipment:  "مستقبل صحي أفضل",
-		forHealthcareExcellence: "مع درر للمعدات الطبية",
+		advancedMedicalEquipment: "معدات طبية متقدمة ",
+		equipment:  "يمكنك الوثوق بها",
+		forHealthcareExcellence: "للرعاية الصحية المتقدمة",
 		heroDescription:
 			"منذ عام 2008، ونحن ملتزمون بالارتقاء بمعايير الرعاية الصحية في جميع أنحاء المنطقة، مقدمين حلولاً طبية متطورة يمكنك الوثوق بها. من أجهزة الأمراض الجلدية المتخصصة إلى تجهيزات غرف العمليات الكاملة وأنظمة الغازات الطبية المتقدمة.",
 		exploreProducts: "استكشف المنتجات",
