@@ -182,6 +182,18 @@ const enTranslations = {
 		// Contact
 		getInTouch: "Get in Touch",
 		sendMessage: "Send Message",
+
+		// Newsletter
+		newsletter: "Newsletter",
+		subscribeToNewsletter: "Subscribe to our newsletter",
+		newsletterEmail: "Email Address",
+		subscribe: "Subscribe",
+		subscribing: "Subscribing...",
+		subscribed: "Subscribed!",
+		subscriptionSuccess: "Thank you for subscribing to our newsletter!",
+		subscriptionError: "Failed to subscribe. Please try again.",
+		invalidEmail: "Please enter a valid email address",
+		emailRequired: "Email address is required",
 		name: "Name",
 		message: "Message",
 		subject: "Subject",
@@ -484,7 +496,6 @@ const enTranslations = {
 		stayUpdated: "Stay Updated with Medical Innovation",
 		stayUpdatedDescription:
 			"Subscribe to our newsletter for the latest insights on medical equipment and healthcare technology.",
-		subscribe: "Subscribe",
 
 		// Blog Detail Page
 		backToBlog: "Back to Blog",
@@ -840,6 +851,18 @@ const arTranslations = {
 		name: "الاسم",
 		message: "الرسالة",
 		subject: "الموضوع",
+
+		// Newsletter
+		newsletter: "النشرة الإخبارية",
+		subscribeToNewsletter: "اشترك في نشرتنا الإخبارية",
+		newsletterEmail: "عنوان البريد الإلكتروني",
+		subscribe: "اشتراك",
+		subscribing: "جاري الاشتراك...",
+		subscribed: "تم الاشتراك!",
+		subscriptionSuccess: "شكراً لك على الاشتراك في نشرتنا الإخبارية!",
+		subscriptionError: "فشل في الاشتراك. يرجى المحاولة مرة أخرى.",
+		invalidEmail: "يرجى إدخال عنوان بريد إلكتروني صحيح",
+		emailRequired: "عنوان البريد الإلكتروني مطلوب",
 		
 		// Phone Types
 		homePhone: "هاتف المنزل",
@@ -1135,7 +1158,6 @@ const arTranslations = {
 		stayUpdated: "ابق على اطلاع بالابتكار الطبي",
 		stayUpdatedDescription:
 			"اشترك في نشرتنا الإخبارية للحصول على أحدث الرؤى حول المعدات الطبية وتكنولوجيا الرعاية الصحية.",
-		subscribe: "اشتراك",
 
 		// Blog Detail Page
 		backToBlog: "العودة إلى المدونة",

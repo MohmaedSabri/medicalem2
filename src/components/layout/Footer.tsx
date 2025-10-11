@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
 	Activity,
@@ -10,6 +10,9 @@ import {
 	Mail,
 	Phone,
 	MapPin,
+	Send,
+	CheckCircle,
+	AlertCircle,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../../contexts/LanguageContext";
@@ -22,6 +25,12 @@ const Footer: React.FC = () => {
 	const { currentLanguage, isRTL } = useLanguage();
 	const { data: apiProducts = [] } = useProducts();
 	const { data: contactInfo } = useContactInfo();
+
+	// Newsletter subscription state
+	const [email, setEmail] = useState("");
+	const [isSubscribing, setIsSubscribing] = useState(false);
+	const [subscriptionStatus, setSubscriptionStatus] = useState<"idle" | "success" | "error">("idle");
+	const [errorMessage, setErrorMessage] = useState("");
 
 	// Helper: get localized text from string or {en, ar}
 	const getLocalizedProductField = (
@@ -49,6 +58,56 @@ const Footer: React.FC = () => {
 		{ icon: Linkedin, href: contactInfo?.linkedin || '', label: "LinkedIn" },
 		{ icon: Instagram, href: contactInfo?.instagram || '', label: "Instagram" },
 	];
+
+	// Newsletter subscription handler
+	const handleNewsletterSubscription = async (e: React.FormEvent) => {
+		e.preventDefault();
+		
+		// Reset previous status
+		setSubscriptionStatus("idle");
+		setErrorMessage("");
+
+		// Validate email
+		if (!email.trim()) {
+			setErrorMessage(t("emailRequired"));
+			setSubscriptionStatus("error");
+			return;
+		}
+
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email)) {
+			setErrorMessage(t("invalidEmail"));
+			setSubscriptionStatus("error");
+			return;
+		}
+
+		setIsSubscribing(true);
+
+		try {
+			// Simulate API call - replace with actual API endpoint
+			await new Promise(resolve => setTimeout(resolve, 1000));
+			
+			// Here you would typically make an API call to your backend
+			// const response = await fetch('/api/newsletter/subscribe', {
+			//   method: 'POST',
+			//   headers: { 'Content-Type': 'application/json' },
+			//   body: JSON.stringify({ email })
+			// });
+			
+			setSubscriptionStatus("success");
+			setEmail("");
+			
+			// Reset success status after 3 seconds
+			setTimeout(() => {
+				setSubscriptionStatus("idle");
+			}, 3000);
+		} catch {
+			setSubscriptionStatus("error");
+			setErrorMessage(t("subscriptionError"));
+		} finally {
+			setIsSubscribing(false);
+		}
+	};
 
 	return (
 		<footer className='bg-gray-900 text-white w-full'>
@@ -150,23 +209,88 @@ const Footer: React.FC = () => {
 						viewport={{ once: true }}
 						transition={{ duration: 0.6, delay: 0.3 }}
 						className='space-y-6 lg:w-1/4 px-4 sm:px-6 lg:px-4 xl:px-6 2xl:px-8'>
-						<h3 className='text-lg font-semibold'>{t("stayConnected")}</h3>
+						<h3 className='text-lg font-semibold'>{t("newsletter")}</h3>
 						<p className='text-gray-400'>{t("newsletterDescription")}</p>
 
-						<div
-							className={`flex ${
-								isRTL ? "space-x-reverse space-x-4" : "space-x-4"
-							}`}>
-							{socialLinks.map((social) => (
-								<motion.a
-									key={social.label}
-									href={social.href}
-									whileHover={{ scale: 1.1, y: -2 }}
-									className='w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 hover:text-primary-400 hover:bg-gray-700 transition-colors'
-									aria-label={social.label}>
-									<social.icon className='h-5 w-5' />
-								</motion.a>
-							))}
+						{/* Newsletter Subscription Form */}
+						<form onSubmit={handleNewsletterSubscription} className='space-y-3'>
+							{/* Inline Input and Button */}
+							<div className={`flex gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
+								<div className='relative flex-1'>
+									<input
+										type='email'
+										value={email}
+										onChange={(e) => setEmail(e.target.value)}
+										placeholder={t("newsletterEmail")}
+										className={`w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all duration-200 text-sm ${
+											subscriptionStatus === "error" ? "border-red-500" : ""
+										} ${isRTL ? "text-right" : "text-left"}`}
+										dir={isRTL ? "rtl" : "ltr"}
+									/>
+									<Mail className={`absolute top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 ${
+										isRTL ? "left-2" : "right-2"
+									}`} />
+								</div>
+
+								{/* Subscribe Button */}
+								<motion.button
+									type='submit'
+									disabled={isSubscribing}
+									whileHover={{ scale: 1.05 }}
+									whileTap={{ scale: 0.95 }}
+									className={`bg-primary-500 hover:bg-primary-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-md transition-all duration-200 flex items-center justify-center gap-1 text-sm whitespace-nowrap ${
+										isSubscribing ? "opacity-75" : ""
+									}`}>
+									{isSubscribing ? (
+										<div className='w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin' />
+									) : (
+										<Send className='h-3 w-3' />
+									)}
+									{!isSubscribing && <span className='hidden sm:inline'>{t("subscribe")}</span>}
+								</motion.button>
+							</div>
+
+							{/* Error Message */}
+							{subscriptionStatus === "error" && errorMessage && (
+								<motion.div
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									className='flex items-center gap-2 text-red-400 text-xs'>
+									<AlertCircle className='h-3 w-3 flex-shrink-0' />
+									<span>{errorMessage}</span>
+								</motion.div>
+							)}
+
+							{/* Success Message */}
+							{subscriptionStatus === "success" && (
+								<motion.div
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									className='flex items-center gap-2 text-green-400 text-xs'>
+									<CheckCircle className='h-3 w-3 flex-shrink-0' />
+									<span>{t("subscriptionSuccess")}</span>
+								</motion.div>
+							)}
+						</form>
+
+						{/* Social Links */}
+						<div className='pt-4'>
+							<h4 className='text-sm font-medium text-gray-300 mb-3'>{t("stayConnected")}</h4>
+							<div
+								className={`flex ${
+									isRTL ? "space-x-reverse space-x-4" : "space-x-4"
+								}`}>
+								{socialLinks.map((social) => (
+									<motion.a
+										key={social.label}
+										href={social.href}
+										whileHover={{ scale: 1.1, y: -2 }}
+										className='w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 hover:text-primary-400 hover:bg-gray-700 transition-colors'
+										aria-label={social.label}>
+										<social.icon className='h-5 w-5' />
+									</motion.a>
+								))}
+							</div>
 						</div>
 					</motion.div>
 				</div>
