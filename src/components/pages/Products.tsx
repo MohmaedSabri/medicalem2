@@ -130,8 +130,8 @@ const Products: React.FC = () => {
 		return (
 			<section
 				id='products'
-				className='py-8 sm:py-12 md:py-16 lg:py-20 bg-gradient-to-br relative overflow-hidden pb-24'>
-				<div className='container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10 min-h-[60vh] flex items-center justify-center'>
+				className='py-6 sm:py-8 md:py-10 lg:py-12 bg-gradient-to-br relative overflow-hidden pb-16'>
+				<div className='container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10 min-h-[40vh] flex items-center justify-center'>
 					<div className='text-center'>
 						<div className='animate-spin rounded-full h-16 w-16 border-4 border-primary-200 border-t-primary-600 mx-auto mb-4'></div>
 						<p className='text-gray-600'>Loading products...</p>
@@ -146,7 +146,7 @@ const Products: React.FC = () => {
 		return (
 			<section
 				id='products'
-				className='relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 2xl:py-32 overflow-hidden'>
+				className='relative py-8 sm:py-10 md:py-12 lg:py-14 xl:py-16 2xl:py-18 overflow-hidden'>
 				<div className='container mx-auto px-4 sm:px-6 lg:px-8'>
 					<div className='text-center'>
 						<h2 className='text-2xl font-bold text-gray-900 mb-4'>
@@ -164,7 +164,7 @@ const Products: React.FC = () => {
 	return (
 		<section
 			id='products'
-			className='py-8 sm:py-12 md:py-16 lg:py-20 bg-gradient-to-br relative overflow-hidden pb-24'>
+			className='py-6 sm:py-8 md:py-10 lg:py-12 bg-gradient-to-br relative overflow-hidden pb-16'>
 			<div className='container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10'>
 				{/* Enhanced Header - Mobile Optimized */}
 				<motion.div
@@ -172,7 +172,7 @@ const Products: React.FC = () => {
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true }}
 					transition={{ duration: 1, ease: "easeOut" }}
-					className='text-center mb-8 sm:mb-12 md:mb-16'>
+					className='text-center mb-6 sm:mb-8 md:mb-10'>
 					<motion.div
 						initial={{ opacity: 0, scale: 0.5 }}
 						whileInView={{ opacity: 1, scale: 1 }}
@@ -196,8 +196,8 @@ const Products: React.FC = () => {
 				<div className='relative max-w-7xl mx-auto'>
 					{/* Enhanced Slider with Touch Support */}
 					<div
-						className='relative h-[420px] xs:h-[450px] sm:h-[500px] 
-						md:h-[550px] lg:h-[600px] xl:h-[700px] overflow-hidden rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-lg sm:shadow-xl lg:shadow-2xl'
+						className='relative h-[320px] xs:h-[350px] sm:h-[380px] 
+						md:h-[420px] lg:h-[460px] xl:h-[520px] overflow-hidden rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-lg sm:shadow-xl lg:shadow-2xl'
 						onTouchStart={onTouchStart}
 						onTouchMove={onTouchMove}
 						onTouchEnd={onTouchEnd}>
@@ -236,7 +236,7 @@ const Products: React.FC = () => {
 									{/* Mobile-First Grid Layout */}
 									<div className={`flex flex-col lg:grid lg:grid-cols-2 h-full min-h-full ${isRTL ? 'lg:grid-flow-col-dense' : ''}`}>
 										{/* Product Image - Mobile Priority */}
-										<div className={`relative overflow-hidden h-[200px] xs:h-[220px] sm:h-[240px] md:h-[260px] lg:h-full order-1 ${isRTL ? 'lg:order-2' : 'lg:order-1'}`}>
+										<div className={`relative overflow-hidden h-[160px] xs:h-[180px] sm:h-[200px] md:h-[220px] lg:h-full order-1 ${isRTL ? 'lg:order-2' : 'lg:order-1'}`}>
 											{/* Image Container with Better Loading */}
 											<div className='relative w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 group'>
 												<motion.img
