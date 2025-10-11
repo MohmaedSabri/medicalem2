@@ -480,7 +480,6 @@ const enTranslations = {
 		likes: "likes",
 		like: "Like",
 		liked: "Liked",
-		lastUpdated: "Last updated",
 
 		// Dashboard
 		welcomeBack: "Welcome back",
@@ -1114,7 +1113,6 @@ const arTranslations = {
 		likes: "إعجابات",
 		like: "إعجاب",
 		liked: "أعجبني",
-		lastUpdated: "آخر تحديث",
 
 		// Dashboard
 		welcomeBack: "مرحباً بعودتك",
