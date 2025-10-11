@@ -20,7 +20,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 import Footer from "../components/layout/Footer";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
-import { getShippingConfig } from "../config/shippingConfig";
+import { useShippingOptions } from "../hooks/useShipping";
 
 interface CheckoutFormData {
 	firstName: string;
@@ -28,7 +28,7 @@ interface CheckoutFormData {
 	phone: string;
 	phoneType: 'home' | 'clinic';
 	email: string;
-	emirate: string;
+	shippingOption: string;
 	address: string;
 	orderNotes: string;
 	paymentMethod: string;
@@ -55,7 +55,7 @@ const Checkout: React.FC = () => {
 		phone: "",
 		phoneType: "home",
 		email: "",
-		emirate: "",
+		shippingOption: "",
 		address: "",
 		orderNotes: "",
 		paymentMethod: "bank_transfer",
@@ -123,8 +123,8 @@ const Checkout: React.FC = () => {
 	const vat = useMemo(() => subtotal * 0.05, [subtotal]); // 5% VAT
 	const total = useMemo(() => subtotal + vat + shippingCost, [subtotal, vat, shippingCost]);
 
-	// Get emirates from shipping configuration
-	const emirates = getShippingConfig().emirates;
+	// Get shipping options from API
+	const { data: shippingOptions = [], isLoading: shippingLoading } = useShippingOptions();
 
 	// Payment methods
 	const paymentMethods = [
@@ -165,12 +165,12 @@ const Checkout: React.FC = () => {
 		}));
 	};
 
-	const handleEmirateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		const selectedEmirate = emirates.find(emirate => emirate.name === e.target.value);
-		setShippingCost(selectedEmirate?.cost || 0);
+	const handleShippingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		const selectedShipping = shippingOptions.find(shipping => shipping._id === e.target.value);
+		setShippingCost(selectedShipping?.price || 0);
 		setFormData(prev => ({
 			...prev,
-			emirate: e.target.value
+			shippingOption: e.target.value
 		}));
 	};
 
@@ -402,18 +402,19 @@ const Checkout: React.FC = () => {
 									<div className='space-y-4'>
 										<div>
 											<label className='block text-sm font-medium text-gray-700 mb-2'>
-												{t('emirate')} <span className='text-red-500'>*</span>
+												{t('shippingMethod')} <span className='text-red-500'>*</span>
 											</label>
 											<select
-												name='emirate'
-												value={formData.emirate}
-												onChange={handleEmirateChange}
+												name='shippingOption'
+												value={formData.shippingOption}
+												onChange={handleShippingChange}
 												required
-												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent'>
-												<option value=''>{t('selectEmirate')}</option>
-												{emirates.map((emirate) => (
-													<option key={emirate.name} value={emirate.name}>
-														{emirate.name} (+{emirate.cost} AED)
+												disabled={shippingLoading}
+												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50'>
+												<option value=''>{shippingLoading ? t('loading') : t('selectShippingMethod')}</option>
+												{shippingOptions.map((shipping) => (
+													<option key={shipping._id} value={shipping._id}>
+														{shipping.name} ({shipping.price === 0 ? t('free') : `+${shipping.price} AED`})
 													</option>
 												))}
 											</select>

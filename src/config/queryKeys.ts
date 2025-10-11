@@ -74,6 +74,9 @@ export const queryKeys = {
 
   // Contact Info related queries
   CONTACT_INFO: ['contactInfo'] as const,
+
+  // Shipping related queries
+  SHIPPING: ['shipping'] as const,
 };
 
 export default queryKeys;

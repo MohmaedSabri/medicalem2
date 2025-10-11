@@ -48,4 +48,9 @@ export const endpoints = {
 	CONTACT_INFO: "/contact-info",
 	CONTACT_INFO_PARTNERS: "/contact-info/partners",
 	CONTACT_INFO_PARTNER_BY_ID: "/contact-info/partners/:id",
+	
+	// Shipping
+	SHIPPING: "/shipping",
+	SHIPPING_BY_ID: "/shipping/:id",
+	SHIPPING_BULK: "/shipping/bulk",
 };

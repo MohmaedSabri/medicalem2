@@ -1,0 +1,438 @@
+### Shipping API Documentation
+### Base URL: http://localhost:5000/api/shipping
+
+# ========================================
+# GET ALL SHIPPING OPTIONS
+# ========================================
+GET http://localhost:5000/api/shipping/
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "Standard Shipping",
+    "price": 15.00,
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  },
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+    "name": "Express Shipping",
+    "price": 25.00,
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  },
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j3",
+    "name": "Overnight Shipping",
+    "price": 45.00,
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  }
+]
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error fetching shipping options",
+  "error": "Database connection failed"
+}
+```
+
+# ========================================
+# GET SHIPPING OPTION BY ID
+# ========================================
+GET http://localhost:5000/api/shipping/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+  "name": "Standard Shipping",
+  "price": 15.00,
+  "createdAt": "2024-01-10T08:00:00.000Z",
+  "updatedAt": "2024-01-10T08:00:00.000Z"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Shipping option not found"
+}
+```
+
+### Response (500 Internal Server Error)
+```json
+{
+  "message": "Error fetching shipping option",
+  "error": "Invalid ObjectId format"
+}
+```
+
+# ========================================
+# CREATE SHIPPING OPTION
+# ========================================
+POST http://localhost:5000/api/shipping/
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Request Body
+```json
+{
+  "name": "Free Shipping",
+  "price": 0.00
+}
+```
+
+### Response (201 Created)
+```json
+{
+  "message": "Shipping option created successfully",
+  "data": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j4",
+    "name": "Free Shipping",
+    "price": 0.00,
+    "createdAt": "2024-01-15T12:00:00.000Z",
+    "updatedAt": "2024-01-15T12:00:00.000Z"
+  }
+}
+```
+
+### Response (400 Bad Request) - Missing Fields
+```json
+{
+  "message": "Name and price are required"
+}
+```
+
+### Response (400 Bad Request) - Invalid Price
+```json
+{
+  "message": "Price must be a positive number"
+}
+```
+
+### Response (401 Unauthorized)
+```json
+{
+  "message": "Access denied. No token provided."
+}
+```
+
+# ========================================
+# UPDATE SHIPPING OPTION
+# ========================================
+PUT http://localhost:5000/api/shipping/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Request Body (Full Update)
+```json
+{
+  "name": "Standard Shipping (Updated)",
+  "price": 18.00
+}
+```
+
+### Response (200 OK)
+```json
+{
+  "message": "Shipping option updated successfully",
+  "data": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "Standard Shipping (Updated)",
+    "price": 18.00,
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-15T13:00:00.000Z"
+  }
+}
+```
+
+### Request Body (Partial Update)
+```json
+{
+  "price": 20.00
+}
+```
+
+### Response (200 OK)
+```json
+{
+  "message": "Shipping option updated successfully",
+  "data": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "Standard Shipping",
+    "price": 20.00,
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-15T14:00:00.000Z"
+  }
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Shipping option not found"
+}
+```
+
+### Response (400 Bad Request) - Invalid Price
+```json
+{
+  "message": "Price must be a positive number"
+}
+```
+
+# ========================================
+# DELETE SHIPPING OPTION
+# ========================================
+DELETE http://localhost:5000/api/shipping/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Response (200 OK)
+```json
+{
+  "message": "Shipping option deleted successfully",
+  "data": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "Standard Shipping",
+    "price": 15.00,
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  }
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Shipping option not found"
+}
+```
+
+### Response (401 Unauthorized)
+```json
+{
+  "message": "Access denied. No token provided."
+}
+```
+
+# ========================================
+# BULK CREATE SHIPPING OPTIONS
+# ========================================
+POST http://localhost:5000/api/shipping/bulk
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Request Body
+```json
+{
+  "shippingOptions": [
+    {
+      "name": "Economy Shipping",
+      "price": 8.00
+    },
+    {
+      "name": "Priority Shipping",
+      "price": 35.00
+    },
+    {
+      "name": "Same Day Delivery",
+      "price": 60.00
+    }
+  ]
+}
+```
+
+### Response (201 Created)
+```json
+{
+  "message": "3 shipping options created successfully",
+  "data": [
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j5",
+      "name": "Economy Shipping",
+      "price": 8.00,
+      "createdAt": "2024-01-15T15:00:00.000Z",
+      "updatedAt": "2024-01-15T15:00:00.000Z"
+    },
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j6",
+      "name": "Priority Shipping",
+      "price": 35.00,
+      "createdAt": "2024-01-15T15:00:00.000Z",
+      "updatedAt": "2024-01-15T15:00:00.000Z"
+    },
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j7",
+      "name": "Same Day Delivery",
+      "price": 60.00,
+      "createdAt": "2024-01-15T15:00:00.000Z",
+      "updatedAt": "2024-01-15T15:00:00.000Z"
+    }
+  ]
+}
+```
+
+### Response (400 Bad Request) - Invalid Array
+```json
+{
+  "message": "shippingOptions must be a non-empty array"
+}
+```
+
+### Response (400 Bad Request) - Missing Fields
+```json
+{
+  "message": "Each shipping option must have name and price"
+}
+```
+
+# ========================================
+# AUTHENTICATION
+# ========================================
+# 
+# Most endpoints require authentication. Get a JWT token by logging in:
+# POST /api/users/login
+# {
+#   "email": "zaher@gmail.com",
+#   "password": "Zaher@*#123"
+# }
+#
+# Use the returned token in the Authorization header:
+# Authorization: Bearer YOUR_JWT_TOKEN
+#
+# Public endpoints (no authentication required):
+# - GET /api/shipping (retrieve all shipping options)
+# - GET /api/shipping/:id (retrieve specific shipping option)
+
+# ========================================
+# QUICK START
+# ========================================
+#
+# 1. Get all shipping options:
+#    GET /api/shipping
+#
+# 2. Create a new shipping option (requires auth):
+#    POST /api/shipping
+#    {
+#      "name": "Free Shipping",
+#      "price": 0.00
+#    }
+#
+# 3. Update shipping option (requires auth):
+#    PUT /api/shipping/:id
+#    {
+#      "price": 20.00
+#    }
+#
+# 4. Delete shipping option (requires auth):
+#    DELETE /api/shipping/:id
+
+# ========================================
+# NOTES
+# ========================================
+# 
+# 1. Shipping options are sorted by price (ascending) by default
+# 2. All fields are required when creating
+# 3. Price must be a positive number (0 or greater)
+# 4. Name field is automatically trimmed
+# 5. Timestamps are automatically managed
+# 6. Bulk create is useful for initial data seeding
+# 7. Public endpoints don't require authentication
+# 8. All modification operations require authentication
+
+# ========================================
+# ERROR CODES
+# ========================================
+# 200: Success
+# 201: Created
+# 400: Bad Request (validation errors)
+# 401: Unauthorized (missing or invalid token)
+# 404: Not Found
+# 500: Internal Server Error
+
+# ========================================
+# VALIDATION RULES
+# ========================================
+# - name: String, required, trimmed
+# - price: Number, required, minimum 0
+
+# ========================================
+# EXAMPLE USAGE SCENARIOS
+# ========================================
+#
+# 1. E-commerce Checkout - Get Available Shipping Options:
+#    GET /api/shipping
+#    Response: Array of shipping options with prices
+#
+# 2. Admin Panel - Add New Shipping Method:
+#    POST /api/shipping
+#    {
+#      "name": "International Shipping",
+#      "price": 50.00
+#    }
+#
+# 3. Admin Panel - Update Shipping Price:
+#    PUT /api/shipping/64f1a2b3c4d5e6f7g8h9i0j1
+#    {
+#      "price": 25.00
+#    }
+#
+# 4. Admin Panel - Remove Shipping Option:
+#    DELETE /api/shipping/64f1a2b3c4d5e6f7g8h9i0j1
+#
+# 5. Initial Setup - Bulk Create Shipping Options:
+#    POST /api/shipping/bulk
+#    {
+#      "shippingOptions": [
+#        {"name": "Free Shipping", "price": 0.00},
+#        {"name": "Standard", "price": 15.00},
+#        {"name": "Express", "price": 30.00}
+#      ]
+#    }
+
+# ========================================
+# FRONTEND INTEGRATION
+# ========================================
+#
+# Shipping Option Object Structure:
+# {
+#   _id: "MongoDB ObjectId",
+#   name: "Shipping Method Name",
+#   price: 15.00,
+#   createdAt: "2024-01-10T08:00:00.000Z",
+#   updatedAt: "2024-01-10T08:00:00.000Z"
+# }
+#
+# Usage in E-commerce:
+# 1. Fetch shipping options on checkout page
+# 2. Display options with prices to user
+# 3. Allow user to select preferred shipping method
+# 4. Calculate total order cost including shipping
+# 5. Store selected shipping option in order
+
+# ========================================
+# ADMIN PANEL INTEGRATION
+# ========================================
+#
+# 1. Load Shipping Options for Management:
+#    GET /api/shipping
+#
+# 2. Add New Shipping Option:
+#    POST /api/shipping
+#
+# 3. Edit Existing Shipping Option:
+#    PUT /api/shipping/:id
+#
+# 4. Remove Shipping Option:
+#    DELETE /api/shipping/:id
+#
+# 5. Bulk Import Shipping Options:
+#    POST /api/shipping/bulk
