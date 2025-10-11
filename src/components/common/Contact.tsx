@@ -11,12 +11,13 @@ import { useProducts } from "../../contexts/ProductsContext";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { toast } from "react-hot-toast";
-import Contactinfo from "../../constant/Contactinfo";
+import { useContactInfo } from "../../hooks/useContactInfo";
 
 const Contact: React.FC = () => {
 	const { products } = useProducts();
 	const { t } = useTranslation();
 	const { currentLanguage, isRTL } = useLanguage();
+	const { data: contactInfoData, isLoading: contactInfoLoading } = useContactInfo();
 	const [searchParams] = useSearchParams();
 
 	// Helper: get localized text from string or {en, ar}
@@ -132,19 +133,19 @@ const Contact: React.FC = () => {
 		{
 			icon: Mail,
 			title: t('emailUs'),
-			value: Contactinfo.email,
+			value: contactInfoData?.email || '',
 			description: t('sendUsQuestions'),
 		},
 		{
 			icon: Phone,
 			title: t('callUs'),
-			value: Contactinfo.phone,
+			value: contactInfoData?.phone || '',
 			description: t('supportHotline'),
 		},
 		{
 			icon: MapPin,
 			title: t('visitUs'),
-			value: Contactinfo.address,
+			value: contactInfoData?.address || '',
 			description: "Dubai, UAE",
 		},
 	];
@@ -153,9 +154,9 @@ const Contact: React.FC = () => {
 		<section id='contact' className='py-20 bg-gray-50 relative pt-24 overflow-hidden'>
 			{/* Background decorative elements */}
 			<div className="absolute inset-0 overflow-hidden">
-				<div className="absolute -top-40 -right-40 w-80 h-80 bg-teal-100/30 rounded-full blur-3xl"></div>
+				<div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-100/30 rounded-full blur-3xl"></div>
 				<div className="absolute -bottom-40 -left-40 w-80 h-80 bg-burgundy-100/30 rounded-full blur-3xl"></div>
-				<div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-teal-50/50 rounded-full blur-3xl"></div>
+				<div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary-50/50 rounded-full blur-3xl"></div>
 			</div>
 			
 			<div className='container mx-auto px-4 sm:px-6 lg:px-8 relative z-10'>
@@ -183,18 +184,18 @@ const Contact: React.FC = () => {
 							viewport={{ once: true }}
 							transition={{ duration: 0.6, delay: index * 0.1 }}
 							whileHover={{ y: -8, scale: 1.02 }}
-							className='group bg-white p-8 rounded-3xl shadow-xl border-2 border-gray-100 text-center relative overflow-hidden hover:shadow-2xl hover:border-teal-200 transition-all duration-500'>
+							className='group bg-white p-8 rounded-3xl shadow-xl border-2 border-gray-100 text-center relative overflow-hidden hover:shadow-2xl hover:border-primary-200 transition-all duration-500'>
 							
 							<motion.div
 								whileHover={{ scale: 1.1, rotate: 5 }}
-								className='relative inline-flex items-center justify-center w-20 h-20 bg-teal-600 text-white rounded-2xl mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300 border-2 border-teal-100'>
+								className='relative inline-flex items-center justify-center w-20 h-20 bg-primary-600 text-white rounded-2xl mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300 border-2 border-primary-100'>
 								<info.icon className='h-10 w-10' />
 							</motion.div>
 							<div className="relative">
-								<h3 className='text-xl font-bold text-gray-900 mb-3 group-hover:text-teal-700 transition-colors duration-300'>
+								<h3 className='text-xl font-bold text-gray-900 mb-3 group-hover:text-primary-700 transition-colors duration-300'>
 									{info.title}
 								</h3>
-								<p className={`text-lg text-teal-600 font-semibold mb-2 ${info.title === t('callUs') ? 'text-center' : 'text-center'}`}>
+								<p className={`text-lg text-primary-600 font-semibold mb-2 ${info.title === t('callUs') ? 'text-center' : 'text-center'}`}>
 									<span dir="ltr" className="inline-block">
 										{info.value}
 									</span>
@@ -214,12 +215,12 @@ const Contact: React.FC = () => {
 						transition={{ duration: 0.6 }}
 													className='bg-white p-8 rounded-3xl shadow-2xl border-2 border-gray-100 relative overflow-hidden'>
 						{/* Decorative background */}
-						<div className="absolute top-0 right-0 w-32 h-32 bg-teal-100/50 rounded-full -translate-y-16 translate-x-16"></div>
+						<div className="absolute top-0 right-0 w-32 h-32 bg-primary-100/50 rounded-full -translate-y-16 translate-x-16"></div>
 						<div className="absolute bottom-0 left-0 w-24 h-24 bg-burgundy-100/50 rounded-full translate-y-12 -translate-x-12"></div>
 						
 						<div className="relative">
 							<div className={`flex items-center ${isRTL ? 'gap-3' : 'gap-3'} mb-8`}>
-								<div className="w-12 h-12 bg-teal-600 rounded-xl flex items-center justify-center shadow-lg border-2 border-teal-100">
+								<div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg border-2 border-primary-100">
 									<Send className="h-6 w-6 text-white" />
 								</div>
 								<h3 className={`text-2xl font-bold text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
@@ -232,7 +233,7 @@ const Contact: React.FC = () => {
 								initial={{ opacity: 0, scale: 0.8 }}
 								animate={{ opacity: 1, scale: 1 }}
 								className='text-center py-8'>
-								<div className='w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg border-4 border-green-100'>
+								<div className='w-20 h-20 bg-primary-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg border-4 border-primary-100'>
 									<Send className='h-10 w-10 text-white' />
 								</div>
 								<h4 className='text-2xl font-bold text-gray-900 mb-3'>
@@ -247,7 +248,7 @@ const Contact: React.FC = () => {
 								<div className='grid sm:grid-cols-2 gap-6'>
 									<motion.div whileFocus={{ scale: 1.02 }}>
 										<label className={`block text-sm font-bold text-gray-800 mb-3 flex items-center ${isRTL ? ' gap-2' : 'gap-2'}`}>
-											<User className='h-4 w-4 text-teal-600' />
+											<User className='h-4 w-4 text-primary-600' />
 											<span>{t('fullName')} *</span>
 										</label>
 										<div className='relative group'>
@@ -257,7 +258,7 @@ const Contact: React.FC = () => {
 												value={form.name}
 												onChange={handleChange}
 												required
-												className='w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-white group-hover:border-teal-300 shadow-sm'
+												className='w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all bg-white group-hover:border-primary-300 shadow-sm'
 												placeholder='John Doe'
 											/>
 										</div>
@@ -265,7 +266,7 @@ const Contact: React.FC = () => {
 
 									<motion.div whileFocus={{ scale: 1.02 }}>
 										<label className={`block text-sm font-bold text-gray-800 mb-3 flex items-center ${isRTL ? ' gap-2' : 'gap-2'}`}>
-											<AtSign className='h-4 w-4 text-teal-600' />
+											<AtSign className='h-4 w-4 text-primary-600' />
 											<span>{t('emailAddress')} *</span>
 										</label>
 										<div className='relative group'>
@@ -275,7 +276,7 @@ const Contact: React.FC = () => {
 												value={form.email}
 												onChange={handleChange}
 												required
-												className='w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-white group-hover:border-teal-300 shadow-sm'
+												className='w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all bg-white group-hover:border-primary-300 shadow-sm'
 												placeholder='john@example.com'
 											/>
 										</div>
@@ -284,7 +285,7 @@ const Contact: React.FC = () => {
 
 								<motion.div whileFocus={{ scale: 1.02 }}>
 									<label className={`block text-sm font-bold text-gray-800 mb-3 flex items-center ${isRTL ? 'gap-2' : 'gap-2'}`}>
-										<Phone className='h-4 w-4 text-teal-600' />
+										<Phone className='h-4 w-4 text-primary-600' />
 										<span>{t('phoneNumber')}</span>
 									</label>
 										<div className='relative group'>
@@ -293,7 +294,7 @@ const Contact: React.FC = () => {
 												name='phone'
 												value={form.phone}
 												onChange={handleChange}
-												className='w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-white group-hover:border-teal-300 shadow-sm'
+												className='w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all bg-white group-hover:border-primary-300 shadow-sm'
 												placeholder={t('phoneNumberPlaceholder')}
 												dir="ltr"
 											/>
@@ -314,7 +315,7 @@ const Contact: React.FC = () => {
 										setSelectedCategory(e.target.value);
 										setSelectedProductId(undefined);
 									}}
-									className={`appearance-none w-full ${isRTL ? 'pr-10 pl-10' : 'pl-10 pr-10'} py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-white hover:border-teal-300`}
+									className={`appearance-none w-full ${isRTL ? 'pr-10 pl-10' : 'pl-10 pr-10'} py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all bg-white hover:border-primary-300`}
 								>
 									{categories.map((cat, index) => (
 										<option key={`${cat}-${index}`} value={cat}>
@@ -339,7 +340,7 @@ const Contact: React.FC = () => {
 											e.target.value || undefined
 										)
 									}
-									className={`appearance-none w-full ${isRTL ? 'pr-10 pl-10' : 'pl-10 pr-10'} py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-white hover:border-teal-300`}
+									className={`appearance-none w-full ${isRTL ? 'pr-10 pl-10' : 'pl-10 pr-10'} py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all bg-white hover:border-primary-300`}
 								>
 									<option key="select-product" value=''>{t('selectProductOptional')}</option>
 									{products
@@ -364,15 +365,15 @@ const Contact: React.FC = () => {
 										{t('quantity')}
 									</label>
 										<div className='flex items-center gap-2'>
-											<button type='button' onClick={() => setQuantity(Math.max(1, quantity - 1))} className='px-4 py-4 rounded-xl border-2 border-gray-200 hover:bg-teal-50 hover:border-teal-300 transition-all'>-</button>
+											<button type='button' onClick={() => setQuantity(Math.max(1, quantity - 1))} className='px-4 py-4 rounded-xl border-2 border-gray-200 hover:bg-primary-50 hover:border-primary-300 transition-all'>-</button>
 											<input
 												type='number'
 												min={1}
 												value={quantity}
 												onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
-												className='w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-center bg-white'
+												className='w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all text-center bg-white'
 											/>
-											<button type='button' onClick={() => setQuantity(quantity + 1)} className='px-4 py-4 rounded-xl border-2 border-gray-200 hover:bg-teal-50 hover:border-teal-300 transition-all'>+</button>
+											<button type='button' onClick={() => setQuantity(quantity + 1)} className='px-4 py-4 rounded-xl border-2 border-gray-200 hover:bg-primary-50 hover:border-primary-300 transition-all'>+</button>
 										</div>
 									</motion.div>
 								</div>
@@ -382,17 +383,17 @@ const Contact: React.FC = () => {
 									initial={{ opacity: 0, y: 20 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ duration: 0.5 }}
-									className='bg-[#00B4C1]/5 border-2 border-[#00B4C1]/20 rounded-xl p-6 mb-6'
+									className='bg-primary-500/5 border-2 border-primary-500/20 rounded-xl p-6 mb-6'
 								>
 									<div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'} mb-4`}>
-										<div className='w-8 h-8 bg-[#00B4C1] rounded-lg flex items-center justify-center'>
+										<div className='w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center'>
 											<Package className='h-4 w-4 text-white' />
 										</div>
 										<h3 className='text-lg font-bold text-gray-900'>{t('orderSummary')}</h3>
 									</div>
 									
 									<div className='space-y-3'>
-										<div className='flex justify-between items-center py-2 border-b border-[#00B4C1]/10'>
+										<div className='flex justify-between items-center py-2 border-b border-primary-500/10'>
 											<span className='text-sm font-medium text-gray-600'>{t('product')}:</span>
 											<span className='text-sm font-semibold text-gray-900'>
 												{selectedProductId ? 
@@ -402,7 +403,7 @@ const Contact: React.FC = () => {
 											</span>
 										</div>
 										
-										<div className='flex justify-between items-center py-2 border-b border-[#00B4C1]/10'>
+										<div className='flex justify-between items-center py-2 border-b border-primary-500/10'>
 											<span className='text-sm font-medium text-gray-600'>{t('quantity')}:</span>
 											<span className='text-sm font-semibold text-gray-900'>{quantity}</span>
 										</div>
@@ -424,7 +425,7 @@ const Contact: React.FC = () => {
 										onChange={handleChange}
 										required
 										rows={5}
-										className='w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all resize-none bg-white'
+										className='w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all resize-none bg-white'
 										placeholder={t('tellUsAboutNeeds')}
 									/>
 									<p className='text-xs text-gray-500 mt-1'>{t('includeDeliveryInfo')}</p>
@@ -435,7 +436,7 @@ const Contact: React.FC = () => {
 									disabled={isSubmitting}
 									whileHover={{ scale: 1.02, y: -2 }}
 									whileTap={{ scale: 0.98 }}
-									className={`w-full bg-teal-600 text-white py-5 rounded-2xl font-bold text-lg flex items-center justify-center ${isRTL ? 'flex-row-reverse gap-3' : 'gap-3'} hover:bg-teal-700 disabled:bg-gray-400 disabled:text-gray-600 disabled:cursor-not-allowed transition-all duration-300 relative overflow-hidden group shadow-lg hover:shadow-xl hover:shadow-teal-500/25 border-2 border-teal-100`}>
+									className={`w-full bg-primary-600 text-white py-5 rounded-2xl font-bold text-lg flex items-center justify-center ${isRTL ? 'flex-row-reverse gap-3' : 'gap-3'} hover:bg-primary-700 disabled:bg-gray-400 disabled:text-gray-600 disabled:cursor-not-allowed transition-all duration-300 relative overflow-hidden group shadow-lg hover:shadow-xl hover:shadow-primary-500/25 border-2 border-primary-100`}>
 									{/* Shimmer effect */}
 									<div className='absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out bg-gradient-to-r from-transparent via-white/20 to-transparent'></div>
 
@@ -477,12 +478,12 @@ const Contact: React.FC = () => {
 						className='bg-white/90 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border border-white/20 relative overflow-hidden'>
 						{/* Decorative background */}
 						<div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full -translate-y-16 -translate-x-16"></div>
-						<div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-teal-400/10 to-blue-400/10 rounded-full translate-y-12 translate-x-12"></div>
+						<div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-primary-400/10 to-blue-400/10 rounded-full translate-y-12 translate-x-12"></div>
 						
 						<div className="relative">
 							{/* Location Header */}
 							<div className={`flex items-center ${isRTL ? ' space-x-reverse space-x-3' : 'space-x-3'} mb-6`}>
-								<div className='w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center'>
+								<div className='w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center'>
 									<MapPin className='h-5 w-5 text-white' />
 								</div>
 								<h3 className={`text-2xl font-semibold text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
@@ -519,19 +520,19 @@ const Contact: React.FC = () => {
 							<div className='space-y-4 mb-6'>
 								{/* Sales Phone Number */}
 								<a 
-									href={`tel:${Contactinfo.phone}`} 
-									className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''} bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all duration-200 cursor-pointer group`}
+									href={`tel:${contactInfoData?.phone || ''}`} 
+									className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''} bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-primary-200 transition-all duration-200 cursor-pointer group`}
 								>
 									<div className='flex-shrink-0'>
-										<div className='w-12 h-12 bg-green-100 rounded-full flex items-center justify-center group-hover:bg-green-200 transition-colors'>
-											<Phone className='h-6 w-6 text-green-600' />
+										<div className='w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center group-hover:bg-primary-200 transition-colors'>
+											<Phone className='h-6 w-6 text-primary-600' />
 										</div>
 									</div>
 									<div className={`${isRTL ? 'mr-4 text-right' : 'ml-4 text-left'} flex-1`}>
 										<p className='text-sm text-gray-500 font-medium group-hover:text-gray-600'>
 											{currentLanguage === 'ar' ? 'رقم المبيعات' : 'Sales Number'}
 										</p>
-										<p className='text-lg font-semibold text-gray-900 group-hover:text-green-600 transition-colors' dir="ltr">
+										<p className='text-lg font-semibold text-gray-900 group-hover:text-primary-600 transition-colors' dir="ltr">
 											+971 55 670 7773
 										</p>
 									</div>
@@ -539,7 +540,7 @@ const Contact: React.FC = () => {
 
 								{/* Email Address */}
 								<a 
-									href={`mailto:${Contactinfo.email}`} 
+									href={`mailto:${contactInfoData?.email || ''}`} 
 									className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''} bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-blue-200 transition-all duration-200 cursor-pointer group`}
 								>
 									<div className='flex-shrink-0'>
@@ -552,7 +553,7 @@ const Contact: React.FC = () => {
 											{currentLanguage === 'ar' ? 'الإيميل' : 'Email'}
 										</p>
 										<p className='text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors'>
-											{Contactinfo.email}
+											{contactInfoData?.email || ''}
 										</p>
 									</div>
 								</a>

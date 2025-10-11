@@ -143,7 +143,7 @@ const Header: React.FC<HeaderProps> = ({ isLoginPage = false }) => {
 										? 'bg-white/90 backdrop-blur-md border border-white/30 shadow-lg'
 										: 'bg-white/80 backdrop-blur-md border border-white/20 shadow-xl'
 								}
-								text-gray-700 hover:text-teal-600
+								text-gray-700 hover:text-primary-600
 							`}
 							onClick={() => actions.setIsMenuOpen(!state.isMenuOpen)}
 							whileHover={{ scale: 1.1 }}

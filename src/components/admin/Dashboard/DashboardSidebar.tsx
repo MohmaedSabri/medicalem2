@@ -12,6 +12,8 @@ import {
 	FileText,
 	Globe,
 	User,
+	Settings,
+	Truck,
 } from "lucide-react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -46,6 +48,8 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 		{ id: "posts", label: t("managePosts"), icon: FileText },
 		{ id: "add-doctor", label: t("addDoctor"), icon: User },
 		{ id: "doctors", label: t("manageDoctors"), icon: User },
+		{ id: "contact-info", label: t("contactInformation"), icon: Settings },
+		{ id: "shipping", label: t("shippingManagement"), icon: Truck },
 	];
 
 	return (

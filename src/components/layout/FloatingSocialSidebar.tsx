@@ -1,19 +1,21 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Facebook, Instagram, Linkedin, MapPin, MessageSquare } from 'lucide-react';
-import Contactinfo from '../../constant/Contactinfo';
+import { useContactInfo } from '../../hooks/useContactInfo';
 
 interface FloatingSocialSidebarProps {
   isVisible: boolean;
 }
 
 const FloatingSocialSidebar: React.FC<FloatingSocialSidebarProps> = ({ isVisible }) => {
+  const { data: contactInfo } = useContactInfo();
+  
   const socialLinks = [
-    { icon: MessageSquare, href: Contactinfo.whatsapp, label: 'WhatsApp', color: 'hover:bg-green-600' },
-    { icon: Facebook, href: Contactinfo.facebook, label: 'Facebook', color: 'hover:bg-blue-600' },
-    { icon: Instagram, href: Contactinfo.instagram, label: 'Instagram', color: 'hover:bg-pink-500' },
-    { icon: Linkedin, href: Contactinfo.linkedin, label: 'LinkedIn', color: 'hover:bg-blue-700' },
-    { icon: MapPin, href: Contactinfo.map, label: 'Location', color: 'hover:bg-purple-500' },
+    { icon: MessageSquare, href: contactInfo?.whatsapp || '', label: 'WhatsApp', color: 'hover:bg-primary-600' },
+    { icon: Facebook, href: contactInfo?.facebook || '', label: 'Facebook', color: 'hover:bg-blue-600' },
+    { icon: Instagram, href: contactInfo?.instagram || '', label: 'Instagram', color: 'hover:bg-pink-500' },
+    { icon: Linkedin, href: contactInfo?.linkedin || '', label: 'LinkedIn', color: 'hover:bg-blue-700' },
+    { icon: MapPin, href: contactInfo?.map || '', label: 'Location', color: 'hover:bg-purple-500' },
   ];
 
   return (
@@ -53,7 +55,7 @@ const FloatingSocialSidebar: React.FC<FloatingSocialSidebarProps> = ({ isVisible
                 }}
                 whileTap={{ scale: 0.95 }}
                 className={`
-                  w-14 h-14 rounded-full bg-[#00796a] shadow-2xl
+                  w-14 h-14 rounded-full bg-primary-500 shadow-2xl
                   border-2 border-white/30
                   flex items-center justify-center
                   text-white hover:text-white
@@ -66,12 +68,12 @@ const FloatingSocialSidebar: React.FC<FloatingSocialSidebarProps> = ({ isVisible
                 <social.icon className="w-6 h-6" />
                 
                 {/* Tooltip */}
-                <div className="absolute left-16 bg-[#00796a] text-white px-3 py-2 rounded-lg 
+                <div className="absolute left-16 bg-primary-500 text-white px-3 py-2 rounded-lg 
                               shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300
                               whitespace-nowrap pointer-events-none border border-white/20">
                   {social.label}
                   <div className="absolute left-0 top-1/2 transform -translate-y-1/2 
-                                w-2 h-2 bg-[#00796a] rotate-45 border-l border-b border-white/20"></div>
+                                w-2 h-2 bg-primary-500 rotate-45 border-l border-b border-white/20"></div>
                 </div>
               </motion.a>
             ))}

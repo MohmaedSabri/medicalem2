@@ -15,7 +15,7 @@ import {
   User,
 } from 'lucide-react';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import Contactinfo from '../../../constant/Contactinfo';
+import { useContactInfo } from '../../../hooks/useContactInfo';
 
 interface MobileMenuProps {
   isMenuOpen: boolean;
@@ -33,6 +33,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   onChangeLanguage,
 }) => {
   const navigate = useNavigate();
+  const { data: contactInfo } = useContactInfo();
 
   const navigationItems = [
     {
@@ -129,8 +130,8 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                           flex items-center w-full p-4 rounded-2xl transition-all duration-300 group
                           ${
                             isActive
-                              ? 'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-lg shadow-teal-500/30'
-                              : 'text-gray-700 hover:bg-teal-50 hover:text-teal-600 hover:shadow-md'
+                              ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/30'
+                              : 'text-gray-700 hover:bg-primary-50 hover:text-primary-600 hover:shadow-md'
                           }
                         `}
                       >
@@ -138,7 +139,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                           className={`p-2 rounded-xl ${
                             isActive
                               ? 'bg-white/20'
-                              : 'bg-teal-100 group-hover:bg-teal-200'
+                              : 'bg-primary-100 group-hover:bg-primary-200'
                           } transition-colors ${isRTL ? 'ml-3' : 'mr-3'}`}
                         >
                           <IconComponent className="h-5 w-5" />
@@ -174,9 +175,9 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                   <Link
                     to="/products"
                     onClick={onClose}
-                    className="flex items-center w-full p-4 rounded-2xl text-gray-700 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-600 transition-all duration-300 group"
+                    className="flex items-center w-full p-4 rounded-2xl text-gray-700 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100 hover:text-primary-600 transition-all duration-300 group"
                   >
-                    <div className="p-2 rounded-xl bg-teal-100 group-hover:bg-teal-200 transition-colors mr-3">
+                    <div className="p-2 rounded-xl bg-primary-100 group-hover:bg-primary-200 transition-colors mr-3">
                       <Package className="h-5 w-5" />
                     </div>
                     <span className="font-medium flex-1">
@@ -199,7 +200,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                     <motion.div
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
-                      className="flex flex-col items-center p-4 bg-gradient-to-br from-teal-50 to-teal-100 rounded-2xl text-teal-600 hover:shadow-lg transition-all duration-300"
+                      className="flex flex-col items-center p-4 bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl text-primary-600 hover:shadow-lg transition-all duration-300"
                     >
                       <ShoppingCart className="h-6 w-6 mb-2" />
                       <span className="text-xs font-medium">
@@ -208,7 +209,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                     </motion.div>
                   </Link>
                   <motion.a
-                    href={`tel:${Contactinfo.phone}`}
+                    href={`tel:${contactInfo?.phone || ''}`}
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     className="flex flex-col items-center p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl text-emerald-600 hover:shadow-lg transition-all duration-300"
@@ -244,7 +245,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                       whileTap={{ scale: 0.98 }}
                       className={`p-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                         currentLanguage === 'en'
-                          ? 'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-lg shadow-teal-500/30'
+                          ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/30'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
@@ -256,7 +257,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                       whileTap={{ scale: 0.98 }}
                       className={`p-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                         currentLanguage === 'ar'
-                          ? 'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-lg shadow-teal-500/30'
+                          ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/30'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >

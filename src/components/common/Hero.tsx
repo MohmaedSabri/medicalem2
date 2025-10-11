@@ -65,9 +65,9 @@ const Hero: React.FC = () => {
 				id='home'
 				className='relative  overflow-hidden max-w-full '>
 			
-				{/* Floating green card wrapper */}
+				{/* Floating primary card wrapper */}
 				<div className='relative mx-auto max-w-6xl lg:max-w-7xl
-				 rounded-[24px] md:rounded-[28px] lg:rounded-[32px] bg-[#00796a] 
+				 rounded-[24px] md:rounded-[28px] lg:rounded-[32px] bg-primary-500 
 				 mx-auto
 				 mt-28
 				 '>
@@ -87,7 +87,7 @@ const Hero: React.FC = () => {
 								{t('forHealthcareExcellence')}
 							</h1>
 
-							<p className={`text-xs sm:text-sm lg:text-base text-teal-100 mb-4 sm:mb-6 max-w-lg mx-auto ${isRTL ? 'leading-[3.25] max-w-md sm:max-w-lg break-words lg:mr-0' : 'leading-relaxed lg:ml-0'}`}>
+							<p className={`text-xs sm:text-sm lg:text-base text-primary-100 mb-4 sm:mb-6 max-w-lg mx-auto ${isRTL ? 'leading-[3.25] max-w-md sm:max-w-lg break-words lg:mr-0' : 'leading-relaxed lg:ml-0'}`}>
 								{t('heroDescription')}
 							</p>
 

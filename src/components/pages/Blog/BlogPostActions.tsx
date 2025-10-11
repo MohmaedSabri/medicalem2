@@ -50,7 +50,7 @@ const BlogPostActions: React.FC<BlogPostActionsProps> = ({
 
 				<button
 					onClick={onShare}
-					className='flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-teal-100 text-teal-700 rounded-lg hover:bg-teal-200 transition-colors border border-teal-200 text-sm sm:text-base'>
+					className='flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-primary-100 text-primary-700 rounded-lg hover:bg-primary-200 transition-colors border border-primary-200 text-sm sm:text-base'>
 					<Share2 className='w-4 h-4 sm:w-5 sm:h-5' />
 					<span>{t("share")}</span>
 				</button>

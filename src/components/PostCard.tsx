@@ -94,7 +94,7 @@ const PostCard: React.FC<PostCardProps> = ({
 	const getStatusBadgeColor = (status: string) => {
 		switch (status) {
 			case "published":
-				return "bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200";
+				return "bg-gradient-to-r from-primary-100 to-primary-200 text-primary-800 border border-primary-200";
 			case "draft":
 				return "bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800 border border-yellow-200";
 			case "archived":

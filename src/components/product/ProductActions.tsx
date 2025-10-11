@@ -30,7 +30,7 @@ const ProductActions: React.FC<ProductActionsProps> = ({
           disabled={!product.inStock}
           className={`w-full py-3 sm:py-4 px-4 sm:px-6 rounded-xl font-semibold text-base sm:text-lg transition-colors shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 ${
             product.inStock
-              ? "bg-teal-600 text-white hover:bg-teal-700"
+              ? "bg-primary-600 text-white hover:bg-primary-700"
               : "bg-gray-400 text-gray-200 cursor-not-allowed"
           }`}
           aria-label={product.inStock ? "Contact sales" : "Out of stock"}

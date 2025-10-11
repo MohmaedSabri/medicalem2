@@ -4,10 +4,8 @@ import {
   Home,
   BookOpen,
   Info,
-  Phone,
   Zap,
   User,
-  ShoppingCart,
 } from 'lucide-react';
 import ProductsDropdown from './ProductsDropdown';
 import LanguageDropdown from './LanguageDropdown';
@@ -71,17 +69,7 @@ const DesktopNavigation: React.FC<DesktopNavigationProps> = ({
       path: '/about',
       label: currentLanguage === 'ar' ? 'من نحن' : 'About',
       icon: Info,
-    },
-    {
-      path: '/contact',
-      label: currentLanguage === 'ar' ? 'اتصل بنا' : 'Contact',
-      icon: Phone,
-    },
-    {
-      path: '/cart',
-      label: currentLanguage === 'ar' ? 'السلة' : 'Cart',
-      icon: ShoppingCart,
-    },
+    }
   ];
 
   return (
@@ -105,8 +93,8 @@ const DesktopNavigation: React.FC<DesktopNavigationProps> = ({
                   relative flex items-center px-2 sm:px-3 xl:px-2 py-1 sm:py-2 xl:py-3 rounded-full transition-all duration-200
                   ${
                     isActive
-                      ? 'bg-teal-600 text-white shadow-md'
-                      : 'text-gray-700 hover:text-teal-600 hover:bg-white/50'
+                      ? 'bg-primary-600 text-white shadow-md'
+                      : 'text-gray-700 hover:text-primary-600 hover:bg-white/50'
                   }
                 `}
               >

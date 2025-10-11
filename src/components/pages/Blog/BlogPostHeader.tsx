@@ -42,12 +42,12 @@ const BlogPostHeader: React.FC<BlogPostHeaderProps> = ({
 					alt={getTitle()}
 					className='w-full h-48 sm:h-64 md:h-80 lg:h-96 xl:h-[28rem] object-cover'
 				/>
-				<div className='absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-teal-600/20'></div>
+				<div className='absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-primary-600/20'></div>
 
 				{/* Category Badge */}
 				<div className='absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4'>
 					<span className='inline-flex items-center space-x-1 bg-white/95 backdrop-blur-sm text-gray-800 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 text-xs sm:text-sm font-medium rounded-md sm:rounded-lg border border-white/20 shadow-lg'>
-						<FileText className='w-3 h-3 sm:w-4 sm:h-4 text-teal-600' />
+						<FileText className='w-3 h-3 sm:w-4 sm:h-4 text-primary-600' />
 						<span className='hidden xs:inline'>
 							{(() => {
 								if (typeof post.category === 'string') return post.category;
@@ -97,12 +97,12 @@ const BlogPostHeader: React.FC<BlogPostHeaderProps> = ({
 				{/* About the Author - top */}
 				<div className='mb-6 sm:mb-8 bg-white rounded-xl border border-gray-100 p-4 sm:p-6 shadow-sm'>
 					<h3 className='text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-3 sm:mb-4 flex items-center space-x-2'>
-						<User className='w-5 h-5 sm:w-6 sm:h-6 text-teal-600' />
+						<User className='w-5 h-5 sm:w-6 sm:h-6 text-primary-600' />
 						<span>{t("aboutTheAuthor")}</span>
 					</h3>
 					<div className='flex items-center space-x-3 sm:space-x-4'>
-						<div className='w-12 h-12 sm:w-14 sm:h-14 bg-teal-100 rounded-full flex items-center justify-center flex-shrink-0'>
-							<User className='w-6 h-6 sm:w-7 sm:h-7 text-teal-600' />
+						<div className='w-12 h-12 sm:w-14 sm:h-14 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0'>
+							<User className='w-6 h-6 sm:w-7 sm:h-7 text-primary-600' />
 						</div>
 						<div className='min-w-0 flex-1'>
 							<h4 className='text-base sm:text-lg font-semibold text-gray-900 truncate'>
@@ -121,28 +121,28 @@ const BlogPostHeader: React.FC<BlogPostHeaderProps> = ({
 					{/* Meta Information */}
 					<div className='flex flex-wrap items-center gap-3 sm:gap-4 md:gap-6 text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base'>
 						<div className='flex items-center space-x-1 sm:space-x-2'>
-							<User className='w-4 h-4 sm:w-5 sm:h-5 text-teal-600 flex-shrink-0' />
+							<User className='w-4 h-4 sm:w-5 sm:h-5 text-primary-600 flex-shrink-0' />
 							<span className='truncate max-w-[120px] sm:max-w-none'>{post.authorName}</span>
 						</div>
 						<div className='flex items-center space-x-1 sm:space-x-2'>
-							<Calendar className='w-4 h-4 sm:w-5 sm:h-5 text-teal-600 flex-shrink-0' />
+							<Calendar className='w-4 h-4 sm:w-5 sm:h-5 text-primary-600 flex-shrink-0' />
 							<span className='hidden xs:inline'>{formatDate(post.createdAt)}</span>
 							<span className='xs:hidden'>{new Date(post.createdAt).toLocaleDateString()}</span>
 						</div>
 						<div className='flex items-center space-x-1 sm:space-x-2'>
-							<Clock className='w-4 h-4 sm:w-5 sm:h-5 text-teal-600 flex-shrink-0' />
+							<Clock className='w-4 h-4 sm:w-5 sm:h-5 text-primary-600 flex-shrink-0' />
 							<span>
 								{calculateReadingTime(getContent())} {t("minRead")}
 							</span>
 						</div>
 						<div className='flex items-center space-x-1 sm:space-x-2'>
-							<Eye className='w-4 h-4 sm:w-5 sm:h-5 text-teal-600 flex-shrink-0' />
+							<Eye className='w-4 h-4 sm:w-5 sm:h-5 text-primary-600 flex-shrink-0' />
 							<span>
 								{post.views} {t("views")}
 							</span>
 						</div>
 						<div className='flex items-center space-x-1 sm:space-x-2'>
-							<Heart className='w-4 h-4 sm:w-5 sm:h-5 text-teal-600 flex-shrink-0' />
+							<Heart className='w-4 h-4 sm:w-5 sm:h-5 text-primary-600 flex-shrink-0' />
 							<span>
 								{post.likes} {t("likes")}
 							</span>
@@ -154,7 +154,7 @@ const BlogPostHeader: React.FC<BlogPostHeaderProps> = ({
 							{post.tags.map((tag, index) => (
 								<span
 									key={index}
-									className='px-2 sm:px-3 py-1 bg-teal-100 text-teal-700 text-xs sm:text-sm rounded-full border border-teal-200'>
+									className='px-2 sm:px-3 py-1 bg-primary-100 text-primary-700 text-xs sm:text-sm rounded-full border border-primary-200'>
 									#{tag}
 								</span>
 							))}

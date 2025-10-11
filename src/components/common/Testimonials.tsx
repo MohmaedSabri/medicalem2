@@ -204,7 +204,7 @@ const Testimonials: React.FC = () => {
 	return (
 		<section
 			id='testimonials'
-			className='bg-gradient-to-br from-slate-50 via-white to-teal-50/30 py-16 sm:py-20 lg:py-24'>
+			className='bg-gradient-to-br from-slate-50 via-white to-primary-50/30 py-16 sm:py-20 lg:py-24'>
 			<div className='container mx-auto px-4 sm:px-6 lg:px-8'>
 				<motion.div
 					className='text-center mb-12 lg:mb-16'
@@ -246,7 +246,7 @@ const Testimonials: React.FC = () => {
 								{/* Quote Icon */}
 								<div className='flex justify-center mb-8'>
 									<motion.div
-										className='w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center shadow-lg'
+										className='w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center shadow-lg'
 										whileHover={{ scale: 1.1, rotate: 5 }}
 										transition={{ type: "spring", stiffness: 300 }}>
 										<Quote className='w-8 h-8 text-white' />
@@ -290,7 +290,7 @@ const Testimonials: React.FC = () => {
 										className='relative'
 										whileHover={{ scale: 1.05 }}
 										transition={{ type: "spring", stiffness: 300 }}>
-										<div className='w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-4 border-teal-100 shadow-lg'>
+										<div className='w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-4 border-primary-100 shadow-lg'>
 											<img
 												src={currentTestimonial.image}
 												alt={
@@ -302,7 +302,7 @@ const Testimonials: React.FC = () => {
 											/>
 										</div>
 										{/* Glow effect */}
-										<div className='absolute inset-0 rounded-full bg-gradient-to-br from-teal-400/20 to-transparent animate-pulse'></div>
+										<div className='absolute inset-0 rounded-full bg-gradient-to-br from-primary-400/20 to-transparent animate-pulse'></div>
 									</motion.div>
 
 									{/* Client Details */}
@@ -317,7 +317,7 @@ const Testimonials: React.FC = () => {
 												: currentTestimonial.name}
 										</motion.h4>
 										<motion.p
-											className='text-teal-600 font-semibold text-lg mb-1'
+											className='text-primary-600 font-semibold text-lg mb-1'
 											initial={{ opacity: 0, x: -20 }}
 											animate={{ opacity: 1, x: 0 }}
 											transition={{ delay: 0.9, duration: 0.6 }}>
@@ -375,7 +375,7 @@ const Testimonials: React.FC = () => {
 								onClick={() => goToTestimonial(index)}
 								className={`w-3 h-3 rounded-full transition-all duration-300 ${
 									index === currentIndex
-										? "bg-teal-500 scale-125"
+										? "bg-primary-500 scale-125"
 										: "bg-slate-300 hover:bg-slate-400"
 								}`}
 								whileHover={{ scale: 1.2 }}

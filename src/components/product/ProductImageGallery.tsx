@@ -62,7 +62,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
           {/* Subcategory Badge */}
           <div className='absolute top-2 sm:top-4 left-2 sm:left-4'>
             <span className='inline-flex items-center space-x-1 sm:space-x-2 bg-white/95 backdrop-blur-sm -webkit-backdrop-blur-sm text-gray-800 px-2 sm:px-3 py-1.5 rounded-lg font-medium border border-white/20 shadow-lg text-xs sm:text-sm'>
-              <Zap className='w-3 h-3 sm:w-4 sm:h-4 text-teal-600' />
+              <Zap className='w-3 h-3 sm:w-4 sm:h-4 text-primary-600' />
               <span className='hidden sm:inline'>
                 {(() => {
                   const productSubcategoryId = typeof product.subcategory === 'string' ? product.subcategory : product.subcategory?._id;
@@ -91,8 +91,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
                 onClick={() => setSelectedImage(index)}
                 className={`relative overflow-hidden rounded-lg border-2 transition-all duration-300 ${
                   selectedImage === index
-                    ? "border-teal-500 shadow-lg"
-                    : "border-gray-200 hover:border-teal-300"
+                    ? "border-primary-500 shadow-lg"
+                    : "border-gray-200 hover:border-primary-300"
                 }`}
                 aria-label={`View image ${index + 1} of ${product.images.length}`}
                 title={`View image ${index + 1} of ${product.images.length}`}

@@ -15,6 +15,8 @@ import PostCreateForm from "../admin/Post/PostCreateForm";
 import ManagePosts from "../admin/ManagePosts";
 import AddDoctorForm from "../forms/AddDoctorForm";
 import ManageDoctors from "../admin/ManageDoctors";
+import ContactInfoManagement from "../admin/ContactInfo/ContactInfoManagement";
+import ShippingManagement from "../admin/Shipping/ShippingManagement";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { useDoctors } from "../../hooks/useDoctors";
@@ -162,6 +164,8 @@ const Dashboard: React.FC = () => {
 			posts: t("managePosts"),
 			"add-doctor": t("addDoctor"),
 			doctors: t("manageDoctors"),
+			"contact-info": t("contactInformation"),
+			shipping: t("shippingManagement"),
 		}),
 		[t]
 	);
@@ -201,7 +205,7 @@ const Dashboard: React.FC = () => {
 			{
 				label: t("inStock"),
 				value: inStockProducts.toString(),
-				color: "bg-green-500",
+				color: "bg-primary-500",
 				icon: Package,
 				loading: productsLoading,
 			},
@@ -229,7 +233,7 @@ const Dashboard: React.FC = () => {
 			{
 				label: t("publishedPosts"),
 				value: publishedPosts.toString(),
-				color: "bg-green-500",
+				color: "bg-primary-500",
 				icon: FileText,
 				loading: postsLoading,
 			},
@@ -305,6 +309,10 @@ const Dashboard: React.FC = () => {
 				return <AddDoctorForm onClose={() => setActiveTab("dashboard")} />;
 			case "doctors":
 				return <ManageDoctors />;
+			case "contact-info":
+				return <ContactInfoManagement />;
+			case "shipping":
+				return <ShippingManagement />;
 			case "dashboard":
 			default:
 				return (

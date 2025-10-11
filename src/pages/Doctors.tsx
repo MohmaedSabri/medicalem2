@@ -70,7 +70,7 @@ const Doctors: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header Section */}
-      <section className="bg-gradient-to-br from-teal-600 via-teal-700 to-emerald-700 py-16 lg:py-24 pt-8">
+      <section className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 py-16 lg:py-24 pt-8">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -81,7 +81,7 @@ const Doctors: React.FC = () => {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
               {t('ourExpertDoctors')}
             </h1>
-            <p className="text-xl lg:text-2xl text-teal-100 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl lg:text-2xl text-primary-100 max-w-3xl mx-auto leading-relaxed">
               {t('meetOurQualifiedMedicalProfessionals')}
             </p>
           </motion.div>
@@ -108,7 +108,7 @@ const Doctors: React.FC = () => {
                       placeholder={t('searchDoctors')}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                     />
                   </div>
                 </div>
@@ -118,7 +118,7 @@ const Doctors: React.FC = () => {
                   <select
                     value={selectedSpecialization}
                     onChange={(e) => setSelectedSpecialization(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                   >
                     <option value="">{t('allSpecializations')}</option>
                     {specializations.map((spec, index) => (
@@ -132,7 +132,7 @@ const Doctors: React.FC = () => {
                   <select
                     value={selectedLocation}
                     onChange={(e) => setSelectedLocation(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                   >
                     <option value="">{t('allLocations')}</option>
                     {locations.map((location, index) => (
@@ -152,7 +152,7 @@ const Doctors: React.FC = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {isLoading ? (
             <div className="flex justify-center items-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
             </div>
           ) : doctors.length === 0 ? (
             <motion.div
@@ -179,9 +179,9 @@ const Doctors: React.FC = () => {
                   className="group"
                 >
                   <Link to={`/doctors/${(doctor as any)._id}`} className="block">
-                  <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl hover:shadow-teal-500/20 transition-all duration-500 overflow-hidden border border-gray-100 h-full">
+                  <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl hover:shadow-primary-500/20 transition-all duration-500 overflow-hidden border border-gray-100 h-full">
                     {/* Doctor Image */}
-                    <div className="relative h-64 bg-gradient-to-br from-teal-50 to-blue-50 overflow-hidden">
+                    <div className="relative h-64 bg-gradient-to-br from-primary-50 to-blue-50 overflow-hidden">
                       <motion.img
                         src={(doctor as any).image}
                         alt={getLocalizedText((doctor as any).name)}
@@ -196,13 +196,13 @@ const Doctors: React.FC = () => {
                     {/* Doctor Info */}
                     <div className="p-6">
                       <motion.h3 
-                        className={`text-xl font-bold text-gray-900 mb-2 group-hover:text-teal-700 transition-colors duration-300 ${isRTL ? 'text-right' : 'text-left'}`}
+                        className={`text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-700 transition-colors duration-300 ${isRTL ? 'text-right' : 'text-left'}`}
                       >
                         {getLocalizedText((doctor as any).name)}
                       </motion.h3>
                       
                       <motion.p 
-                        className={`text-teal-600 font-semibold mb-3 group-hover:text-teal-700 transition-colors duration-300 ${isRTL ? 'text-right' : 'text-left'}`}
+                        className={`text-primary-600 font-semibold mb-3 group-hover:text-primary-700 transition-colors duration-300 ${isRTL ? 'text-right' : 'text-left'}`}
                       >
                         {getLocalizedText((doctor as any).title)}
                       </motion.p>
@@ -215,7 +215,7 @@ const Doctors: React.FC = () => {
 
                       {/* Specialization */}
                       <div className={`flex items-center mb-4 ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}>
-                        <Award className={`w-4 h-4 text-teal-500 ${isRTL ? 'ml-2' : 'mr-2'}`} />
+                        <Award className={`w-4 h-4 text-primary-500 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                         <span className="text-sm text-gray-600">
                           {getLocalizedText((doctor as any).specialization)}
                         </span>
@@ -223,7 +223,7 @@ const Doctors: React.FC = () => {
 
                       {/* Location */}
                       <div className={`flex items-center mb-4 ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}>
-                        <MapPin className={`w-4 h-4 text-teal-500 ${isRTL ? 'ml-2' : 'mr-2'}`} />
+                        <MapPin className={`w-4 h-4 text-primary-500 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                         <span className="text-sm text-gray-600">
                           {getLocalizedText((doctor as any).location)}
                         </span>
@@ -231,7 +231,7 @@ const Doctors: React.FC = () => {
 
                       {/* Contact */}
                       <div className={`flex items-center mb-6 ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}>
-                        <Phone className={`w-4 h-4 text-teal-500 ${isRTL ? 'ml-2' : 'mr-2'}`} />
+                        <Phone className={`w-4 h-4 text-primary-500 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                         <span className="text-sm text-gray-600">
                           {(doctor as any).contact}
                         </span>
@@ -239,7 +239,7 @@ const Doctors: React.FC = () => {
 
                       {/* Action Button (non-link to avoid nested links) */}
                       <div
-                        className={`w-full bg-gradient-to-r from-teal-500 to-emerald-500 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform flex items-center justify-center ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}
+                        className={`w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform flex items-center justify-center ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}
                       >
                         <User className="w-5 h-5" />
                         <span>{t('viewProfile')}</span>

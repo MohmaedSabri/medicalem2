@@ -133,7 +133,7 @@ const Products: React.FC = () => {
 				className='py-8 sm:py-12 md:py-16 lg:py-20 bg-gradient-to-br relative overflow-hidden pb-24'>
 				<div className='container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10 min-h-[60vh] flex items-center justify-center'>
 					<div className='text-center'>
-						<div className='animate-spin rounded-full h-16 w-16 border-4 border-teal-200 border-t-teal-600 mx-auto mb-4'></div>
+						<div className='animate-spin rounded-full h-16 w-16 border-4 border-primary-200 border-t-primary-600 mx-auto mb-4'></div>
 						<p className='text-gray-600'>Loading products...</p>
 					</div>
 				</div>
@@ -178,13 +178,13 @@ const Products: React.FC = () => {
 						whileInView={{ opacity: 1, scale: 1 }}
 						viewport={{ once: true }}
 						transition={{ delay: 0.2, duration: 0.8 }}
-						className='inline-flex items-center space-x-1.5 sm:space-x-2 bg-teal-50 px-3 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-3 rounded-full border border-teal-200 mb-3 sm:mb-4 md:mb-6'>
-						<span className='text-teal-700 font-medium text-xs sm:text-sm md:text-base'>
+						className='inline-flex items-center space-x-1.5 sm:space-x-2 bg-primary-50 px-3 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-3 rounded-full border border-primary-200 mb-3 sm:mb-4 md:mb-6'>
+						<span className='text-primary-700 font-medium text-xs sm:text-sm md:text-base'>
 							{t('premiumMedicalEquipment')}
 						</span>
 					</motion.div>
 
-					<h2 className='text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-teal-600 mb-3 sm:mb-4 md:mb-6 px-2'>
+					<h2 className='text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-primary-600 mb-3 sm:mb-4 md:mb-6 px-2'>
 						{t('featured')}
 					</h2>
 					<p className='text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 max-w-2xl lg:max-w-3xl mx-auto leading-relaxed px-4 sm:px-2 md:px-0'>
@@ -207,7 +207,7 @@ const Products: React.FC = () => {
 							whileTap={{ scale: 0.95 }}
 							onClick={() => paginate(-1)}
 							className='hidden sm:flex absolute left-3 sm:left-4 md:left-5 lg:left-6 top-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16 bg-white/95 backdrop-blur-sm rounded-full items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 border border-white/30 group touch-manipulation px-1 sm:px-2 md:px-3'>
-							<ChevronLeft className='w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 text-gray-700 group-hover:text-teal-600 transition-colors' />
+							<ChevronLeft className='w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 text-gray-700 group-hover:text-primary-600 transition-colors' />
 						</motion.button>
 
 						<motion.button
@@ -215,7 +215,7 @@ const Products: React.FC = () => {
 							whileTap={{ scale: 0.95 }}
 							onClick={() => paginate(1)}
 							className='hidden sm:flex absolute right-3 sm:right-4 md:right-5 lg:right-6 top-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16 bg-white/95 backdrop-blur-sm rounded-full items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 border border-white/30 group touch-manipulation px-1 sm:px-2 md:px-3'>
-							<ChevronRight className='w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 text-gray-700 group-hover:text-teal-600 transition-colors' />
+							<ChevronRight className='w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 text-gray-700 group-hover:text-primary-600 transition-colors' />
 						</motion.button>
 
 						<AnimatePresence initial={false} custom={direction} mode='wait'>
@@ -257,12 +257,12 @@ const Products: React.FC = () => {
 												/>
 
 												{/* Mobile-Optimized Fallback */}
-												<div className='absolute inset-0 flex items-center justify-center bg-gradient-to-br from-teal-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
+												<div className='absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
 													<div className='text-center'>
-														<div className='w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-3 bg-teal-100 rounded-full flex items-center justify-center'>
-															<Zap className='w-6 h-6 sm:w-8 sm:h-8 text-teal-600' />
+														<div className='w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-3 bg-primary-100 rounded-full flex items-center justify-center'>
+															<Zap className='w-6 h-6 sm:w-8 sm:h-8 text-primary-600' />
 														</div>
-														<p className='text-teal-700 font-medium text-xs sm:text-sm'>
+														<p className='text-primary-700 font-medium text-xs sm:text-sm'>
 															Medical Equipment
 														</p>
 													</div>
@@ -270,7 +270,7 @@ const Products: React.FC = () => {
 											</div>
 
 											{/* Responsive Gradient Overlay */}
-											<div className='absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-teal-600/20 lg:from-black/20 lg:to-teal-600/30'></div>
+											<div className='absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-primary-600/20 lg:from-black/20 lg:to-primary-600/30'></div>
 
 											{/* Mobile-Optimized Subcategory Badge */}
 											<motion.div
@@ -279,7 +279,7 @@ const Products: React.FC = () => {
 												transition={{ delay: 0.4 }}
 												className='absolute top-2 left-2 sm:top-3 sm:left-3 md:top-4 md:left-4 lg:top-6 lg:left-6'>
 												<span 												className={`inline-flex items-center space-x-1 sm:space-x-1.5 md:space-x-2 bg-white/95 backdrop-blur-sm text-gray-800 px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 lg:px-5 lg:py-3 rounded-lg sm:rounded-xl md:rounded-2xl font-medium border border-white/20 shadow-lg text-xs sm:text-sm md:text-base ${isArabicText(getLocalizedText(typeof displayProducts[currentIndex]?.subcategory === "string" ? displayProducts[currentIndex]?.subcategory : displayProducts[currentIndex]?.subcategory?.name)) ? 'flex-row-reverse' : ''}`}>
-													<Star className='w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-teal-600' />
+													<Star className='w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-primary-600' />
 													<span>
 														{getLocalizedText(typeof displayProducts[currentIndex]?.subcategory ===
 														"string"
@@ -332,7 +332,7 @@ const Products: React.FC = () => {
 																`/product/${displayProducts[currentIndex]?._id}`
 															)
 														}
-														className={`inline-flex items-center justify-center space-x-1.5 sm:space-x-2 md:space-x-3 bg-teal-600 text-white px-3 py-2 xs:px-4 xs:py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-4 rounded-lg sm:rounded-xl md:rounded-2xl font-semibold hover:bg-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl text-xs xs:text-sm sm:text-base touch-manipulation ${isRTL ? 'flex-row-reverse' : ''}`}>
+														className={`inline-flex items-center justify-center space-x-1.5 sm:space-x-2 md:space-x-3 bg-primary-600 text-white px-3 py-2 xs:px-4 xs:py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-4 rounded-lg sm:rounded-xl md:rounded-2xl font-semibold hover:bg-primary-700 transition-all duration-300 shadow-lg hover:shadow-xl text-xs xs:text-sm sm:text-base touch-manipulation ${isRTL ? 'flex-row-reverse' : ''}`}>
 														<span>{t('learnMore')}</span>
 														<ArrowRight className={`w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 ${isRTL ? 'rotate-180' : ''}`} />
 													</motion.button>
@@ -341,7 +341,7 @@ const Products: React.FC = () => {
 														whileHover={{ scale: 1.02, y: -1 }}
 														whileTap={{ scale: 0.98 }}
 														onClick={() => navigate(`/contact?productId=${displayProducts[currentIndex]?._id}`)}
-														className='inline-flex items-center justify-center space-x-1.5 sm:space-x-2 md:space-x-3 bg-white text-gray-800 px-3 py-2 xs:px-4 xs:py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-4 rounded-lg sm:rounded-xl md:rounded-2xl font-semibold border border-gray-200 sm:border-2 hover:border-teal-300 hover:text-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl text-xs xs:text-sm sm:text-base touch-manipulation'>
+														className='inline-flex items-center justify-center space-x-1.5 sm:space-x-2 md:space-x-3 bg-white text-gray-800 px-3 py-2 xs:px-4 xs:py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-4 rounded-lg sm:rounded-xl md:rounded-2xl font-semibold border border-gray-200 sm:border-2 hover:border-primary-300 hover:text-primary-700 transition-all duration-300 shadow-lg hover:shadow-xl text-xs xs:text-sm sm:text-base touch-manipulation'>
 														<span>{t('requestDemo')}</span>
 													</motion.button>
 												</motion.div>
@@ -368,15 +368,15 @@ const Products: React.FC = () => {
 								}`}>
 								<div
 									className={`absolute inset-0 rounded-full transition-all duration-300 ${
-										index === currentIndex
-											? "bg-teal-600 shadow-md"
-											: "bg-gray-300 hover:bg-gray-400"
+									index === currentIndex
+										? "bg-primary-600 shadow-md"
+										: "bg-gray-300 hover:bg-gray-400"
 									}`}
 								/>
 								{index === currentIndex && (
 									<motion.div
 										layoutId='activeIndicator'
-										className='absolute inset-0 rounded-full bg-teal-600 shadow-md'
+										className='absolute inset-0 rounded-full bg-primary-600 shadow-md'
 									/>
 								)}
 							</motion.button>
@@ -395,9 +395,9 @@ const Products: React.FC = () => {
 						whileHover={{ scale: 1.05, y: -3 }}
 						whileTap={{ scale: 0.98 }}
 						onClick={() => navigate("/products")}
-						className='group relative inline-flex items-center space-x-2 sm:space-x-3 md:space-x-4 bg-white text-teal-600 border-2 border-teal-600 px-4 py-2.5 sm:px-6 sm:py-3 md:px-10 md:py-4 lg:px-12 lg:py-5 rounded-lg sm:rounded-xl md:rounded-2xl font-semibold shadow-lg sm:shadow-xl hover:shadow-2xl hover:shadow-teal-500/50 hover:border-teal-400 hover:bg-teal-600 hover:text-white text-sm sm:text-base touch-manipulation w-full xs:w-auto max-w-xs xs:max-w-none mx-auto transition-all duration-500 ease-out overflow-hidden'>
+						className='group relative inline-flex items-center space-x-2 sm:space-x-3 md:space-x-4 bg-white text-primary-600 border-2 border-primary-600 px-4 py-2.5 sm:px-6 sm:py-3 md:px-10 md:py-4 lg:px-12 lg:py-5 rounded-lg sm:rounded-xl md:rounded-2xl font-semibold shadow-lg sm:shadow-xl hover:shadow-2xl hover:shadow-primary-500/50 hover:border-primary-400 hover:bg-primary-600 hover:text-white text-sm sm:text-base touch-manipulation w-full xs:w-auto max-w-xs xs:max-w-none mx-auto transition-all duration-500 ease-out overflow-hidden'>
 						{/* Animated background glow */}
-						<div className='absolute inset-0 bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500 ease-out rounded-lg sm:rounded-xl md:rounded-2xl'></div>
+						<div className='absolute inset-0 bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 opacity-0 group-hover:opacity-20 transition-opacity duration-500 ease-out rounded-lg sm:rounded-xl md:rounded-2xl'></div>
 						
 						{/* Sparkle effects */}
 						<div className='absolute inset-0 overflow-hidden rounded-lg sm:rounded-xl md:rounded-2xl'>

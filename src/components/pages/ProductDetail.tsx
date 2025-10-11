@@ -177,7 +177,7 @@ const ProductDetail: React.FC = () => {
 			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24'>
 				<div className='container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12'>
 					<div className='text-center py-16 sm:py-20'>
-						<div className='animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-teal-600 mx-auto mb-4'></div>
+						<div className='animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-primary-600 mx-auto mb-4'></div>
 	
 					</div>
 				</div>
@@ -202,7 +202,7 @@ const ProductDetail: React.FC = () => {
 					</p>
 					<button
 						onClick={() => navigate("/products")}
-						className='inline-flex items-center space-x-2 bg-teal-600 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors text-sm sm:text-base'>
+						className='inline-flex items-center space-x-2 bg-primary-600 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors text-sm sm:text-base'>
 						<ArrowLeft className='w-4 h-4' />
 						<span>Return to Products</span>
 					</button>
@@ -220,7 +220,7 @@ const ProductDetail: React.FC = () => {
 					duration: 3000,
 					icon: '🛒',
 					style: {
-						background: '#10b981',
+						background: '#0ba7ae',
 						color: '#fff',
 					},
 				}
@@ -304,7 +304,7 @@ const ProductDetail: React.FC = () => {
 							{/* Subcategory Badge */}
 							<div className='absolute top-2 sm:top-4 left-2 sm:left-4'>
 								<span className='inline-flex items-center space-x-1 sm:space-x-2 bg-white/95 backdrop-blur-sm -webkit-backdrop-blur-sm text-gray-800 px-2 sm:px-3 py-1.5 rounded-lg font-medium border border-white/20 shadow-lg text-xs sm:text-sm'>
-									<Zap className='w-3 h-3 sm:w-4 sm:h-4 text-teal-600' />
+									<Zap className='w-3 h-3 sm:w-4 sm:h-4 text-primary-600' />
 									<span className='hidden sm:inline'>
 										{(() => {
 											const productSubcategoryId = typeof product.subcategory === 'string' ? product.subcategory : product.subcategory?._id;
@@ -333,8 +333,8 @@ const ProductDetail: React.FC = () => {
 										onClick={() => setSelectedImage(index)}
 										className={`relative overflow-hidden rounded-lg border-2 transition-all duration-300 ${
 											selectedImage === index
-												? "border-teal-500 shadow-lg"
-												: "border-gray-200 hover:border-teal-300"
+												? "border-primary-500 shadow-lg"
+												: "border-gray-200 hover:border-primary-300"
 										}`}
 										aria-label={`View image ${index + 1} of ${product.images.length}`}
 										title={`View image ${index + 1} of ${product.images.length}`}
@@ -370,9 +370,9 @@ const ProductDetail: React.FC = () => {
 								initial={{ opacity: 0, y: 15 }}
 								animate={{ opacity: 1, y: 0 }}
 								transition={{ delay: 0.3 }}
-								className='inline-flex items-center space-x-1 sm:space-x-2 bg-teal-50 px-2 sm:px-3 py-1.5 rounded-full border border-teal-200 mb-2 sm:mb-3 lg:mb-4'>
-								<Zap className='w-3 h-3 sm:w-4 sm:h-4 text-teal-600' />
-								<span className='text-teal-700 font-medium text-xs sm:text-sm'>
+								className='inline-flex items-center space-x-1 sm:space-x-2 bg-primary-50 px-2 sm:px-3 py-1.5 rounded-full border border-primary-200 mb-2 sm:mb-3 lg:mb-4'>
+								<Zap className='w-3 h-3 sm:w-4 sm:h-4 text-primary-600' />
+								<span className='text-primary-700 font-medium text-xs sm:text-sm'>
 									Premium Medical Equipment
 								</span>
 							</motion.div>
@@ -417,7 +417,7 @@ const ProductDetail: React.FC = () => {
 								animate={{ opacity: 1, y: 0 }}
 								transition={{ delay: 0.6 }}
 								className='mb-3 sm:mb-4 lg:mb-6'>
-								<div className='text-3xl sm:text-4xl md:text-5xl font-bold text-teal-600'>
+								<div className='text-3xl sm:text-4xl md:text-5xl font-bold text-primary-600'>
 									<span className='inline-flex items-center gap-2'>
 										{currentLanguage === 'ar' ? (
 											<span>د.ا</span>
@@ -547,7 +547,7 @@ const ProductDetail: React.FC = () => {
 										onChange={(e) =>
 											setNewReview({ ...newReview, user: e.target.value })
 										}
-										className='w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm'
+										className='w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm'
 										required
 										aria-required="true"
 									/>
@@ -566,7 +566,7 @@ const ProductDetail: React.FC = () => {
 												onClick={() =>
 													setNewReview({ ...newReview, rating: i + 1 })
 												}
-												className="focus:outline-none focus:ring-2 focus:ring-teal-500 rounded"
+												className="focus:outline-none focus:ring-2 focus:ring-primary-500 rounded"
 												aria-label={`Rate ${i + 1} star${i === 0 ? '' : 's'}`}
 												title={`Rate ${i + 1} star${i === 0 ? '' : 's'}`}
 												aria-pressed={newReview.rating === i + 1}
@@ -592,7 +592,7 @@ const ProductDetail: React.FC = () => {
 										id="review-comment"
 										name="review-comment"
 										rows={3}
-										className='w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm'
+										className='w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm'
 										placeholder='Write your review here...'
 										value={newReview.comment}
 										onChange={(e) =>
@@ -606,7 +606,7 @@ const ProductDetail: React.FC = () => {
 								<button
 									type="button"
 									onClick={handleAddReview}
-									className='mt-3 inline-flex items-center space-x-2 bg-teal-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors text-sm holographic-card'
+									className='mt-3 inline-flex items-center space-x-2 bg-primary-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-primary-700 transition-colors text-sm holographic-card'
 									aria-label="Submit review"
 									title="Submit review"
 								>
@@ -629,8 +629,8 @@ const ProductDetail: React.FC = () => {
 								className={`w-full py-3 sm:py-4 px-4 sm:px-6 rounded-xl font-semibold text-base sm:text-lg transition-colors shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 ${
 									product.inStock
 										? isInCart(product._id)
-											? "bg-green-600 text-white hover:bg-green-700"
-											: "bg-teal-600 text-white hover:bg-teal-700"
+											? "bg-primary-600 text-white hover:bg-primary-700"
+											: "bg-primary-600 text-white hover:bg-primary-700"
 										: "bg-gray-400 text-gray-200 cursor-not-allowed"
 								}`}
 								aria-label={product.inStock ? (isInCart(product._id) ? "Added to cart" : "Add to cart") : "Out of stock"}
@@ -699,7 +699,7 @@ const ProductDetail: React.FC = () => {
 						<div className='text-center mb-6 sm:mb-8 lg:mb-12'>
 							<h2 className='text-2xl sm:text-3xl md:text-4xl font-light text-gray-900 mb-2 sm:mb-3 lg:mb-4'>
 								Related
-								<span className='block font-semibold text-teal-600 mt-1'>
+								<span className='block font-semibold text-primary-600 mt-1'>
 									Products
 								</span>
 							</h2>
@@ -727,7 +727,7 @@ const ProductDetail: React.FC = () => {
 										/>
 										<div className='absolute top-2 left-2'>
 											<span className='inline-flex items-center space-x-1 bg-white/95 backdrop-blur-sm text-gray-800 px-2 py-1 rounded-lg text-xs font-medium'>
-												<Zap className='w-3 h-3 text-teal-600' />
+												<Zap className='w-3 h-3 text-primary-600' />
 												<span className='hidden sm:inline'>
 													{getLocalizedText(getSubcategoryName(relatedProduct.subcategory))}
 												</span>
@@ -742,7 +742,7 @@ const ProductDetail: React.FC = () => {
 											{getLocalizedProductField(relatedProduct.name)}
 										</h3>
 										<div className='flex items-center justify-between'>
-											<span className='text-teal-600 font-bold text-sm sm:text-base inline-flex items-center gap-1.5'>
+											<span className='text-primary-600 font-bold text-sm sm:text-base inline-flex items-center gap-1.5'>
 												{currentLanguage === 'ar' ? (
 													<span>د.ا</span>
 												) : (

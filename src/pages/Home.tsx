@@ -9,6 +9,7 @@ import Products from "../components/pages/Products";
 import OurTeam from "../components/common/OurTeam";
 import Testimonials from "../components/common/Testimonials";
 import WhyChooseUs from "../components/common/WhyChooseUs";
+import Partners from "../components/common/Partners";
 import Contact from "../components/common/Contact";
 import Footer from "../components/layout/Footer";
 import SectionBridge from "../components/ui/SectionBridge";
@@ -58,7 +59,9 @@ const Home: React.FC = () => {
 			<div className='min-h-screen px-4 sm:px-6 md:px-10 lg:px-12 bg-white max-w-full overflow-x-hidden'>
 				<Header />
 				<Hero />
-				<Ceo />
+				<WhyChooseUs />
+				<Partners />
+				<Products />
 				{/* Simple Section Divider */}
 				<svg
 					viewBox='0 0 1440 60'
@@ -66,13 +69,12 @@ const Home: React.FC = () => {
 					className='w-full'
 					style={{ height: "80px" }}></svg>
 
-				<Products />
 
 				{/* Why Choose Us Section */}
-				<WhyChooseUs />
 
 				{/* Our Team Section - Moved after Why Choose Us */}
 				<OurTeam />
+				<Ceo />
 
 				{/* Testimonials Section - Added after Team Section */}
 				<Testimonials />
@@ -82,8 +84,8 @@ const Home: React.FC = () => {
 				<svg width='0' height='0'>
 					<defs>
 						<linearGradient id='gradientWave' x1='0%' y1='0%' x2='100%' y2='0%'>
-							<stop offset='0%' stopColor='#134e4a' />
-							<stop offset='100%' stopColor='#0f766e' />
+							<stop offset='0%' stopColor='#043337' />
+							<stop offset='100%' stopColor='#086d72' />
 						</linearGradient>
 					</defs>
 				</svg>

@@ -93,7 +93,7 @@ const RecentPosts: React.FC<RecentPostsProps> = ({
 								<span
 									className={`px-2 py-1 rounded-full text-xs font-medium ${
 										post.status === "published"
-											? "bg-green-100 text-green-800"
+											? "bg-primary-100 text-primary-800"
 											: post.status === "draft"
 											? "bg-yellow-100 text-yellow-800"
 											: "bg-gray-100 text-gray-800"

@@ -15,12 +15,13 @@ import { useTranslation } from "react-i18next";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { useProducts } from "../../hooks/useProducts";
 import { Link } from "react-router-dom";
-import Contactinfo from "../../constant/Contactinfo";
+import { useContactInfo } from "../../hooks/useContactInfo";
 
 const Footer: React.FC = () => {
 	const { t } = useTranslation();
 	const { currentLanguage, isRTL } = useLanguage();
 	const { data: apiProducts = [] } = useProducts();
+	const { data: contactInfo } = useContactInfo();
 
 	// Helper: get localized text from string or {en, ar}
 	const getLocalizedProductField = (
@@ -44,9 +45,9 @@ const Footer: React.FC = () => {
 	}));
 
 	const socialLinks = [
-		{ icon: Facebook, href: Contactinfo.facebook, label: "Facebook" },
-		{ icon: Linkedin, href: Contactinfo.linkedin, label: "LinkedIn" },
-		{ icon: Instagram, href: Contactinfo.instagram, label: "Instagram" },
+		{ icon: Facebook, href: contactInfo?.facebook || '', label: "Facebook" },
+		{ icon: Linkedin, href: contactInfo?.linkedin || '', label: "LinkedIn" },
+		{ icon: Instagram, href: contactInfo?.instagram || '', label: "Instagram" },
 	];
 
 	return (
@@ -91,7 +92,7 @@ const Footer: React.FC = () => {
 						transition={{ duration: 0.6 }}
 						className='space-y-6 lg:w-1/4 px-4 sm:px-6 lg:px-4 xl:px-6 2xl:px-8'>
 						<div className='flex items-center gap-2'>
-							<Activity className='h-6 w-6 text-teal-400 flex-shrink-0' />
+							<Activity className='h-6 w-6 text-primary-400 flex-shrink-0' />
 							<span className='text-lg font-bold'>{isRTL ? 'درر' : 'Dorar'}</span>
 						</div>
 						<p className={`text-gray-400 leading-relaxed ${isRTL ? 'text-right' : 'text-left'}`}>
@@ -99,19 +100,19 @@ const Footer: React.FC = () => {
 						</p>
 						<div className='space-y-4'>
 							<div className='flex items-center gap-2'>
-								<Mail className='h-4 w-4 text-teal-400 flex-shrink-0' />
-								<span className='text-sm text-gray-300' dir="ltr">{Contactinfo.email}</span>
+								<Mail className='h-4 w-4 text-primary-400 flex-shrink-0' />
+								<span className='text-sm text-gray-300' dir="ltr">{contactInfo?.email || ''}</span>
 							</div>
 							<div className='flex items-center gap-2'>
-								<Phone className='h-4 w-4 text-teal-400 flex-shrink-0' />
+								<Phone className='h-4 w-4 text-primary-400 flex-shrink-0' />
 								<span className='text-sm text-gray-300' dir='ltr'>
-									{Contactinfo.phone}
+									{contactInfo?.phone || ''}
 								</span>
 							</div>
 							<div className='flex items-center gap-2'>
-								<MapPin className='h-4 w-4 text-teal-400 flex-shrink-0' />
+								<MapPin className='h-4 w-4 text-primary-400 flex-shrink-0' />
 								<span className='text-sm text-gray-300'>
-									{Contactinfo.address}
+									{contactInfo?.address || ''}
 								</span>
 							</div>
 						</div>
@@ -130,7 +131,7 @@ const Footer: React.FC = () => {
 								<li key={product.id}>
 									<Link
 										to={product.href}
-										className='text-gray-400 hover:text-teal-400 transition-colors block'>
+										className='text-gray-400 hover:text-primary-400 transition-colors block'>
 										<motion.span
 											whileHover={{ x: isRTL ? -5 : 5 }}
 											className='inline-block'>
@@ -161,7 +162,7 @@ const Footer: React.FC = () => {
 									key={social.label}
 									href={social.href}
 									whileHover={{ scale: 1.1, y: -2 }}
-									className='w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 hover:text-teal-400 hover:bg-gray-700 transition-colors'
+									className='w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 hover:text-primary-400 hover:bg-gray-700 transition-colors'
 									aria-label={social.label}>
 									<social.icon className='h-5 w-5' />
 								</motion.a>
@@ -187,21 +188,21 @@ const Footer: React.FC = () => {
 						<Link to='/privacy-policy'>
 							<motion.span
 								whileHover={{ scale: 1.05 }}
-								className='text-gray-400 hover:text-teal-400 transition-colors cursor-pointer'>
+								className='text-gray-400 hover:text-primary-400 transition-colors cursor-pointer'>
 								{t("privacyPolicy")}
 							</motion.span>
 						</Link>
 						<Link to='/privacy-policy'>
 							<motion.span
 								whileHover={{ scale: 1.05 }}
-								className='text-gray-400 hover:text-teal-400 transition-colors cursor-pointer'>
+								className='text-gray-400 hover:text-primary-400 transition-colors cursor-pointer'>
 								{t("termsOfService")}
 							</motion.span>
 						</Link>
 						<Link to='/privacy-policy'>
 							<motion.span
 								whileHover={{ scale: 1.05 }}
-								className='text-gray-400 hover:text-teal-400 transition-colors cursor-pointer'>
+								className='text-gray-400 hover:text-primary-400 transition-colors cursor-pointer'>
 								{t("cookiePolicy")}
 							</motion.span>
 						</Link>

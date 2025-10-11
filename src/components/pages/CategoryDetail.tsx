@@ -171,7 +171,7 @@ const CategoryDetail: React.FC = () => {
 									<span className="font-semibold text-teal-600">{t('currencySymbol')} {product.price?.toLocaleString()}</span>
 									<span className={`text-sm px-2 py-1 rounded-full ${
 										product.inStock 
-											? "bg-green-100 text-green-800" 
+											? "bg-primary-100 text-primary-800" 
 											: "bg-red-100 text-red-800"
 									}`}>
 										{product.inStock ? "In Stock" : "Out of Stock"}

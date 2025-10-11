@@ -1,12 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { MessageCircle } from 'lucide-react';
-import Contactinfo from '../../constant/Contactinfo';
+import { useContactInfo } from '../../hooks/useContactInfo';
 
 const WhatsAppFloatingButton: React.FC = () => {
+  const { data: contactInfo } = useContactInfo();
+  
   return (
     <motion.a
-      href={Contactinfo.whatsapp}
+      href={contactInfo?.whatsapp || ''}
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-50"
@@ -21,7 +23,7 @@ const WhatsAppFloatingButton: React.FC = () => {
     >
       <div className="relative group">
         {/* Main Button */}
-        <div className="w-12 h-12 bg-green-500 hover:bg-green-600 rounded-full shadow-md flex items-center justify-center cursor-pointer transition-colors duration-200">
+        <div className="w-12 h-12 bg-primary-500 hover:bg-primary-600 rounded-full shadow-md flex items-center justify-center cursor-pointer transition-colors duration-200">
           <MessageCircle className="w-6 h-6 text-white" />
         </div>
         

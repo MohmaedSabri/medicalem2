@@ -36,6 +36,29 @@ const enTranslations = {
 		viewCart: "View Cart",
 		professionalMedicalEquipment: "Professional Medical Equipment",
 
+		// Contact Info Management
+		socialMediaLinks: "Social Media Links",
+		ceoPhotos: "CEO Photos",
+		ceoPhoto: "CEO Photo",
+		ceoSmallPhoto: "CEO Small Photo",
+		partners: "Partners",
+		addPartner: "Add Partner",
+		editPartner: "Edit Partner",
+		altText: "Alt Text",
+		websiteUrl: "Website URL",
+		adding: "Adding...",
+		contactInfoUpdated: "Contact information updated successfully",
+		updateFailed: "Failed to update contact information",
+		partnerAdded: "Partner added successfully",
+		addPartnerFailed: "Failed to add partner",
+		partnerUpdated: "Partner updated successfully",
+		updatePartnerFailed: "Failed to update partner",
+		confirmDeletePartner: "Are you sure you want to delete this partner?",
+		partnerDeleted: "Partner deleted successfully",
+		deletePartnerFailed: "Failed to delete partner",
+		errorLoadingContactInfo: "Error loading contact information",
+		noContactInfoFound: "No contact information found",
+
 		// Favorites Page
 		favoritesTitle: "My Favorites",
 		favoritesSubtitle:
@@ -115,6 +138,10 @@ const enTranslations = {
 		filter: "Filter",
 		sort: "Sort",
 		view: "View",
+		back: "Back",
+		print: "Print",
+		downloadPDF: "Download PDF",
+		generating: "Generating...",
 
 		// Status
 		inStock: "In Stock",
@@ -123,14 +150,78 @@ const enTranslations = {
 		error: "Error",
 		success: "Success",
 
+		// Bank Account
+		bankAccountDetails: "Bank Account Details",
+		bankAccountDescription: "Complete banking information for payments and transfers",
+		companyInformation: "Company Information",
+		companyName: "Company Name",
+		bankingDetails: "Banking Details",
+		customerTRN: "Customer TRN",
+		poBox: "P.O Box",
+		accountType: "Account Type",
+		accountNumber: "Account Number",
+		iban: "IBAN",
+		currency: "Currency",
+		branch: "Branch",
+		importantNotice: "Important Notice",
+		bankAccountNotice: "Please use your Order ID as the payment reference when making bank transfers. All payments should be made in AED currency.",
+		clickToViewBankDetails: "Click to view our banking details for payment",
+		viewBankDetails: "View Bank Details",
+
+		// Invoice
+		invoice: "Invoice",
+		invoiceDetails: "Invoice Details",
+		billTo: "Bill To",
+		description: "Description",
+		qty: "Qty",
+		price: "Price",
+		paymentMethod: "Payment Method",
+		notes: "Notes",
+		dueDate: "Due Date",
+
 		// Contact
 		getInTouch: "Get in Touch",
 		sendMessage: "Send Message",
 		name: "Name",
-		email: "Email",
 		message: "Message",
-		phone: "Phone",
 		subject: "Subject",
+		
+		// Phone Types
+		homePhone: "Home Phone",
+		clinicPhone: "Clinic Phone",
+		enterHomePhone: "Enter your home phone number",
+		enterClinicPhone: "Enter your clinic phone number",
+		
+		// Shipping Management
+		shippingManagement: "Shipping Management",
+		manageShippingCosts: "Manage shipping costs for different emirates",
+		addEmirate: "Add Emirate",
+		addNewEmirate: "Add New Emirate",
+		emirateName: "Emirate Name",
+		enterEmirateName: "Enter emirate name",
+		shippingCost: "Shipping Cost",
+		emiratesShippingCosts: "Emirates Shipping Costs",
+		lastUpdated: "Last Updated",
+		shippingSummary: "Shipping Summary",
+		totalEmirates: "Total Emirates",
+		averageCost: "Average Cost",
+		shippingCostUpdated: "Shipping cost updated successfully",
+		emirateAdded: "Emirate added successfully",
+		emirateDeleted: "Emirate deleted successfully",
+		confirmDeleteEmirate: "Are you sure you want to delete this emirate?",
+		exportConfig: "Export shipping configuration",
+		export: "Export",
+		import: "Import",
+		reset: "Reset",
+		resetToDefault: "Reset to default configuration",
+		configExported: "Configuration exported successfully",
+		configImported: "Configuration imported successfully",
+		invalidConfigFile: "Invalid configuration file",
+		failedToImportConfig: "Failed to import configuration",
+		configResetToDefault: "Configuration reset to default",
+		confirmResetToDefault: "Are you sure you want to reset to default configuration? This will overwrite all current settings.",
+		syncNotice: "Sync Notice",
+		localStorageNotice: "Changes are saved locally on this device only. Use Export/Import to sync across devices.",
 		readyToUpgrade:
 			"Ready to upgrade your medical facility? Contact our experts for personalized equipment recommendations and competitive pricing.",
 		emailUs: "Email Us",
@@ -153,7 +244,6 @@ const enTranslations = {
 		sending: "Sending...",
 		failedToSendMessage:
 			"Failed to send message. Please try again or contact us directly.",
-		orderSummary: "Order Summary",
 		noProductSelected: "No product selected",
 		ourLocation: "Our Location",
 		medEquipProHeadquarters: "Dorar Medical Equipment",
@@ -198,7 +288,6 @@ const enTranslations = {
 			"View, edit, and delete your product categories",
 		addNewCategory: "Add New Category",
 		categoryName: "Category Name",
-		description: "Description",
 		addCategory: "Add Category",
 		created: "Created",
 		actions: "Actions",
@@ -249,7 +338,6 @@ const enTranslations = {
 		yearsExperience: "Years Experience",
 		medicalDevices: "Medical Devices",
 		healthcareClients: "Healthcare Clients",
-		currency: "AED",
 		currencySymbol: "د.إ",
 
 		// CEO Section
@@ -305,6 +393,12 @@ const enTranslations = {
 		drivenByOneGoal:
 			'"we\'ve been driven by one goal to elevate healthcare delivery standards in the UAE and the GCC region"',
 		getFreeConsultation: "Get Free Consultation",
+
+		// Partners Section
+		trustedPartners: "Trusted Partners",
+		ourPartners: "Our Partners",
+		partnersDescription: "We work with leading healthcare organizations and medical institutions worldwide to deliver cutting-edge medical equipment solutions.",
+		partnersNote: "Join our growing network of healthcare partners and experience the difference of working with industry leaders.",
 
 		// Footer
 		leadingProvider:
@@ -411,14 +505,12 @@ const enTranslations = {
 
 		// Form Fields
 		productName: "Product Name",
-		price: "Price",
 		subcategory: "Subcategory",
 		images: "Images",
 		reviews: "Reviews",
 		features: "Features",
 		specifications: "Specifications",
 		stockQuantity: "Stock Quantity",
-		shipping: "Shipping",
 		warranty: "Warranty",
 		certifications: "Certifications",
 		enterProductName: "Enter product name",
@@ -583,6 +675,29 @@ const arTranslations = {
 		viewCart: "عرض السلة",
 		professionalMedicalEquipment: "معدات طبية احترافية",
 
+		// Contact Info Management
+		socialMediaLinks: "روابط وسائل التواصل الاجتماعي",
+		ceoPhotos: "صور الرئيس التنفيذي",
+		ceoPhoto: "صورة الرئيس التنفيذي",
+		ceoSmallPhoto: "صورة الرئيس التنفيذي الصغيرة",
+		partners: "الشركاء",
+		addPartner: "إضافة شريك",
+		editPartner: "تعديل الشريك",
+		altText: "النص البديل",
+		websiteUrl: "رابط الموقع",
+		adding: "جاري الإضافة...",
+		contactInfoUpdated: "تم تحديث معلومات الاتصال بنجاح",
+		updateFailed: "فشل في تحديث معلومات الاتصال",
+		partnerAdded: "تم إضافة الشريك بنجاح",
+		addPartnerFailed: "فشل في إضافة الشريك",
+		partnerUpdated: "تم تحديث الشريك بنجاح",
+		updatePartnerFailed: "فشل في تحديث الشريك",
+		confirmDeletePartner: "هل أنت متأكد من حذف هذا الشريك؟",
+		partnerDeleted: "تم حذف الشريك بنجاح",
+		deletePartnerFailed: "فشل في حذف الشريك",
+		errorLoadingContactInfo: "خطأ في تحميل معلومات الاتصال",
+		noContactInfoFound: "لم يتم العثور على معلومات الاتصال",
+
 		// Favorites Page
 		favoritesTitle: "المفضلة",
 		favoritesSubtitle:
@@ -662,6 +777,10 @@ const arTranslations = {
 		filter: "تصفية",
 		sort: "ترتيب",
 		view: "عرض",
+		back: "رجوع",
+		print: "طباعة",
+		downloadPDF: "تحميل PDF",
+		generating: "جاري التوليد...",
 
 		// Status
 		inStock: "متوفر",
@@ -670,14 +789,78 @@ const arTranslations = {
 		error: "خطأ",
 		success: "نجح",
 
+		// Bank Account
+		bankAccountDetails: "تفاصيل الحساب البنكي",
+		bankAccountDescription: "معلومات مصرفية كاملة للمدفوعات والتحويلات",
+		companyInformation: "معلومات الشركة",
+		companyName: "اسم الشركة",
+		bankingDetails: "التفاصيل المصرفية",
+		customerTRN: "رقم التسجيل الضريبي للعميل",
+		poBox: "صندوق البريد",
+		accountType: "نوع الحساب",
+		accountNumber: "رقم الحساب",
+		iban: "رقم الآيبان",
+		currency: "العملة",
+		branch: "الفرع",
+		importantNotice: "إشعار مهم",
+		bankAccountNotice: "يرجى استخدام رقم الطلب كمرجع للدفع عند إجراء التحويلات البنكية. يجب أن تكون جميع المدفوعات بالدرهم الإماراتي.",
+		clickToViewBankDetails: "انقر لعرض تفاصيلنا المصرفية للدفع",
+		viewBankDetails: "عرض التفاصيل المصرفية",
+
+		// Invoice
+		invoice: "الفاتورة",
+		invoiceDetails: "تفاصيل الفاتورة",
+		billTo: "الفاتورة إلى",
+		description: "الوصف",
+		qty: "الكمية",
+		price: "السعر",
+		paymentMethod: "طريقة الدفع",
+		notes: "ملاحظات",
+		dueDate: "تاريخ الاستحقاق",
+
 		// Contact
 		getInTouch: "تواصل معنا",
 		sendMessage: "إرسال رسالة",
 		name: "الاسم",
-		email: "البريد الإلكتروني",
 		message: "الرسالة",
-		phone: "الهاتف",
 		subject: "الموضوع",
+		
+		// Phone Types
+		homePhone: "هاتف المنزل",
+		clinicPhone: "هاتف العيادة",
+		enterHomePhone: "أدخل رقم هاتف المنزل",
+		enterClinicPhone: "أدخل رقم هاتف العيادة",
+		
+		// Shipping Management
+		shippingManagement: "إدارة الشحن",
+		manageShippingCosts: "إدارة تكاليف الشحن للإمارات المختلفة",
+		addEmirate: "إضافة إمارة",
+		addNewEmirate: "إضافة إمارة جديدة",
+		emirateName: "اسم الإمارة",
+		enterEmirateName: "أدخل اسم الإمارة",
+		shippingCost: "تكلفة الشحن",
+		emiratesShippingCosts: "تكاليف شحن الإمارات",
+		lastUpdated: "آخر تحديث",
+		shippingSummary: "ملخص الشحن",
+		totalEmirates: "إجمالي الإمارات",
+		averageCost: "متوسط التكلفة",
+		shippingCostUpdated: "تم تحديث تكلفة الشحن بنجاح",
+		emirateAdded: "تم إضافة الإمارة بنجاح",
+		emirateDeleted: "تم حذف الإمارة بنجاح",
+		confirmDeleteEmirate: "هل أنت متأكد من حذف هذه الإمارة؟",
+		exportConfig: "تصدير إعدادات الشحن",
+		export: "تصدير",
+		import: "استيراد",
+		reset: "إعادة تعيين",
+		resetToDefault: "إعادة تعيين إلى الإعدادات الافتراضية",
+		configExported: "تم تصدير الإعدادات بنجاح",
+		configImported: "تم استيراد الإعدادات بنجاح",
+		invalidConfigFile: "ملف إعدادات غير صالح",
+		failedToImportConfig: "فشل في استيراد الإعدادات",
+		configResetToDefault: "تم إعادة تعيين الإعدادات إلى الافتراضية",
+		confirmResetToDefault: "هل أنت متأكد من إعادة تعيين الإعدادات إلى الافتراضية؟ سيتم استبدال جميع الإعدادات الحالية.",
+		syncNotice: "إشعار المزامنة",
+		localStorageNotice: "التغييرات محفوظة محلياً على هذا الجهاز فقط. استخدم التصدير/الاستيراد للمزامنة عبر الأجهزة.",
 		readyToUpgrade:
 			"هل أنت مستعد لترقية منشأة الرعاية الصحية الخاصة بك؟ تواصل مع خبرائنا للحصول على توصيات معدات مخصصة وأسعار تنافسية.",
 		emailUs: "راسلنا عبر البريد الإلكتروني",
@@ -699,7 +882,6 @@ const arTranslations = {
 		sending: "جاري الإرسال...",
 		failedToSendMessage:
 			"فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى أو التواصل معنا مباشرة.",
-		orderSummary: "ملخص الطلب",
 		noProductSelected: "لم يتم اختيار منتج",
 		ourLocation: "موقعنا",
 		medEquipProHeadquarters: "درر للمعدات الطبية",
@@ -742,7 +924,6 @@ const arTranslations = {
 		manageCategoriesDescription: "عرض وتحرير وحذف فئات المنتجات الخاصة بك",
 		addNewCategory: "إضافة فئة جديدة",
 		categoryName: "اسم الفئة",
-		description: "الوصف",
 		addCategory: "إضافة فئة",
 		created: "تاريخ الإنشاء",
 		actions: "الإجراءات",
@@ -791,7 +972,6 @@ const arTranslations = {
 		yearsExperience: "سنوات الخبرة",
 		medicalDevices: "الأجهزة الطبية",
 		healthcareClients: "عملاء الرعاية الصحية",
-		currency: "درهم إماراتي",
 		currencySymbol: "د.إ",
 
 		// CEO Section
@@ -847,6 +1027,12 @@ const arTranslations = {
 		drivenByOneGoal:
 			'"لقد كنا مدفوعين بهدف واحد وهو رفع معايير الرعاية الصحية في دولة الإمارات العربية المتحدة ومنطقة دول مجلس التعاون الخليجي"',
 		getFreeConsultation: "احصل على استشارة مجانية",
+
+		// Partners Section
+		trustedPartners: "شركاء موثوقون",
+		ourPartners: "شركاؤنا",
+		partnersDescription: "نعمل مع منظمات الرعاية الصحية والمؤسسات الطبية الرائدة في جميع أنحاء العالم لتقديم حلول المعدات الطبية المتطورة.",
+		partnersNote: "انضم إلى شبكة شركاء الرعاية الصحية المتنامية لدينا واكتشف الفرق في العمل مع قادة الصناعة.",
 
 		// Footer
 		leadingProvider:
@@ -952,14 +1138,12 @@ const arTranslations = {
 
 		// Form Fields
 		productName: "اسم المنتج",
-		price: "السعر",
 		subcategory: "الفئة الفرعية",
 		images: "الصور",
 		reviews: "التقييمات",
 		features: "المميزات",
 		specifications: "المواصفات",
 		stockQuantity: "كمية المخزون",
-		shipping: "الشحن",
 		warranty: "الضمان",
 		certifications: "الشهادات",
 		enterProductName: "أدخل اسم المنتج",

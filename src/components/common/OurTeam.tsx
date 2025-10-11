@@ -202,8 +202,8 @@ const OurTeam: React.FC = () => {
           >
             <motion.div variants={itemVariants} className="mb-6">
               <motion.div 
-                className={`inline-flex items-center ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'} bg-teal-100 text-teal-700 px-4 py-2 rounded-full text-sm font-medium mb-4`}
-                whileHover={{ scale: 1.05, backgroundColor: "#0f766e", color: "#ffffff" }}
+                className={`inline-flex items-center ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'} bg-primary-100 text-primary-700 px-4 py-2 rounded-full text-sm font-medium mb-4`}
+                whileHover={{ scale: 1.05, backgroundColor: "#0ba7ae", color: "#ffffff" }}
                 transition={{ duration: 0.2 }}
               >
                 <span>{t('ourTeam')}</span>
@@ -257,12 +257,12 @@ const OurTeam: React.FC = () => {
                   style={{ perspective: "1000px" }}
                 >
                   <Link to={isDoctor ? `/doctors/${memberId}` : '#'} className="block">
-                  <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl hover:shadow-teal-500/30 hover:border-teal-300 transition-all duration-500 overflow-hidden border border-gray-100 relative">
+                  <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl hover:shadow-primary-500/30 hover:border-primary-300 transition-all duration-500 overflow-hidden border border-gray-100 relative">
                     {/* Shimmer Effect */}
                     <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
                     
                     {/* Profile Image */}
-                    <div className="relative h-64 bg-gradient-to-br from-teal-50 to-blue-50 overflow-hidden">
+                    <div className="relative h-64 bg-gradient-to-br from-primary-50 to-blue-50 overflow-hidden">
                       <motion.img
                         src={memberImage}
                         alt={memberName}
@@ -286,13 +286,13 @@ const OurTeam: React.FC = () => {
                       transition={{ duration: 0.2 }}
                     >
                       <motion.h3 
-                        className={`text-lg font-bold text-gray-900 mb-1 group-hover:text-teal-700 transition-colors duration-300 ${isRTL ? 'text-right' : 'text-left'}`}
+                        className={`text-lg font-bold text-gray-900 mb-1 group-hover:text-primary-700 transition-colors duration-300 ${isRTL ? 'text-right' : 'text-left'}`}
                         whileHover={{ scale: 1.02 }}
                       >
                         {memberName}
                       </motion.h3>
                       <motion.p 
-                        className={`text-teal-600 font-medium text-sm group-hover:text-teal-700 transition-colors duration-300 ${isRTL ? 'text-right' : 'text-left'}`}
+                        className={`text-primary-600 font-medium text-sm group-hover:text-primary-700 transition-colors duration-300 ${isRTL ? 'text-right' : 'text-left'}`}
                         whileHover={{ scale: 1.02 }}
                       >
                         {memberPosition}
@@ -312,7 +312,7 @@ const OurTeam: React.FC = () => {
                       {/* Button for Doctors (non-link to avoid nested links) */}
                       {isDoctor && (
                         <div
-                          className={`group relative mt-4 inline-block bg-teal-500 text-white py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-300 transform flex items-center justify-center shadow-md hover:shadow-lg hover:shadow-teal-500/40 ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}
+                          className={`group relative mt-4 inline-block bg-primary-500 text-white py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-300 transform flex items-center justify-center shadow-md hover:shadow-lg hover:shadow-primary-500/40 ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}
                         >
                           <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-lg"></div>
                           <div className="relative z-10 flex items-center">

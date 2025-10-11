@@ -78,7 +78,7 @@ const ProductsDropdown: React.FC<ProductsDropdownProps> = ({
     >
       <button
         onClick={onProductsClick}
-        className="flex items-center px-3 xl:px-4 py-2 xl:py-3 rounded-full text-gray-700 hover:text-teal-600 hover:bg-white/50 transition-all duration-200"
+        className="flex items-center px-3 xl:px-4 py-2 xl:py-3 rounded-full text-gray-700 hover:text-primary-600 hover:bg-white/50 transition-all duration-200"
       >
         <Package className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
         <span className="text-sm xl:text-base font-medium whitespace-nowrap">
@@ -107,7 +107,7 @@ const ProductsDropdown: React.FC<ProductsDropdownProps> = ({
           >
             {/* Header with close button */}
             <div className="flex items-center justify-between mb-4">
-              <div className="px-2 py-1 text-sm font-semibold text-teal-700 uppercase tracking-wide">
+              <div className="px-2 py-1 text-sm font-semibold text-primary-700 uppercase tracking-wide">
                 {currentLanguage === 'ar' ? 'اختر فئة' : 'Select Category'}
               </div>
               <button
@@ -140,7 +140,7 @@ const ProductsDropdown: React.FC<ProductsDropdownProps> = ({
                     >
                       <button
                         onClick={(e) => onCategoryClick(category._id, e)}
-                        className="w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-gray-700 hover:bg-teal-50 hover:text-teal-700 border border-gray-100 hover:border-teal-200 transition-all duration-200 hover:shadow-md"
+                        className="w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-700 border border-gray-100 hover:border-primary-200 transition-all duration-200 hover:shadow-md"
                       >
                         <div className="font-medium text-sm sm:text-base">
                           <span
@@ -192,7 +192,7 @@ const ProductsDropdown: React.FC<ProductsDropdownProps> = ({
                                       navigate(`/products?subcategory=${encodeURIComponent(subcategoryName)}`);
                                       onClose();
                                     }}
-                                    className={`w-full px-3 py-2 rounded-lg text-gray-600 hover:bg-teal-50 hover:text-teal-700 transition-all duration-200 text-sm ${
+                                    className={`w-full px-3 py-2 rounded-lg text-gray-600 hover:bg-primary-50 hover:text-primary-700 transition-all duration-200 text-sm ${
                                       isArabicText(subcategoryName) ? 'text-right' : 'text-left'
                                     }`}
                                   >
@@ -221,7 +221,7 @@ const ProductsDropdown: React.FC<ProductsDropdownProps> = ({
                   navigate('/products');
                   onClose();
                 }}
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-teal-600 text-white rounded-lg sm:rounded-xl hover:bg-teal-700 transition-colors font-medium text-sm sm:text-base"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-primary-600 text-white rounded-lg sm:rounded-xl hover:bg-primary-700 transition-colors font-medium text-sm sm:text-base"
               >
                 {currentLanguage === 'ar' ? 'عرض جميع المنتجات' : 'View All Products'}
               </button>

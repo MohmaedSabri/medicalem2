@@ -43,4 +43,9 @@ export const endpoints = {
 	DOCTORS_SEARCH: "/doctors/search",
 	DOCTORS_BY_SPECIALIZATION: "/doctors/specialization/:specialization",
 	DOCTORS_RATING: "/doctors/:id/rating",
+	
+	// Contact Info
+	CONTACT_INFO: "/contact-info",
+	CONTACT_INFO_PARTNERS: "/contact-info/partners",
+	CONTACT_INFO_PARTNER_BY_ID: "/contact-info/partners/:id",
 };

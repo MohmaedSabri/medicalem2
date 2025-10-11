@@ -208,7 +208,7 @@ const Blog: React.FC = () => {
 	return (
 		<div className='min-h-screen bg-white'>
 			{/* Hero Section */}
-			<section className='relative pt-32 pb-16 bg-[#00796a] overflow-hidden'>
+			<section className='relative pt-32 pb-16 bg-primary-600 overflow-hidden'>
 				{/* Simple Background Pattern */}
 				<div className='absolute inset-0 -z-20 opacity-20'>
 					<div className='absolute top-10 left-10 w-8 h-8 border-2 border-white/20 transform rotate-45'></div>
@@ -240,7 +240,7 @@ const Blog: React.FC = () => {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.6, delay: 0.2 }}
-						className='text-xl text-teal-100 max-w-3xl mx-auto'>
+						className='text-xl text-primary-100 max-w-3xl mx-auto'>
 						{t("blogDescription")}
 					</motion.p>
 				</div>
@@ -254,7 +254,7 @@ const Blog: React.FC = () => {
 							<h2 className='text-4xl font-bold text-gray-900 mb-4'>
 								{t("featuredArticles")}
 							</h2>
-							<div className='w-24 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto'></div>
+							<div className='w-24 h-1 bg-gradient-to-r from-primary-500 to-primary-600 mx-auto'></div>
 						</div>
 
 						<div className='grid md:grid-cols-2 gap-8 mb-16'>
@@ -287,8 +287,8 @@ const Blog: React.FC = () => {
 								transition={{ duration: 0.6, delay: 0.1 }}
 								className='bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100'>
 								<h3 className='text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2'>
-									<div className='w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center'>
-										<Tag className='w-4 h-4 text-teal-600' />
+									<div className='w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center'>
+										<Tag className='w-4 h-4 text-primary-600' />
 									</div>
 									<span>{t("categories")}</span>
 								</h3>
@@ -297,7 +297,7 @@ const Blog: React.FC = () => {
 										onClick={clearFilters}
 										className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
 											!filters.category
-												? "bg-teal-100 text-teal-800 border-2 border-teal-200 shadow-sm"
+												? "bg-primary-100 text-primary-800 border-2 border-primary-200 shadow-sm"
 												: "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
 										}`}>
 										{t("allCategories")}
@@ -308,7 +308,7 @@ const Blog: React.FC = () => {
 											onClick={() => handleCategoryFilter(category._id)}
 											className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
 												filters.category === category._id
-													? "bg-teal-100 text-teal-800 border-2 border-teal-200 shadow-sm"
+													? "bg-primary-100 text-primary-800 border-2 border-primary-200 shadow-sm"
 													: "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
 											}`}>
 											{getCategoryDisplayName(
@@ -330,8 +330,8 @@ const Blog: React.FC = () => {
 								transition={{ duration: 0.6, delay: 0.2 }}
 								className='bg-white rounded-xl shadow-sm p-6 border border-gray-100'>
 								<h3 className='text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2'>
-									<div className='w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center'>
-										<Filter className='w-4 h-4 text-teal-600' />
+									<div className='w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center'>
+										<Filter className='w-4 h-4 text-primary-600' />
 									</div>
 									<span>{t("sortBy")}</span>
 								</h3>
@@ -341,7 +341,7 @@ const Blog: React.FC = () => {
 										className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
 											filters.sortBy === "createdAt" &&
 											filters.sortOrder === "desc"
-												? "bg-teal-100 text-teal-800"
+												? "bg-primary-100 text-primary-800"
 												: "text-gray-600 hover:bg-gray-100"
 										}`}>
 										{t("newestFirst")}
@@ -351,7 +351,7 @@ const Blog: React.FC = () => {
 										className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
 											filters.sortBy === "createdAt" &&
 											filters.sortOrder === "asc"
-												? "bg-teal-100 text-teal-800"
+												? "bg-primary-100 text-primary-800"
 												: "text-gray-600 hover:bg-gray-100"
 										}`}>
 										{t("oldestFirst")}
@@ -360,7 +360,7 @@ const Blog: React.FC = () => {
 										onClick={() => handleSortChange("views", "desc")}
 										className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
 											filters.sortBy === "views" && filters.sortOrder === "desc"
-												? "bg-teal-100 text-teal-800"
+												? "bg-primary-100 text-primary-800"
 												: "text-gray-600 hover:bg-gray-100"
 										}`}>
 										{t("mostViewed")}
@@ -369,7 +369,7 @@ const Blog: React.FC = () => {
 										onClick={() => handleSortChange("likes", "desc")}
 										className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
 											filters.sortBy === "likes" && filters.sortOrder === "desc"
-												? "bg-teal-100 text-teal-800"
+												? "bg-primary-100 text-primary-800"
 												: "text-gray-600 hover:bg-gray-100"
 										}`}>
 										{t("mostLiked")}
@@ -389,12 +389,12 @@ const Blog: React.FC = () => {
 								className='bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100'>
 								<div className='flex items-center justify-between'>
 									<div className='flex items-center space-x-4'>
-										<Filter className='w-5 h-5 text-teal-500' />
+										<Filter className='w-5 h-5 text-primary-500' />
 										<span className='text-gray-700'>
 											{postsData?.totalPosts || 0} posts found
 										</span>
 										{filters.category && (
-											<span className='px-3 py-1 bg-teal-100 text-teal-800 text-sm font-medium rounded-full'>
+											<span className='px-3 py-1 bg-primary-100 text-primary-800 text-sm font-medium rounded-full'>
 												Category: {getCategoryName(filters.category)}
 											</span>
 										)}
@@ -414,7 +414,7 @@ const Blog: React.FC = () => {
 									{(filters.category || filters.status || filters.search) && (
 										<button
 											onClick={clearFilters}
-											className='text-teal-600 hover:text-teal-800 font-medium'>
+											className='text-primary-600 hover:text-primary-800 font-medium'>
 											Clear Filters
 										</button>
 									)}
@@ -430,7 +430,7 @@ const Blog: React.FC = () => {
 										<h2 className='text-4xl font-bold text-gray-900 mb-4'>
 											{t("latestArticles")}
 										</h2>
-										<div className='w-24 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto'></div>
+										<div className='w-24 h-1 bg-gradient-to-r from-primary-500 to-primary-600 mx-auto'></div>
 									</div>
 									<div className='grid md:grid-cols-2 gap-8'>
 										{validPosts.map((post, index) => (
@@ -471,9 +471,9 @@ const Blog: React.FC = () => {
 													key={page}
 													onClick={() => setCurrentPage(page)}
 													className={`px-4 py-2 rounded-lg transition-colors ${
-														currentPage === page
-															? "bg-teal-600 text-white"
-															: "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+													currentPage === page
+														? "bg-primary-600 text-white"
+														: "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
 													}`}>
 													{page}
 												</button>

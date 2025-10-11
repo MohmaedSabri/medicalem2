@@ -116,7 +116,7 @@ const PostFilters: React.FC<PostFiltersProps> = ({
 								</span>
 							)}
 							{statusFilter !== 'all' && (
-								<span className='px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs'>
+								<span className='px-2 py-1 bg-primary-100 text-primary-800 rounded-full text-xs'>
 									Status: {statusFilter}
 								</span>
 							)}

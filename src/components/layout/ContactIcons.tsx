@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Phone, Heart } from 'lucide-react';
-import Contactinfo from '../../constant/Contactinfo';
+import { useContactInfo } from '../../hooks/useContactInfo';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 interface ContactIconsProps {
@@ -19,6 +19,7 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
   currentLanguage 
 }) => {
   const navigate = useNavigate();
+  const { data: contactInfo, isLoading } = useContactInfo();
 
   const contactFloatingVariants = {
     animate: {
@@ -55,16 +56,16 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
       >
         <Link
           to="/cart"
-          className={`${iconBaseClasses} hover:text-teal-600`}
+          className={`${iconBaseClasses} hover:text-primary-600`}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-blue-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-primary-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
           <ShoppingCart className="mx-2 relative h-4 w-4 lg:h-5 lg:w-5 group-hover:scale-110 transition-transform duration-300" />
         </Link>
       </motion.div>
 
       {/* Phone Icon - Only visible on XL screens */}
       <motion.a
-        href={`tel:${Contactinfo.phone}`}
+        href={`tel:${contactInfo?.phone || ''}`}
         className={`${iconBaseClasses} hover:text-emerald-600 hidden xl:flex`}
         variants={contactFloatingVariants}
         animate="animate"
@@ -72,7 +73,7 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
         whileTap={{ scale: 0.95 }}
         style={{ animationDelay: '0.3s' }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-green-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-primary-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
         <Phone className="relative h-4 w-4 lg:h-5 lg:w-5 group-hover:scale-110 transition-transform duration-300" />
       </motion.a>
 
@@ -93,17 +94,17 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
         </Link>
       </motion.div>
 
-      {/* Add to Cart Button - Only visible on XL screens */}
+      {/* Contact Button - Only visible on XL screens */}
       <motion.button
-        onClick={() => navigate('/cart')}
-        className="group relative inline-flex items-center px-2 py-2 sm:px-3 sm:py-3 rounded-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white 
-        hover:from-teal-700 hover:to-emerald-700 transition-all duration-500 ease-out
-         shadow-lg hover:shadow-2xl hover:shadow-teal-500/50 overflow-hidden hidden xl:flex"
+        onClick={() => navigate('/contact')}
+        className="group relative inline-flex items-center px-2 py-2 sm:px-3 sm:py-3 rounded-full bg-gradient-to-r from-primary-600 to-primary-700 text-white 
+        hover:from-primary-700 hover:to-primary-800 transition-all duration-500 ease-out
+         shadow-lg hover:shadow-2xl hover:shadow-primary-500/50 overflow-hidden hidden xl:flex"
         whileHover={{ scale: 1.05, y: -3 }}
         whileTap={{ scale: 0.95 }}
       >
         {/* Animated background glow */}
-        <div className="absolute inset-0 bg-gradient-to-r from-teal-400 via-emerald-500 to-teal-600 opacity-0 group-hover:opacity-30 transition-opacity duration-500 ease-out rounded-full"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 opacity-0 group-hover:opacity-30 transition-opacity duration-500 ease-out rounded-full"></div>
         
         {/* Sparkle effects */}
         <div className="absolute inset-0 overflow-hidden rounded-full">
@@ -115,9 +116,9 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
 
         {/* Button content */}
         <div className={`relative z-10 flex items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
-          <ShoppingCart className={`h-3 w-3 sm:h-4 sm:w-4 mx-1 sm:mx-2 group-hover:scale-110 transition-all duration-300`} />
+          <Phone className={`h-3 w-3 sm:h-4 sm:w-4 mx-1 sm:mx-2 group-hover:scale-110 transition-all duration-300`} />
           <span className="text-xs sm:text-sm font-medium whitespace-nowrap group-hover:drop-shadow-lg transition-all duration-300 hidden sm:block">
-            {currentLanguage === 'ar' ? 'السلة' : 'View Cart'}
+            {currentLanguage === 'ar' ? 'اتصل بنا' : 'Contact Us'}
           </span>
         </div>
       </motion.button>

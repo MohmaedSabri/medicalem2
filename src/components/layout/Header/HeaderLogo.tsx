@@ -14,7 +14,7 @@ const HeaderLogo: React.FC<HeaderLogoProps> = ({ isScrolled, isMobile, isRTL }) 
     const target = e.target as HTMLImageElement;
     target.style.display = 'none';
     const fallback = document.createElement('div');
-    fallback.className = 'relative w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 bg-teal-600 rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:rotate-12';
+    fallback.className = 'relative w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 bg-primary-600 rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:rotate-12';
     fallback.innerHTML = '<span class="text-white font-bold text-xs sm:text-sm lg:text-base">M</span>';
     target.parentNode?.appendChild(fallback);
   };
@@ -42,7 +42,7 @@ const HeaderLogo: React.FC<HeaderLogoProps> = ({ isScrolled, isMobile, isRTL }) 
           `}
         >
           {/* Glow effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-teal-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full blur-sm"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full blur-sm"></div>
 
           {/* Logo Image */}
           <img

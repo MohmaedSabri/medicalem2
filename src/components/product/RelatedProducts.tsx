@@ -38,7 +38,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProducts }) =>
       <div className='text-center mb-6 sm:mb-8 lg:mb-12'>
         <h2 className='text-2xl sm:text-3xl md:text-4xl font-light text-gray-900 mb-2 sm:mb-3 lg:mb-4'>
           Related
-          <span className='block font-semibold text-teal-600 mt-1'>
+          <span className='block font-semibold text-primary-600 mt-1'>
             Products
           </span>
         </h2>
@@ -67,7 +67,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProducts }) =>
               />
               <div className='absolute top-2 left-2'>
                 <span className='inline-flex items-center space-x-1 bg-white/95 backdrop-blur-sm text-gray-800 px-2 py-1 rounded-lg text-xs font-medium'>
-                  <Zap className='w-3 h-3 text-teal-600' />
+                  <Zap className='w-3 h-3 text-primary-600' />
                   <span className='hidden sm:inline'>
                     {getLocalizedText(getSubcategoryName(relatedProduct.subcategory))}
                   </span>
@@ -82,7 +82,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProducts }) =>
                 {getLocalizedText(relatedProduct.name)}
               </h3>
               <div className='flex items-center justify-between'>
-                <span className='text-teal-600 font-bold text-sm sm:text-base inline-flex items-center gap-1.5'>
+                <span className='text-primary-600 font-bold text-sm sm:text-base inline-flex items-center gap-1.5'>
                   {document?.documentElement?.dir === 'rtl' ? (
                     <span>د.ا</span>
                   ) : (

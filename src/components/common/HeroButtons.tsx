@@ -22,7 +22,7 @@ const HeroButtons: React.FC<HeroButtonsProps> = ({
 			<motion.button
 				whileHover={{ y: -1 }}
 				whileTap={{ scale: 0.98 }}
-				className='group relative bg-white text-[#00796a] px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-base sm:text-lg hover:bg-gray-100 transition-all duration-500 w-full sm:w-auto cursor-pointer select-none z-10 overflow-hidden shadow-lg hover:shadow-2xl'
+				className='group relative bg-white text-primary-500 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-base sm:text-lg hover:bg-gray-100 transition-all duration-500 w-full sm:w-auto cursor-pointer select-none z-10 overflow-hidden shadow-lg hover:shadow-2xl'
 				onClick={onExploreProducts}>
 				{/* Animated background glow */}
 				<div className='absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 opacity-0 group-hover:opacity-50 transition-opacity duration-500 ease-out rounded-full'></div>
@@ -42,7 +42,7 @@ const HeroButtons: React.FC<HeroButtonsProps> = ({
 			<motion.button
 				whileHover={{ y: -1 }}
 				whileTap={{ scale: 0.98 }}
-				className='group relative border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-base sm:text-lg hover:bg-white hover:text-[#00796a] transition-all duration-500 w-full sm:w-auto cursor-pointer select-none z-10 overflow-hidden shadow-lg hover:shadow-2xl'
+				className='group relative border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-base sm:text-lg hover:bg-white hover:text-primary-500 transition-all duration-500 w-full sm:w-auto cursor-pointer select-none z-10 overflow-hidden shadow-lg hover:shadow-2xl'
 				onClick={onContactUs}>
 				{/* Animated background glow */}
 				<div className='absolute inset-0 bg-gradient-to-r from-white/10 via-white/20 to-white/10 opacity-0 group-hover:opacity-30 transition-opacity duration-500 ease-out rounded-full'></div>

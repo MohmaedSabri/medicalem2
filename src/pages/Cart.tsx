@@ -169,7 +169,7 @@ const Cart: React.FC = () => {
 						</p>
 						<button
 							onClick={() => window.location.reload()}
-							className='bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors'>
+							className='bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors'>
 							{t('retry')}
 						</button>
 					</div>
@@ -184,7 +184,7 @@ const Cart: React.FC = () => {
 			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24'>
 				<div className='flex items-center justify-center w-full h-[calc(100vh-6rem)] px-4 sm:px-6 lg:px-8'>
 					<div className='text-center'>
-						<div className='animate-spin rounded-full h-16 w-16 border-4 border-teal-200 border-t-teal-600 mx-auto mb-4'></div>
+						<div className='animate-spin rounded-full h-16 w-16 border-4 border-primary-200 border-t-primary-600 mx-auto mb-4'></div>
 						<p className='text-gray-600'>{t('loadingCart')}</p>
 					</div>
 				</div>
@@ -209,7 +209,7 @@ const Cart: React.FC = () => {
 				{/* Cart Content */}
 				{cartProducts.length === 0 ? (
 					<div className='text-center py-20'>
-						<ShoppingCart className='w-12 h-12 text-teal-600 mx-auto mb-4' />
+						<ShoppingCart className='w-12 h-12 text-primary-600 mx-auto mb-4' />
 						<h3 className='text-2xl font-semibold text-gray-900 mb-2'>
 							{t('cartEmpty')}
 						</h3>
@@ -220,7 +220,7 @@ const Cart: React.FC = () => {
 							whileHover={{ scale: 1.05 }}
 							whileTap={{ scale: 0.95 }}
 							onClick={() => navigate("/products")}
-							className='inline-flex items-center space-x-2 bg-teal-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-teal-700 transition-colors'>
+							className='inline-flex items-center space-x-2 bg-primary-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-700 transition-colors'>
 							<span>{t('browseProducts')}</span>
 							<ArrowRight className='w-5 h-5' />
 						</motion.button>
@@ -272,7 +272,7 @@ const Cart: React.FC = () => {
 													<p className='text-gray-600 text-sm line-clamp-2 mb-2'>
 														{product.description}
 													</p>
-													<div className='text-teal-600 font-bold text-lg'>
+													<div className='text-primary-600 font-bold text-lg'>
 														{formatPrice(product.price)}
 													</div>
 												</div>
@@ -334,7 +334,7 @@ const Cart: React.FC = () => {
 									<div className='border-t border-gray-200 pt-3'>
 										<div className='flex justify-between text-lg font-semibold'>
 											<span>{t('total')}</span>
-											<span className='text-teal-600'>{formatPrice(cartTotal)}</span>
+											<span className='text-primary-600'>{formatPrice(cartTotal)}</span>
 										</div>
 									</div>
 								</div>
@@ -343,7 +343,7 @@ const Cart: React.FC = () => {
 									whileHover={{ scale: 1.02 }}
 									whileTap={{ scale: 0.98 }}
 									onClick={() => navigate('/checkout')}
-									className='w-full bg-teal-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-teal-700 transition-colors mb-4'>
+									className='w-full bg-primary-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-primary-700 transition-colors mb-4'>
 									{t('proceedToCheckout')}
 								</motion.button>
 
@@ -351,7 +351,7 @@ const Cart: React.FC = () => {
 									whileHover={{ scale: 1.02 }}
 									whileTap={{ scale: 0.98 }}
 									onClick={() => navigate("/products")}
-									className='w-full border border-teal-600 text-teal-600 py-3 px-4 rounded-xl font-semibold hover:bg-teal-50 transition-colors'>
+									className='w-full border border-primary-600 text-primary-600 py-3 px-4 rounded-xl font-semibold hover:bg-primary-50 transition-colors'>
 									{t('continueShopping')}
 								</motion.button>
 							</div>

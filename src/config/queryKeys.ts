@@ -71,6 +71,9 @@ export const queryKeys = {
     bySpecialization: (specialization: string, language?: string) => [...queryKeys.doctors.all, 'specialization', specialization, language] as const,
     topRated: (limit?: number, language?: string) => [...queryKeys.doctors.all, 'topRated', limit, language] as const,
   },
+
+  // Contact Info related queries
+  CONTACT_INFO: ['contactInfo'] as const,
 };
 
 export default queryKeys;

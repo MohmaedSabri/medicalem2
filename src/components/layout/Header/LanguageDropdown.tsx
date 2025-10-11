@@ -46,7 +46,7 @@ const LanguageDropdown: React.FC<LanguageDropdownProps> = ({
     >
       <motion.button
         onClick={onToggle}
-        className="language-button flex items-center px-3 xl:px-4 py-2 xl:py-3 rounded-full text-gray-700 hover:text-teal-600 hover:bg-white/50 transition-all duration-200"
+        className="language-button flex items-center px-3 xl:px-4 py-2 xl:py-3 rounded-full text-gray-700 hover:text-primary-600 hover:bg-white/50 transition-all duration-200"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -79,8 +79,8 @@ const LanguageDropdown: React.FC<LanguageDropdownProps> = ({
               onClick={() => onChangeLanguage('en')}
               className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
                 currentLanguage === 'en'
-                  ? 'bg-teal-600 text-white'
-                  : 'text-gray-700 hover:bg-teal-50 hover:text-teal-600'
+                  ? 'bg-primary-600 text-white'
+                  : 'text-gray-700 hover:bg-primary-50 hover:text-primary-600'
               }`}
             >
               En
@@ -89,8 +89,8 @@ const LanguageDropdown: React.FC<LanguageDropdownProps> = ({
               onClick={() => onChangeLanguage('ar')}
               className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
                 currentLanguage === 'ar'
-                  ? 'bg-teal-600 text-white'
-                  : 'text-gray-700 hover:bg-teal-50 hover:text-teal-600'
+                  ? 'bg-primary-600 text-white'
+                  : 'text-gray-700 hover:bg-primary-50 hover:text-primary-600'
               }`}
             >
               Ar

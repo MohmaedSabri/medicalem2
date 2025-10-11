@@ -40,6 +40,8 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Doctors = lazy(() => import("./pages/Doctors"));
 const DoctorDetail = lazy(() => import("./pages/DoctorDetail"));
 const Categories = lazy(() => import("./pages/Categories"));
+const BankAccount = lazy(() => import("./pages/BankAccount"));
+const Invoice = lazy(() => import("./pages/Invoice"));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -391,6 +393,48 @@ function App() {
 													<Header />
 													<Suspense fallback={<LoadingSpinner />}>
 														<Categories />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
+
+									{/* Bank Account Route */}
+									<Route
+										path='/bank-account'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='bank-account'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<BankAccount />
+													</Suspense>
+												</motion.div>
+											</AnimatePresence>
+										}
+									/>
+
+									{/* Invoice Route */}
+									<Route
+										path='/invoice'
+										element={
+											<AnimatePresence mode='wait'>
+												<motion.div
+													key='invoice'
+													initial='initial'
+													animate='in'
+													exit='out'
+													variants={pageVariants}
+													transition={pageTransition}>
+													<Header />
+													<Suspense fallback={<LoadingSpinner />}>
+														<Invoice />
 													</Suspense>
 												</motion.div>
 											</AnimatePresence>

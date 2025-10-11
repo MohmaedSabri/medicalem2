@@ -276,7 +276,7 @@ const ProductsPage: React.FC = () => {
 					duration: 3000,
 					icon: '🛒',
 					style: {
-						background: '#10b981',
+						background: '#0ba7ae',
 						color: '#fff',
 					},
 				}
@@ -367,12 +367,12 @@ const ProductsPage: React.FC = () => {
 							}}
 							className={`bg-white/95 backdrop-blur-sm rounded-full p-2 sm:p-2.5 transition-all duration-300 shadow-lg hover:shadow-xl ${
 								isInCart(product._id)
-									? "text-teal-600 hover:bg-teal-50"
-									: "text-gray-600 hover:bg-teal-50 hover:text-teal-600"
+									? "text-primary-600 hover:bg-primary-50"
+									: "text-gray-600 hover:bg-primary-50 hover:text-primary-600"
 							}`}>
 							<ShoppingCart
 								className={`h-3 w-3 sm:h-4 sm:w-4 ${
-									isInCart(product._id) ? "fill-teal-600" : ""
+									isInCart(product._id) ? "fill-primary-600" : ""
 								}`}
 							/>
 						</motion.button>
@@ -401,7 +401,7 @@ const ProductsPage: React.FC = () => {
 
 					{/* Subcategory Badge - Bottom Left */}
 					<div className='absolute bottom-3 left-3 sm:bottom-4 sm:left-4'>
-						<span className='bg-gradient-to-r from-teal-600 to-emerald-600 backdrop-blur-xl border border-teal-400/50 text-white font-bold px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full text-xs sm:text-sm shadow-xl shadow-teal-500/25 hover:from-teal-700 hover:to-emerald-700 hover:border-teal-400/70 transition-all duration-300 transform hover:scale-105 drop-shadow-md'>
+						<span className='bg-gradient-to-r from-primary-600 to-primary-700 backdrop-blur-xl border border-primary-400/50 text-white font-bold px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full text-xs sm:text-sm shadow-xl shadow-primary-500/25 hover:from-primary-700 hover:to-primary-800 hover:border-primary-400/70 transition-all duration-300 transform hover:scale-105 drop-shadow-md'>
 							{typeof product.subcategory === "string"
 								? product.subcategory
 								: product.subcategory?.name || "Uncategorized"}
@@ -475,7 +475,7 @@ const ProductsPage: React.FC = () => {
 								viewMode === "list"
 									? "text-lg sm:text-xl"
 									: "text-base sm:text-lg lg:text-xl"
-							} font-bold text-gray-900 leading-tight cursor-pointer hover:text-teal-600 transition-colors duration-300 mb-2`}>
+							} font-bold text-gray-900 leading-tight cursor-pointer hover:text-primary-600 transition-colors duration-300 mb-2`}>
 							{getLocalizedProductField(product.name)}
 						</h3>
 
@@ -493,7 +493,7 @@ const ProductsPage: React.FC = () => {
 								.map((feature, idx) => (
 									<span
 										key={idx}
-										className='bg-gradient-to-r from-teal-50 to-emerald-50 text-teal-700 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs font-medium border border-teal-200 hover:from-teal-100 hover:to-emerald-100 transition-all duration-300 shadow-sm'>
+										className='bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs font-medium border border-primary-200 hover:from-primary-100 hover:to-primary-200 transition-all duration-300 shadow-sm'>
 										{getLocalizedProductField(feature)}
 									</span>
 								))}
@@ -510,7 +510,7 @@ const ProductsPage: React.FC = () => {
 					<div className='space-y-4'>
 						{/* Price and Details Button Row */}
 						<div className='flex items-center justify-between mb-2 sm:mb-3'>
-							<div className='text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent'>
+							<div className='text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent'>
 								<span className='inline-flex items-center gap-2'>
 									{currentLanguage === 'ar' ? (
 										<span>د.ا</span>
@@ -524,7 +524,7 @@ const ProductsPage: React.FC = () => {
 								whileHover={{ scale: 1.05 }}
 								whileTap={{ scale: 0.95 }}
 								onClick={() => navigate(`/product/${product._id}`)}
-								className='bg-teal-600 text-white px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg hover:bg-teal-700 transition-all duration-300 flex items-center space-x-1.5 sm:space-x-2 font-semibold shadow-md hover:shadow-lg text-xs sm:text-sm border-0'>
+								className='bg-primary-600 text-white px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg hover:bg-primary-700 transition-all duration-300 flex items-center space-x-1.5 sm:space-x-2 font-semibold shadow-md hover:shadow-lg text-xs sm:text-sm border-0'>
 								<span>{t("details")}</span>
 								<ArrowRight className='h-3 w-3 sm:h-4 sm:w-4' />
 							</motion.button>
@@ -540,8 +540,8 @@ const ProductsPage: React.FC = () => {
 							}}
 							className={`group relative w-full px-3 py-2.5 sm:px-4 sm:py-3 rounded-lg transition-all duration-500 flex items-center justify-center space-x-2 sm:space-x-3 font-semibold border overflow-hidden shadow-sm hover:shadow-xl ${
 								isInCart(product._id)
-									? "bg-green-100 text-green-700 border-green-300 hover:bg-green-600 hover:text-white hover:border-green-600 hover:shadow-green-500/25"
-									: "bg-gray-100 text-gray-700 border-gray-200 hover:bg-teal-600 hover:text-white hover:border-teal-600 hover:shadow-teal-500/25"
+									? "bg-primary-100 text-primary-700 border-primary-300 hover:bg-primary-600 hover:text-white hover:border-primary-600 hover:shadow-primary-500/25"
+									: "bg-gray-100 text-gray-700 border-gray-200 hover:bg-primary-600 hover:text-white hover:border-primary-600 hover:shadow-primary-500/25"
 							}`}>
 							{/* Button content */}
 							<div className='relative z-10 flex items-center justify-center space-x-2 sm:space-x-3 w-full'>
@@ -563,7 +563,7 @@ const ProductsPage: React.FC = () => {
 			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24'>
 				<div className='container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12'>
 					<div className='text-center py-16 sm:py-20'>
-						<div className='animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-teal-600 mx-auto mb-4'></div>
+						<div className='animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-primary-600 mx-auto mb-4'></div>
 						<p className='text-gray-600 text-sm sm:text-base'>
 							{t("loadingProducts")}
 						</p>
@@ -590,7 +590,7 @@ const ProductsPage: React.FC = () => {
 						</p>
 						<button
 							onClick={() => window.location.reload()}
-							className='bg-teal-600 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg hover:bg-teal-700 transition-colors text-sm sm:text-base'>
+							className='bg-primary-600 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg hover:bg-primary-700 transition-colors text-sm sm:text-base'>
 							{t("retry")}
 						</button>
 					</div>
@@ -610,7 +610,7 @@ const ProductsPage: React.FC = () => {
 					className='text-center mb-8 sm:mb-12'>
 					<h1 className='text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 leading-tight'>
 						{t("ourProducts")}
-						<span className='block bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent'>
+						<span className='block bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent'>
 							{t("products")}
 						</span>
 					</h1>
@@ -635,7 +635,7 @@ const ProductsPage: React.FC = () => {
 									placeholder={t("searchProducts")}
 									value={searchTerm}
 									onChange={(e) => setSearchTerm(e.target.value)}
-									className='w-full pl-10 pr-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base'
+									className='w-full pl-10 pr-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base'
 								/>
 							</div>
 						</div>
@@ -650,7 +650,7 @@ const ProductsPage: React.FC = () => {
 								<select
 									value={selectedCategory}
 									onChange={(e) => handleCategoryChange(e.target.value)}
-									className='w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 bg-white text-sm sm:text-base'>
+									className='w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 bg-white text-sm sm:text-base'>
 									{categories.map((category, index) => (
 										<option
 											key={`category-${index}-${category}`}
@@ -669,7 +669,7 @@ const ProductsPage: React.FC = () => {
 								<select
 									value={sortBy}
 									onChange={(e) => setSortBy(e.target.value)}
-									className='w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 bg-white text-sm sm:text-base'>
+									className='w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 bg-white text-sm sm:text-base'>
 									<option value='name'>{t("sortByName")}</option>
 									<option value='price-low'>{t("sortByPriceLow")}</option>
 									<option value='price-high'>{t("sortByPriceHigh")}</option>
@@ -687,7 +687,7 @@ const ProductsPage: React.FC = () => {
 										onClick={() => setViewMode("grid")}
 										className={`flex-1 px-3 py-2 sm:px-4 sm:py-2 rounded-md sm:rounded-lg transition-all duration-300 flex items-center justify-center space-x-1.5 ${
 											viewMode === "grid"
-												? "bg-white text-teal-600 shadow-md"
+												? "bg-white text-primary-600 shadow-md"
 												: "text-gray-600 hover:text-gray-900"
 										}`}>
 										<Grid3X3 className='w-3 h-3 sm:w-4 sm:h-4' />
@@ -699,7 +699,7 @@ const ProductsPage: React.FC = () => {
 										onClick={() => setViewMode("list")}
 										className={`flex-1 px-3 py-2 sm:px-4 sm:py-2 rounded-md sm:rounded-lg transition-all duration-300 flex items-center justify-center space-x-1.5 ${
 											viewMode === "list"
-												? "bg-white text-teal-600 shadow-md"
+												? "bg-white text-primary-600 shadow-md"
 												: "text-gray-600 hover:text-gray-900"
 										}`}>
 										<List className='w-3 h-3 sm:w-4 sm:h-4' />
@@ -751,7 +751,7 @@ const ProductsPage: React.FC = () => {
 								handleCategoryChange("All");
 								setSortBy("name");
 							}}
-							className='bg-teal-600 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl hover:bg-teal-700 transition-colors duration-300 text-sm sm:text-base'>
+							className='bg-primary-600 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl hover:bg-primary-700 transition-colors duration-300 text-sm sm:text-base'>
 							{t("clearFilters")}
 						</button>
 					</motion.div>

@@ -107,7 +107,7 @@ const ManageProductsTable: React.FC<ManageProductsTableProps> = ({
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        product.inStock ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                        product.inStock ? "bg-primary-100 text-primary-800" : "bg-red-100 text-red-800"
                       }`}
                     >
                       {product.inStock ? "In Stock" : "Out of Stock"}

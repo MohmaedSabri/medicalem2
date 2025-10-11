@@ -1,0 +1,378 @@
+### Contact Info API Documentation
+### Base URL: http://localhost:5000/api/contact-info
+### SINGLE DOCUMENT APPROACH - Only one ContactInfo document exists for the entire website
+
+# ========================================
+# GET CONTACT INFO
+# ========================================
+GET http://localhost:5000/api/contact-info/
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+  "email": "info@dorarmed.com",
+  "phone": "+971556707773",
+  "address": "Dubai Healthcare City, Building 40, Office 503",
+  "map": "https://www.google.com/maps/place/Dubai+Healthcare+City/@25.2806313,55.292356,17z/data=!3m1!4b1!4m6!3m5!1s0x3e5f43326848354b:0x609e51f30607252d!8m2!3d25.2806313!4d55.2945447!16s%2Fg%2F11c48zbp7q?entry=ttu&g_ep=EgoyMDI1MDkwOS4wIKXMDSoASAFQAw%3D%3D",
+  "whatsapp": "https://wa.me/971556707773",
+  "instagram": "https://www.instagram.com/dorarmedical?igsh=MTU4eWRoaXdoNDQ0",
+  "facebook": "https://www.facebook.com/dorarmed?rdid=BYZz0WHYN0QpXyTQ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AyrtqREz5%2F#",
+  "twitter": "https://twitter.com/dorarmed",
+  "linkedin": "https://www.linkedin.com/company/dorar-medical-equipment/",
+  "threads": "https://www.threads.com/@dorarmedical",
+  "ceophoto": "https://i.postimg.cc/Bbf8cnWP/M-Medhat.jpg",
+  "ceosmallphoto": "https://i.postimg.cc/jqGHjRLf/M-M1.png",
+  "partners": [
+    {
+      "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+      "src": "https://picsum.photos/120/60?random=1",
+      "alt": "Medical Partner 1",
+      "title": "Medical Partner 1",
+      "href": "https://partner1.com"
+    }
+  ],
+  "createdAt": "2024-01-10T08:00:00.000Z",
+  "updatedAt": "2024-01-10T08:00:00.000Z"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Contact information not found"
+}
+```
+
+# ========================================
+# CREATE CONTACT INFO (Only if none exists)
+# ========================================
+POST http://localhost:5000/api/contact-info/
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Request Body
+```json
+{
+  "email": "info@dorarmed.com",
+  "phone": "+971556707773",
+  "address": "Dubai Healthcare City, Building 40, Office 503",
+  "map": "https://www.google.com/maps/place/Dubai+Healthcare+City/@25.2806313,55.292356,17z/data=!3m1!4b1!4m6!3m5!1s0x3e5f43326848354b:0x609e51f30607252d!8m2!3d25.2806313!4d55.2945447!16s%2Fg%2F11c48zbp7q?entry=ttu&g_ep=EgoyMDI1MDkwOS4wIKXMDSoASAFQAw%3D%3D",
+  "whatsapp": "https://wa.me/971556707773",
+  "instagram": "https://www.instagram.com/dorarmedical?igsh=MTU4eWRoaXdoNDQ0",
+  "facebook": "https://www.facebook.com/dorarmed?rdid=BYZz0WHYN0QpXyTQ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AyrtqREz5%2F#",
+  "twitter": "https://twitter.com/dorarmed",
+  "linkedin": "https://www.linkedin.com/company/dorar-medical-equipment/",
+  "threads": "https://www.threads.com/@dorarmedical",
+  "ceophoto": "https://i.postimg.cc/Bbf8cnWP/M-Medhat.jpg",
+  "ceosmallphoto": "https://i.postimg.cc/jqGHjRLf/M-M1.png"
+}
+```
+
+### Response (201 Created)
+```json
+{
+  "message": "Contact information created successfully",
+  "data": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "email": "info@dorarmed.com",
+    "phone": "+971556707773",
+    "address": "Dubai Healthcare City, Building 40, Office 503",
+    "map": "https://www.google.com/maps/place/Dubai+Healthcare+City/@25.2806313,55.292356,17z/data=!3m1!4b1!4m6!3m5!1s0x3e5f43326848354b:0x609e51f30607252d!8m2!3d25.2806313!4d55.2945447!16s%2Fg%2F11c48zbp7q?entry=ttu&g_ep=EgoyMDI1MDkwOS4wIKXMDSoASAFQAw%3D%3D",
+    "whatsapp": "https://wa.me/971556707773",
+    "instagram": "https://www.instagram.com/dorarmedical?igsh=MTU4eWRoaXdoNDQ0",
+    "facebook": "https://www.facebook.com/dorarmed?rdid=BYZz0WHYN0QpXyTQ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AyrtqREz5%2F#",
+    "twitter": "https://twitter.com/dorarmed",
+    "linkedin": "https://www.linkedin.com/company/dorar-medical-equipment/",
+    "threads": "https://www.threads.com/@dorarmedical",
+    "ceophoto": "https://i.postimg.cc/Bbf8cnWP/M-Medhat.jpg",
+    "ceosmallphoto": "https://i.postimg.cc/jqGHjRLf/M-M1.png",
+    "partners": [],
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  }
+}
+```
+
+### Response (400 Bad Request) - Already Exists
+```json
+{
+  "message": "Contact information already exists. Use PATCH /api/contact-info to update the existing one."
+}
+```
+
+# ========================================
+# UPDATE CONTACT INFO (Full Update)
+# ========================================
+PUT http://localhost:5000/api/contact-info/
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Request Body (All fields required)
+```json
+{
+  "email": "info@dorarmed.com",
+  "phone": "+971556707773",
+  "address": "Dubai Healthcare City, Building 40, Office 503",
+  "map": "https://www.google.com/maps/place/Dubai+Healthcare+City/@25.2806313,55.292356,17z/data=!3m1!4b1!4m6!3m5!1s0x3e5f43326848354b:0x609e51f30607252d!8m2!3d25.2806313!4d55.2945447!16s%2Fg%2F11c48zbp7q?entry=ttu&g_ep=EgoyMDI1MDkwOS4wIKXMDSoASAFQAw%3D%3D",
+  "whatsapp": "https://wa.me/971556707773",
+  "instagram": "https://www.instagram.com/dorarmedical?igsh=MTU4eWRoaXdoNDQ0",
+  "facebook": "https://www.facebook.com/dorarmed?rdid=BYZz0WHYN0QpXyTQ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AyrtqREz5%2F#",
+  "twitter": "https://twitter.com/dorarmed",
+  "linkedin": "https://www.linkedin.com/company/dorar-medical-equipment/",
+  "threads": "https://www.threads.com/@dorarmedical",
+  "ceophoto": "https://i.postimg.cc/Bbf8cnWP/M-Medhat.jpg",
+  "ceosmallphoto": "https://i.postimg.cc/jqGHjRLf/M-M1.png"
+}
+```
+
+### Response (200 OK)
+```json
+{
+  "message": "Contact information updated successfully",
+  "data": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "email": "info@dorarmed.com",
+    "phone": "+971556707773",
+    "address": "Dubai Healthcare City, Building 40, Office 503",
+    "map": "https://www.google.com/maps/place/Dubai+Healthcare+City/@25.2806313,55.292356,17z/data=!3m1!4b1!4m6!3m5!1s0x3e5f43326848354b:0x609e51f30607252d!8m2!3d25.2806313!4d55.2945447!16s%2Fg%2F11c48zbp7q?entry=ttu&g_ep=EgoyMDI1MDkwOS4wIKXMDSoASAFQAw%3D%3D",
+    "whatsapp": "https://wa.me/971556707773",
+    "instagram": "https://www.instagram.com/dorarmedical?igsh=MTU4eWRoaXdoNDQ0",
+    "facebook": "https://www.facebook.com/dorarmed?rdid=BYZz0WHYN0QpXyTQ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AyrtqREz5%2F#",
+    "twitter": "https://twitter.com/dorarmed",
+    "linkedin": "https://www.linkedin.com/company/dorar-medical-equipment/",
+    "threads": "https://www.threads.com/@dorarmedical",
+    "ceophoto": "https://i.postimg.cc/Bbf8cnWP/M-Medhat.jpg",
+    "ceosmallphoto": "https://i.postimg.cc/jqGHjRLf/M-M1.png",
+    "partners": [],
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-15T13:00:00.000Z"
+  }
+}
+```
+
+# ========================================
+# UPSERT CONTACT INFO (Recommended)
+# ========================================
+PATCH http://localhost:5000/api/contact-info/
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Request Body (Partial update - only send fields you want to change)
+```json
+{
+  "phone": "+971556707774",
+  "email": "contact@dorarmed.com"
+}
+```
+
+### Response (200 OK)
+```json
+{
+  "message": "Contact information updated successfully",
+  "data": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "email": "contact@dorarmed.com",
+    "phone": "+971556707774",
+    "address": "Dubai Healthcare City, Building 40, Office 503",
+    "map": "https://www.google.com/maps/place/Dubai+Healthcare+City/@25.2806313,55.292356,17z/data=!3m1!4b1!4m6!3m5!1s0x3e5f43326848354b:0x609e51f30607252d!8m2!3d25.2806313!4d55.2945447!16s%2Fg%2F11c48zbp7q?entry=ttu&g_ep=EgoyMDI1MDkwOS4wIKXMDSoASAFQAw%3D%3D",
+    "whatsapp": "https://wa.me/971556707773",
+    "instagram": "https://www.instagram.com/dorarmedical?igsh=MTU4eWRoaXdoNDQ0",
+    "facebook": "https://www.facebook.com/dorarmed?rdid=BYZz0WHYN0QpXyTQ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AyrtqREz5%2F#",
+    "twitter": "https://twitter.com/dorarmed",
+    "linkedin": "https://www.linkedin.com/company/dorar-medical-equipment/",
+    "threads": "https://www.threads.com/@dorarmedical",
+    "ceophoto": "https://i.postimg.cc/Bbf8cnWP/M-Medhat.jpg",
+    "ceosmallphoto": "https://i.postimg.cc/jqGHjRLf/M-M1.png",
+    "partners": [],
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-15T14:00:00.000Z"
+  }
+}
+```
+
+# ========================================
+# ADD PARTNER
+# ========================================
+POST http://localhost:5000/api/contact-info/partners
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Request Body
+```json
+{
+  "src": "https://example.com/partner-logo.png",
+  "alt": "Partner Company Logo",
+  "title": "Partner Company",
+  "href": "https://partnercompany.com"
+}
+```
+
+### Response (200 OK)
+```json
+{
+  "message": "Partner added successfully",
+  "data": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "email": "info@dorarmed.com",
+    "phone": "+971556707773",
+    "address": "Dubai Healthcare City, Building 40, Office 503",
+    "map": "https://www.google.com/maps/place/Dubai+Healthcare+City/@25.2806313,55.292356,17z/data=!3m1!4b1!4m6!3m5!1s0x3e5f43326848354b:0x609e51f30607252d!8m2!3d25.2806313!4d55.2945447!16s%2Fg%2F11c48zbp7q?entry=ttu&g_ep=EgoyMDI1MDkwOS4wIKXMDSoASAFQAw%3D%3D",
+    "whatsapp": "https://wa.me/971556707773",
+    "instagram": "https://www.instagram.com/dorarmedical?igsh=MTU4eWRoaXdoNDQ0",
+    "facebook": "https://www.facebook.com/dorarmed?rdid=BYZz0WHYN0QpXyTQ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AyrtqREz5%2F#",
+    "twitter": "https://twitter.com/dorarmed",
+    "linkedin": "https://www.linkedin.com/company/dorar-medical-equipment/",
+    "threads": "https://www.threads.com/@dorarmedical",
+    "ceophoto": "https://i.postimg.cc/Bbf8cnWP/M-Medhat.jpg",
+    "ceosmallphoto": "https://i.postimg.cc/jqGHjRLf/M-M1.png",
+    "partners": [
+      {
+        "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+        "src": "https://example.com/partner-logo.png",
+        "alt": "Partner Company Logo",
+        "title": "Partner Company",
+        "href": "https://partnercompany.com"
+      }
+    ],
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-15T15:00:00.000Z"
+  }
+}
+```
+
+# ========================================
+# UPDATE PARTNER
+# ========================================
+PUT http://localhost:5000/api/contact-info/partners/64f1a2b3c4d5e6f7g8h9i0j2
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Request Body (Partial update)
+```json
+{
+  "title": "Updated Partner Name",
+  "href": "https://updated-partner.com"
+}
+```
+
+### Response (200 OK)
+```json
+{
+  "message": "Partner updated successfully",
+  "data": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "email": "info@dorarmed.com",
+    "phone": "+971556707773",
+    "address": "Dubai Healthcare City, Building 40, Office 503",
+    "map": "https://www.google.com/maps/place/Dubai+Healthcare+City/@25.2806313,55.292356,17z/data=!3m1!4b1!4m6!3m5!1s0x3e5f43326848354b:0x609e51f30607252d!8m2!3d25.2806313!4d55.2945447!16s%2Fg%2F11c48zbp7q?entry=ttu&g_ep=EgoyMDI1MDkwOS4wIKXMDSoASAFQAw%3D%3D",
+    "whatsapp": "https://wa.me/971556707773",
+    "instagram": "https://www.instagram.com/dorarmedical?igsh=MTU4eWRoaXdoNDQ0",
+    "facebook": "https://www.facebook.com/dorarmed?rdid=BYZz0WHYN0QpXyTQ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AyrtqREz5%2F#",
+    "twitter": "https://twitter.com/dorarmed",
+    "linkedin": "https://www.linkedin.com/company/dorar-medical-equipment/",
+    "threads": "https://www.threads.com/@dorarmedical",
+    "ceophoto": "https://i.postimg.cc/Bbf8cnWP/M-Medhat.jpg",
+    "ceosmallphoto": "https://i.postimg.cc/jqGHjRLf/M-M1.png",
+    "partners": [
+      {
+        "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+        "src": "https://example.com/partner-logo.png",
+        "alt": "Partner Company Logo",
+        "title": "Updated Partner Name",
+        "href": "https://updated-partner.com"
+      }
+    ],
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-15T16:00:00.000Z"
+  }
+}
+```
+
+# ========================================
+# DELETE PARTNER
+# ========================================
+DELETE http://localhost:5000/api/contact-info/partners/64f1a2b3c4d5e6f7g8h9i0j2
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Response (200 OK)
+```json
+{
+  "message": "Partner deleted successfully",
+  "data": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "email": "info@dorarmed.com",
+    "phone": "+971556707773",
+    "address": "Dubai Healthcare City, Building 40, Office 503",
+    "map": "https://www.google.com/maps/place/Dubai+Healthcare+City/@25.2806313,55.292356,17z/data=!3m1!4b1!4m6!3m5!1s0x3e5f43326848354b:0x609e51f30607252d!8m2!3d25.2806313!4d55.2945447!16s%2Fg%2F11c48zbp7q?entry=ttu&g_ep=EgoyMDI1MDkwOS4wIKXMDSoASAFQAw%3D%3D",
+    "whatsapp": "https://wa.me/971556707773",
+    "instagram": "https://www.instagram.com/dorarmedical?igsh=MTU4eWRoaXdoNDQ0",
+    "facebook": "https://www.facebook.com/dorarmed?rdid=BYZz0WHYN0QpXyTQ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AyrtqREz5%2F#",
+    "twitter": "https://twitter.com/dorarmed",
+    "linkedin": "https://www.linkedin.com/company/dorar-medical-equipment/",
+    "threads": "https://www.threads.com/@dorarmedical",
+    "ceophoto": "https://i.postimg.cc/Bbf8cnWP/M-Medhat.jpg",
+    "ceosmallphoto": "https://i.postimg.cc/jqGHjRLf/M-M1.png",
+    "partners": [],
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-15T17:00:00.000Z"
+  }
+}
+```
+
+# ========================================
+# AUTHENTICATION
+# ========================================
+# 
+# Most endpoints require authentication. Get a JWT token by logging in:
+# POST /api/users/login
+# {
+#   "email": "zaher@gmail.com",
+#   "password": "Zaher@*#123"
+# }
+#
+# Use the returned token in the Authorization header:
+# Authorization: Bearer YOUR_JWT_TOKEN
+#
+# Public endpoints (no authentication required):
+# - GET /api/contact-info (retrieve contact information)
+
+# ========================================
+# QUICK START
+# ========================================
+#
+# 1. Seed the initial data:
+#    npm run seed:contact
+#
+# 2. Get contact info:
+#    GET /api/contact-info
+#
+# 3. Update contact info (requires auth):
+#    PATCH /api/contact-info
+#    {
+#      "phone": "+971556707774"
+#    }
+#
+# 4. Add partner (requires auth):
+#    POST /api/contact-info/partners
+#    {
+#      "src": "https://example.com/logo.png",
+#      "alt": "Partner Logo",
+#      "title": "Partner Name",
+#      "href": "https://partner.com"
+#    }
+
+# ========================================
+# NOTES
+# ========================================
+# 
+# 1. Contact Info is a single document used across the entire website
+# 2. Contact Info CANNOT be deleted (deletion is disabled)
+# 3. All contact info fields are required and trimmed
+# 4. Email field is automatically converted to lowercase
+# 5. Partners are managed within the contact info document
+# 6. Use PATCH for partial updates (recommended)
+# 7. Use PUT for full updates (requires all fields)
+# 8. Timestamps are automatically managed

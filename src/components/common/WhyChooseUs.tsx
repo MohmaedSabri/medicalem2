@@ -96,7 +96,7 @@ const WhyChooseUs: React.FC = () => {
 							whileHover={{ y: -8, scale: 1.03 }}
 							className='relative bg-white rounded-xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group overflow-hidden cursor-pointer'>
 								<div className='text-center'>
-									<div className='inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-teal-500 to-emerald-600 text-white rounded-xl mb-4 shadow-lg'>
+									<div className='inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-xl mb-4 shadow-lg'>
 										<stat.icon className='h-8 w-8' />
 									</div>
 									<div className='text-3xl lg:text-4xl font-bold text-gray-900 mb-2 tabular-nums duration-300'>
@@ -123,10 +123,10 @@ const WhyChooseUs: React.FC = () => {
 									whileHover={{ y: -8, scale: 1.02 }}
 									className='relative bg-white rounded-xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden cursor-pointer group'>
 									<div className='text-center'>
-										<div className='inline-flex items-center justify-center w-20 h-20 bg-[#00B4C1] text-white rounded-xl mb-6 shadow-lg'>
+										<div className='inline-flex items-center justify-center w-20 h-20 bg-primary-500 text-white rounded-xl mb-6 shadow-lg'>
 											<feature.icon className='h-10 w-10' />
 										</div>
-										<h3 className='text-xl font-semibold text-gray-900 mb-4 group-hover:text-[#00B4C1] transition-colors duration-300'>
+										<h3 className='text-xl font-semibold text-gray-900 mb-4 group-hover:text-primary-500 transition-colors duration-300'>
 											{feature.title}
 										</h3>
 										<p className='text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300'>
@@ -146,8 +146,8 @@ const WhyChooseUs: React.FC = () => {
 					className='mt-20'>
 					<div className='bg-gray-50 rounded-3xl p-8 sm:p-12 lg:p-16 relative overflow-hidden'>
 						{/* Background decoration */}
-						<div className='absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-teal-100 to-teal-200 rounded-full opacity-20 transform translate-x-16 -translate-y-16'></div>
-						<div className='absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-teal-100 to-teal-200 rounded-full opacity-20 transform -translate-x-12 translate-y-12'></div>
+						<div className='absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-100 to-primary-200 rounded-full opacity-20 transform translate-x-16 -translate-y-16'></div>
+						<div className='absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary-100 to-primary-200 rounded-full opacity-20 transform -translate-x-12 translate-y-12'></div>
 						
 						<div className='relative z-10 max-w-4xl mx-auto'>
 							<div className='flex flex-col lg:flex-row items-center justify-between gap-8'>
@@ -177,14 +177,14 @@ const WhyChooseUs: React.FC = () => {
 									<motion.button
 										whileHover={{ scale: 1.05, y: -3 }}
 										whileTap={{ scale: 0.98 }}
-										className='group relative inline-flex items-center gap-3 bg-teal-600 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-2xl hover:shadow-teal-500/50 hover:bg-teal-700 transition-all duration-500 ease-out overflow-hidden'
+										className='group relative inline-flex items-center gap-3 bg-primary-600 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-2xl hover:shadow-primary-500/50 hover:bg-primary-700 transition-all duration-500 ease-out overflow-hidden'
 										onClick={() =>
 											document
 												.getElementById("contact")
 												?.scrollIntoView({ behavior: "smooth" })
 										}>
 										{/* Animated background glow */}
-										<div className='absolute inset-0 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full'></div>
+										<div className='absolute inset-0 bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full'></div>
 										
 										{/* Sparkle effects */}
 										<div className='absolute inset-0 overflow-hidden rounded-full'>

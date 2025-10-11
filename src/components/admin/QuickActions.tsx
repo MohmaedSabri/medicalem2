@@ -68,12 +68,12 @@ const QuickActions: React.FC<QuickActionsProps> = ({ onTabChange }) => {
 
 				<button
 					onClick={() => onTabChange("posts")}
-					className='p-4 border-2 border-dashed border-green-300 rounded-lg hover:border-green-400 hover:bg-green-50 transition-all duration-200 text-center group'>
-					<FileText className='h-8 w-8 text-green-500 mx-auto mb-2 group-hover:scale-110 transition-transform' />
-					<p className='font-medium text-green-700'>
+					className='p-4 border-2 border-dashed border-primary-300 rounded-lg hover:border-primary-400 hover:bg-primary-50 transition-all duration-200 text-center group'>
+					<FileText className='h-8 w-8 text-primary-500 mx-auto mb-2 group-hover:scale-110 transition-transform' />
+					<p className='font-medium text-primary-700'>
 						{t("managePosts")}
 					</p>
-					<p className='text-sm text-green-600'>{t("editPosts")}</p>
+					<p className='text-sm text-primary-600'>{t("editPosts")}</p>
 				</button>
 			</div>
 		</motion.div>

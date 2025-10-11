@@ -117,7 +117,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({
             onChange={(e) =>
               setNewReview({ ...newReview, user: e.target.value })
             }
-            className='w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm'
+            className='w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm'
             required
             aria-required="true"
           />
@@ -136,7 +136,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({
                 onClick={() =>
                   setNewReview({ ...newReview, rating: i + 1 })
                 }
-                className="focus:outline-none focus:ring-2 focus:ring-teal-500 rounded"
+                className="focus:outline-none focus:ring-2 focus:ring-primary-500 rounded"
                 aria-label={`Rate ${i + 1} star${i === 0 ? '' : 's'}`}
                 title={`Rate ${i + 1} star${i === 0 ? '' : 's'}`}
                 aria-pressed={newReview.rating === i + 1}
@@ -162,7 +162,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({
             id="review-comment"
             name="review-comment"
             rows={3}
-            className='w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm'
+            className='w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm'
             placeholder='Write your review here...'
             value={newReview.comment}
             onChange={(e) =>
@@ -176,7 +176,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({
         <button
           type="button"
           onClick={handleAddReview}
-          className='mt-3 inline-flex items-center space-x-2 bg-teal-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors text-sm holographic-card disabled:opacity-50'
+          className='mt-3 inline-flex items-center space-x-2 bg-primary-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-primary-700 transition-colors text-sm holographic-card disabled:opacity-50'
           disabled={isPending}
           aria-label="Submit review"
           title="Submit review"

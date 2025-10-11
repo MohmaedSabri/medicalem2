@@ -54,7 +54,7 @@ const BlogComments: React.FC<BlogCommentsProps> = ({
 			transition={{ duration: 0.6, delay: 0.2 }}
 			className='mt-6 sm:mt-8 bg-white rounded-xl shadow-lg p-4 sm:p-6 md:p-8 border border-gray-100'>
 			<h3 className='text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center space-x-2'>
-				<MessageCircle className='w-5 h-5 sm:w-6 sm:h-6 text-teal-600' />
+				<MessageCircle className='w-5 h-5 sm:w-6 sm:h-6 text-primary-600' />
 				<span>
 					{t("comments")} ({commentsData?.totalComments || 0})
 				</span>
@@ -78,7 +78,7 @@ const BlogComments: React.FC<BlogCommentsProps> = ({
 								authorName: e.target.value,
 							}))
 						}
-						className='px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm sm:text-base'
+						className='px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm sm:text-base'
 						required
 					/>
 					<input
@@ -91,7 +91,7 @@ const BlogComments: React.FC<BlogCommentsProps> = ({
 								authorEmail: e.target.value,
 							}))
 						}
-						className='px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm sm:text-base'
+						className='px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm sm:text-base'
 						required
 					/>
 				</div>
@@ -105,13 +105,13 @@ const BlogComments: React.FC<BlogCommentsProps> = ({
 						}))
 					}
 					rows={3}
-					className='w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent mb-3 sm:mb-4 text-sm sm:text-base resize-none'
+					className='w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent mb-3 sm:mb-4 text-sm sm:text-base resize-none'
 					required
 				/>
 				<button
 					type='submit'
 					disabled={isAddingComment}
-					className='w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base'>
+					className='w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm sm:text-base'>
 					{isAddingComment ? t("adding") : t("addComment")}
 				</button>
 			</form>

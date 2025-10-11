@@ -243,7 +243,7 @@ const BlogDetail: React.FC = () => {
 							</p>
 							<Link
 								to='/blog'
-								className='inline-flex items-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm sm:text-base'>
+								className='inline-flex items-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm sm:text-base'>
 								<ArrowLeft className='w-4 h-4' />
 								<span>{t("backToBlog")}</span>
 							</Link>
@@ -264,7 +264,7 @@ const BlogDetail: React.FC = () => {
 						animate={{ opacity: 1, x: 0 }}
 						transition={{ duration: 0.6 }}
 						onClick={() => navigate("/blog")}
-						className='inline-flex items-center space-x-2 text-teal-600 hover:text-teal-800 font-medium mb-4 sm:mb-6 transition-colors text-sm sm:text-base'>
+						className='inline-flex items-center space-x-2 text-primary-600 hover:text-primary-800 font-medium mb-4 sm:mb-6 transition-colors text-sm sm:text-base'>
 						<ArrowLeft className='w-4 h-4 sm:w-5 sm:h-5' />
 						<span>{t("backToBlog")}</span>
 					</motion.button>

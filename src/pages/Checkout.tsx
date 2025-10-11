@@ -2,18 +2,15 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { 
 	ShoppingCart, 
 	ArrowRight, 
 	CreditCard, 
 	Banknote, 
 	Truck, 
-	Shield, 
 	MapPin,
 	User,
-	Mail,
-	Phone,
 	FileText,
 	CheckCircle
 } from "lucide-react";
@@ -23,18 +20,18 @@ import { useLanguage } from "../contexts/LanguageContext";
 import Footer from "../components/layout/Footer";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
+import { getShippingConfig } from "../config/shippingConfig";
 
 interface CheckoutFormData {
 	firstName: string;
 	lastName: string;
 	phone: string;
+	phoneType: 'home' | 'clinic';
 	email: string;
 	emirate: string;
 	address: string;
 	orderNotes: string;
 	paymentMethod: string;
-	createAccount: boolean;
-	password: string;
 	termsAccepted: boolean;
 }
 
@@ -49,20 +46,19 @@ const Checkout: React.FC = () => {
 	const [shippingCost, setShippingCost] = useState(0);
 
 	// Use the same hook as other pages for consistency
-	const { data: apiProducts = [], isLoading: loading, error } = useProducts();
+	const { data: apiProducts = [], isLoading: loading } = useProducts();
 
 	// Form state
 	const [formData, setFormData] = useState<CheckoutFormData>({
 		firstName: "",
 		lastName: "",
 		phone: "",
+		phoneType: "home",
 		email: "",
 		emirate: "",
 		address: "",
 		orderNotes: "",
 		paymentMethod: "bank_transfer",
-		createAccount: false,
-		password: "",
 		termsAccepted: false,
 	});
 
@@ -127,19 +123,8 @@ const Checkout: React.FC = () => {
 	const vat = useMemo(() => subtotal * 0.05, [subtotal]); // 5% VAT
 	const total = useMemo(() => subtotal + vat + shippingCost, [subtotal, vat, shippingCost]);
 
-	// Emirates with shipping costs
-	const emirates = [
-		{ name: "Dubai", cost: 10 },
-		{ name: "Abu Dhabi", cost: 15 },
-		{ name: "Sharjah", cost: 10 },
-		{ name: "Al Ain", cost: 15 },
-		{ name: "Ajman", cost: 10 },
-		{ name: "Ras Al Khaimah", cost: 15 },
-		{ name: "Fujairah", cost: 15 },
-		{ name: "Umm Al Quwain", cost: 15 },
-		{ name: "Khor Fakkan", cost: 15 },
-		{ name: "Kalba", cost: 60 },
-	];
+	// Get emirates from shipping configuration
+	const emirates = getShippingConfig().emirates;
 
 	// Payment methods
 	const paymentMethods = [
@@ -153,12 +138,6 @@ const Checkout: React.FC = () => {
 			id: "credit_card",
 			name: "Credit Card on Delivery",
 			description: "Pay using your credit card on delivery.",
-			icon: <CreditCard className="w-5 h-5" />,
-		},
-		{
-			id: "paypal",
-			name: "PayPal",
-			description: "Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.",
 			icon: <CreditCard className="w-5 h-5" />,
 		},
 		{
@@ -187,7 +166,7 @@ const Checkout: React.FC = () => {
 	};
 
 	const handleEmirateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		const selectedEmirate = emirates.find(e => e.name === e.target.value);
+		const selectedEmirate = emirates.find(emirate => emirate.name === e.target.value);
 		setShippingCost(selectedEmirate?.cost || 0);
 		setFormData(prev => ({
 			...prev,
@@ -220,9 +199,9 @@ const Checkout: React.FC = () => {
 				icon: '🎉',
 			});
 			
-			// Redirect to success page or home
-			navigate("/");
-		} catch (error) {
+			// Redirect to invoice page
+			navigate("/invoice");
+		} catch {
 			toast.error("Failed to place order. Please try again.");
 		} finally {
 			setIsSubmitting(false);
@@ -235,7 +214,7 @@ const Checkout: React.FC = () => {
 			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24'>
 				<div className='container mx-auto px-4 sm:px-6 lg:px-8 py-12'>
 					<div className='text-center py-20'>
-						<ShoppingCart className='w-16 h-16 text-teal-600 mx-auto mb-4' />
+						<ShoppingCart className='w-16 h-16 text-primary-600 mx-auto mb-4' />
 						<h3 className='text-2xl font-semibold text-gray-900 mb-2'>
 							{t('cartEmpty')}
 						</h3>
@@ -246,7 +225,7 @@ const Checkout: React.FC = () => {
 							whileHover={{ scale: 1.05 }}
 							whileTap={{ scale: 0.95 }}
 							onClick={() => navigate("/products")}
-							className='inline-flex items-center space-x-2 bg-teal-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-teal-700 transition-colors'>
+							className='inline-flex items-center space-x-2 bg-primary-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-700 transition-colors'>
 							<span>{t('browseProducts')}</span>
 							<ArrowRight className='w-5 h-5' />
 						</motion.button>
@@ -262,7 +241,7 @@ const Checkout: React.FC = () => {
 			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24'>
 				<div className='flex items-center justify-center w-full h-[calc(100vh-6rem)] px-4 sm:px-6 lg:px-8'>
 					<div className='text-center'>
-						<div className='animate-spin rounded-full h-16 w-16 border-4 border-teal-200 border-t-teal-600 mx-auto mb-4'></div>
+						<div className='animate-spin rounded-full h-16 w-16 border-4 border-primary-200 border-t-primary-600 mx-auto mb-4'></div>
 						<p className='text-gray-600'>{t('loading')}</p>
 					</div>
 				</div>
@@ -298,11 +277,11 @@ const Checkout: React.FC = () => {
 										value={couponCode}
 										onChange={(e) => setCouponCode(e.target.value)}
 										placeholder={t('couponCode')}
-										className='flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+										className='flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent'
 									/>
 									<button
 										type='submit'
-										className='bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700 transition-colors'>
+										className='bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors'>
 										{t('applyCoupon')}
 									</button>
 								</div>
@@ -321,7 +300,7 @@ const Checkout: React.FC = () => {
 							transition={{ delay: 0.3 }}
 							className='bg-white rounded-2xl shadow-lg p-6'>
 							<h3 className='text-2xl font-semibold text-gray-900 mb-6 flex items-center space-x-2'>
-								<User className='w-6 h-6 text-teal-600' />
+								<User className='w-6 h-6 text-primary-600' />
 								<span>{t('billingDetails')}</span>
 							</h3>
 
@@ -340,7 +319,7 @@ const Checkout: React.FC = () => {
 												value={formData.firstName}
 												onChange={handleInputChange}
 												required
-												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent'
 											/>
 										</div>
 										<div>
@@ -353,21 +332,50 @@ const Checkout: React.FC = () => {
 												value={formData.lastName}
 												onChange={handleInputChange}
 												required
-												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent'
 											/>
 										</div>
 										<div>
 											<label className='block text-sm font-medium text-gray-700 mb-2'>
 												{t('phone')} <span className='text-red-500'>*</span>
 											</label>
-											<input
-												type='tel'
-												name='phone'
-												value={formData.phone}
-												onChange={handleInputChange}
-												required
-												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-											/>
+											<div className='space-y-3'>
+												{/* Phone Type Selection */}
+												<div className='flex space-x-4'>
+													<label className='flex items-center space-x-2 cursor-pointer'>
+														<input
+															type='radio'
+															name='phoneType'
+															value='home'
+															checked={formData.phoneType === 'home'}
+															onChange={handleInputChange}
+															className='w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500'
+														/>
+														<span className='text-sm text-gray-700'>{t('homePhone')}</span>
+													</label>
+													<label className='flex items-center space-x-2 cursor-pointer'>
+														<input
+															type='radio'
+															name='phoneType'
+															value='clinic'
+															checked={formData.phoneType === 'clinic'}
+															onChange={handleInputChange}
+															className='w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500'
+														/>
+														<span className='text-sm text-gray-700'>{t('clinicPhone')}</span>
+													</label>
+												</div>
+												{/* Phone Number Input */}
+												<input
+													type='tel'
+													name='phone'
+													value={formData.phone}
+													onChange={handleInputChange}
+													required
+													placeholder={formData.phoneType === 'home' ? t('enterHomePhone') : t('enterClinicPhone')}
+													className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent'
+												/>
+											</div>
 										</div>
 										<div>
 											<label className='block text-sm font-medium text-gray-700 mb-2'>
@@ -379,7 +387,7 @@ const Checkout: React.FC = () => {
 												value={formData.email}
 												onChange={handleInputChange}
 												required
-												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent'
 											/>
 										</div>
 									</div>
@@ -388,7 +396,7 @@ const Checkout: React.FC = () => {
 								{/* Address Section */}
 								<div>
 									<h4 className='text-lg font-medium text-gray-900 mb-4 flex items-center space-x-2'>
-										<MapPin className='w-5 h-5 text-teal-600' />
+										<MapPin className='w-5 h-5 text-primary-600' />
 										<span>{t('address')}</span>
 									</h4>
 									<div className='space-y-4'>
@@ -401,7 +409,7 @@ const Checkout: React.FC = () => {
 												value={formData.emirate}
 												onChange={handleEmirateChange}
 												required
-												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'>
+												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent'>
 												<option value=''>{t('selectEmirate')}</option>
 												{emirates.map((emirate) => (
 													<option key={emirate.name} value={emirate.name}>
@@ -421,43 +429,12 @@ const Checkout: React.FC = () => {
 												onChange={handleInputChange}
 												required
 												placeholder={t('streetAddressPlaceholder')}
-												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent'
 											/>
 										</div>
 									</div>
 								</div>
 
-								{/* Create Account */}
-								<div className='border-t border-gray-200 pt-6'>
-									<label className='flex items-center space-x-3'>
-										<input
-											type='checkbox'
-											name='createAccount'
-											checked={formData.createAccount}
-											onChange={handleInputChange}
-											className='w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500'
-										/>
-										<span className='text-sm font-medium text-gray-700'>{t('createAccount')}</span>
-									</label>
-									{formData.createAccount && (
-										<motion.div
-											initial={{ opacity: 0, height: 0 }}
-											animate={{ opacity: 1, height: 'auto' }}
-											className='mt-4'>
-											<label className='block text-sm font-medium text-gray-700 mb-2'>
-												{t('password')} <span className='text-red-500'>*</span>
-											</label>
-											<input
-												type='password'
-												name='password'
-												value={formData.password}
-												onChange={handleInputChange}
-												required={formData.createAccount}
-												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent'
-											/>
-										</motion.div>
-									)}
-								</div>
 							</div>
 						</motion.div>
 
@@ -468,7 +445,7 @@ const Checkout: React.FC = () => {
 							transition={{ delay: 0.4 }}
 							className='bg-white rounded-2xl shadow-lg p-6'>
 							<h3 className='text-2xl font-semibold text-gray-900 mb-6 flex items-center space-x-2'>
-								<FileText className='w-6 h-6 text-teal-600' />
+								<FileText className='w-6 h-6 text-primary-600' />
 								<span>{t('additionalInfo')}</span>
 							</h3>
 							<div>
@@ -498,7 +475,7 @@ const Checkout: React.FC = () => {
 							transition={{ delay: 0.5 }}
 							className='bg-white rounded-2xl shadow-lg p-6 sticky top-24'>
 							<h3 className='text-2xl font-semibold text-gray-900 mb-6 flex items-center space-x-2'>
-								<ShoppingCart className='w-6 h-6 text-teal-600' />
+								<ShoppingCart className='w-6 h-6 text-primary-600' />
 								<span>{t('yourOrder')}</span>
 							</h3>
 
@@ -517,7 +494,7 @@ const Checkout: React.FC = () => {
 											</h4>
 											<p className='text-xs text-gray-500'>× {product.cartQuantity}</p>
 										</div>
-										<span className='text-sm font-semibold text-teal-600'>
+										<span className='text-sm font-semibold text-primary-600'>
 											{formatPrice(product.price * product.cartQuantity)}
 										</span>
 									</div>
@@ -543,7 +520,7 @@ const Checkout: React.FC = () => {
 								<div className='border-t border-gray-200 pt-3'>
 									<div className='flex justify-between text-lg font-semibold'>
 										<span>{t('total')}</span>
-										<span className='text-teal-600'>{formatPrice(total)}</span>
+										<span className='text-primary-600'>{formatPrice(total)}</span>
 									</div>
 								</div>
 							</div>
@@ -557,7 +534,7 @@ const Checkout: React.FC = () => {
 											key={method.id}
 											className={`flex items-start space-x-3 p-3 border rounded-lg cursor-pointer transition-colors ${
 												formData.paymentMethod === method.id
-													? 'border-teal-500 bg-teal-50'
+													? 'border-primary-500 bg-primary-50'
 													: 'border-gray-200 hover:border-gray-300'
 											}`}>
 											<input
@@ -566,7 +543,7 @@ const Checkout: React.FC = () => {
 												value={method.id}
 												checked={formData.paymentMethod === method.id}
 												onChange={handleInputChange}
-												className='mt-1 w-4 h-4 text-teal-600 border-gray-300 focus:ring-teal-500'
+												className='mt-1 w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500'
 											/>
 											<div className='flex-1'>
 												<div className='flex items-center space-x-2'>
@@ -578,6 +555,39 @@ const Checkout: React.FC = () => {
 										</label>
 									))}
 								</div>
+								
+								{/* Bank Account Link - Show only when bank transfer is selected */}
+								{formData.paymentMethod === 'bank_transfer' && (
+									<motion.div
+										initial={{ opacity: 0, height: 0 }}
+										animate={{ opacity: 1, height: 'auto' }}
+										exit={{ opacity: 0, height: 0 }}
+										className='mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg'
+									>
+										<div className='flex items-center justify-between'>
+											<div className='flex items-center space-x-3'>
+												<Banknote className='w-5 h-5 text-blue-600' />
+												<div>
+													<p className='text-sm font-medium text-blue-900'>
+														{t('bankAccountDetails')}
+													</p>
+													<p className='text-xs text-blue-700'>
+														{t('clickToViewBankDetails')}
+													</p>
+												</div>
+											</div>
+											<Link
+												to='/bank-account'
+												target='_blank'
+												rel='noopener noreferrer'
+												className='inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors'
+											>
+												<span>{t('viewBankDetails')}</span>
+												<ArrowRight className='w-4 h-4' />
+											</Link>
+										</div>
+									</motion.div>
+								)}
 							</div>
 
 							{/* Terms and Conditions */}
@@ -589,11 +599,11 @@ const Checkout: React.FC = () => {
 										checked={formData.termsAccepted}
 										onChange={handleInputChange}
 										required
-										className='mt-1 w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500'
+										className='mt-1 w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500'
 									/>
 									<span className='text-sm text-gray-700'>
 										{t('termsAgreement')}{' '}
-										<a href='/terms' className='text-teal-600 hover:underline' target='_blank' rel='noopener noreferrer'>
+										<a href='/terms' className='text-primary-600 hover:underline' target='_blank' rel='noopener noreferrer'>
 											{t('termsAndConditions')}
 										</a>
 									</span>
@@ -609,7 +619,7 @@ const Checkout: React.FC = () => {
 								className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-colors flex items-center justify-center space-x-2 ${
 									isSubmitting || !formData.termsAccepted
 										? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-										: 'bg-teal-600 text-white hover:bg-teal-700'
+										: 'bg-primary-600 text-white hover:bg-primary-700'
 								}`}>
 								{isSubmitting ? (
 									<>
@@ -633,3 +643,5 @@ const Checkout: React.FC = () => {
 };
 
 export default Checkout;
+
+

@@ -116,7 +116,7 @@ const Favorites: React.FC = () => {
 						</p>
 						<button
 							onClick={() => window.location.reload()}
-							className='bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors'>
+							className='bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors'>
 							{t('retry')}
 						</button>
 					</div>
@@ -131,7 +131,7 @@ const Favorites: React.FC = () => {
 			<div className='min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24'>
 				<div className='flex items-center justify-center w-full h-[calc(100vh-6rem)] px-4 sm:px-6 lg:px-8'>
 					<div className='text-center'>
-						<div className='animate-spin rounded-full h-16 w-16 border-4 border-teal-200 border-t-teal-600 mx-auto mb-4'></div>
+						<div className='animate-spin rounded-full h-16 w-16 border-4 border-primary-200 border-t-primary-600 mx-auto mb-4'></div>
 						<p className='text-gray-600'>{t('loadingFavorites')}</p>
 					</div>
 				</div>
@@ -154,7 +154,7 @@ const Favorites: React.FC = () => {
 						<p className='text-gray-600 mb-4'>{error}</p>
 						<button
 							onClick={() => window.location.reload()}
-							className='bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors'>
+							className='bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors'>
 							{t('retry')}
 						</button>
 					</div>
@@ -185,7 +185,7 @@ const Favorites: React.FC = () => {
 				{/* Favorites Content */}
 				{favoriteProducts.length === 0 ? (
 					<div className='text-center py-20'>
-						<Heart className='w-12 h-12 text-teal-600 mx-auto mb-4' />
+						<Heart className='w-12 h-12 text-primary-600 mx-auto mb-4' />
 						<h3 className='text-2xl font-semibold text-gray-900 mb-2'>
 							{t('noFavoritesYet')}
 						</h3>
@@ -196,7 +196,7 @@ const Favorites: React.FC = () => {
 							whileHover={{ scale: 1.05 }}
 							whileTap={{ scale: 0.95 }}
 							onClick={() => navigate("/products")}
-							className='inline-flex items-center space-x-2 bg-teal-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-teal-700 transition-colors'>
+							className='inline-flex items-center space-x-2 bg-primary-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-700 transition-colors'>
 							<span>{t('browseProducts')}</span>
 							<ArrowRight className='w-5 h-5' />
 						</motion.button>
@@ -241,14 +241,14 @@ const Favorites: React.FC = () => {
 											{p.description}
 										</p>
 										<div className='flex items-center justify-between'>
-											<span className='text-teal-600 font-bold'>
+											<span className='text-primary-600 font-bold'>
 												{formatPrice(p.price)}
 											</span>
 											<motion.button
 												whileHover={{ scale: 1.03 }}
 												whileTap={{ scale: 0.97 }}
 												onClick={() => navigate(`/product/${p._id}`)}
-												className='inline-flex items-center space-x-2 bg-teal-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors'>
+												className='inline-flex items-center space-x-2 bg-primary-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-primary-700 transition-colors'>
 												<span>{t('details')}</span>
 												<ArrowRight className='w-4 h-4' />
 											</motion.button>

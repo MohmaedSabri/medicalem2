@@ -49,7 +49,7 @@ const DoctorDetail: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
       </div>
     );
   }
@@ -67,7 +67,7 @@ const DoctorDetail: React.FC = () => {
           </p>
           <Link
             to="/doctors"
-            className="inline-flex items-center space-x-2 bg-teal-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-teal-600 transition-colors duration-300"
+            className="inline-flex items-center space-x-2 bg-primary-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-600 transition-colors duration-300"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>{t('backToDoctors')}</span>
@@ -86,7 +86,7 @@ const DoctorDetail: React.FC = () => {
 
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-teal-600 via-teal-700 to-emerald-700 py-16 lg:py-24 ">
+      <section className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 py-16 lg:py-24 ">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -122,10 +122,10 @@ const DoctorDetail: React.FC = () => {
                 <h1 className="text-4xl lg:text-5xl font-bold mb-4">
                   {getLocalizedText(doctorData?.name)}
                 </h1>
-                <p className="text-xl lg:text-2xl text-teal-100 mb-6">
+                <p className="text-xl lg:text-2xl text-primary-100 mb-6">
                   {getLocalizedText(doctorData?.title)}
                 </p>
-                <p className="text-lg text-teal-50 mb-8 leading-relaxed">
+                <p className="text-lg text-primary-50 mb-8 leading-relaxed">
                   {getLocalizedText(doctorData?.description)}
                 </p>
 
@@ -133,14 +133,14 @@ const DoctorDetail: React.FC = () => {
                 {/* Contact Info */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
-                    <MapPin className="w-5 h-5 text-teal-200" />
-                    <span className="text-teal-100">
+                    <MapPin className="w-5 h-5 text-primary-200" />
+                    <span className="text-primary-100">
                       {getLocalizedText(doctorData?.location)}
                     </span>
                   </div>
                   <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
-                    <Phone className="w-5 h-5 text-teal-200" />
-                    <span className="text-teal-100">{doctorData?.contact}</span>
+                    <Phone className="w-5 h-5 text-primary-200" />
+                    <span className="text-primary-100">{doctorData?.contact}</span>
                   </div>
                 </div>
               </motion.div>
@@ -163,7 +163,7 @@ const DoctorDetail: React.FC = () => {
                 className="bg-white rounded-2xl shadow-lg p-8"
               >
                 <div className={`flex items-center mb-6 ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
-                  <Award className="w-6 h-6 text-teal-500" />
+                  <Award className="w-6 h-6 text-primary-500" />
                   <h2 className="text-2xl font-bold text-gray-900">
                     {t('specialization')}
                   </h2>
@@ -181,7 +181,7 @@ const DoctorDetail: React.FC = () => {
                 className="bg-white rounded-2xl shadow-lg p-8"
               >
                 <div className={`flex items-center mb-6 ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
-                  <Heart className={`w-6 h-6 text-teal-500 ${isRTL ? 'ml-3' : 'mr-3'}`} />
+                  <Heart className={`w-6 h-6 text-primary-500 ${isRTL ? 'ml-3' : 'mr-3'}`} />
                   <h2 className="text-2xl font-bold text-gray-900">
                     {t('skills')}
                   </h2>
@@ -189,7 +189,7 @@ const DoctorDetail: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {skills.map((skill, index) => (
                     <div key={index} className={`flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
-                      <CheckCircle className={`w-5 h-5 text-teal-500 flex-shrink-0 ${isRTL ? 'ml-3' : 'mr-3'}`} />
+                      <CheckCircle className={`w-5 h-5 text-primary-500 flex-shrink-0 ${isRTL ? 'ml-3' : 'mr-3'}`} />
                       <span className="text-gray-700">{skill}</span>
                     </div>
                   ))}
@@ -204,7 +204,7 @@ const DoctorDetail: React.FC = () => {
                 className="bg-white rounded-2xl shadow-lg p-8"
               >
                 <div className={`flex items-center mb-6 ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
-                  <Award className={`w-6 h-6 text-teal-500 ${isRTL ? 'ml-3' : 'mr-3'}`} />
+                  <Award className={`w-6 h-6 text-primary-500 ${isRTL ? 'ml-3' : 'mr-3'}`} />
                   <h2 className="text-2xl font-bold text-gray-900">
                     {t('qualifications')}
                   </h2>
@@ -212,7 +212,7 @@ const DoctorDetail: React.FC = () => {
                 <div className="space-y-4">
                   {qualifications.map((qualification, index) => (
                     <div key={index} className={`flex items-start ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
-                      <div className={`w-2 h-2 bg-teal-500 rounded-full mt-2 flex-shrink-0 ${isRTL ? 'ml-3' : 'mr-3'}`}></div>
+                      <div className={`w-2 h-2 bg-primary-500 rounded-full mt-2 flex-shrink-0 ${isRTL ? 'ml-3' : 'mr-3'}`}></div>
                       <span className="text-gray-700">{qualification}</span>
                     </div>
                   ))}
@@ -227,7 +227,7 @@ const DoctorDetail: React.FC = () => {
                 className="bg-white rounded-2xl shadow-lg p-8"
               >
                 <div className={`flex items-center mb-6 ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
-                  <Briefcase className={`w-6 h-6 text-teal-500 ${isRTL ? 'ml-3' : 'mr-3'}`} />
+                  <Briefcase className={`w-6 h-6 text-primary-500 ${isRTL ? 'ml-3' : 'mr-3'}`} />
                   <h2 className="text-2xl font-bold text-gray-900">
                     {t('experience')}
                   </h2>
@@ -235,7 +235,7 @@ const DoctorDetail: React.FC = () => {
                 <div className="space-y-4">
                   {experience.map((exp, index) => (
                     <div key={index} className={`flex items-start ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
-                      <div className={`w-2 h-2 bg-teal-500 rounded-full mt-2 flex-shrink-0 ${isRTL ? 'ml-3' : 'mr-3'}`}></div>
+                      <div className={`w-2 h-2 bg-primary-500 rounded-full mt-2 flex-shrink-0 ${isRTL ? 'ml-3' : 'mr-3'}`}></div>
                       <span className="text-gray-700">{exp}</span>
                     </div>
                   ))}
@@ -257,11 +257,11 @@ const DoctorDetail: React.FC = () => {
                 </h3>
                 <div className="space-y-4">
                   <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
-                    <Phone className={`w-5 h-5 text-teal-500 ${isRTL ? 'ml-3' : 'mr-3'}`} />
+                    <Phone className={`w-5 h-5 text-primary-500 ${isRTL ? 'ml-3' : 'mr-3'}`} />
                     <span className="text-gray-700">{doctorData?.contact}</span>
                   </div>
                   <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
-                    <MapPin className={`w-5 h-5 text-teal-500 ${isRTL ? 'ml-3' : 'mr-3'}`} />
+                    <MapPin className={`w-5 h-5 text-primary-500 ${isRTL ? 'ml-3' : 'mr-3'}`} />
                     <span className="text-gray-700">
                       {getLocalizedText(doctorData?.location)}
                     </span>
@@ -275,7 +275,7 @@ const DoctorDetail: React.FC = () => {
                       href={doctorData.socialMedia[0]}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`inline-flex items-center bg-teal-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors duration-200 ${isRTL ? 'flex-row-reverse gap-3' : 'gap-2'}`}
+                      className={`inline-flex items-center bg-primary-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-primary-700 transition-colors duration-200 ${isRTL ? 'flex-row-reverse gap-3' : 'gap-2'}`}
                       aria-label={currentLanguage === 'ar' ? 'تواصل معي' : 'Contact Me'}
                     >
                       <ExternalLink className="w-4 h-4" />

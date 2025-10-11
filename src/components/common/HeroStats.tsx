@@ -1,7 +1,7 @@
 /** @format */
 
-import React, { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { motion } from "framer-motion";
 import { Shield, Award, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -13,20 +13,17 @@ interface HeroStatsProps {
 
 const HeroStats: React.FC<HeroStatsProps> = ({ counters, setCounters, isPageVisible }) => {
 	const { t } = useTranslation();
-	const statsRef = useRef<HTMLDivElement | null>(null);
-	const statsInView = useInView(statsRef, { margin: "-100px", amount: 0.3 });
-	const [isScrolling, setIsScrolling] = useState(false);
-	const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const [hasAnimated, setHasAnimated] = useState(false);
 
-	const stats = [
+	const stats = useMemo(() => [
 		{ label: t('yearsExperience'), value: 15, suffix: "+", icon: Shield },
 		{ label: t('medicalDevices'), value: 500, suffix: "+", icon: Award },
 		{ label: t('healthcareClients'), value: 10000, suffix: "+", icon: Users },
-	];
+	], [t]);
 
 	const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
-	const animateCounters = () => {
+	const animateCounters = useCallback(() => {
 		const durationMs = 1800;
 		const start = performance.now();
 		const frame = (now: number) => {
@@ -36,44 +33,18 @@ const HeroStats: React.FC<HeroStatsProps> = ({ counters, setCounters, isPageVisi
 			if (p < 1) requestAnimationFrame(frame);
 		};
 		requestAnimationFrame(frame);
-	};
+	}, [setCounters, stats]);
 
-	// Handle scroll detection
+	// Animate counters only when page becomes visible and hasn't animated yet
 	useEffect(() => {
-		const handleScroll = () => {
-			setIsScrolling(true);
-			
-			// Clear existing timeout
-			if (scrollTimeoutRef.current) {
-				clearTimeout(scrollTimeoutRef.current);
-			}
-			
-			// Set timeout to detect when scrolling stops
-			scrollTimeoutRef.current = setTimeout(() => {
-				setIsScrolling(false);
-			}, 150); // 150ms delay after scroll stops
-		};
-
-		window.addEventListener('scroll', handleScroll, { passive: true });
-		
-		return () => {
-			window.removeEventListener('scroll', handleScroll);
-			if (scrollTimeoutRef.current) {
-				clearTimeout(scrollTimeoutRef.current);
-			}
-		};
-	}, []);
-
-	useEffect(() => {
-		if (statsInView && isPageVisible && !isScrolling) {
+		if (isPageVisible && !hasAnimated) {
 			animateCounters();
-		} else {
-			setCounters([0, 0, 0]);
+			setHasAnimated(true);
 		}
-	}, [statsInView, isPageVisible, isScrolling]);
+	}, [isPageVisible, hasAnimated, animateCounters]);
 
 	return (
-		<div ref={statsRef} className='grid grid-cols-3 gap-4 sm:gap-6'>
+		<div className='grid grid-cols-3 gap-4 sm:gap-6'>
 			{stats.map((stat, index) => (
 				<motion.div
 					key={stat.label}
@@ -84,7 +55,7 @@ const HeroStats: React.FC<HeroStatsProps> = ({ counters, setCounters, isPageVisi
 						{counters[index]}
 						{stat.suffix}
 					</div>
-					<div className='text-xs sm:text-sm text-teal-100'>
+					<div className='text-xs sm:text-sm text-primary-100'>
 						{stat.label}
 					</div>
 				</motion.div>
