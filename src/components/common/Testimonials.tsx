@@ -1,9 +1,10 @@
 /** @format */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
+import { useTestimonials } from "../../hooks/useTestimonials";
 
 interface Testimonial {
 	id: number;
@@ -123,6 +124,26 @@ const Testimonials: React.FC = () => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isAutoPlaying] = useState(true);
 	const isRTL = i18n.language === "ar";
+	const { data, isLoading } = useTestimonials();
+
+	const apiTestimonials = useMemo(() => {
+		if (!data || !Array.isArray(data)) return null;
+		return data.map((d) => ({
+			id: 0,
+			name: d.name,
+			nameAr: d.name,
+			position: d.job || "",
+			positionAr: d.job || "",
+			company: d.clinicName || "",
+			companyAr: d.clinicName || "",
+			content: d.message,
+			contentAr: d.message,
+			rating: typeof d.rating === "number" ? d.rating : 5,
+			image: d.image || "https://via.placeholder.com/150",
+		}));
+	}, [data]);
+
+	const list = apiTestimonials && apiTestimonials.length > 0 ? apiTestimonials : testimonials;
 
 	// Auto-play functionality
 	useEffect(() => {
@@ -130,22 +151,22 @@ const Testimonials: React.FC = () => {
 
 		const interval = setInterval(() => {
 			setCurrentIndex((prevIndex) =>
-				prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
+				prevIndex === list.length - 1 ? 0 : prevIndex + 1
 			);
 		}, 5000);
 
 		return () => clearInterval(interval);
-	}, [isAutoPlaying]);
+	}, [isAutoPlaying, list.length]);
 
 	const nextTestimonial = () => {
 		setCurrentIndex((prevIndex) =>
-			prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
+			prevIndex === list.length - 1 ? 0 : prevIndex + 1
 		);
 	};
 
 	const prevTestimonial = () => {
 		setCurrentIndex((prevIndex) =>
-			prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
+			prevIndex === 0 ? list.length - 1 : prevIndex - 1
 		);
 	};
 
@@ -153,7 +174,7 @@ const Testimonials: React.FC = () => {
 		setCurrentIndex(index);
 	};
 
-	const currentTestimonial = testimonials[currentIndex];
+	const currentTestimonial = list[currentIndex];
 
 	// Animation variants
 	const containerVariants = {
@@ -184,22 +205,17 @@ const Testimonials: React.FC = () => {
 		}),
 	};
 
-	const slideVariants = {
-		enter: (direction: number) => ({
-			x: direction > 0 ? 1000 : -1000,
-			opacity: 0,
-		}),
-		center: {
-			zIndex: 1,
-			x: 0,
-			opacity: 1,
-		},
-		exit: (direction: number) => ({
-			zIndex: 0,
-			x: direction < 0 ? 1000 : -1000,
-			opacity: 0,
-		}),
-	};
+// removed unused slideVariants
+
+	if (isLoading && (!apiTestimonials || apiTestimonials.length === 0)) {
+		return (
+			<section id='testimonials' className='py-16 sm:py-20 lg:py-24'>
+				<div className='container mx-auto px-4 sm:px-6 lg:px-8'>
+					<p className='text-center text-slate-600'>{t("loading")}</p>
+				</div>
+			</section>
+		);
+	}
 
 	return (
 		<section
@@ -259,7 +275,7 @@ const Testimonials: React.FC = () => {
 									initial={{ opacity: 0, y: 20 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ delay: 0.2, duration: 0.6 }}>
-									"
+									" 
 									{isRTL
 										? currentTestimonial.contentAr
 										: currentTestimonial.content}
@@ -268,7 +284,7 @@ const Testimonials: React.FC = () => {
 
 								{/* Rating */}
 								<div className='flex justify-center mb-8'>
-									{[...Array(currentTestimonial.rating)].map((_, i) => (
+								{[...Array(Math.min(Math.max(currentTestimonial.rating || 0, 0), 5))].map((_, i) => (
 										<motion.div
 											key={i}
 											initial={{ opacity: 0, scale: 0 }}

@@ -11,6 +11,12 @@ export interface Partner {
 	href: string;
 }
 
+export interface HeroImage {
+    _id?: string;
+    src: string;
+    alt: string;
+}
+
 export interface ContactInfo {
 	_id?: string;
 	email: string;
@@ -26,6 +32,7 @@ export interface ContactInfo {
 	ceophoto: string;
 	ceosmallphoto: string;
 	partners: Partner[];
+    heroimages?: HeroImage[];
 	createdAt?: string;
 	updatedAt?: string;
 }
@@ -104,4 +111,27 @@ export const deletePartner = async (partnerId: string): Promise<ContactInfo> => 
 		endpoints.CONTACT_INFO_PARTNER_BY_ID.replace(':id', partnerId)
 	);
 	return response.data.data;
+};
+
+// Add hero image
+export const addHeroImage = async (data: Omit<HeroImage, '_id'>): Promise<ContactInfo> => {
+    const response = await axiosClient.post(endpoints.CONTACT_INFO_HERO_IMAGES, data);
+    return response.data.data;
+};
+
+// Update hero image
+export const updateHeroImage = async (heroImageId: string, data: Partial<HeroImage>): Promise<ContactInfo> => {
+    const response = await axiosClient.put(
+        endpoints.CONTACT_INFO_HERO_IMAGE_BY_ID.replace(':id', heroImageId),
+        data
+    );
+    return response.data.data;
+};
+
+// Delete hero image
+export const deleteHeroImage = async (heroImageId: string): Promise<ContactInfo> => {
+    const response = await axiosClient.delete(
+        endpoints.CONTACT_INFO_HERO_IMAGE_BY_ID.replace(':id', heroImageId)
+    );
+    return response.data.data;
 };

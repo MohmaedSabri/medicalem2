@@ -9,6 +9,9 @@ import {
 	addPartner,
 	updatePartner,
 	deletePartner,
+    addHeroImage,
+    updateHeroImage,
+    deleteHeroImage,
 	ContactInfo,
 	ContactInfoUpdateData,
 	PartnerData,
@@ -17,12 +20,12 @@ import {
 import { queryKeys } from '../config/queryKeys';
 
 export const useContactInfo = () => {
-	return useQuery({
-		queryKey: [queryKeys.CONTACT_INFO],
-		queryFn: getContactInfo,
-		staleTime: 5 * 60 * 1000, // 5 minutes
-		cacheTime: 10 * 60 * 1000, // 10 minutes
-	});
+    return useQuery<ContactInfo>({
+        queryKey: [queryKeys.CONTACT_INFO],
+        queryFn: getContactInfo,
+        staleTime: 5 * 60 * 1000, // 5 minutes
+        gcTime: 10 * 60 * 1000, // 10 minutes (react-query v5)
+    });
 };
 
 export const useUpdateContactInfo = () => {
@@ -90,4 +93,38 @@ export const useDeletePartner = () => {
 			queryClient.invalidateQueries({ queryKey: [queryKeys.CONTACT_INFO] });
 		},
 	});
+};
+
+export const useAddHeroImage = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data: { src: string; alt: string }) => addHeroImage(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [queryKeys.CONTACT_INFO] });
+        },
+    });
+};
+
+export const useUpdateHeroImage = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ heroImageId, data }: { heroImageId: string; data: { src?: string; alt?: string } }) =>
+            updateHeroImage(heroImageId, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [queryKeys.CONTACT_INFO] });
+        },
+    });
+};
+
+export const useDeleteHeroImage = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (heroImageId: string) => deleteHeroImage(heroImageId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [queryKeys.CONTACT_INFO] });
+        },
+    });
 };

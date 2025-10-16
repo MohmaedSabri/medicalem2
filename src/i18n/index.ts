@@ -108,6 +108,10 @@ const enTranslations = {
 		phone: "Phone",
 		email: "Email address",
 		address: "Address",
+		country: "Country",
+		selectCountry: "Select Country",
+		selectCountryFirst: "Please select a country first",
+		otherCountry: "Other Country",
 		emirate: "Emirate",
 		selectEmirate: "Please select Emirate",
 		streetAddress: "Apartment / Building / Street address",
@@ -199,10 +203,10 @@ const enTranslations = {
 		subject: "Subject",
 		
 		// Phone Types
-		homePhone: "Home Phone",
-		clinicPhone: "Clinic Phone",
-		enterHomePhone: "Enter your home phone number",
-		enterClinicPhone: "Enter your clinic phone number",
+		homePhone: "Home Use",
+		clinicPhone: "Clinic Use",
+		enterHomePhone: "Enter your home use phone number",
+		enterClinicPhone: "Enter your clinic use phone number",
 		
 		// Shipping Management
 		shippingManagement: "Shipping Management",

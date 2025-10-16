@@ -22,12 +22,26 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { useShippingOptions } from "../hooks/useShipping";
 
+// Dirham SVG Component using the provided SVG
+const DirhamIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
+	<svg
+		className={className}
+		viewBox="0 0 344.84 299.91"
+		fill="currentColor"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path d="M342.14,140.96l2.7,2.54v-7.72c0-17-11.92-30.84-26.56-30.84h-23.41C278.49,36.7,222.69,0,139.68,0c-52.86,0-59.65,0-109.71,0,0,0,15.03,12.63,15.03,52.4v52.58h-27.68c-5.38,0-10.43-2.08-14.61-6.01l-2.7-2.54v7.72c0,17.01,11.92,30.84,26.56,30.84h18.44s0,29.99,0,29.99h-27.68c-5.38,0-10.43-2.07-14.61-6.01l-2.7-2.54v7.71c0,17,11.92,30.82,26.56,30.82h18.44s0,54.89,0,54.89c0,38.65-15.03,50.06-15.03,50.06h109.71c85.62,0,139.64-36.96,155.38-104.98h32.46c5.38,0,10.43,2.07,14.61,6l2.7,2.54v-7.71c0-17-11.92-30.83-26.56-30.83h-18.9c.32-4.88.49-9.87.49-15s-.18-10.11-.51-14.99h28.17c5.37,0,10.43,2.07,14.61,6.01ZM89.96,15.01h45.86c61.7,0,97.44,27.33,108.1,89.94l-153.96.02V15.01ZM136.21,284.93h-46.26v-89.98l153.87-.02c-9.97,56.66-42.07,88.38-107.61,90ZM247.34,149.96c0,5.13-.11,10.13-.34,14.99l-157.04.02v-29.99l157.05-.02c.22,4.84.33,9.83.33,15Z"/>
+	</svg>
+);
+
+
 interface CheckoutFormData {
 	firstName: string;
 	lastName: string;
 	phone: string;
 	phoneType: 'home' | 'clinic';
 	email: string;
+	country: string;
 	shippingOption: string;
 	address: string;
 	orderNotes: string;
@@ -55,6 +69,7 @@ const Checkout: React.FC = () => {
 		phone: "",
 		phoneType: "home",
 		email: "",
+		country: "",
 		shippingOption: "",
 		address: "",
 		orderNotes: "",
@@ -149,12 +164,11 @@ const Checkout: React.FC = () => {
 	];
 
 	const formatPrice = (price: number) => {
-		return new Intl.NumberFormat("en-US", {
-			style: "currency",
-			currency: "AED",
+		const formattedPrice = new Intl.NumberFormat("en-US", {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
 		}).format(price);
+		return formattedPrice;
 	};
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -174,6 +188,36 @@ const Checkout: React.FC = () => {
 		}));
 	};
 
+	const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		const country = e.target.value;
+		setFormData(prev => ({
+			...prev,
+			country,
+			shippingOption: "" // Reset shipping option when country changes
+		}));
+		setShippingCost(0); // Reset shipping cost
+	};
+
+	// Country options
+	const countryOptions = [
+		{ value: "", label: t('selectCountry') },
+		{ value: "UAE", label: "United Arab Emirates" },
+		{ value: "SA", label: "Saudi Arabia" },
+		{ value: "KW", label: "Kuwait" },
+		{ value: "QA", label: "Qatar" },
+		{ value: "BH", label: "Bahrain" },
+		{ value: "OM", label: "Oman" },
+		{ value: "OTHER", label: t('otherCountry') }
+	];
+
+	// Filter shipping options based on selected country
+	const availableShippingOptions = useMemo(() => {
+		if (formData.country === "UAE") {
+			return shippingOptions; // Show all API shipping options for UAE
+		}
+		return []; // No options for non-UAE countries
+	}, [formData.country, shippingOptions]);
+
 	const handleCouponSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		// Handle coupon logic here
@@ -186,6 +230,18 @@ const Checkout: React.FC = () => {
 		setIsSubmitting(true);
 
 		try {
+			// Validate form
+			if (!formData.firstName || !formData.lastName || !formData.phone || !formData.email || !formData.country || !formData.address) {
+				toast.error("Please fill in all required fields.");
+				return;
+			}
+
+			// Validate shipping option only for UAE
+			if (formData.country === "UAE" && !formData.shippingOption) {
+				toast.error("Please select a shipping method.");
+				return;
+			}
+
 			// Simulate order processing
 			await new Promise(resolve => setTimeout(resolve, 2000));
 			
@@ -299,18 +355,18 @@ const Checkout: React.FC = () => {
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ delay: 0.3 }}
 							className='bg-white rounded-2xl shadow-lg p-6'>
-							<h3 className='text-2xl font-semibold text-gray-900 mb-6 flex items-center space-x-2'>
+							<h3 className='text-2xl font-semibold text-gray-900 mb-6 flex items-center space-x-3'>
 								<User className='w-6 h-6 text-primary-600' />
 								<span>{t('billingDetails')}</span>
 							</h3>
 
-							<div className='space-y-6'>
+							<div className='space-y-8'>
 								{/* Contact Details Section */}
 								<div>
-									<h4 className='text-lg font-medium text-gray-900 mb-4'>{t('contactDetails')}</h4>
-									<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+									<h4 className='text-lg font-medium text-gray-900 mb-6'>{t('contactDetails')}</h4>
+									<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
 										<div>
-											<label className='block text-sm font-medium text-gray-700 mb-2'>
+											<label className='block text-sm font-medium text-gray-700 mb-3'>
 												{t('firstName')} <span className='text-red-500'>*</span>
 											</label>
 											<input
@@ -323,7 +379,7 @@ const Checkout: React.FC = () => {
 											/>
 										</div>
 										<div>
-											<label className='block text-sm font-medium text-gray-700 mb-2'>
+											<label className='block text-sm font-medium text-gray-700 mb-3'>
 												{t('lastName')} <span className='text-red-500'>*</span>
 											</label>
 											<input
@@ -336,10 +392,10 @@ const Checkout: React.FC = () => {
 											/>
 										</div>
 										<div>
-											<label className='block text-sm font-medium text-gray-700 mb-2'>
+											<label className='block text-sm font-medium text-gray-700 mb-3'>
 												{t('phone')} <span className='text-red-500'>*</span>
 											</label>
-											<div className='space-y-3'>
+											<div className='space-y-4'>
 												{/* Phone Type Selection */}
 												<div className='flex space-x-4'>
 													<label className='flex items-center space-x-2 cursor-pointer'>
@@ -378,7 +434,7 @@ const Checkout: React.FC = () => {
 											</div>
 										</div>
 										<div>
-											<label className='block text-sm font-medium text-gray-700 mb-2'>
+											<label className='block text-sm font-medium text-gray-700 mb-3 mt-6'>
 												{t('email')} <span className='text-red-500'>*</span>
 											</label>
 											<input
@@ -394,33 +450,54 @@ const Checkout: React.FC = () => {
 								</div>
 
 								{/* Address Section */}
-								<div>
-									<h4 className='text-lg font-medium text-gray-900 mb-4 flex items-center space-x-2'>
+								<div className='mt-8'>
+									<h4 className='text-lg font-medium text-gray-900 mb-6 flex items-center space-x-3'>
 										<MapPin className='w-5 h-5 text-primary-600' />
 										<span>{t('address')}</span>
 									</h4>
-									<div className='space-y-4'>
+									<div className='space-y-6'>
 										<div>
-											<label className='block text-sm font-medium text-gray-700 mb-2'>
-												{t('shippingMethod')} <span className='text-red-500'>*</span>
+											<label className='block text-sm font-medium text-gray-700 mb-3'>
+												{t('country')} <span className='text-red-500'>*</span>
 											</label>
 											<select
-												name='shippingOption'
-												value={formData.shippingOption}
-												onChange={handleShippingChange}
+												name='country'
+												value={formData.country}
+												onChange={handleCountryChange}
 												required
-												disabled={shippingLoading}
-												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50'>
-												<option value=''>{shippingLoading ? t('loading') : t('selectShippingMethod')}</option>
-												{shippingOptions.map((shipping) => (
-													<option key={shipping._id} value={shipping._id}>
-														{shipping.name} ({shipping.price === 0 ? t('free') : `+${shipping.price} AED`})
+												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent'>
+												{countryOptions.map((country) => (
+													<option key={country.value} value={country.value}>
+														{country.label}
 													</option>
 												))}
 											</select>
 										</div>
+										{formData.country === "UAE" && (
+											<div>
+												<label className='block text-sm font-medium text-gray-700 mb-3'>
+													{t('shippingMethod')} <span className='text-red-500'>*</span>
+												</label>
+												<select
+													name='shippingOption'
+													value={formData.shippingOption}
+													onChange={handleShippingChange}
+													required
+													disabled={shippingLoading}
+													className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50'>
+													<option value=''>
+														{shippingLoading ? t('loading') : t('selectShippingMethod')}
+													</option>
+													{availableShippingOptions.map((shipping) => (
+														<option key={shipping._id} value={shipping._id}>
+															{shipping.name} ({shipping.price === 0 ? t('free') : `+${shipping.price}`})
+														</option>
+													))}
+												</select>
+											</div>
+										)}
 										<div>
-											<label className='block text-sm font-medium text-gray-700 mb-2'>
+											<label className='block text-sm font-medium text-gray-700 mb-3'>
 												{t('streetAddress')} <span className='text-red-500'>*</span>
 											</label>
 											<input
@@ -445,12 +522,12 @@ const Checkout: React.FC = () => {
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ delay: 0.4 }}
 							className='bg-white rounded-2xl shadow-lg p-6'>
-							<h3 className='text-2xl font-semibold text-gray-900 mb-6 flex items-center space-x-2'>
+							<h3 className='text-2xl font-semibold text-gray-900 mb-6 flex items-center space-x-3'>
 								<FileText className='w-6 h-6 text-primary-600' />
 								<span>{t('additionalInfo')}</span>
 							</h3>
 							<div>
-								<label className='block text-sm font-medium text-gray-700 mb-2'>
+								<label className='block text-sm font-medium text-gray-700 mb-3'>
 									{t('orderNotes')} <span className='text-gray-500'>({t('optional')})</span>
 								</label>
 								<textarea
@@ -475,19 +552,19 @@ const Checkout: React.FC = () => {
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ delay: 0.5 }}
 							className='bg-white rounded-2xl shadow-lg p-6 sticky top-24'>
-							<h3 className='text-2xl font-semibold text-gray-900 mb-6 flex items-center space-x-2'>
+							<h3 className='text-2xl font-semibold text-gray-900 mb-6 flex items-center space-x-3'>
 								<ShoppingCart className='w-6 h-6 text-primary-600' />
 								<span>{t('yourOrder')}</span>
 							</h3>
 
 							{/* Order Items */}
-							<div className='space-y-4 mb-6'>
+							<div className='space-y-6 mb-8'>
 								{cartProducts.map((product) => (
 									<div key={product._id} className='flex items-center space-x-3 py-3 border-b border-gray-100'>
 										<img
 											src={product.image}
 											alt={product.name}
-											className='w-12 h-12 object-cover rounded-lg'
+											className='w-12 h-12 object-cover rounded-lg mx-2'
 										/>
 										<div className='flex-1'>
 											<h4 className='text-sm font-medium text-gray-900 line-clamp-2'>
@@ -495,41 +572,56 @@ const Checkout: React.FC = () => {
 											</h4>
 											<p className='text-xs text-gray-500'>× {product.cartQuantity}</p>
 										</div>
-										<span className='text-sm font-semibold text-primary-600'>
-											{formatPrice(product.price * product.cartQuantity)}
-										</span>
+										<div className='flex items-center space-x-1'>
+											<span className='text-sm font-semibold text-primary-600'>
+												{formatPrice(product.price * product.cartQuantity)}
+											</span>
+											<DirhamIcon className="w-3 h-3 text-primary-600" />
+										</div>
 									</div>
 								))}
 							</div>
 
 							{/* Order Totals */}
-							<div className='space-y-3 mb-6'>
+							<div className='space-y-4 mb-8'>
 								<div className='flex justify-between text-sm'>
 									<span className='text-gray-600'>{t('subtotal')}</span>
-									<span className='font-medium'>{formatPrice(subtotal)}</span>
+									<div className='flex items-center space-x-1'>
+										<span className='font-medium'>{formatPrice(subtotal)}</span>
+										<DirhamIcon className="w-3 h-3 text-gray-600" />
+									</div>
 								</div>
 								<div className='flex justify-between text-sm'>
 									<span className='text-gray-600'>{t('shipping')}</span>
-									<span className='font-medium'>
-										{shippingCost > 0 ? formatPrice(shippingCost) : t('free')}
-									</span>
+									<div className='flex items-center space-x-1'>
+										<span className='font-medium'>
+											{shippingCost > 0 ? formatPrice(shippingCost) : t('free')}
+										</span>
+										{shippingCost > 0 && <DirhamIcon className="w-3 h-3 text-gray-600" />}
+									</div>
 								</div>
 								<div className='flex justify-between text-sm'>
 									<span className='text-gray-600'>{t('vat')} (5%)</span>
-									<span className='font-medium'>{formatPrice(vat)}</span>
+									<div className='flex items-center space-x-1'>
+										<span className='font-medium'>{formatPrice(vat)}</span>
+										<DirhamIcon className="w-3 h-3 text-gray-600" />
+									</div>
 								</div>
 								<div className='border-t border-gray-200 pt-3'>
 									<div className='flex justify-between text-lg font-semibold'>
 										<span>{t('total')}</span>
-										<span className='text-primary-600'>{formatPrice(total)}</span>
+										<div className='flex items-center space-x-1'>
+											<span className='text-primary-600'>{formatPrice(total)}</span>
+											<DirhamIcon className="w-4 h-4 text-primary-600" />
+										</div>
 									</div>
 								</div>
 							</div>
 
 							{/* Payment Methods */}
-							<div className='mb-6'>
-								<h4 className='text-lg font-medium text-gray-900 mb-4'>{t('paymentMethods')}</h4>
-								<div className='space-y-3'>
+							<div className='mb-8'>
+								<h4 className='text-lg font-medium text-gray-900 mb-6'>{t('paymentMethods')}</h4>
+								<div className='space-y-4'>
 									{paymentMethods.map((method) => (
 										<label
 											key={method.id}
@@ -547,7 +639,7 @@ const Checkout: React.FC = () => {
 												className='mt-1 w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500'
 											/>
 											<div className='flex-1'>
-												<div className='flex items-center space-x-2'>
+												<div className='flex items-center space-x-3'>
 													{method.icon}
 													<span className='font-medium text-gray-900'>{method.name}</span>
 												</div>
@@ -566,7 +658,7 @@ const Checkout: React.FC = () => {
 										className='mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg'
 									>
 										<div className='flex items-center justify-between'>
-											<div className='flex items-center space-x-3'>
+											<div className='flex items-center space-x-4'>
 												<Banknote className='w-5 h-5 text-blue-600' />
 												<div>
 													<p className='text-sm font-medium text-blue-900'>

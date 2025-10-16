@@ -77,6 +77,15 @@ export const queryKeys = {
 
   // Shipping related queries
   SHIPPING: ['shipping'] as const,
+
+  // Testimonial related queries
+  testimonials: {
+    all: ['testimonials'] as const,
+    lists: () => [...queryKeys.testimonials.all, 'list'] as const,
+    list: (filters: Record<string, string | number | boolean | undefined> = {}) => [...queryKeys.testimonials.lists(), filters] as const,
+    details: () => [...queryKeys.testimonials.all, 'detail'] as const,
+    detail: (id: string) => [...queryKeys.testimonials.details(), id] as const,
+  },
 };
 
 export default queryKeys;

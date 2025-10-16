@@ -8,20 +8,20 @@ export default {
   			xs: '475px'
   		},
   		colors: {
-  			primary: {
-  				'50': '#f0fdfd',
-  				'100': '#ccf7f8',
-  				'200': '#99eff1',
-  				'300': '#5ee5e8',
-  				'400': '#2dd4d8',
-  				'500': '#0ba7ae',
-  				'600': '#0ba7ae',
-  				'700': '#086d72',
-  				'800': '#065055',
-  				'900': '#043337',
-  				DEFAULT: 'hsl(var(--primary))',
-  				foreground: 'hsl(var(--primary-foreground))'
-  			},
+			primary: {
+				'50': '#f0fdf4',
+				'100': '#dcfce7',
+				'200': '#bbf7d0',
+				'300': '#86efac',
+				'400': '#4ade80',
+				'500': '#00796a',
+				'600': '#006b5c',
+				'700': '#005d4e',
+				'800': '#004f40',
+				'900': '#004132',
+				DEFAULT: 'hsl(var(--primary))',
+				foreground: 'hsl(var(--primary-foreground))'
+			},
   			teal: {
   				'50': '#f0fdfa',
   				'100': '#ccfbf1',

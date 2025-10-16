@@ -8,6 +8,7 @@ import DashboardStats from "./DashboardStats";
 import RecentItems from "../RecentItems";
 import RecentPosts from "../RecentPosts";
 import QuickActions from "../QuickActions";
+import ManageTestimonials from "../ManageTestimonials";
 
 interface Product {
 	id: string;
@@ -96,6 +97,10 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
 				return <div>Add Doctor Form</div>;
 			case "doctors":
 				return <div>Manage Doctors</div>;
+			case "add-testimonial":
+				return <ManageTestimonials />;
+			case "testimonials":
+				return <ManageTestimonials />;
 			case "dashboard":
 			default:
 				return (

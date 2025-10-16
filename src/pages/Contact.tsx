@@ -2,12 +2,11 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send, Clock, User, AtSign, Package, ChevronDown, Layers } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Clock, User, AtSign } from "lucide-react";
 import { ContactForm } from "../types";
 import emailjs from "@emailjs/browser";
 import { EMAILJS_CONFIG, initEmailJS } from "../config/emailjs";
 import { useSearchParams } from "react-router-dom";
-import { useProducts } from "../contexts/ProductsContext";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../contexts/LanguageContext";
 import { toast } from "react-hot-toast";
@@ -15,22 +14,8 @@ import Contactinfo from "../constant/Contactinfo";
 import Footer from "../components/layout/Footer";
 
 const Contact: React.FC = () => {
-	const { products } = useProducts();
 	const { t } = useTranslation();
 	const { currentLanguage, isRTL } = useLanguage();
-	const [searchParams] = useSearchParams();
-
-	// Helper: get localized text from string or {en, ar}
-	const getLocalizedText = useCallback((value: string | { en?: string; ar?: string } | null | undefined): string => {
-		if (!value) return "";
-		if (typeof value === "string") return value;
-		if (typeof value === "object") {
-			return value[currentLanguage as "en" | "ar"] || value.en || value.ar || "";
-		}
-		return "";
-	}, [currentLanguage]);
-	const productIdFromQuery = searchParams.get("productId");
-	const preselectedProductId = productIdFromQuery || undefined;
 
 	const [form, setForm] = useState<ContactForm>({
 		name: "",
@@ -39,17 +24,6 @@ const Contact: React.FC = () => {
 		message: "",
 	});
 
-	const categories = useMemo(
-		() => ["All", ...Array.from(new Set(products.map((p) => 
-		getLocalizedText(typeof p.subcategory === 'string' ? p.subcategory : p.subcategory?.name)
-	)))],
-		[products, getLocalizedText]
-	);
-	const [selectedCategory, setSelectedCategory] = useState<string>("All");
-	const [selectedProductId, setSelectedProductId] = useState<string | undefined>(
-		preselectedProductId
-	);
-	const [quantity, setQuantity] = useState<number>(1);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -62,16 +36,6 @@ const Contact: React.FC = () => {
 		}
 	}, []);
 
-	useEffect(() => {
-		if (preselectedProductId && products.length > 0) {
-			const product = products.find((p) => p._id === preselectedProductId);
-			if (product) {
-				setSelectedProductId(product._id);
-				setSelectedCategory(getLocalizedText(typeof product.subcategory === 'string' ? product.subcategory : product.subcategory?.name));
-			}
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [preselectedProductId, products.length]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -79,21 +43,12 @@ const Contact: React.FC = () => {
 		setError(null);
 
 		try {
-			const selectedProduct =
-				selectedProductId !== undefined
-					? products.find((p) => p._id === selectedProductId)
-					: undefined;
-			const orderDetails = selectedProduct
-				? `\n\nOrder Details:\n- Product: ${getLocalizedText(selectedProduct.name)}\n- Category: ${getLocalizedText(typeof selectedProduct.subcategory === 'string' ? selectedProduct.subcategory : selectedProduct.subcategory?.name)}\n- Quantity: ${quantity}`
-				: selectedCategory !== "All"
-				? `\n\nOrder Details:\n- Category: ${selectedCategory}\n- Product: (not selected)\n- Quantity: ${quantity}`
-				: "";
 			// EmailJS service configuration
 			const templateParams = {
 				from_name: form.name,
 				from_email: form.email,
 				from_phone: form.phone,
-				message: `${form.message}${orderDetails}`,
+				message: form.message,
 				to_name: "Dorar Team",
 			};
 
@@ -106,9 +61,6 @@ const Contact: React.FC = () => {
 
 			setIsSubmitted(true);
 			setForm({ name: "", email: "", phone: "", message: "" });
-			setSelectedCategory("All");
-			setSelectedProductId(undefined);
-			setQuantity(1);
 
 			// Reset success message after 5 seconds
 			setTimeout(() => {
@@ -303,119 +255,6 @@ const Contact: React.FC = () => {
 										</div>
 									</motion.div>
 
-					{/* Order Selection */}
-					<div className='grid sm:grid-cols-2 gap-6'>
-						<motion.div whileFocus={{ scale: 1.02 }}>
-							<label className='block text-sm font-semibold text-gray-800 mb-2'>
-								{t('category')}
-							</label>
-							<div className='relative'>
-								<Layers className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none`} />
-								<select
-									value={selectedCategory}
-									onChange={(e) => {
-										setSelectedCategory(e.target.value);
-										setSelectedProductId(undefined);
-									}}
-									className={`appearance-none w-full ${isRTL ? 'pr-10 pl-10' : 'pl-10 pr-10'} py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all bg-white hover:border-primary-300`}
-								>
-									{categories.map((cat, index) => (
-										<option key={`${cat}-${index}`} value={cat}>
-											{cat}
-										</option>
-									))}
-								</select>
-								<ChevronDown className={`absolute ${isRTL ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none`} />
-							</div>
-						</motion.div>
-
-						<motion.div whileFocus={{ scale: 1.02 }}>
-							<label className='block text-sm font-semibold text-gray-800 mb-2'>
-								{t('product')}
-							</label>
-							<div className='relative'>
-								<Package className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none`} />
-								<select
-									value={selectedProductId ?? ""}
-									onChange={(e) =>
-										setSelectedProductId(
-											e.target.value || undefined
-										)
-									}
-									className={`appearance-none w-full ${isRTL ? 'pr-10 pl-10' : 'pl-10 pr-10'} py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all bg-white hover:border-primary-300`}
-								>
-									<option key="select-product" value=''>{t('selectProductOptional')}</option>
-									{products
-										.filter((p) =>
-											selectedCategory === "All" ? true : 
-											getLocalizedText(typeof p.subcategory === 'string' ? p.subcategory : p.subcategory?.name) === selectedCategory
-										)
-										.map((p) => (
-											<option key={p._id} value={p._id}>
-												{getLocalizedText(p.name)}
-											</option>
-										))}
-								</select>
-								<ChevronDown className={`absolute ${isRTL ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none`} />
-							</div>
-						</motion.div>
-					</div>
-
-									<div className='grid sm:grid-cols-2 gap-6'>
-										<motion.div whileFocus={{ scale: 1.02 }}>
-																		<label className='block text-sm font-semibold text-gray-800 mb-2'>
-											{t('quantity')}
-										</label>
-											<div className='flex items-center gap-2'>
-												<button type='button' onClick={() => setQuantity(Math.max(1, quantity - 1))} className='px-4 py-4 rounded-xl border-2 border-gray-200 hover:bg-primary-50 hover:border-primary-300 transition-all'>-</button>
-												<input
-													type='number'
-													min={1}
-													value={quantity}
-													onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
-													className='w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 transition-all text-center bg-white'
-												/>
-												<button type='button' onClick={() => setQuantity(quantity + 1)} className='px-4 py-4 rounded-xl border-2 border-gray-200 hover:bg-primary-50 hover:border-primary-300 transition-all'>+</button>
-											</div>
-										</motion.div>
-									</div>
-
-									{/* Order Summary */}
-									<motion.div 
-										initial={{ opacity: 0, y: 20 }}
-										animate={{ opacity: 1, y: 0 }}
-										transition={{ duration: 0.5 }}
-										className='bg-[#00B4C1]/5 border-2 border-[#00B4C1]/20 rounded-xl p-6 mb-6'
-									>
-										<div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'} mb-4`}>
-											<div className='w-8 h-8 bg-[#00B4C1] rounded-lg flex items-center justify-center'>
-												<Package className='h-4 w-4 text-white' />
-											</div>
-											<h3 className='text-lg font-bold text-gray-900'>{t('orderSummary')}</h3>
-										</div>
-										
-										<div className='space-y-3'>
-											<div className='flex justify-between items-center py-2 border-b border-[#00B4C1]/10'>
-												<span className='text-sm font-medium text-gray-600'>{t('product')}:</span>
-												<span className='text-sm font-semibold text-gray-900'>
-													{selectedProductId ? 
-														getLocalizedText(products.find(p => p._id === selectedProductId)?.name) || t('noProductSelected')
-														: t('noProductSelected')
-													}
-												</span>
-											</div>
-											
-											<div className='flex justify-between items-center py-2 border-b border-[#00B4C1]/10'>
-												<span className='text-sm font-medium text-gray-600'>{t('quantity')}:</span>
-												<span className='text-sm font-semibold text-gray-900'>{quantity}</span>
-											</div>
-											
-											<div className='flex justify-between items-center py-2'>
-												<span className='text-sm font-medium text-gray-600'>{t('category')}:</span>
-												<span className='text-sm font-semibold text-gray-900'>{selectedCategory}</span>
-											</div>
-										</div>
-									</motion.div>
 
 									<motion.div whileFocus={{ scale: 1.02 }}>
 										<label className='block text-sm font-semibold text-gray-800 mb-2'>

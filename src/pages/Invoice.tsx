@@ -349,7 +349,7 @@ const Invoice: React.FC = () => {
 								whileTap={{ scale: 0.95 }}
 								onClick={generatePDF}
 								disabled={isGenerating}
-								className="flex items-center space-x-2 bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
+								className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
 							>
 								{isGenerating ? (
 									<div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
@@ -403,7 +403,7 @@ const Invoice: React.FC = () => {
 							
 							{/* Proforma Invoice Title */}
 							<div className="text-right">
-								<h1 className="text-3xl font-bold text-primary-600 mb-2">PROFORMA INVOICE</h1>
+								<h1 className="text-3xl font-bold text-green-600 mb-2">PROFORMA INVOICE</h1>
 								<div className="text-sm text-gray-500">
 									<p>Offer No: {invoiceData.invoiceNumber}</p>
 									<p>Date: {invoiceData.date}</p>
@@ -484,7 +484,7 @@ const Invoice: React.FC = () => {
 								<div className="border-t border-gray-300 pt-3">
 									<div className="flex justify-between text-lg font-bold">
 										<span className="text-gray-900">Total Amount (AED):</span>
-										<span className="text-primary-600">{formatPrice(invoiceData.total)}</span>
+										<span className="text-green-600">{formatPrice(invoiceData.total)}</span>
 									</div>
 								</div>
 							</div>

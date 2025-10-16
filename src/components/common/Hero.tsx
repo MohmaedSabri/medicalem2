@@ -1,12 +1,14 @@
 /** @format */
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../../contexts/LanguageContext";
 import HeroStats from "./HeroStats";
 import HeroButtons from "./HeroButtons";
 import HeroImages from "./HeroImages";
+import { useContactInfo } from "../../hooks/useContactInfo";
+import type { ContactInfo, HeroImage } from "../../services/contactInfoApi";
 
 const Hero: React.FC = () => {
 	const navigate = useNavigate();
@@ -15,15 +17,19 @@ const Hero: React.FC = () => {
 	const [counters, setCounters] = useState([0, 0, 0]);
 	const [isPageVisible, setIsPageVisible] = useState(false);
 
-	// Hero tri-image rotating state with continuous smooth orbital motion
-	const heroImages = React.useMemo(
-		() => [
-			"https://i.postimg.cc/zv42MvHP/20251003-0209-Futuristic-Operating-Room-simple-compose-01k6kjx17dff5txdbwbpnav0jt.png",
-			"https://i.postimg.cc/wjzYT434/20251002-2049-Modern-Medical-Clinic-simple-compose-01k6k0j7stee5rtwrntnkxhfwf.png",
-			"https://i.postimg.cc/W3CQRXQN/20251002-2046-Modern-Medical-Clinic-Interior-simple-compose-01k6k0cyc5fh1a5pzkwm98r6xr.png",
-		],
-		[]
-	);
+    // Fetch hero images from Contact Info API; fallback to defaults if missing
+    const { data: contactInfo } = useContactInfo();
+    const heroImages = useMemo(() => {
+        const info = contactInfo as ContactInfo | undefined;
+        const images = info?.heroimages?.map((h: HeroImage) => h.src).filter(Boolean) ?? [];
+        if (images.length >= 3) return images;
+        const fallback = [
+            "https://i.postimg.cc/zv42MvHP/20251003-0209-Futuristic-Operating-Room-simple-compose-01k6kjx17dff5txdbwbpnav0jt.png",
+            "https://i.postimg.cc/wjzYT434/20251002-2049-Modern-Medical-Clinic-simple-compose-01k6k0j7stee5rtwrntnkxhfwf.png",
+            "https://i.postimg.cc/W3CQRXQN/20251002-2046-Modern-Medical-Clinic-Interior-simple-compose-01k6k0cyc5fh1a5pzkwm98r6xr.png",
+        ];
+        return images.length > 0 ? [...images, ...fallback].slice(0, 3) : fallback;
+    }, [contactInfo]);
 	const [activeIndex, setActiveIndex] = React.useState(0);
 	
 	// Check if page is visible and set initial state

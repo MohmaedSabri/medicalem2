@@ -313,3 +313,37 @@ export interface DoctorsResponse {
 	hasNext?: boolean;
 	hasPrev?: boolean;
 }
+
+// Testimonial interfaces
+export interface Testimonial {
+  _id: string;
+  name: string;
+  email: string;
+  message: string;
+  image?: string;
+  rating?: number; // 1-5
+  job?: string;
+  clinicName?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateTestimonialData {
+  name: string;
+  email: string;
+  message: string;
+  image?: string;
+  rating?: number;
+  job?: string;
+  clinicName?: string;
+}
+
+export interface UpdateTestimonialData {
+  name?: string;
+  email?: string;
+  message?: string;
+  image?: string;
+  rating?: number;
+  job?: string;
+  clinicName?: string;
+}

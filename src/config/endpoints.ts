@@ -43,11 +43,17 @@ export const endpoints = {
 	DOCTORS_SEARCH: "/doctors/search",
 	DOCTORS_BY_SPECIALIZATION: "/doctors/specialization/:specialization",
 	DOCTORS_RATING: "/doctors/:id/rating",
+
+	// Testimonials
+	TESTIMONIALS: "/testimonials",
+	TESTIMONIALS_BY_ID: "/testimonials/:id",
 	
 	// Contact Info
 	CONTACT_INFO: "/contact-info",
 	CONTACT_INFO_PARTNERS: "/contact-info/partners",
 	CONTACT_INFO_PARTNER_BY_ID: "/contact-info/partners/:id",
+	CONTACT_INFO_HERO_IMAGES: "/contact-info/hero-images",
+	CONTACT_INFO_HERO_IMAGE_BY_ID: "/contact-info/hero-images/:id",
 	
 	// Shipping
 	SHIPPING: "/shipping",

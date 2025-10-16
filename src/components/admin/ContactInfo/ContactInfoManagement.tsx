@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useContactInfo, useUpdateContactInfo, useAddPartner, useUpdatePartner, useDeletePartner } from '../../../hooks/useContactInfo';
+import { useContactInfo, useUpdateContactInfo, useAddPartner, useUpdatePartner, useDeletePartner, useAddHeroImage, useUpdateHeroImage, useDeleteHeroImage } from '../../../hooks/useContactInfo';
 import { ContactInfoUpdateData, PartnerData, PartnerUpdateData } from '../../../services/contactInfoApi';
 import { Edit, Plus, Trash2, Save, X, ExternalLink, Image, User, Mail, Phone, MapPin, Globe } from 'lucide-react';
 import { showToast } from '../../../utils/toast';
@@ -15,6 +15,9 @@ const ContactInfoManagement: React.FC = () => {
 	const addPartnerMutation = useAddPartner();
 	const updatePartnerMutation = useUpdatePartner();
 	const deletePartnerMutation = useDeletePartner();
+	const addHeroImageMutation = useAddHeroImage();
+	const updateHeroImageMutation = useUpdateHeroImage();
+	const deleteHeroImageMutation = useDeleteHeroImage();
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [editingPartner, setEditingPartner] = useState<string | null>(null);
@@ -35,6 +38,12 @@ const ContactInfoManagement: React.FC = () => {
 		href: ''
 	});
 
+	// Hero images state
+	const [showAddHero, setShowAddHero] = useState(false);
+	const [editingHero, setEditingHero] = useState<string | null>(null);
+	const [heroFormData, setHeroFormData] = useState<{ src: string; alt: string }>({ src: '', alt: '' });
+	const [editingHeroData, setEditingHeroData] = useState<{ src: string; alt: string }>({ src: '', alt: '' });
+
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		const { name, value } = e.target;
 		setFormData(prev => ({ ...prev, [name]: value }));
@@ -43,6 +52,11 @@ const ContactInfoManagement: React.FC = () => {
 	const handlePartnerInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
 		setPartnerFormData(prev => ({ ...prev, [name]: value }));
+	};
+
+	const handleHeroInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+		setHeroFormData(prev => ({ ...prev, [name]: value }));
 	};
 
 	const handleSave = async () => {
@@ -64,6 +78,17 @@ const ContactInfoManagement: React.FC = () => {
 			showToast('success', 'partner-added', t('partnerAdded'));
 		} catch (error) {
 			showToast('error', 'partner-add-failed', t('addPartnerFailed'));
+		}
+	};
+
+	const handleAddHero = async () => {
+		try {
+			await addHeroImageMutation.mutateAsync({ src: heroFormData.src, alt: heroFormData.alt });
+			setHeroFormData({ src: '', alt: '' });
+			setShowAddHero(false);
+			showToast('success', 'hero-added', t('savedSuccessfully'));
+		} catch (error) {
+			showToast('error', 'hero-add-failed', t('updateFailed'));
 		}
 	};
 
@@ -112,6 +137,14 @@ const ContactInfoManagement: React.FC = () => {
 		}
 	};
 
+	const startEditingHero = (heroId: string) => {
+		const hero = contactInfo?.heroimages?.find(h => h._id === heroId);
+		if (hero) {
+			setEditingHeroData({ src: hero.src, alt: hero.alt });
+			setEditingHero(heroId);
+		}
+	};
+
 	const handleEditPartnerInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
 		setEditingPartnerData(prev => ({ ...prev, [name]: value }));
@@ -126,6 +159,30 @@ const ContactInfoManagement: React.FC = () => {
 				showToast('success', 'partner-updated', t('partnerUpdated'));
 			} catch (error) {
 				showToast('error', 'partner-update-failed', t('updatePartnerFailed'));
+			}
+		}
+	};
+
+	const handleSaveHeroEdit = async () => {
+		if (editingHero) {
+			try {
+				await updateHeroImageMutation.mutateAsync({ heroImageId: editingHero, data: editingHeroData });
+				setEditingHero(null);
+				setEditingHeroData({ src: '', alt: '' });
+				showToast('success', 'hero-updated', t('savedSuccessfully'));
+			} catch (error) {
+				showToast('error', 'hero-update-failed', t('updateFailed'));
+			}
+		}
+	};
+
+	const handleDeleteHero = async (heroId: string) => {
+		if (window.confirm(t('areYouSure') || 'Are you sure?')) {
+			try {
+				await deleteHeroImageMutation.mutateAsync(heroId);
+				showToast('success', 'hero-deleted', t('deletedSuccessfully'));
+			} catch (error) {
+				showToast('error', 'hero-delete-failed', t('deleteFailed'));
 			}
 		}
 	};
@@ -519,6 +576,161 @@ const ContactInfoManagement: React.FC = () => {
 									className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
 								>
 									{updatePartnerMutation.isPending ? t('saving') : t('save')}
+								</button>
+							</div>
+						</div>
+					</div>
+				)}
+			</motion.div>
+
+			{/* Hero Images Management */}
+			<motion.div
+				initial={{ opacity: 0, y: 20 }}
+				animate={{ opacity: 1, y: 0 }}
+				className="bg-white rounded-xl shadow-sm p-6"
+			>
+				<div className="flex justify-between items-center mb-6">
+					<h3 className="text-lg font-semibold text-gray-900">{t('heroImages') || 'Hero Images'}</h3>
+					<button
+						onClick={() => setShowAddHero(true)}
+						className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+					>
+						<Plus className="w-4 h-4" />
+						<span>{t('add') || 'Add'}</span>
+					</button>
+				</div>
+
+				<div className="space-y-4">
+					{contactInfo.heroimages?.map((hero) => (
+						<div key={hero._id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+							<div className="flex items-center space-x-4">
+								<img
+									src={hero.src}
+									alt={hero.alt}
+									className="w-20 h-12 object-cover rounded-lg"
+									onError={(e) => {
+										e.currentTarget.src = 'https://via.placeholder.com/160x96?text=Image';
+									}}
+								/>
+								<div>
+									<p className="text-sm text-gray-700 break-all">{hero.src}</p>
+									<p className="text-xs text-gray-500">{hero.alt}</p>
+								</div>
+							</div>
+							<div className="flex items-center space-x-2">
+								<button
+									onClick={() => startEditingHero(hero._id!)}
+									className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+								>
+									<Edit className="w-4 h-4" />
+								</button>
+								<button
+									onClick={() => handleDeleteHero(hero._id!)}
+									className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+								>
+									<Trash2 className="w-4 h-4" />
+								</button>
+							</div>
+						</div>
+					))}
+				</div>
+
+				{/* Add Hero Modal */}
+				{showAddHero && (
+					<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+						<div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+							<h3 className="text-lg font-semibold text-gray-900 mb-4">{t('add')} {t('heroImages') || 'Hero Image'}</h3>
+							<div className="space-y-4">
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">{t('imageUrl')}</label>
+									<input
+										type="url"
+										name="src"
+										value={heroFormData.src}
+										onChange={handleHeroInputChange}
+										className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="https://example.com/hero.jpg"
+									/>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">{t('altText')}</label>
+									<input
+										type="text"
+										name="alt"
+										value={heroFormData.alt}
+										onChange={handleHeroInputChange}
+										className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Hero image alt text"
+									/>
+								</div>
+							</div>
+							<div className="flex justify-end space-x-3 mt-6">
+								<button
+									onClick={() => {
+										setShowAddHero(false);
+										setHeroFormData({ src: '', alt: '' });
+									}}
+									className="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+								>
+									{t('cancel')}
+								</button>
+								<button
+									onClick={handleAddHero}
+									disabled={addHeroImageMutation.isPending}
+									className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+								>
+									{addHeroImageMutation.isPending ? t('adding') : t('add')}
+								</button>
+							</div>
+						</div>
+					</div>
+				)}
+
+				{/* Edit Hero Modal */}
+				{editingHero && (
+					<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+						<div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+							<h3 className="text-lg font-semibold text-gray-900 mb-4">{t('edit')} {t('heroImages') || 'Hero Image'}</h3>
+							<div className="space-y-4">
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">{t('imageUrl')}</label>
+									<input
+										type="url"
+										name="src"
+										value={editingHeroData.src}
+										onChange={(e) => setEditingHeroData(prev => ({ ...prev, src: e.target.value }))}
+										className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="https://example.com/hero.jpg"
+									/>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">{t('altText')}</label>
+									<input
+										type="text"
+										name="alt"
+										value={editingHeroData.alt}
+										onChange={(e) => setEditingHeroData(prev => ({ ...prev, alt: e.target.value }))}
+										className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Hero image alt text"
+									/>
+								</div>
+							</div>
+							<div className="flex justify-end space-x-3 mt-6">
+								<button
+									onClick={() => {
+										setEditingHero(null);
+										setEditingHeroData({ src: '', alt: '' });
+									}}
+									className="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+								>
+									{t('cancel')}
+								</button>
+								<button
+									onClick={handleSaveHeroEdit}
+									disabled={updateHeroImageMutation.isPending}
+									className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+								>
+									{updateHeroImageMutation.isPending ? t('saving') : t('save')}
 								</button>
 							</div>
 						</div>

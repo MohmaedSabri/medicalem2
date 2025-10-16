@@ -48,6 +48,8 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 		{ id: "posts", label: t("managePosts"), icon: FileText },
 		{ id: "add-doctor", label: t("addDoctor"), icon: User },
 		{ id: "doctors", label: t("manageDoctors"), icon: User },
+        { id: "add-testimonial", label: t("addTestimonial"), icon: FileText },
+        { id: "testimonials", label: t("manageTestimonials"), icon: FileText },
 		{ id: "contact-info", label: t("contactInformation"), icon: Settings },
 		{ id: "shipping", label: t("shippingManagement"), icon: Truck },
 	];
@@ -73,7 +75,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 								isRTL ? "translate-x-full" : "-translate-x-full"
 						  } lg:translate-x-0`
 				}`}>
-				<div className='flex flex-col h-screen'>
+				<div className='flex flex-col h-screen min-h-0'>
 					{/* Header */}
 					<div className='flex items-center justify-between p-6 border-b border-gray-200'>
 						<h1 className='text-xl font-bold text-teal-600'>
@@ -107,7 +109,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 					</div>
 
 					{/* Navigation */}
-					<nav className='flex-1 p-6 space-y-2'>
+					<nav className='flex-1 p-6 space-y-2 overflow-y-auto'>
 						{sidebarItems.map((item) => {
 							const Icon = item.icon;
 							return (

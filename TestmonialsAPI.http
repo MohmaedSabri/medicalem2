@@ -1,0 +1,196 @@
+### Testimonials API Documentation
+### Base URL: http://localhost:5000/api/testimonials
+
+# ========================================
+# GET ALL TESTIMONIALS
+# ========================================
+GET http://localhost:5000/api/testimonials/
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "message": "Great service!",
+    "image": "https://example.com/john.jpg",
+    "rating": 5,
+    "job": "Engineer",
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  }
+]
+```
+
+# ========================================
+# GET TESTIMONIAL BY ID
+# ========================================
+GET http://localhost:5000/api/testimonials/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+
+### Response (200 OK)
+```json
+{
+  "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+  "name": "John Doe",
+  "email": "john@example.com",
+  "message": "Great service!",
+  "image": "https://example.com/john.jpg",
+  "rating": 5,
+  "job": "Engineer",
+  "createdAt": "2024-01-10T08:00:00.000Z",
+  "updatedAt": "2024-01-10T08:00:00.000Z"
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Testimonial not found"
+}
+```
+
+# ========================================
+# CREATE TESTIMONIAL (Requires Auth)
+# ========================================
+POST http://localhost:5000/api/testimonials/
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Request Body
+```json
+{
+  "name": "Jane Smith",
+  "email": "jane@example.com",
+  "message": "Highly recommend!",
+  "image": "https://example.com/jane.jpg",
+  "rating": 4,
+  "job": "Designer",
+  "clinicName": "Downtown Clinic"
+}
+```
+
+### Response (201 Created)
+```json
+{
+  "message": "Testimonial created",
+  "data": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j2",
+    "name": "Jane Smith",
+    "email": "jane@example.com",
+    "message": "Highly recommend!",
+    "image": "https://example.com/jane.jpg",
+    "rating": 4,
+    "job": "Designer",
+    "clinicName": "Downtown Clinic",
+    "createdAt": "2024-01-15T12:00:00.000Z",
+    "updatedAt": "2024-01-15T12:00:00.000Z"
+  }
+}
+```
+
+### Response (400 Bad Request)
+```json
+{
+  "message": "All fields are required"
+}
+```
+
+### Response (401 Unauthorized)
+```json
+{
+  "message": "Access denied. No token provided."
+}
+```
+
+# ========================================
+# UPDATE TESTIMONIAL (Requires Auth)
+# ========================================
+PUT http://localhost:5000/api/testimonials/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Request Body (Partial or Full)
+```json
+{
+  "message": "Fantastic experience!",
+  "job": "Senior Engineer"
+}
+```
+
+### Response (200 OK)
+```json
+{
+  "message": "Testimonial updated",
+  "data": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "message": "Fantastic experience!",
+    "image": "https://example.com/john.jpg",
+    "rating": 5,
+    "job": "Senior Engineer",
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-15T13:00:00.000Z"
+  }
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Testimonial not found"
+}
+```
+
+# ========================================
+# DELETE TESTIMONIAL (Requires Auth)
+# ========================================
+DELETE http://localhost:5000/api/testimonials/64f1a2b3c4d5e6f7g8h9i0j1
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Response (200 OK)
+```json
+{
+  "message": "Testimonial deleted",
+  "data": {
+    "_id": "64f1a2b3c4d5e6f7g8h9i0j1",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "message": "Great service!",
+    "image": "https://example.com/john.jpg",
+    "rating": 5,
+    "job": "Engineer"
+  }
+}
+```
+
+### Response (404 Not Found)
+```json
+{
+  "message": "Testimonial not found"
+}
+```
+
+# ========================================
+# AUTHENTICATION
+# ========================================
+# Login to get a JWT token:
+# POST /api/users/login
+# {
+#   "email": "zaher@gmail.com",
+#   "password": "Zaher@*#123"
+# }
+# Use header: Authorization: Bearer YOUR_JWT_TOKEN
+
+# ========================================
+# NOTES
+# ========================================
+# - Public: GET /api/testimonials, GET /api/testimonials/:id
+# - Protected: POST, PUT, DELETE
+# - Fields: name, email, message, image, rating (1-5), job, clinicName (optional)
+# - createdAt is set automatically
+
