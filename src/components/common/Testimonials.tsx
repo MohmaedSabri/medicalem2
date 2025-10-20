@@ -230,7 +230,7 @@ const Testimonials: React.FC = () => {
 					viewport={{ once: true, amount: 0.2 }}
 					transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}>
 					<motion.h2
-						className='text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-800 mb-4'
+						className='text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-500 mb-4'
 						variants={containerVariants}>
 						{t("whatOurClientsSay")}
 					</motion.h2>

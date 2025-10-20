@@ -167,7 +167,7 @@ const Contact: React.FC = () => {
 					transition={{ duration: 0.6 }}
 					className={`${isRTL ? 'text-right' : 'text-left'} mb-16`}>
 
-					<h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 ${isRTL ? 'text-right mr-0 ml-auto' : 'text-left ml-0 mr-auto'}`}>
+					<h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-500 mb-4 ${isRTL ? 'text-right mr-0 ml-auto' : 'text-left ml-0 mr-auto'}`}>
 						{t('getInTouch')}
 					</h2>
 					<p className={`text-xl text-gray-600 max-w-3xl leading-relaxed ${isRTL ? 'text-right mr-0 ml-auto' : 'text-left ml-0 mr-auto'}`}>

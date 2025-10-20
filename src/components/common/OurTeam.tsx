@@ -212,7 +212,7 @@ const OurTeam: React.FC = () => {
 
             <motion.h2 
               variants={titleVariants}
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 text-center"
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-500 mb-6 text-center"
             >
               {t('meetOurExpertTeam')}
             </motion.h2>

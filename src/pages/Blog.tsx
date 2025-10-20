@@ -208,7 +208,7 @@ const Blog: React.FC = () => {
 	return (
 		<div className='min-h-screen bg-white'>
 			{/* Hero Section */}
-			<section className='relative pt-32 pb-16 bg-primary-600 overflow-hidden'>
+			<section className='relative pt-32 pb-16 bg-primary-500 overflow-hidden'>
 				{/* Simple Background Pattern */}
 				<div className='absolute inset-0 -z-20 opacity-20'>
 					<div className='absolute top-10 left-10 w-8 h-8 border-2 border-white/20 transform rotate-45'></div>

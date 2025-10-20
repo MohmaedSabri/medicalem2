@@ -12,10 +12,10 @@ const About: React.FC = () => {
 	return (
 		<div className='min-h-screen bg-white'>
 			<Header />
-			<section className='relative bg-primary-600 text-white py-20 '>
+			<section className='relative bg-primary-500 text-white py-20 text-center'>
 				<div className='container mx-auto px-4 sm:px-6 lg:px-8 mt-12'>
-					<h1 className='text-4xl sm:text-5xl font-bold mb-6'>{t('aboutUs')}</h1>
-					<p className='max-w-3xl text-primary-100 text-lg'>
+					<h1 className='text-4xl sm:text-5xl font-bold mb-6 '>{t('aboutUs')}</h1>
+					<p className='max-w-3xl text-primary-100 text-lg text-center mx-auto'>
 						{t('aboutUsDescription')}
 					</p>
 				</div>

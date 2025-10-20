@@ -114,7 +114,7 @@ const Partners: React.FC = () => {
 						</span>
 					</motion.div>
 
-					<h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6 text-center`}>
+					<h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary-500 mb-3 sm:mb-4 md:mb-6 text-center`}>
 						{t('ourPartners')}
 					</h2>
 					<p className={`text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl lg:max-w-3xl mx-auto leading-relaxed text-center`}>

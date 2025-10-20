@@ -70,10 +70,10 @@ const WhyChooseUs: React.FC = () => {
 					viewport={{ once: true }}
 					transition={{ duration: 0.6 }}
 					className='text-center mb-16'>
-					<h2 className='text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4'>
+					<h2 className='text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-500 mb-4'>
 						{t('whyChooseMedEquipPro')}
 					</h2>
-					<p className='text-xl text-gray-600 max-w-3xl mx-auto'>
+					<p className='text-xl text-primary-600 max-w-3xl mx-auto'>
 						{t('whyChooseDescription')}
 					</p>
 				</motion.div>
@@ -177,7 +177,7 @@ const WhyChooseUs: React.FC = () => {
 									<motion.button
 										whileHover={{ scale: 1.05, y: -3 }}
 										whileTap={{ scale: 0.98 }}
-										className='group relative inline-flex items-center gap-3 bg-primary-600 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-2xl hover:shadow-primary-500/50 hover:bg-primary-700 transition-all duration-500 ease-out overflow-hidden'
+										className='group relative inline-flex items-center gap-3 bg-primary-500 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-2xl hover:shadow-primary-500/50 hover:bg-primary-700 transition-all duration-500 ease-out overflow-hidden'
 										onClick={() =>
 											document
 												.getElementById("contact")
