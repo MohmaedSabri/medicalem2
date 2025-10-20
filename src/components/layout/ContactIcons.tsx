@@ -51,14 +51,15 @@ const ContactIcons: React.FC<ContactIconsProps> = ({
       <motion.div
         variants={contactFloatingVariants}
         animate="animate"
+
         whileHover={{ scale: 1.1, rotate: -5 }}
         whileTap={{ scale: 0.95 }}
       >
         <Link
           to="/cart"
-          className={`${iconBaseClasses} hover:text-primary-600`}
+          className={`${iconBaseClasses} hover:text-primary-600 mx-2`}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-primary-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
+          <div className="absolute inset-0  bg-gradient-to-r from-primary-400 to-primary-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
           <ShoppingCart className="mx-2 relative h-4 w-4 lg:h-5 lg:w-5 group-hover:scale-110 transition-transform duration-300" />
         </Link>
       </motion.div>

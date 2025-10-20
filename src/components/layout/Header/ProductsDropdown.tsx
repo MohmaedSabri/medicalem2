@@ -223,7 +223,7 @@ const ProductsDropdown: React.FC<ProductsDropdownProps> = ({
                 }}
                 className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-primary-600 text-white rounded-lg sm:rounded-xl hover:bg-primary-700 transition-colors font-medium text-sm sm:text-base"
               >
-                {currentLanguage === 'ar' ? 'عرض جميع المنتجات' : 'View All Products'}
+                {currentLanguage === 'ar' ? 'عرض الجميع ' : 'View All Products'}
               </button>
             </div>
           </div>

@@ -90,7 +90,7 @@ const DesktopNavigation: React.FC<DesktopNavigationProps> = ({
               <Link
                 to={item.path}
                 className={`
-                  relative flex items-center px-2 sm:px-3 xl:px-2 py-1 sm:py-2 xl:py-3 rounded-full transition-all duration-200
+                  relative flex items-center px-4 py-1 sm:py-2 xl:py-3 rounded-full transition-all duration-200
                   ${
                     isActive
                       ? 'bg-primary-600 text-white shadow-md'
@@ -104,9 +104,7 @@ const DesktopNavigation: React.FC<DesktopNavigationProps> = ({
                 <span className="text-xs sm:text-sm xl:text-base font-medium whitespace-nowrap hidden sm:block">
                   {item.label}
                 </span>
-                {isActive && (
-                  <Zap className="h-4 w-4 text-yellow-400 ml-1" />
-                )}
+           
               </Link>
 
               {/* Products Dropdown - Show after Home */}

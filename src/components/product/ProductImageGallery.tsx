@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Zap } from 'lucide-react';
 import { Product } from '../../types';
 import { useLocalization } from '../../hooks/useLocalization';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface ProductImageGalleryProps {
   product: Product;
@@ -17,6 +18,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [selectedModalImage, setSelectedModalImage] = useState("");
   const { getLocalizedText, getLocalizedCategoryName } = useLocalization();
+  const { isRTL } = useLanguage();
 
   const handleImageClick = (imageUrl: string) => {
     setSelectedModalImage(imageUrl);
@@ -45,7 +47,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8 }}
-        className='space-y-3 sm:space-y-4 lg:space-y-6'
+        className={`space-y-3 sm:space-y-4 lg:space-y-6 ${isRTL ? 'text-right' : 'text-left'}`}
       >
         {/* Main Image */}
         <div className='relative overflow-hidden rounded-xl sm:rounded-2xl shadow-xl cursor-pointer'>
@@ -60,7 +62,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
             loading="lazy"
           />
           {/* Subcategory Badge */}
-          <div className='absolute top-2 sm:top-4 left-2 sm:left-4'>
+          <div className={`absolute top-2 sm:top-4 ${isRTL ? 'right-2 sm:right-4' : 'left-2 sm:left-4'}`}>
             <span className='inline-flex items-center space-x-1 sm:space-x-2 bg-white/95 backdrop-blur-sm -webkit-backdrop-blur-sm text-gray-800 px-2 sm:px-3 py-1.5 rounded-lg font-medium border border-white/20 shadow-lg text-xs sm:text-sm'>
               <Zap className='w-3 h-3 sm:w-4 sm:h-4 text-primary-600' />
               <span className='hidden sm:inline'>

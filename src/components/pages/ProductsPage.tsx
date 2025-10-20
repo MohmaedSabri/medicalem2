@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Search, Filter, ArrowRight, Heart, Grid3X3, List, ShoppingCart } from "lucide-react";
+import { Search, Filter, ArrowRight, Heart, Grid3X3, List, ShoppingCart, Check } from "lucide-react";
 import { Product } from "../../types";
 import { useProducts } from "../../hooks/useProducts";
 import { useCategories } from "../../contexts/CategoriesContext";
@@ -295,6 +295,7 @@ const ProductsPage: React.FC = () => {
 		};
 		index: number;
 	}) => {
+		const [added, setAdded] = useState<boolean>(() => isInCart(product._id));
 		// Debug: Log product rating data
 		console.log(`Product ${product._id} rating data:`, {
 			averageRating: product.averageRating,
@@ -363,17 +364,14 @@ const ProductsPage: React.FC = () => {
 							whileTap={{ scale: 0.9 }}
 							onClick={(e) => {
 								e.stopPropagation();
+								if (added) return;
 								handleAddToCart(product._id);
+								setAdded(true);
 							}}
-							className={`bg-white/95 backdrop-blur-sm rounded-full p-2 sm:p-2.5 transition-all duration-300 shadow-lg hover:shadow-xl ${
-								isInCart(product._id)
-									? "text-primary-600 hover:bg-primary-50"
-									: "text-gray-600 hover:bg-primary-50 hover:text-primary-600"
-							}`}>
+							disabled={added}
+							className={`bg-white/95 backdrop-blur-sm rounded-full p-2 sm:p-2.5 transition-all duration-300 shadow-lg hover:shadow-xl ${added ? 'text-primary-600 bg-primary-50 cursor-not-allowed' : 'text-gray-600 hover:bg-primary-50 hover:text-primary-600'}`}>
 							<ShoppingCart
-								className={`h-3 w-3 sm:h-4 sm:w-4 ${
-									isInCart(product._id) ? "fill-primary-600" : ""
-								}`}
+								className={`h-3 w-3 sm:h-4 sm:w-4 ${added ? 'fill-primary-600' : ''}`}
 							/>
 						</motion.button>
 
@@ -530,25 +528,34 @@ const ProductsPage: React.FC = () => {
 							</motion.button>
 						</div>
 
-						{/* Add to Cart Button - Full Width with Enhanced Hover Effect */}
+						{/* Add to Cart Button - Styled like Contact CTA and non-toggling */}
 						<motion.button
-							whileHover={{ scale: 1.05, y: -2 }}
+							whileHover={{ scale: 1.02, y: -2 }}
 							whileTap={{ scale: 0.98 }}
 							onClick={(e) => {
 								e.stopPropagation();
+								if (added) return;
 								handleAddToCart(product._id);
+								setAdded(true);
 							}}
-							className={`group relative w-full px-3 py-2.5 sm:px-4 sm:py-3 rounded-lg transition-all duration-500 flex items-center justify-center space-x-2 sm:space-x-3 font-semibold border overflow-hidden shadow-sm hover:shadow-xl ${
-								isInCart(product._id)
-									? "bg-primary-100 text-primary-700 border-primary-300 hover:bg-primary-600 hover:text-white hover:border-primary-600 hover:shadow-primary-500/25"
-									: "bg-gray-100 text-gray-700 border-gray-200 hover:bg-primary-600 hover:text-white hover:border-primary-600 hover:shadow-primary-500/25"
-							}`}>
+							disabled={added}
+							className={`w-full ${added ? 'bg-primary-600 hover:bg-primary-700 cursor-not-allowed border-primary-100' : 'bg-primary-600 hover:bg-primary-700 border-primary-100'} text-white py-4 sm:py-5 rounded-2xl font-bold text-sm sm:text-base flex items-center justify-center gap-3 transition-all duration-300 relative overflow-hidden group shadow-lg hover:shadow-xl hover:shadow-primary-500/25 border-2`} aria-live='polite' aria-disabled={added}>
+							{/* Shimmer effect */}
+							<div className='absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out bg-gradient-to-r from-transparent via-white/20 to-transparent'></div>
+
 							{/* Button content */}
-							<div className='relative z-10 flex items-center justify-center space-x-2 sm:space-x-3 w-full'>
-								<ShoppingCart className='h-3 w-3 sm:h-4 sm:w-4 transition-all duration-500 group-hover:scale-125 group-hover:rotate-12 flex-shrink-0' />
-								<span className='font-semibold text-xs sm:text-sm transition-all duration-500 group-hover:tracking-wide flex-shrink-0'>
-									{isInCart(product._id) ? t("addedToCart") : t("addToCart")}
-								</span>
+							<div className='relative z-10 flex items-center justify-center gap-3'>
+								{added ? (
+									<>
+										<Check className='h-4 w-4' />
+										<span className='font-semibold'>{t("addedToCart")}</span>
+									</>
+								) : (
+									<>
+										<ShoppingCart className='h-4 w-4' />
+										<span className='font-semibold'>{t("addToCart")}</span>
+									</>
+								)}
 							</div>
 						</motion.button>
 					</div>

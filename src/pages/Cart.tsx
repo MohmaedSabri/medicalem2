@@ -140,14 +140,17 @@ const Cart: React.FC = () => {
 		[products, cartItems]
 	);
 
-	const formatPrice = (price: number) => {
-		return new Intl.NumberFormat("en-US", {
-			style: "currency",
-			currency: "USD",
-			minimumFractionDigits: 0,
-			maximumFractionDigits: 0,
-		}).format(price);
-	};
+    const renderPrice = (amount: number, size: 'sm' | 'md' = 'md') => {
+        const numberText = amount.toLocaleString();
+        const iconClass = size === 'sm' ? 'h-3 w-3' : 'h-4 w-4';
+        const valueClass = size === 'sm' ? 'text-sm' : 'text-base';
+        return (
+            <span className={`inline-flex items-center gap-2 ${valueClass}`}>
+                <img src={'/Dirham%20Currency%20Symbol%20-%20Black.svg'} alt='AED' className={iconClass} />
+                <span>{numberText}</span>
+            </span>
+        );
+    };
 
 	const cartTotal = useMemo(() => getCartTotal(products), [products]);
 	const totalItems = useMemo(() => cartItems.reduce((total, item) => total + item.quantity, 0), [cartItems]);
@@ -256,7 +259,7 @@ const Cart: React.FC = () => {
 											className='bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100'>
 											<div className='flex items-center p-4'>
 												{/* Product Image */}
-												<div className='flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24'>
+												<div className='flex-shrink-0 mx-4 w-20 h-20 sm:w-24 sm:h-24'>
 													<img
 														src={product.image}
 														alt={product.name}
@@ -272,9 +275,9 @@ const Cart: React.FC = () => {
 													<p className='text-gray-600 text-sm line-clamp-2 mb-2'>
 														{product.description}
 													</p>
-													<div className='text-primary-600 font-bold text-lg'>
-														{formatPrice(product.price)}
-													</div>
+                                                    <div className='text-primary-600 font-bold text-lg'>
+                                                        {renderPrice(product.price)}
+                                                    </div>
 												</div>
 
 												{/* Quantity Controls */}
@@ -323,19 +326,19 @@ const Cart: React.FC = () => {
 								</h3>
 								
 								<div className='space-y-3 mb-6'>
-									<div className='flex justify-between text-sm'>
-										<span className='text-gray-600'>{t('subtotal')}</span>
-										<span className='font-medium'>{formatPrice(cartTotal)}</span>
-									</div>
+                                    <div className='flex justify-between text-sm items-center'>
+                                        <span className='text-gray-600'>{t('subtotal')}</span>
+                                        <span className='font-medium'>{renderPrice(cartTotal, 'sm')}</span>
+                                    </div>
 									<div className='flex justify-between text-sm'>
 										<span className='text-gray-600'>{t('shipping')}</span>
 										<span className='font-medium text-green-600'>{t('free')}</span>
 									</div>
 									<div className='border-t border-gray-200 pt-3'>
-										<div className='flex justify-between text-lg font-semibold'>
-											<span>{t('total')}</span>
-											<span className='text-primary-600'>{formatPrice(cartTotal)}</span>
-										</div>
+                                        <div className='flex justify-between text-lg font-semibold items-center'>
+                                            <span>{t('total')}</span>
+                                            <span className='text-primary-600'>{renderPrice(cartTotal)}</span>
+                                        </div>
 									</div>
 								</div>
 

@@ -69,7 +69,7 @@ const Checkout: React.FC = () => {
 		phone: "",
 		phoneType: "home",
 		email: "",
-		country: "",
+		country: "UAE",
 		shippingOption: "",
 		address: "",
 		orderNotes: "",
@@ -105,6 +105,18 @@ const Checkout: React.FC = () => {
 		[apiProducts, getLocalizedProductField]
 	);
 
+	// Local type for cart product with quantity
+	type CartProductDisplay = {
+		_id: string;
+		name: string;
+		description: string;
+		image: string;
+		price: number;
+		category: string;
+		cartQuantity: number;
+		addedAt: number;
+	};
+
 	// Update cart when localStorage changes
 	useEffect(() => {
 		const handleStorageChange = (e: StorageEvent) => {
@@ -118,7 +130,7 @@ const Checkout: React.FC = () => {
 	}, []);
 
 	// Get cart products
-	const cartProducts = useMemo(() => {
+	const cartProducts: CartProductDisplay[] = useMemo(() => {
 		const cartProductMap = new Map();
 		cartItems.forEach(cartItem => {
 			const product = products.find(p => p._id === cartItem.id);
@@ -142,26 +154,26 @@ const Checkout: React.FC = () => {
 	const { data: shippingOptions = [], isLoading: shippingLoading } = useShippingOptions();
 
 	// Payment methods
-	const paymentMethods = [
-		{
-			id: "bank_transfer",
-			name: "Direct bank transfer",
-			description: "Make your payment directly into our bank account. Please use your Order ID as the payment reference.",
-			icon: <Banknote className="w-5 h-5" />,
-		},
-		{
-			id: "credit_card",
-			name: "Credit Card on Delivery",
-			description: "Pay using your credit card on delivery.",
-			icon: <CreditCard className="w-5 h-5" />,
-		},
-		{
-			id: "cod",
-			name: "Cash on delivery",
-			description: "Pay with cash upon delivery.",
-			icon: <Truck className="w-5 h-5" />,
-		},
-	];
+    const paymentMethods = [
+        {
+            id: "bank_transfer",
+            name: t('paymentDirectBankTransfer'),
+            description: t('paymentDirectBankTransferDesc'),
+            icon: <Banknote className="w-5 h-5" />,
+        },
+        {
+            id: "credit_card",
+            name: t('paymentCreditCardOnDelivery'),
+            description: t('paymentCreditCardOnDeliveryDesc'),
+            icon: <CreditCard className="w-5 h-5" />,
+        },
+        {
+            id: "cod",
+            name: t('paymentCashOnDelivery'),
+            description: t('paymentCashOnDeliveryDesc'),
+            icon: <Truck className="w-5 h-5" />,
+        },
+    ];
 
 	const formatPrice = (price: number) => {
 		const formattedPrice = new Intl.NumberFormat("en-US", {
@@ -200,15 +212,14 @@ const Checkout: React.FC = () => {
 
 	// Country options
 	const countryOptions = [
-		{ value: "", label: t('selectCountry') },
-		{ value: "UAE", label: "United Arab Emirates" },
-		{ value: "SA", label: "Saudi Arabia" },
-		{ value: "KW", label: "Kuwait" },
-		{ value: "QA", label: "Qatar" },
-		{ value: "BH", label: "Bahrain" },
-		{ value: "OM", label: "Oman" },
+		{ value: "UAE", label: t('UAE') },
+		{ value: "SA", label: t('SA') },
+		{ value: "KW", label: t('KW') },
+		{ value: "QA", label: t('QA') },
+		{ value: "BH", label: t('BH') },
+		{ value: "OM", label: t('OM') },
 		{ value: "OTHER", label: t('otherCountry') }
-	];
+	].filter(country => country.value !== "")	;
 
 	// Filter shipping options based on selected country
 	const availableShippingOptions = useMemo(() => {
@@ -245,6 +256,33 @@ const Checkout: React.FC = () => {
 			// Simulate order processing
 			await new Promise(resolve => setTimeout(resolve, 2000));
 			
+			// Build invoice payload to pass to invoice page
+			const now = new Date();
+			const invoicePayload = {
+				invoiceNumber: `${now.getFullYear().toString().slice(-2)}-${(now.getMonth()+1)
+					.toString()
+					.padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}-${now.getTime().toString().slice(-4)}`,
+				date: now.toLocaleDateString(),
+				dueDate: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(),
+				customerName: `${formData.firstName} ${formData.lastName}`.trim(),
+				customerEmail: formData.email,
+				customerPhone: formData.phone,
+				customerPhoneType: formData.phoneType,
+				customerAddress: `${formData.address}${formData.country ? `, ${formData.country}` : ''}`,
+				items: cartProducts.map((p) => ({
+					name: p.name,
+					quantity: p.cartQuantity,
+					price: p.price,
+					total: p.price * p.cartQuantity,
+				})),
+				subtotal: subtotal,
+				shipping: shippingCost,
+				vat: vat,
+				total: total,
+				paymentMethod: formData.paymentMethod,
+				notes: formData.orderNotes,
+			};
+			
 			// Clear cart
 			clearCart();
 			setCartItems([]);
@@ -255,8 +293,8 @@ const Checkout: React.FC = () => {
 				icon: '🎉',
 			});
 			
-			// Redirect to invoice page
-			navigate("/invoice");
+			// Redirect to invoice page with invoice payload
+			navigate("/invoice", { state: invoicePayload });
 		} catch {
 			toast.error("Failed to place order. Please try again.");
 		} finally {
@@ -397,30 +435,7 @@ const Checkout: React.FC = () => {
 											</label>
 											<div className='space-y-4'>
 												{/* Phone Type Selection */}
-												<div className='flex space-x-4'>
-													<label className='flex items-center space-x-2 cursor-pointer'>
-														<input
-															type='radio'
-															name='phoneType'
-															value='home'
-															checked={formData.phoneType === 'home'}
-															onChange={handleInputChange}
-															className='w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500'
-														/>
-														<span className='text-sm text-gray-700'>{t('homePhone')}</span>
-													</label>
-													<label className='flex items-center space-x-2 cursor-pointer'>
-														<input
-															type='radio'
-															name='phoneType'
-															value='clinic'
-															checked={formData.phoneType === 'clinic'}
-															onChange={handleInputChange}
-															className='w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500'
-														/>
-														<span className='text-sm text-gray-700'>{t('clinicPhone')}</span>
-													</label>
-												</div>
+												
 												{/* Phone Number Input */}
 												<input
 													type='tel'
@@ -428,13 +443,12 @@ const Checkout: React.FC = () => {
 													value={formData.phone}
 													onChange={handleInputChange}
 													required
-													placeholder={formData.phoneType === 'home' ? t('enterHomePhone') : t('enterClinicPhone')}
 													className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent'
 												/>
 											</div>
 										</div>
 										<div>
-											<label className='block text-sm font-medium text-gray-700 mb-3 mt-6'>
+											<label className='block text-sm font-medium text-gray-700 mb-3 '>
 												{t('email')} <span className='text-red-500'>*</span>
 											</label>
 											<input
@@ -473,6 +487,17 @@ const Checkout: React.FC = () => {
 												))}
 											</select>
 										</div>
+										{
+											formData.country === "OTHER" && (
+												<div>
+													<label className='block text-sm font-medium text-gray-700 mb-3'>
+														{t('enterCountry')} <span className='text-red-500'>*</span>
+													</label>
+													<input type='text' name='otherCountry' onChange={handleInputChange}
+													 required className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent' />
+												</div>
+											)
+										}
 										{formData.country === "UAE" && (
 											<div>
 												<label className='block text-sm font-medium text-gray-700 mb-3'>
@@ -484,7 +509,8 @@ const Checkout: React.FC = () => {
 													onChange={handleShippingChange}
 													required
 													disabled={shippingLoading}
-													className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50'>
+													className='w-full px-4 py-3 border
+													 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50'>
 													<option value=''>
 														{shippingLoading ? t('loading') : t('selectShippingMethod')}
 													</option>
@@ -506,10 +532,33 @@ const Checkout: React.FC = () => {
 												value={formData.address}
 												onChange={handleInputChange}
 												required
-												placeholder={t('streetAddressPlaceholder')}
 												className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent'
 											/>
 										</div>
+										<div className='flex space-x-4'>
+													<label className='flex items-center space-x-2 cursor-pointer'>
+														<input
+															type='radio'
+															name='phoneType'
+															value='home'
+															checked={formData.phoneType === 'home'}
+															onChange={handleInputChange}
+															className='w-4 h-4 mx-2 text-primary-600 border-gray-300 focus:ring-primary-500'
+														/>
+														<span className='text-sm text-gray-700'>{t('homePhone')}</span>
+													</label>
+													<label className='flex items-center space-x-2 cursor-pointer'>
+														<input
+															type='radio'
+															name='phoneType'
+															value='clinic'
+															checked={formData.phoneType === 'clinic'}
+															onChange={handleInputChange}
+															className='w-4 h-4 text-primary-600 mx-2 border-gray-300 focus:ring-primary-500'
+														/>
+														<span className='text-sm text-gray-700'>{t('clinicPhone')}</span>
+													</label>
+												</div>
 									</div>
 								</div>
 
@@ -573,7 +622,7 @@ const Checkout: React.FC = () => {
 											<p className='text-xs text-gray-500'>× {product.cartQuantity}</p>
 										</div>
 										<div className='flex items-center space-x-1'>
-											<span className='text-sm font-semibold text-primary-600'>
+											<span className='text-sm font-semibold mx-2 text-primary-600'>
 												{formatPrice(product.price * product.cartQuantity)}
 											</span>
 											<DirhamIcon className="w-3 h-3 text-primary-600" />
@@ -587,31 +636,31 @@ const Checkout: React.FC = () => {
 								<div className='flex justify-between text-sm'>
 									<span className='text-gray-600'>{t('subtotal')}</span>
 									<div className='flex items-center space-x-1'>
-										<span className='font-medium'>{formatPrice(subtotal)}</span>
-										<DirhamIcon className="w-3 h-3 text-gray-600" />
+										<span className='font-medium mx-2'>{formatPrice(subtotal)}</span>
+										<DirhamIcon className="w-3 h-3 mx-2 text-gray-600" />
 									</div>
 								</div>
 								<div className='flex justify-between text-sm'>
 									<span className='text-gray-600'>{t('shipping')}</span>
 									<div className='flex items-center space-x-1'>
-										<span className='font-medium'>
+										<span className='font-medium mx-2'>
 											{shippingCost > 0 ? formatPrice(shippingCost) : t('free')}
 										</span>
-										{shippingCost > 0 && <DirhamIcon className="w-3 h-3 text-gray-600" />}
+										{shippingCost > 0 && <DirhamIcon className="w-3 h-3 mx-2 text-gray-600" />}
 									</div>
 								</div>
 								<div className='flex justify-between text-sm'>
 									<span className='text-gray-600'>{t('vat')} (5%)</span>
 									<div className='flex items-center space-x-1'>
-										<span className='font-medium'>{formatPrice(vat)}</span>
-										<DirhamIcon className="w-3 h-3 text-gray-600" />
+										<span className='font-medium mx-2'>{formatPrice(vat)}</span>
+										<DirhamIcon className="w-3 h-3 mx-2text-gray-600" />
 									</div>
 								</div>
 								<div className='border-t border-gray-200 pt-3'>
 									<div className='flex justify-between text-lg font-semibold'>
 										<span>{t('total')}</span>
 										<div className='flex items-center space-x-1'>
-											<span className='text-primary-600'>{formatPrice(total)}</span>
+											<span className='text-primary-600 mx-2'>{formatPrice(total)}</span>
 											<DirhamIcon className="w-4 h-4 text-primary-600" />
 										</div>
 									</div>
@@ -636,12 +685,12 @@ const Checkout: React.FC = () => {
 												value={method.id}
 												checked={formData.paymentMethod === method.id}
 												onChange={handleInputChange}
-												className='mt-1 w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500'
+												className='mt-1 w-4 mx-2 h-4 mx-2 text-primary-600 border-gray-300 focus:ring-primary-500'
 											/>
 											<div className='flex-1'>
-												<div className='flex items-center space-x-3'>
+												<div className='flex items-center space-x-3 gap-2'>
 													{method.icon}
-													<span className='font-medium text-gray-900'>{method.name}</span>
+													<span className='font-medium mx-2 text-gray-900'>{method.name}</span>
 												</div>
 												<p className='text-sm text-gray-600 mt-1'>{method.description}</p>
 											</div>
@@ -657,26 +706,19 @@ const Checkout: React.FC = () => {
 										exit={{ opacity: 0, height: 0 }}
 										className='mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg'
 									>
-										<div className='flex items-center justify-between'>
-											<div className='flex items-center space-x-4'>
-												<Banknote className='w-5 h-5 text-blue-600' />
-												<div>
-													<p className='text-sm font-medium text-blue-900'>
-														{t('bankAccountDetails')}
-													</p>
-													<p className='text-xs text-blue-700'>
-														{t('clickToViewBankDetails')}
-													</p>
-												</div>
-											</div>
+										<div className='flex items-center'>
+											<Banknote  className='w-8 h-8 text-blue-600' />
+												
+										
 											<Link
 												to='/bank-account'
 												target='_blank'
 												rel='noopener noreferrer'
-												className='inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors'
+												className='inline-flex items-center mx-2
+												text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors'
 											>
 												<span>{t('viewBankDetails')}</span>
-												<ArrowRight className='w-4 h-4' />
+												<ArrowRight className='w-4 h-4 mx-2' />
 											</Link>
 										</div>
 									</motion.div>
@@ -692,7 +734,7 @@ const Checkout: React.FC = () => {
 										checked={formData.termsAccepted}
 										onChange={handleInputChange}
 										required
-										className='mt-1 w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500'
+										className='mt-1 w-4 h-4 mx-2 text-primary-600 border-gray-300 rounded focus:ring-primary-500'
 									/>
 									<span className='text-sm text-gray-700'>
 										{t('termsAgreement')}{' '}
@@ -721,7 +763,7 @@ const Checkout: React.FC = () => {
 									</>
 								) : (
 									<>
-										<CheckCircle className='w-5 h-5' />
+										<CheckCircle className='w-5 h-5 mx-2' />
 										<span>{t('placeOrder')}</span>
 									</>
 								)}

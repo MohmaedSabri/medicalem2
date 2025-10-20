@@ -8,10 +8,41 @@ import {
 	ArrowLeft
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Footer from "../components/layout/Footer";
 import { toast } from "react-hot-toast";
-import jsPDF from "jspdf";
+import jsPDFInvoiceTemplate from "jspdf-invoice-template";
+import { pdf } from "@react-pdf/renderer";
+import InvoicePdf from "../components/pdf/InvoicePdf";
+
+type OnCreateFn = (doc: { setLineHeightFactor: (n: number) => void; setFontSize: (n: number) => void }) => void;
+
+type InvoiceTemplateParameters = {
+    returnJsPDFDocObject: boolean;
+    fileName: string;
+    orientationLandscape?: boolean;
+    compress?: boolean;
+    logo?: { src: string; width: number; height: number; margin?: { top: number; left: number }; type?: string };
+    business?: { name?: string; address?: string; phone?: string; email?: string; website?: string };
+    contact?: { label?: string; name?: string; address?: string; phone?: string; email?: string; otherInfo?: string };
+    invoice: {
+        label?: string;
+        num?: number | string;
+        invDate?: string;
+        invGenDate?: string;
+        headerBorder?: boolean;
+        tableBodyBorder?: boolean;
+        header: Array<{ title: string; style?: { width?: number } }>;
+        table: Array<(string | number)[]>;
+        additionalRows?: Array<{ col1?: string; col2?: string; col3?: string; style?: { fontSize?: number } }>;
+        invDescLabel?: string;
+        invDesc?: string;
+    };
+    footer?: { text?: string };
+    pageEnable?: boolean;
+    pageLabel?: string;
+    onJsPDFDocCreation?: OnCreateFn;
+};
 
 interface InvoiceData {
 	invoiceNumber: string;
@@ -39,38 +70,49 @@ interface InvoiceData {
 const Invoice: React.FC = () => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
+	const location = useLocation() as { state?: Partial<InvoiceData> };
 	const [isGenerating, setIsGenerating] = useState(false);
 
-	// Sample invoice data - in real app, this would come from props or API
-	const [invoiceData] = useState<InvoiceData>({
-		invoiceNumber: "25-3104",
-		date: "06/10/2025",
-		dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(),
-		customerName: "TAJMEEL WELLNESS CLINIC",
-		customerEmail: "info@tajmeel.com",
-		customerPhone: "+971 50 123 4567",
-		customerPhoneType: "clinic" as const,
-		customerAddress: "Abu Dhabi, UAE",
-		items: [
-			{ 
-				name: "DERMA BED PREMIUM LEATHER FINISH\nManufacturer: MECKRON (TURKEY) DERMA CHAIR\nModel: BF-1482", 
-				quantity: 12, 
-				price: 17000, 
-				total: 204000 
-			},
-			{ 
-				name: "ASSISTANT STOOL", 
-				quantity: 12, 
-				price: 0, 
-				total: 0 
-			},
-		],
-		subtotal: 204000,
-		shipping: 0,
-		vat: 10200,
-		total: 214200,
-		paymentMethod: "Bank Transfer",
-		notes: "Thank you for your business!"
+	// Build invoice data from navigation state with sensible fallback
+	const [invoiceData] = useState<InvoiceData>(() => {
+		const fallback: InvoiceData = {
+			invoiceNumber: "25-3104",
+			date: "06/10/2025",
+			dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(),
+			customerName: "TAJMEEL WELLNESS CLINIC",
+			customerEmail: "info@tajmeel.com",
+			customerPhone: "+971 50 123 4567",
+			customerPhoneType: "clinic",
+			customerAddress: "Abu Dhabi, UAE",
+			items: [
+				{ 
+					name: "DERMA BED PREMIUM LEATHER FINISH\nManufacturer: MECKRON (TURKEY) DERMA CHAIR\nModel: BF-1482", 
+					quantity: 12, 
+					price: 17000, 
+					total: 204000 
+				},
+				{ 
+					name: "ASSISTANT STOOL", 
+					quantity: 12, 
+					price: 0, 
+					total: 0 
+				},
+			],
+			subtotal: 204000,
+			shipping: 0,
+			vat: 10200,
+			total: 214200,
+			paymentMethod: "Bank Transfer",
+			notes: "Thank you for your business!"
+		};
+
+		const state = (location.state || {}) as Partial<InvoiceData>;
+		const merged: InvoiceData = {
+			...fallback,
+			...state,
+			items: Array.isArray(state.items) && state.items.length > 0 ? (state.items as InvoiceData['items']) : fallback.items,
+		};
+		return merged;
 	});
 
 
@@ -86,221 +128,137 @@ const Invoice: React.FC = () => {
 	const generatePDF = async () => {
 		setIsGenerating(true);
 		try {
-			const pdf = new jsPDF();
-			
-			// Set font
-			pdf.setFont("helvetica");
-			
-			// Function to add logo image to PDF
-			const addLogoToPDF = () => {
-				return new Promise<void>((resolve) => {
-					// Try to fetch the image as blob first to avoid CORS issues
-					fetch('https://i.postimg.cc/x1bkFGQh/logo.png')
-						.then(response => response.blob())
-						.then(blob => {
-							const img = new Image();
-							const url = URL.createObjectURL(blob);
-							
-							img.onload = () => {
-								try {
-									// Create high-quality canvas for better image quality
-									const canvas = document.createElement('canvas');
-									const ctx = canvas.getContext('2d');
-									
-									// Use higher resolution for better quality
-									const scale = 2; // 2x resolution for crisp image
-									canvas.width = 80 * scale;
-									canvas.height = 80 * scale;
-									
-									// Enable image smoothing for better quality
-									ctx!.imageSmoothingEnabled = true;
-									ctx!.imageSmoothingQuality = 'high';
-									
-									// Draw image on canvas with high quality
-									ctx?.drawImage(img, 0, 0, 80 * scale, 80 * scale);
-									
-									// Convert to base64 with high quality
-									const imgData = canvas.toDataURL('image/png', 1.0);
-									
-									// Add image to PDF with better size (40x40 instead of 25x25)
-									pdf.addImage(imgData, 'PNG', 20, 15, 40, 40);
-									
-									// Clean up
-									URL.revokeObjectURL(url);
-									resolve();
-								} catch (error) {
-									console.error('Error adding logo to PDF:', error);
-									// Fallback to text logo
-									pdf.setTextColor(14, 165, 233);
-									pdf.setFontSize(20);
-									pdf.setFont("helvetica", "bold");
-									pdf.text("DORAR", 20, 35);
-									URL.revokeObjectURL(url);
-									resolve();
-								}
-							};
-							
-							img.onerror = () => {
-								console.error('Error loading logo image');
-								// Fallback to text logo
-								pdf.setTextColor(14, 165, 233);
-								pdf.setFontSize(20);
-								pdf.setFont("helvetica", "bold");
-								pdf.text("DORAR", 20, 35);
-								URL.revokeObjectURL(url);
-								resolve();
-							};
-							
-							img.src = url;
-						})
-						.catch(error => {
-							console.error('Error fetching logo:', error);
-							// Fallback to text logo
-							pdf.setTextColor(14, 165, 233);
-							pdf.setFontSize(20);
-							pdf.setFont("helvetica", "bold");
-							pdf.text("DORAR", 20, 35);
-							resolve();
-						});
-				});
-			};
-			
-			// Wait for logo to be added
-			await addLogoToPDF();
-			
-			// Reset text color for company details
-			pdf.setTextColor(0, 0, 0);
-			
-			// Company Header - Compact layout
-			pdf.setFontSize(10);
-			pdf.setFont("helvetica", "bold");
-			pdf.text("Tel. +971 4 818 3181", 70, 30);
-			pdf.text("Address: 203 Clover Bay Tower, Business Bay Dubai", 70, 35);
-			pdf.text("P.O Box: 29968 UAE - RAK", 70, 40);
-			pdf.text("Email: info@dorarmed.com", 70, 45);
-			pdf.text("Website: www.dorarmed.com", 70, 50);
+			const columns = [
+				{ title: "#", style: { width: 8 , marginTop: 10 } },
+				{ title: "Item", style: { width: 55 , marginTop: 10 } },
+				{ title: "Price", style: { width: 22 , marginTop: 10 } },
+				{ title: "Qty", style: { width: 15 , marginTop: 10 } },
+				{ title: "Unit", style: { width: 12 , marginTop: 10 } },
+				{ title: "Total", style: { width: 23 , marginTop: 10 } }
+			];
 
-			// Proforma Invoice Title
-			pdf.setFontSize(14);
-			pdf.setFont("helvetica", "bold");
-			pdf.text("PROFORMA INVOICE", 20, 60);
-
-			// Offer Details - Compact
-			pdf.setFontSize(9);
-			pdf.setFont("helvetica", "normal");
-			pdf.text("To: TAJMEEL WELLNESS CLINIC", 20, 70);
-			pdf.text("Abu Dhabi, UAE", 20, 75);
-			pdf.text(`Offer No: ${invoiceData.invoiceNumber}`, 20, 80);
-			pdf.text(`Date: ${invoiceData.date}`, 20, 85);
-			pdf.text("Validity: 30 Days", 20, 90);
-			pdf.text("Reference No: RFQ-Tajmeel Wellness Clinic-NFA-BME,OT NFA/ BM/ 3515", 20, 95);
-			
-			// Items Table Header - Compact
-			pdf.setFontSize(9);
-			pdf.setFont("helvetica", "bold");
-			pdf.text("#SR", 20, 105);
-			pdf.text("Description", 35, 105);
-			pdf.text("Qty.", 120, 105);
-			pdf.text("Unit Price (AED)", 140, 105);
-			pdf.text("Total Price (AED)", 170, 105);
-			
-			// Draw line
-			pdf.line(20, 110, 190, 110);
-			
-			// Items - Compact
-			let yPosition = 118;
-			pdf.setFont("helvetica", "normal");
-			pdf.setFontSize(8);
-			invoiceData.items.forEach((item, index) => {
-				pdf.text((index + 1).toString(), 20, yPosition);
-				// Split long descriptions into multiple lines
-				const descriptionLines = item.name.split('\n');
-				descriptionLines.forEach((line, lineIndex) => {
-					pdf.text(line, 35, yPosition + (lineIndex * 4));
-				});
-				pdf.text(item.quantity.toString(), 120, yPosition);
-				pdf.text(formatPrice(item.price), 140, yPosition);
-				pdf.text(formatPrice(item.total), 170, yPosition);
-				yPosition += Math.max(8, descriptionLines.length * 4 + 2);
+			const tableRows = invoiceData.items.map((item, index) => {
+				return [
+					index + 1,
+					item.name,
+					Number(item.price),
+					Number(item.quantity),
+					"pcs",
+					Number(item.total),
+					
+					
+				];
 			});
-			
-			// Totals - Compact
-			yPosition += 5;
-			pdf.line(20, yPosition, 190, yPosition);
-			yPosition += 5;
-			
-			pdf.setFontSize(9);
-			pdf.setFont("helvetica", "normal");
-			pdf.text("Total Price (AED):", 140, yPosition);
-			pdf.text(formatPrice(invoiceData.subtotal), 170, yPosition);
-			yPosition += 6;
-			
-			pdf.text("VAT @ 5% (AED):", 140, yPosition);
-			pdf.text(formatPrice(invoiceData.vat), 170, yPosition);
-			yPosition += 6;
-			
-			pdf.setFont("helvetica", "bold");
-			pdf.text("Total Amount (AED):", 140, yPosition);
-			pdf.text(formatPrice(invoiceData.total), 170, yPosition);
-			
-			// Terms and Conditions - Compact (2 columns)
-			yPosition += 15;
-			pdf.setFont("helvetica", "bold");
-			pdf.setFontSize(10);
-			pdf.text("TERMS AND CONDITIONS", 20, yPosition);
-			
-			pdf.setFontSize(7);
-			pdf.setFont("helvetica", "normal");
-			yPosition += 8;
-			
-			// Left column
-			pdf.setFont("helvetica", "bold");
-			pdf.text("Payment Terms:", 20, yPosition);
-			pdf.setFont("helvetica", "normal");
-			pdf.text("50% Advance, 50% on Delivery", 20, yPosition + 4);
-			
-			pdf.setFont("helvetica", "bold");
-			pdf.text("Installation:", 20, yPosition + 10);
-			pdf.setFont("helvetica", "normal");
-			pdf.text("On-site by Engineers", 20, yPosition + 14);
-			
-			pdf.setFont("helvetica", "bold");
-			pdf.text("Delivery:", 20, yPosition + 20);
-			pdf.setFont("helvetica", "normal");
-			pdf.text("3-4 Weeks from LPO", 20, yPosition + 24);
-			
-			pdf.setFont("helvetica", "bold");
-			pdf.text("Training:", 20, yPosition + 30);
-			pdf.setFont("helvetica", "normal");
-			pdf.text("On-site by Factory Engineers", 20, yPosition + 34);
-			
-			pdf.setFont("helvetica", "bold");
-			pdf.text("Warranty:", 20, yPosition + 40);
-			pdf.setFont("helvetica", "normal");
-			pdf.text("5 years against defects", 20, yPosition + 44);
-			
-			// Right column - Signature
-			pdf.setFont("helvetica", "bold");
-			pdf.setFontSize(8);
-			pdf.text("For Dorar Medical Equipment", 110, yPosition);
-			pdf.setFontSize(7);
-			pdf.setFont("helvetica", "normal");
-			pdf.text("Eng. Reji Reghunathan", 110, yPosition + 6);
-			pdf.text("Sales Engineer", 110, yPosition + 12);
-			pdf.text("Dubai, UAE", 110, yPosition + 18);
-			pdf.text("Mob: +971527059743", 110, yPosition + 24);
-			
-			// Important Note - English Only
-			yPosition += 55;
-			pdf.setFontSize(7);
-			pdf.setFont("helvetica", "bold");
-			pdf.text("Note:", 20, yPosition);
-			pdf.setFont("helvetica", "normal");
-			pdf.text("This invoice is for quotation purposes only and is not a final authorized invoice.", 20, yPosition + 4);
-			pdf.text("Please contact our sales team to issue the official stamped invoice.", 20, yPosition + 8);
-			
-			// Save the PDF
-			pdf.save(`proforma-invoice-${invoiceData.invoiceNumber}.pdf`);
+
+			// add spacer rows between invoice rows for visual padding
+			const tableRowsWithSpacers: Array<(string | number)[]> = [];
+			tableRows.forEach((row) => {
+					
+				tableRowsWithSpacers.push(row);
+
+			});
+
+			const parameters: InvoiceTemplateParameters = {
+				returnJsPDFDocObject: true,
+				fileName: `proforma-invoice-${invoiceData.invoiceNumber}`,
+				orientationLandscape: false,
+				compress: true,
+				logo: {
+					src: "/logo.png",
+					width: 60,
+					height: 40,
+					margin: { top: -10, left: 8 },
+					type: 'PNG'
+				},
+				business: {
+					name: "Dorar Medical Equipment",
+					address: "203 Clover Bay Tower, Business Bay Dubai",
+					phone: "+971 4 818 3181",
+					email: "info@dorarmed.com",
+					website: "www.dorarmed.com"
+				},
+				contact: {
+					label: "Invoice issued for:",
+					name: invoiceData.customerName,
+					address: invoiceData.customerAddress,
+					phone: invoiceData.customerPhone,
+					email: invoiceData.customerEmail,
+					otherInfo: ""
+				},
+				invoice: {
+					label: "Invoice #: ",
+					num: invoiceData.invoiceNumber,
+					invDate: `Date: ${invoiceData.date}`,
+					invGenDate: `Due: ${invoiceData.dueDate}`,
+					headerBorder: false,
+					tableBodyBorder: false,
+					header: columns,
+					table: tableRowsWithSpacers,
+					additionalRows: [
+						{ col1: ' ', col2: ' ', col3: ' ' }, // spacer row for padding above totals
+						{ col1: 'Subtotal:', col2: invoiceData.subtotal.toFixed(2), col3: 'AED' },
+						{ col1: 'VAT:', col2: invoiceData.vat.toFixed(2), col3: 'AED' },
+						{ col1: 'Total:', col2: invoiceData.total.toFixed(2), col3: 'AED', style: { fontSize: 14 } },
+						{ col1: ' ', col2: ' ', col3: ' ' } // spacer after totals
+					],
+					invDescLabel: 'Notes',
+					invDesc: invoiceData.notes || ''
+				},
+				footer: {
+					text: "The invoice is created on a computer and is valid without the signature and stamp."
+				},
+				pageEnable: true,
+				pageLabel: "Page ",
+				onJsPDFDocCreation: (doc) => {
+					if (typeof doc.setLineHeightFactor === 'function') {
+						doc.setLineHeightFactor(1.3);
+					}
+				}
+			};
+
+			const callTemplate = (jsPDFInvoiceTemplate as unknown) as (params: InvoiceTemplateParameters) => { jsPDFDocObject: { save: () => void } };
+			const maybeDefault = (jsPDFInvoiceTemplate as unknown) as { default?: typeof callTemplate };
+			const run = maybeDefault.default ?? callTemplate;
+			// Also generate a React PDF version and download
+			const blob = await pdf(
+				<InvoicePdf
+					logoSrc={"/logo.png"}
+					business={{
+						name: "Dorar Medical Equipment",
+						address: "203 Clover Bay Tower, Business Bay Dubai",
+						phone: "+971 4 818 3181",
+						email: "info@dorarmed.com",
+						website: "www.dorarmed.com"
+					}}
+					contact={{
+						name: invoiceData.customerName,
+						address: invoiceData.customerAddress,
+						phone: invoiceData.customerPhone,
+						email: invoiceData.customerEmail
+					}}
+					invoiceMeta={{
+						number: invoiceData.invoiceNumber,
+						date: invoiceData.date,
+						dueDate: invoiceData.dueDate
+					}}
+					items={invoiceData.items}
+					totals={{ subtotal: invoiceData.subtotal, vat: invoiceData.vat, total: invoiceData.total, currency: 'AED' }}
+					terms={[
+						"Payment: 50% advance, 50% on delivery",
+						"Delivery: 3-4 weeks from LPO",
+						"Installation & Training: On-site by certified engineers",
+						"Warranty: 5 years against manufacturing defects"
+					]}
+				/>
+			).toBlob();
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = `proforma-invoice-${invoiceData.invoiceNumber}.pdf`;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+								URL.revokeObjectURL(url);
 			toast.success("Invoice downloaded successfully!");
 		} catch (error) {
 			toast.error("Failed to generate PDF");
@@ -421,7 +379,7 @@ const Invoice: React.FC = () => {
 										<p>{invoiceData.customerAddress}</p>
 										<p>
 											<span className="font-medium">
-												{invoiceData.customerPhoneType === 'home' ? t('homePhone') : t('clinicPhone')}:
+												{"Phone Number"}:
 											</span> {invoiceData.customerPhone}
 										</p>
 										<p>
@@ -430,11 +388,7 @@ const Invoice: React.FC = () => {
 									</div>
 								</div>
 								<div>
-									<h3 className="font-semibold text-gray-900 mb-2">Offer Details:</h3>
-									<div className="space-y-1 text-gray-600">
-										<p><span className="font-medium">Validity:</span> 30 Days</p>
-										<p><span className="font-medium">Reference No:</span> RFQ-Tajmeel Wellness Clinic-NFA-BME,OT NFA/ BM/ 3515</p>
-									</div>
+									
 								</div>
 							</div>
 						</div>
@@ -474,7 +428,7 @@ const Invoice: React.FC = () => {
 						<div className="w-80 bg-gray-50 rounded-lg p-6">
 							<div className="space-y-3">
 								<div className="flex justify-between text-sm">
-									<span className="text-gray-600">Total Price (AED):</span>
+									<span className="text-gray-600">Subtotal (AED):</span>
 									<span className="text-gray-900 font-medium">{formatPrice(invoiceData.subtotal)}</span>
 								</div>
 								<div className="flex justify-between text-sm">
@@ -483,8 +437,9 @@ const Invoice: React.FC = () => {
 								</div>
 								<div className="border-t border-gray-300 pt-3">
 									<div className="flex justify-between text-lg font-bold">
-										<span className="text-gray-900">Total Amount (AED):</span>
-										<span className="text-green-600">{formatPrice(invoiceData.total)}</span>
+										
+										<span className="text-green-600">Total Amount:</span>
+										<span className="text-gray-900 font-medium">{formatPrice(invoiceData.total)}</span>
 									</div>
 								</div>
 							</div>
@@ -510,15 +465,6 @@ const Invoice: React.FC = () => {
 								</div>
 								<div>
 									<span className="font-semibold">Warranty:</span> 5 years against defects
-								</div>
-							</div>
-							<div className="space-y-3">
-								<div className="font-semibold text-gray-900">For Dorar Medical Equipment</div>
-								<div className="space-y-1 text-sm">
-									<div>Eng. Reji Reghunathan</div>
-									<div>Sales Engineer</div>
-									<div>Dubai, UAE</div>
-									<div>Mob: +971527059743</div>
 								</div>
 							</div>
 						</div>

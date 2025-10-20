@@ -206,7 +206,7 @@ const Contact: React.FC = () => {
 					))}
 				</div>
 
-				<div className='grid lg:grid-cols-2 gap-12'>
+				<div className='grid lg:grid-cols-2 gap-12 my'>
 					{/* Contact Form */}
 					<motion.div
 						initial={{ opacity: 0, x: -30 }}
