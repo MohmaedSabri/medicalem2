@@ -184,10 +184,10 @@ const WhyChooseUs: React.FC = () => {
 												isRTL ? "text-right" : "leading-tight"
 											}`}>
 											<div className={isRTL ? "mb-4" : ""}>
-												{t("weRiseInCare")}
+												{t("trainingMainTitle")}
 											</div>
 											<span className='text-gray-700'>
-												{t("toMakeAnImpact")}
+												{t("trainingSubTitle")}
 											</span>
 										</h3>
 										<p
@@ -195,12 +195,6 @@ const WhyChooseUs: React.FC = () => {
 												isRTL ? "text-right" : "leading-relaxed"
 											}`}>
 											{t("drivenByOneGoal")}
-										</p>
-										<p
-											className={`text-base text-gray-500 max-w-2xl mt-4 ${
-												isRTL ? "text-right" : "leading-relaxed"
-											}`}>
-											{t("trainingDescription")}
 										</p>
 									</motion.div>
 								</div>

@@ -59,7 +59,9 @@ const HeroStats: React.FC<HeroStatsProps> = ({
 					key={stat.label}
 					className='text-center'
 					whileHover={{ scale: 1.05 }}>
-					<stat.icon className='h-6 w-6 sm:h-8 sm:w-8 text-amber-500 mx-auto mb-2' />
+					<div className='mx-auto mb-2 w-fit'>
+						<stat.icon className='h-6 w-6 sm:h-8 sm:w-8 text-amber-500 animate-color-shift' />
+					</div>
 					<div className='text-lg sm:text-xl lg:text-2xl font-bold'>
 						{counters[index]}
 						{stat.suffix}

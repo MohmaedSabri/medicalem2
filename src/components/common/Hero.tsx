@@ -91,7 +91,7 @@ const Hero: React.FC = () => {
 						} max-w-full overflow-hidden`}>
 								<h1 className='text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-3 sm:mb-4'>
 									{t("advancedMedicalEquipment")}
-									<span className='block bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-600 bg-clip-text text-transparent mb-1 sm:mb-2 md:mb-3'>
+									<span className='block bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-600 bg-clip-text text-transparent mb-1 sm:mb-2 md:mb-3 animate-gradient-x'>
 										{t("equipment")}
 									</span>
 									{t("forHealthcareExcellence")}

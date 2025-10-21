@@ -465,6 +465,8 @@ const enTranslations = {
 		getFreeConsultation: "Get Free Consultation",
 		trainingDescription:
 			"We provide training on how to use laser technology and offer professional medical training courses.",
+		trainingMainTitle: "We provide training on how to use laser technology",
+		trainingSubTitle: "and offer professional medical training courses.",
 		freeDeliveryInfo: "Free delivery on orders over 2000 AED",
 
 		// Bank Details Section
@@ -1182,6 +1184,8 @@ const arTranslations = {
 		getFreeConsultation: "احصل على استشارة مجانية",
 		trainingDescription:
 			"نوفر تدريباً على كيفية استخدام تقنية الليزر ونقدم دورات تدريبية طبية مهنية.",
+		trainingMainTitle: "نوفر تدريباً على كيفية استخدام تقنية الليزر",
+		trainingSubTitle: "ونقدم دورات تدريبية طبية مهنية.",
 		freeDeliveryInfo: "توصيل مجاني للطلبات التي تزيد عن 2000 درهم",
 
 		// Bank Details Section

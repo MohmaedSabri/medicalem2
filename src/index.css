@@ -4,8 +4,9 @@
 
 /* Arabic Font */
 @font-face {
-	font-family: 'Montserrat-Arabic';
-	src: url('/Montserrat-Arabic Regular/Montserrat-Arabic Regular.ttf') format('truetype');
+	font-family: "Montserrat-Arabic";
+	src: url("/Montserrat-Arabic Regular/Montserrat-Arabic Regular.ttf")
+		format("truetype");
 	font-weight: normal;
 	font-style: normal;
 	font-display: swap;
@@ -17,7 +18,8 @@
 
 /* Floating animation for hero section */
 @keyframes float {
-	0%, 100% {
+	0%,
+	100% {
 		transform: translateY(0px);
 	}
 	50% {
@@ -27,6 +29,37 @@
 
 .animate-float {
 	animation: float 6s ease-in-out infinite;
+}
+
+/* Moving gradient animation */
+@keyframes gradient-x {
+	0%,
+	100% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+}
+
+.animate-gradient-x {
+	background-size: 200% 200%;
+	animation: gradient-x 3s ease infinite;
+}
+
+/* SVG icon color animation */
+@keyframes color-shift {
+	0%,
+	100% {
+		color: #eab308; /* yellow-500 */
+	}
+	50% {
+		color: #f59e0b; /* amber-500 */
+	}
+}
+
+.animate-color-shift {
+	animation: color-shift 3s ease infinite;
 }
 
 @layer base {
@@ -71,10 +104,10 @@
 	p {
 		line-height: 1.5;
 	}
-  .theme {
+	.theme {
 		--animate-shine: shine var(--duration) infinite linear;
 	}
-  :root {
+	:root {
 		--background: 0 0% 100%;
 		--foreground: 0 0% 3.9%;
 		--card: 0 0% 100%;
@@ -101,7 +134,7 @@
 		--chart-5: 27 87% 67%;
 		--radius: 0.5rem;
 	}
-  .dark {
+	.dark {
 		--background: 0 0% 3.9%;
 		--foreground: 0 0% 98%;
 		--card: 0 0% 3.9%;
@@ -196,7 +229,6 @@
 		-webkit-box-orient: unset;
 		-webkit-line-clamp: unset;
 	}
-
 }
 
 @layer utilities {
@@ -258,38 +290,38 @@
 /*---break--- */
 
 @layer base {
-  * {
-    border-color: #e2e8f0;
+	* {
+		border-color: #e2e8f0;
 	}
-  body {
-    background-color: #ffffff;
-    color: #1a202c;
+	body {
+		background-color: #ffffff;
+		color: #1a202c;
 	}
 }
 
 /*---break--- */
 
 @theme inline {
-  @keyframes shine {
-  0% {
-    background-position: 0% 0%;
+	@keyframes shine {
+		0% {
+			background-position: 0% 0%;
 		}
-  50% {
-    background-position: 100% 100%;
+		50% {
+			background-position: 100% 100%;
 		}
-  to {
-    background-position: 0% 0%;
+		to {
+			background-position: 0% 0%;
 		}
 	}
-  @keyframes shine {
-  0% {
-    background-position: 0% 0%;
+	@keyframes shine {
+		0% {
+			background-position: 0% 0%;
 		}
-  50% {
-    background-position: 100% 100%;
+		50% {
+			background-position: 100% 100%;
 		}
-  to {
-    background-position: 0% 0%;
+		to {
+			background-position: 0% 0%;
 		}
 	}
 }
@@ -297,10 +329,10 @@
 /*---break--- */
 
 @layer base {
-  * {
-    @apply border-border;
+	* {
+		@apply border-border;
 	}
-  body {
-    @apply bg-background text-foreground;
+	body {
+		@apply bg-background text-foreground;
 	}
 }
