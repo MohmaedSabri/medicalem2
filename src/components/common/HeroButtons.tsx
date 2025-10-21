@@ -18,7 +18,14 @@ const HeroButtons: React.FC<HeroButtonsProps> = ({
 	const { isRTL } = useLanguage();
 
 	return (
-		<div className={`flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 md:mb-8 lg:mb-12 justify-center ${isRTL ? 'md:justify-end lg:justify-end' : 'md:justify-start lg:justify-start'} ${isRTL ? 'md:flex-row-reverse lg:flex-row-reverse' : ''} max-w-full overflow-hidden`}>
+		<div
+			className={`flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 md:mb-8 lg:mb-12 justify-center ${
+				isRTL
+					? "md:justify-end lg:justify-end"
+					: "md:justify-start lg:justify-start"
+			} ${
+				isRTL ? "md:flex-row-reverse lg:flex-row-reverse" : ""
+			} max-w-full overflow-hidden`}>
 			<motion.button
 				whileHover={{ y: -1 }}
 				whileTap={{ scale: 0.98 }}
@@ -26,17 +33,19 @@ const HeroButtons: React.FC<HeroButtonsProps> = ({
 				onClick={onExploreProducts}>
 				{/* Animated background glow */}
 				<div className='absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 opacity-0 group-hover:opacity-50 transition-opacity duration-500 ease-out rounded-full'></div>
-				
+
 				{/* Sparkle effects */}
 				<div className='absolute inset-0 overflow-hidden rounded-full'>
 					<div className='absolute top-2 left-6 w-1 h-1 bg-gray-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300 delay-100'></div>
-					<div className='absolute top-3 right-8 w-1.5 h-1.5 bg-yellow-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-300 delay-200'></div>
+					<div className='absolute top-3 right-8 w-1.5 h-1.5 bg-gradient-to-br from-yellow-400 to-amber-600 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-300 delay-200'></div>
 					<div className='absolute bottom-3 left-10 w-1 h-1 bg-blue-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-bounce transition-opacity duration-300 delay-300'></div>
 					<div className='absolute bottom-2 right-6 w-1.5 h-1.5 bg-pink-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300 delay-400'></div>
 				</div>
 
 				{/* Button content */}
-				<span className='relative z-10 group-hover:drop-shadow-lg transition-all duration-300'>{t('exploreProducts')}</span>
+				<span className='relative z-10 group-hover:drop-shadow-lg transition-all duration-300'>
+					{t("exploreProducts")}
+				</span>
 			</motion.button>
 
 			<motion.button
@@ -46,17 +55,19 @@ const HeroButtons: React.FC<HeroButtonsProps> = ({
 				onClick={onContactUs}>
 				{/* Animated background glow */}
 				<div className='absolute inset-0 bg-gradient-to-r from-white/10 via-white/20 to-white/10 opacity-0 group-hover:opacity-30 transition-opacity duration-500 ease-out rounded-full'></div>
-				
+
 				{/* Sparkle effects */}
 				<div className='absolute inset-0 overflow-hidden rounded-full'>
 					<div className='absolute top-2 left-6 w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300 delay-100'></div>
-					<div className='absolute top-3 right-8 w-1.5 h-1.5 bg-yellow-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-300 delay-200'></div>
+					<div className='absolute top-3 right-8 w-1.5 h-1.5 bg-gradient-to-br from-yellow-400 to-amber-600 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-300 delay-200'></div>
 					<div className='absolute bottom-3 left-10 w-1 h-1 bg-blue-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-bounce transition-opacity duration-300 delay-300'></div>
 					<div className='absolute bottom-2 right-6 w-1.5 h-1.5 bg-pink-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300 delay-400'></div>
 				</div>
 
 				{/* Button content */}
-				<span className='relative z-10 group-hover:drop-shadow-lg transition-all duration-300'>{t('contactUs')}</span>
+				<span className='relative z-10 group-hover:drop-shadow-lg transition-all duration-300'>
+					{t("contactUs")}
+				</span>
 			</motion.button>
 		</div>
 	);

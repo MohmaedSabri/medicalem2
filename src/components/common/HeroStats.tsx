@@ -11,15 +11,22 @@ interface HeroStatsProps {
 	isPageVisible: boolean;
 }
 
-const HeroStats: React.FC<HeroStatsProps> = ({ counters, setCounters, isPageVisible }) => {
+const HeroStats: React.FC<HeroStatsProps> = ({
+	counters,
+	setCounters,
+	isPageVisible,
+}) => {
 	const { t } = useTranslation();
 	const [hasAnimated, setHasAnimated] = useState(false);
 
-	const stats = useMemo(() => [
-		{ label: t('yearsExperience'), value: 15, suffix: "+", icon: Shield },
-		{ label: t('medicalDevices'), value: 500, suffix: "+", icon: Award },
-		{ label: t('healthcareClients'), value: 10000, suffix: "+", icon: Users },
-	], [t]);
+	const stats = useMemo(
+		() => [
+			{ label: t("yearsExperience"), value: 15, suffix: "+", icon: Shield },
+			{ label: t("medicalDevices"), value: 500, suffix: "+", icon: Award },
+			{ label: t("healthcareClients"), value: 10000, suffix: "+", icon: Users },
+		],
+		[t]
+	);
 
 	const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
@@ -29,7 +36,9 @@ const HeroStats: React.FC<HeroStatsProps> = ({ counters, setCounters, isPageVisi
 		const frame = (now: number) => {
 			const p = Math.min(1, (now - start) / durationMs);
 			const eased = easeOutCubic(p);
-			setCounters(stats.map((s) => Math.floor(s.value * eased)) as unknown as number[]);
+			setCounters(
+				stats.map((s) => Math.floor(s.value * eased)) as unknown as number[]
+			);
 			if (p < 1) requestAnimationFrame(frame);
 		};
 		requestAnimationFrame(frame);
@@ -50,7 +59,7 @@ const HeroStats: React.FC<HeroStatsProps> = ({ counters, setCounters, isPageVisi
 					key={stat.label}
 					className='text-center'
 					whileHover={{ scale: 1.05 }}>
-					<stat.icon className='h-6 w-6 sm:h-8 sm:w-8 text-yellow-300 mx-auto mb-2' />
+					<stat.icon className='h-6 w-6 sm:h-8 sm:w-8 text-amber-500 mx-auto mb-2' />
 					<div className='text-lg sm:text-xl lg:text-2xl font-bold'>
 						{counters[index]}
 						{stat.suffix}
