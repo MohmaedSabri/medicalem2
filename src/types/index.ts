@@ -130,7 +130,13 @@ export interface Post {
 	authorName: string;
 	authorEmail: string;
 	postImage: string;
-	category: string | { _id: string; name: string | { en: string; ar: string }; description: string | { en: string; ar: string } };
+	category:
+		| string
+		| {
+				_id: string;
+				name: string | { en: string; ar: string };
+				description: string | { en: string; ar: string };
+		  };
 	tags: string[];
 	status: "draft" | "published" | "archived";
 	featured: boolean;
@@ -138,9 +144,9 @@ export interface Post {
 	likes: number;
 	createdAt: string;
 	updatedAt: string;
-	localized?: { 
-		title?: string; 
-		content?: ContentBlock[] 
+	localized?: {
+		title?: string;
+		content?: ContentBlock[];
 	};
 }
 
@@ -249,6 +255,7 @@ export interface Doctor {
 	contact: string;
 	socialMedia: string[];
 	specialization: { en: string; ar: string };
+	memberType: "team-member" | "partner";
 	rating: number;
 	reviewCount: number;
 	createdAt: string;
@@ -277,6 +284,7 @@ export interface CreateDoctorData {
 	contact: string;
 	socialMedia: string[];
 	specialization: { en: string; ar: string };
+	memberType: "team-member" | "partner";
 }
 
 export interface UpdateDoctorData {
@@ -291,6 +299,7 @@ export interface UpdateDoctorData {
 	contact?: string;
 	socialMedia?: string[];
 	specialization?: { en: string; ar: string };
+	memberType?: "team-member" | "partner";
 	rating?: number;
 	reviewCount?: number;
 }
@@ -316,34 +325,34 @@ export interface DoctorsResponse {
 
 // Testimonial interfaces
 export interface Testimonial {
-  _id: string;
-  name: string;
-  email: string;
-  message: string;
-  image?: string;
-  rating?: number; // 1-5
-  job?: string;
-  clinicName?: string;
-  createdAt?: string;
-  updatedAt?: string;
+	_id: string;
+	name: string;
+	email: string;
+	message: string;
+	image?: string;
+	rating?: number; // 1-5
+	job?: string;
+	clinicName?: string;
+	createdAt?: string;
+	updatedAt?: string;
 }
 
 export interface CreateTestimonialData {
-  name: string;
-  email: string;
-  message: string;
-  image?: string;
-  rating?: number;
-  job?: string;
-  clinicName?: string;
+	name: string;
+	email: string;
+	message: string;
+	image?: string;
+	rating?: number;
+	job?: string;
+	clinicName?: string;
 }
 
 export interface UpdateTestimonialData {
-  name?: string;
-  email?: string;
-  message?: string;
-  image?: string;
-  rating?: number;
-  job?: string;
-  clinicName?: string;
+	name?: string;
+	email?: string;
+	message?: string;
+	image?: string;
+	rating?: number;
+	job?: string;
+	clinicName?: string;
 }

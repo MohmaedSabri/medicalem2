@@ -336,13 +336,13 @@ function App() {
 										}
 									/>
 
-									{/* Doctors Route */}
+									{/* Partners Route */}
 									<Route
-										path='/doctors'
+										path='/partners'
 										element={
 											<AnimatePresence mode='wait'>
 												<motion.div
-													key='doctors'
+													key='partners'
 													initial='initial'
 													animate='in'
 													exit='out'
@@ -357,13 +357,13 @@ function App() {
 										}
 									/>
 
-									{/* Doctor Detail Route */}
+									{/* Partner Detail Route */}
 									<Route
-										path='/doctors/:id'
+										path='/partners/:id'
 										element={
 											<AnimatePresence mode='wait'>
 												<motion.div
-													key='doctor-detail'
+													key='partner-detail'
 													initial='initial'
 													animate='in'
 													exit='out'
@@ -463,7 +463,7 @@ function App() {
 								</Routes>
 								{/* WhatsApp Floating Button */}
 								<WhatsAppFloatingButton />
-								
+
 								{/* Toast Notifications */}
 								<Toaster
 									position='top-right'
@@ -500,7 +500,9 @@ function App() {
 
 const AppContent = () => {
 	const location = useLocation();
-	const hideChrome = location.pathname.startsWith("/z9x8c7v6b5n4m3a2s1d4f5g6h7j8k9l0p1o2i3u4y5t6r7e8w9q0");
+	const hideChrome = location.pathname.startsWith(
+		"/z9x8c7v6b5n4m3a2s1d4f5g6h7j8k9l0p1o2i3u4y5t6r7e8w9q0"
+	);
 	return hideChrome ? null : <TopBar />;
 };
 

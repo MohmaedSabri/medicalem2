@@ -156,6 +156,7 @@ Authorization: Bearer YOUR_JWT_TOKEN
   "title": {"en":"Pediatrician","ar":"أخصائي أطفال"},
   "description": {"en":"Experienced pediatrician specializing in child healthcare","ar":"أخصائي أطفال ذو خبرة متخصص في رعاية الأطفال"},
   "image": "https://example.com/doctor2.jpg",
+  "memberType": "team-member",
   "skills": [
     {"en":"Child Care","ar":"رعاية الأطفال"},
     {"en":"Vaccination","ar":"التطعيم"}

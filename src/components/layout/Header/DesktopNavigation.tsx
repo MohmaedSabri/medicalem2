@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, BookOpen, Info, Zap, User } from "lucide-react";
+import { Home, BookOpen, Info, User } from "lucide-react";
 import ProductsDropdown from "./ProductsDropdown";
 import LanguageDropdown from "./LanguageDropdown";
 
@@ -52,8 +52,8 @@ const DesktopNavigation: React.FC<DesktopNavigationProps> = ({
 			icon: Home,
 		},
 		{
-			path: "/doctors",
-			label: currentLanguage === "ar" ? "الفريق" : "Team",
+			path: "/partners",
+			label: currentLanguage === "ar" ? "الشركاء" : "Partners",
 			icon: User,
 		},
 		{

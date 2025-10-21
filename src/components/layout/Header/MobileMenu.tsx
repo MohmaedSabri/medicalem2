@@ -44,7 +44,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
 			icon: Home,
 		},
 		{
-			path: "/doctors",
+			path: "/partners",
 			label: currentLanguage === "ar" ? "الشركاء" : "Partners",
 			icon: User,
 		},

@@ -68,16 +68,17 @@ const enTranslations = {
 		errorLoadingFavoritesDescription:
 			"Failed to load your favorite products. Please try again.",
 		noFavoritesYet: "No favorites yet",
-		emptyFavoritesHint:
-			"Browse products and tap the heart to save them here.",
+		emptyFavoritesHint: "Browse products and tap the heart to save them here.",
 		browseProducts: "Browse Products",
 
 		// Cart Page
 		cartTitle: "Shopping Cart",
-		cartSubtitle: "Review your selected medical equipment and proceed to checkout.",
+		cartSubtitle:
+			"Review your selected medical equipment and proceed to checkout.",
 		loadingCart: "Loading cart...",
 		errorLoadingCartTitle: "Error loading cart",
-		errorLoadingCartDescription: "Failed to load your cart items. Please try again.",
+		errorLoadingCartDescription:
+			"Failed to load your cart items. Please try again.",
 		cartEmpty: "Your cart is empty",
 		emptyCartHint: "Add some medical equipment to your cart to get started.",
 		cartItems: "Cart Items",
@@ -95,7 +96,8 @@ const enTranslations = {
 
 		// Checkout Page
 		checkoutTitle: "Checkout",
-		checkoutSubtitle: "Complete your order and we'll deliver your medical equipment safely.",
+		checkoutSubtitle:
+			"Complete your order and we'll deliver your medical equipment safely.",
 		haveCoupon: "Have a coupon?",
 		clickHereToEnter: "Click here to enter your code",
 		couponDescription: "If you have a coupon code, please apply it below.",
@@ -127,12 +129,15 @@ const enTranslations = {
 		additionalInfo: "Additional information",
 		orderNotes: "Order notes",
 		optional: "optional",
-		orderNotesPlaceholder: "Notes about your order, e.g. special notes for delivery.",
-		deliveryNotice: "Please allow 1-2 business days for delivery after order processing.",
+		orderNotesPlaceholder:
+			"Notes about your order, e.g. special notes for delivery.",
+		deliveryNotice:
+			"Please allow 1-2 business days for delivery after order processing.",
 		yourOrder: "Your order",
 		paymentMethods: "Payment Methods",
 		paymentDirectBankTransfer: "Direct bank transfer",
-		paymentDirectBankTransferDesc: "Make your payment directly into our bank account. Please use your Order ID as the payment reference.",
+		paymentDirectBankTransferDesc:
+			"Make your payment directly into our bank account. Please use your Order ID as the payment reference.",
 		paymentCreditCardOnDelivery: "Credit Card on Delivery",
 		paymentCreditCardOnDeliveryDesc: "Pay using your credit card on delivery.",
 		paymentCashOnDelivery: "Cash on delivery",
@@ -182,7 +187,8 @@ const enTranslations = {
 
 		// Bank Account
 		bankAccountDetails: "Bank Account Details",
-		bankAccountDescription: "Complete banking information for payments and transfers",
+		bankAccountDescription:
+			"Complete banking information for payments and transfers",
 		companyInformation: "Company Information",
 		companyName: "Company Name",
 		bankingDetails: "Banking Details",
@@ -194,7 +200,8 @@ const enTranslations = {
 		currency: "Currency",
 		branch: "Branch",
 		importantNotice: "Important Notice",
-		bankAccountNotice: "Please use your Order ID as the payment reference when making bank transfers. All payments should be made in AED currency.",
+		bankAccountNotice:
+			"Please use your Order ID as the payment reference when making bank transfers. All payments should be made in AED currency.",
 		clickToViewBankDetails: "Click to view our banking details for payment",
 		viewBankDetails: "View Bank Details",
 
@@ -227,13 +234,13 @@ const enTranslations = {
 		name: "Name",
 		message: "Message",
 		subject: "Subject",
-		
+
 		// Phone Types
 		homePhone: "Home Use",
 		clinicPhone: "Clinic Use",
 		enterHomePhone: "Enter your home use phone number",
 		enterClinicPhone: "Enter your clinic use phone number",
-		
+
 		// Shipping Management
 		shippingManagement: "Shipping Management",
 		manageShippingCosts: "Manage shipping costs for different emirates",
@@ -261,10 +268,12 @@ const enTranslations = {
 		invalidConfigFile: "Invalid configuration file",
 		failedToImportConfig: "Failed to import configuration",
 		configResetToDefault: "Configuration reset to default",
-		confirmResetToDefault: "Are you sure you want to reset to default configuration? This will overwrite all current settings.",
+		confirmResetToDefault:
+			"Are you sure you want to reset to default configuration? This will overwrite all current settings.",
 		syncNotice: "Sync Notice",
-		localStorageNotice: "Changes are saved locally on this device only. Use Export/Import to sync across devices.",
-		
+		localStorageNotice:
+			"Changes are saved locally on this device only. Use Export/Import to sync across devices.",
+
 		// Shipping API Management
 		manageShippingOptions: "Manage shipping options and pricing",
 		addShippingOption: "Add Shipping Option",
@@ -277,9 +286,11 @@ const enTranslations = {
 		noShippingOptions: "No shipping options available",
 		shippingMethod: "Shipping Method",
 		selectShippingMethod: "Select shipping method",
-		confirmDeleteShipping: "Are you sure you want to delete this shipping option?",
+		confirmDeleteShipping:
+			"Are you sure you want to delete this shipping option?",
 		errorLoadingShipping: "Error loading shipping options",
-		errorLoadingShippingDescription: "Failed to load shipping options. Please try again later.",
+		errorLoadingShippingDescription:
+			"Failed to load shipping options. Please try again later.",
 		averagePrice: "Average Price",
 		readyToUpgrade:
 			"Ready to upgrade your medical facility? Contact our experts for personalized equipment recommendations and competitive pricing.",
@@ -456,8 +467,10 @@ const enTranslations = {
 		// Partners Section
 		trustedPartners: "Trusted Partners",
 		ourPartners: "Our Partners",
-		partnersDescription: "We work with leading healthcare organizations and medical institutions worldwide to deliver cutting-edge medical equipment solutions.",
-		partnersNote: "Join our growing network of healthcare partners and experience the difference of working with industry leaders.",
+		partnersDescription:
+			"We work with leading healthcare organizations and medical institutions worldwide to deliver cutting-edge medical equipment solutions.",
+		partnersNote:
+			"Join our growing network of healthcare partners and experience the difference of working with industry leaders.",
 
 		// Footer
 		leadingProvider:
@@ -480,7 +493,8 @@ const enTranslations = {
 		learnMore: "Learn More",
 		requestDemo: "Request Demo",
 		related: "Related",
-		exploreMoreFromCollection: "Explore more medical equipment from our comprehensive collection",
+		exploreMoreFromCollection:
+			"Explore more medical equipment from our comprehensive collection",
 
 		// Products Page
 		ourProducts: "Our",
@@ -646,19 +660,21 @@ const enTranslations = {
 		autoPlayOff: "Auto-play Off",
 
 		// Partners Section
-		doctors: "Team",
-		ourExpertDoctors: "Our Expert Team",
-		meetOurQualifiedMedicalProfessionals: "Meet Our Qualified Medical Professionals",
-		searchDoctors: "Search Team",
+		doctors: "Partners",
+		ourExpertDoctors: "Our Expert Partners",
+		meetOurQualifiedMedicalProfessionals:
+			"Meet Our Qualified Medical Professionals",
+		searchDoctors: "Search Partners",
 		allSpecializations: "All Specializations",
 		allLocations: "All Locations",
 		all: "All",
-		noDoctorsFound: "No Team Found",
+		noDoctorsFound: "No Partners Found",
 		tryAdjustingYourFilters: "Try adjusting your filters",
 		viewProfile: "View Profile",
 		doctorNotFound: "Doctor Not Found",
-		theDoctorYouAreLookingForDoesNotExist: "The doctor you are looking for does not exist",
-		backToDoctors: "Back to Team",
+		theDoctorYouAreLookingForDoesNotExist:
+			"The doctor you are looking for does not exist",
+		backToDoctors: "Back to Partners",
 		specialization: "Specialization",
 		skills: "Skills",
 		qualifications: "Qualifications",
@@ -666,7 +682,7 @@ const enTranslations = {
 		contactInformation: "Contact Information",
 		socialMedia: "Social Media",
 		visitProfile: "Visit Profile",
-		errorLoadingDoctors: "Error Loading Team",
+		errorLoadingDoctors: "Error Loading Partners",
 		pleaseTryAgainLater: "Please try again later",
 		enterCountry: "Enter country",
 		// Doctor Management
@@ -682,7 +698,8 @@ const enTranslations = {
 		doctorDeletedSuccessfully: "Doctor deleted successfully",
 		failedToDeleteDoctor: "Failed to delete doctor",
 		confirmDeleteDoctor: "Delete Doctor",
-		confirmDeleteDoctorDescription: "Are you sure you want to delete {{name}}? This action cannot be undone.",
+		confirmDeleteDoctorDescription:
+			"Are you sure you want to delete {{name}}? This action cannot be undone.",
 		editFunctionalityComingSoon: "Edit functionality coming soon",
 		basicInformation: "Basic Information",
 		imageUrl: "Image URL",
@@ -697,6 +714,10 @@ const enTranslations = {
 		updateDoctor: "Update Doctor",
 		doctorUpdatedSuccessfully: "Doctor updated successfully",
 		failedToUpdateDoctor: "Failed to update doctor",
+		partnerMember: "Partner Member",
+		partner: "Partner",
+		teamMember: "Team Member",
+		memberType: "Member Type",
 	},
 };
 
@@ -760,15 +781,13 @@ const arTranslations = {
 
 		// Favorites Page
 		favoritesTitle: "المفضلة",
-		favoritesSubtitle:
-			"قائمة معداتك الطبية المحفوظة للوصول السريع والمقارنة.",
+		favoritesSubtitle: "قائمة معداتك الطبية المحفوظة للوصول السريع والمقارنة.",
 		loadingFavorites: "جاري تحميل المفضلة...",
 		errorLoadingFavoritesTitle: "خطأ في تحميل المنتجات",
 		errorLoadingFavoritesDescription:
 			"فشل في تحميل المنتجات المفضلة. يرجى المحاولة مرة أخرى.",
 		noFavoritesYet: "لا توجد مفضلات بعد",
-		emptyFavoritesHint:
-			"تصفح المنتجات واضغط على أيقونة القلب لحفظها هنا.",
+		emptyFavoritesHint: "تصفح المنتجات واضغط على أيقونة القلب لحفظها هنا.",
 		browseProducts: "تصفح المنتجات",
 
 		// Cart Page
@@ -776,7 +795,8 @@ const arTranslations = {
 		cartSubtitle: "شكرًا لثقتكم في درر، برجاء مراجعة طلبكم قبل الدفع",
 		loadingCart: "جاري تحميل السلة...",
 		errorLoadingCartTitle: "خطأ في تحميل السلة",
-		errorLoadingCartDescription: "فشل في تحميل عناصر السلة. يرجى المحاولة مرة أخرى.",
+		errorLoadingCartDescription:
+			"فشل في تحميل عناصر السلة. يرجى المحاولة مرة أخرى.",
 		cartEmpty: "سلة التسوق فارغة",
 		emptyCartHint: "أضف بعض المعدات الطبية إلى سلة التسوق للبدء.",
 		cartItems: "عناصر السلة",
@@ -821,9 +841,11 @@ const arTranslations = {
 		yourOrder: "طلبك",
 		paymentMethods: "طرق الدفع",
 		paymentDirectBankTransfer: "تحويل بنكي مباشر",
-		paymentDirectBankTransferDesc: "قم بالدفع مباشرة إلى حسابنا البنكي. يرجى استخدام رقم الطلب كمرجع للدفع.",
+		paymentDirectBankTransferDesc:
+			"قم بالدفع مباشرة إلى حسابنا البنكي. يرجى استخدام رقم الطلب كمرجع للدفع.",
 		paymentCreditCardOnDelivery: "بطاقة ائتمان عند التسليم",
-		paymentCreditCardOnDeliveryDesc: "ادفع باستخدام بطاقتك الائتمانية عند التسليم.",
+		paymentCreditCardOnDeliveryDesc:
+			"ادفع باستخدام بطاقتك الائتمانية عند التسليم.",
 		paymentCashOnDelivery: "الدفع عند الاستلام",
 		paymentCashOnDeliveryDesc: "ادفع نقدًا عند التسليم.",
 		vat: "ضريبة القيمة المضافة",
@@ -883,7 +905,8 @@ const arTranslations = {
 		currency: "العملة",
 		branch: "الفرع",
 		importantNotice: "إشعار مهم",
-		bankAccountNotice: "يرجى استخدام رقم الطلب كمرجع للدفع عند إجراء التحويلات البنكية. يجب أن تكون جميع المدفوعات بالدرهم الإماراتي.",
+		bankAccountNotice:
+			"يرجى استخدام رقم الطلب كمرجع للدفع عند إجراء التحويلات البنكية. يجب أن تكون جميع المدفوعات بالدرهم الإماراتي.",
 		clickToViewBankDetails: "انقر لعرض تفاصيلنا المصرفية للدفع",
 		viewBankDetails: "عرض تفاصيل الحساب البنكي",
 
@@ -916,13 +939,13 @@ const arTranslations = {
 		subscriptionError: "فشل في الاشتراك. يرجى المحاولة مرة أخرى.",
 		invalidEmail: "يرجى إدخال عنوان بريد إلكتروني صحيح",
 		emailRequired: "عنوان البريد الإلكتروني مطلوب",
-		country:"اختر الدولة",
+		country: "اختر الدولة",
 		// Phone Types
 		homePhone: "استخدام منزلى",
 		clinicPhone: "استخدام العيادة",
 		enterHomePhone: "أدخل رقم هاتف المنزل",
 		enterClinicPhone: "أدخل رقم هاتف العيادة",
-		
+
 		// Shipping Management
 		shippingManagement: "إدارة الشحن",
 		manageShippingCosts: "إدارة تكاليف الشحن للإمارات المختلفة",
@@ -950,10 +973,12 @@ const arTranslations = {
 		invalidConfigFile: "ملف إعدادات غير صالح",
 		failedToImportConfig: "فشل في استيراد الإعدادات",
 		configResetToDefault: "تم إعادة تعيين الإعدادات إلى الافتراضية",
-		confirmResetToDefault: "هل أنت متأكد من إعادة تعيين الإعدادات إلى الافتراضية؟ سيتم استبدال جميع الإعدادات الحالية.",
+		confirmResetToDefault:
+			"هل أنت متأكد من إعادة تعيين الإعدادات إلى الافتراضية؟ سيتم استبدال جميع الإعدادات الحالية.",
 		syncNotice: "إشعار المزامنة",
-		localStorageNotice: "التغييرات محفوظة محلياً على هذا الجهاز فقط. استخدم التصدير/الاستيراد للمزامنة عبر الأجهزة.",
-		
+		localStorageNotice:
+			"التغييرات محفوظة محلياً على هذا الجهاز فقط. استخدم التصدير/الاستيراد للمزامنة عبر الأجهزة.",
+
 		// Shipping API Management
 		manageShippingOptions: "إدارة خيارات الشحن والأسعار",
 		addShippingOption: "إضافة خيار شحن",
@@ -968,7 +993,8 @@ const arTranslations = {
 		selectShippingMethod: "اختر طريقة الشحن",
 		confirmDeleteShipping: "هل أنت متأكد من حذف خيار الشحن هذا؟",
 		errorLoadingShipping: "خطأ في تحميل خيارات الشحن",
-		errorLoadingShippingDescription: "فشل في تحميل خيارات الشحن. يرجى المحاولة مرة أخرى لاحقاً.",
+		errorLoadingShippingDescription:
+			"فشل في تحميل خيارات الشحن. يرجى المحاولة مرة أخرى لاحقاً.",
 		averagePrice: "متوسط السعر",
 		readyToUpgrade:
 			"هل أنت مستعد لترقية منشأة الرعاية الصحية الخاصة بك؟ تواصل مع خبرائنا للحصول على توصيات معدات مخصصة وأسعار تنافسية.",
@@ -1072,7 +1098,7 @@ const arTranslations = {
 
 		// Hero Section
 		advancedMedicalEquipment: "معدات طبية متقدمة ",
-		equipment:  "يمكنك الوثوق بها",
+		equipment: "يمكنك الوثوق بها",
 		forHealthcareExcellence: "للرعاية الصحية المتقدمة",
 		heroDescription:
 			"منذ عام 2008، ونحن ملتزمون بالارتقاء بمعايير الرعاية الصحية في جميع أنحاء المنطقة، مقدمين حلولاً طبية متطورة يمكنك الوثوق بها. من أجهزة الأمراض الجلدية المتخصصة إلى تجهيزات غرف العمليات الكاملة وأنظمة الغازات الطبية المتقدمة.",
@@ -1140,8 +1166,10 @@ const arTranslations = {
 		// Partners Section
 		trustedPartners: "شركاء موثوقون",
 		ourPartners: "شركاؤنا",
-		partnersDescription: "نعمل مع منظمات الرعاية الصحية والمؤسسات الطبية الرائدة في جميع أنحاء العالم لتقديم حلول المعدات الطبية المتطورة.",
-		partnersNote: "انضم إلى شبكة شركاء الرعاية الصحية المتنامية لدينا واكتشف الفرق في العمل مع قادة الصناعة.",
+		partnersDescription:
+			"نعمل مع منظمات الرعاية الصحية والمؤسسات الطبية الرائدة في جميع أنحاء العالم لتقديم حلول المعدات الطبية المتطورة.",
+		partnersNote:
+			"انضم إلى شبكة شركاء الرعاية الصحية المتنامية لدينا واكتشف الفرق في العمل مع قادة الصناعة.",
 
 		// Footer
 		leadingProvider:
@@ -1165,7 +1193,8 @@ const arTranslations = {
 		learnMore: "اعرف المزيد",
 		requestDemo: "طلب عرض توضيحي",
 		related: "ذات صلة",
-		exploreMoreFromCollection: "استكشف المزيد من مجموعتنا الشاملة من المعدات الطبية",
+		exploreMoreFromCollection:
+			"استكشف المزيد من مجموعتنا الشاملة من المعدات الطبية",
 
 		// Products Page
 		ourProducts: "",
@@ -1339,7 +1368,8 @@ const arTranslations = {
 		// Partners Section
 		doctors: "الشركاء",
 		ourExpertDoctors: "شركاؤنا الخبراء",
-		meetOurQualifiedMedicalProfessionals: "تعرف على المتخصصين الطبيين المؤهلين لدينا",
+		meetOurQualifiedMedicalProfessionals:
+			"تعرف على المتخصصين الطبيين المؤهلين لدينا",
 		searchDoctors: "البحث في الشركاء",
 		allSpecializations: "جميع التخصصات",
 		allLocations: "جميع المواقع",
@@ -1373,7 +1403,8 @@ const arTranslations = {
 		doctorDeletedSuccessfully: "تم حذف الطبيب بنجاح",
 		failedToDeleteDoctor: "فشل في حذف الطبيب",
 		confirmDeleteDoctor: "حذف الطبيب",
-		confirmDeleteDoctorDescription: "هل أنت متأكد أنك تريد حذف {{name}}؟ لا يمكن التراجع عن هذا الإجراء.",
+		confirmDeleteDoctorDescription:
+			"هل أنت متأكد أنك تريد حذف {{name}}؟ لا يمكن التراجع عن هذا الإجراء.",
 		editFunctionalityComingSoon: "وظيفة التحرير قريباً",
 		basicInformation: "المعلومات الأساسية",
 		imageUrl: "رابط الصورة",
@@ -1388,6 +1419,10 @@ const arTranslations = {
 		updateDoctor: "تحديث الطبيب",
 		doctorUpdatedSuccessfully: "تم تحديث الطبيب بنجاح",
 		failedToUpdateDoctor: "فشل في تحديث الطبيب",
+		partnerMember: "عضو الشريك",
+		partner: "شريك",
+		teamMember: "عضو الفريق",
+		memberType: "نوع العضوية",
 	},
 };
 
