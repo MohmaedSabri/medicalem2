@@ -689,9 +689,9 @@ const ProductsPage: React.FC = () => {
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.6, delay: 0.2 }}
 						className='mt-8 mb-4'>
-						<div className='relative inline-flex items-center gap-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl px-6 py-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105'>
+						<div className='relative inline-flex items-center gap-3 bg-primary-600 text-white rounded-2xl px-6 py-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105'>
 							{/* Animated background glow */}
-							<div className='absolute inset-0 bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 rounded-2xl opacity-0 hover:opacity-100 transition-opacity duration-300'></div>
+							<div className='absolute inset-0 bg-primary-500 rounded-2xl opacity-0 hover:opacity-100 transition-opacity duration-300'></div>
 
 							{/* Icon */}
 							<div className='relative z-10 flex items-center justify-center w-8 h-8 bg-white/20 rounded-full'>
