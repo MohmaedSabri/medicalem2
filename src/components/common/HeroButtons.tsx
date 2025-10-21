@@ -2,20 +2,73 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { useTranslation } from "react-i18next";
 import { useLanguage } from "../../contexts/LanguageContext";
 
 interface HeroButtonsProps {
-	onExploreProducts: () => void;
-	onContactUs: () => void;
+	onDownloadProfile?: () => void;
+	onPlaceOrder: () => void;
 }
 
 const HeroButtons: React.FC<HeroButtonsProps> = ({
-	onExploreProducts,
-	onContactUs,
+	onDownloadProfile,
+	onPlaceOrder,
 }) => {
-	const { t } = useTranslation();
 	const { isRTL } = useLanguage();
+
+	const handleDownloadProfile = () => {
+		// Create a link element to trigger download
+		const link = document.createElement("a");
+		link.href = "/company-profile.pdf"; // Path to your company profile PDF
+		link.download = "Dorar-Medical-Equipment-Company-Profile.pdf";
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+
+		// Call the optional callback if provided
+		if (onDownloadProfile) {
+			onDownloadProfile();
+		}
+	};
+
+	const handlePlaceOrder = () => {
+		// First try to scroll to the order message field specifically
+		const orderMessage = document.getElementById("order-message");
+		if (orderMessage) {
+			orderMessage.scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+			});
+			// Focus the textarea after scrolling
+			setTimeout(() => {
+				orderMessage.focus();
+			}, 500);
+			return;
+		}
+
+		// Fallback: scroll to order summary section
+		const orderSummary = document.getElementById("order-summary");
+		if (orderSummary) {
+			orderSummary.scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+			});
+			return;
+		}
+
+		// Final fallback: scroll to contact section
+		const contactSection = document.getElementById("contact");
+		if (contactSection) {
+			contactSection.scrollIntoView({
+				behavior: "smooth",
+				block: "start",
+			});
+		} else {
+			// Last resort: navigate to contact page if section not found
+			if (onPlaceOrder) {
+				onPlaceOrder();
+			}
+		}
+	};
 
 	return (
 		<div
@@ -30,7 +83,7 @@ const HeroButtons: React.FC<HeroButtonsProps> = ({
 				whileHover={{ y: -1 }}
 				whileTap={{ scale: 0.98 }}
 				className='group relative bg-white text-primary-500 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-base sm:text-lg hover:bg-gray-100 transition-all duration-500 w-full sm:w-auto cursor-pointer select-none z-10 overflow-hidden shadow-lg hover:shadow-2xl'
-				onClick={onExploreProducts}>
+				onClick={handleDownloadProfile}>
 				{/* Animated background glow */}
 				<div className='absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 opacity-0 group-hover:opacity-50 transition-opacity duration-500 ease-out rounded-full'></div>
 
@@ -44,7 +97,7 @@ const HeroButtons: React.FC<HeroButtonsProps> = ({
 
 				{/* Button content */}
 				<span className='relative z-10 group-hover:drop-shadow-lg transition-all duration-300'>
-					{t("exploreProducts")}
+					Download Company Profile
 				</span>
 			</motion.button>
 
@@ -52,7 +105,7 @@ const HeroButtons: React.FC<HeroButtonsProps> = ({
 				whileHover={{ y: -1 }}
 				whileTap={{ scale: 0.98 }}
 				className='group relative border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-base sm:text-lg hover:bg-white hover:text-primary-500 transition-all duration-500 w-full sm:w-auto cursor-pointer select-none z-10 overflow-hidden shadow-lg hover:shadow-2xl'
-				onClick={onContactUs}>
+				onClick={handlePlaceOrder}>
 				{/* Animated background glow */}
 				<div className='absolute inset-0 bg-gradient-to-r from-white/10 via-white/20 to-white/10 opacity-0 group-hover:opacity-30 transition-opacity duration-500 ease-out rounded-full'></div>
 
@@ -66,7 +119,7 @@ const HeroButtons: React.FC<HeroButtonsProps> = ({
 
 				{/* Button content */}
 				<span className='relative z-10 group-hover:drop-shadow-lg transition-all duration-300'>
-					{t("contactUs")}
+					Place an Order
 				</span>
 			</motion.button>
 		</div>

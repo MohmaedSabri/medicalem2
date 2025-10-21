@@ -72,8 +72,7 @@ const Home: React.FC = () => {
 
 				{/* Why Choose Us Section */}
 
-				{/* Our Team Section - Moved after Why Choose Us */}
-				<OurTeam />
+			
 				<Ceo />
 
 				{/* Testimonials Section - Added after Team Section */}

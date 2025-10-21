@@ -463,6 +463,24 @@ const enTranslations = {
 		drivenByOneGoal:
 			'"we\'ve been driven by one goal to elevate healthcare delivery standards in the UAE and the GCC region"',
 		getFreeConsultation: "Get Free Consultation",
+		trainingDescription:
+			"We provide training on how to use laser technology and offer professional medical training courses.",
+		freeDeliveryInfo: "Free delivery on orders over 2000 AED",
+
+		// Bank Details Section
+		bankDetails: {
+			bankNameLabel: "Bank Name",
+			accountNameLabel: "Account Name",
+			customerTRNLabel: "Customer TRN",
+			poBoxNumberLabel: "PO Box Number",
+			emirateLabel: "Emirate",
+			countryLabel: "Country",
+			accountTypeLabel: "Account Type",
+			accountNumberLabel: "Account Number",
+			ibanLabel: "IBAN",
+			currencyLabel: "Currency",
+			branchLabel: "Branch",
+		},
 
 		// Partners Section
 		trustedPartners: "Trusted Partners",
@@ -1162,6 +1180,24 @@ const arTranslations = {
 		drivenByOneGoal:
 			'"لقد كنا مدفوعين بهدف واحد وهو رفع معايير الرعاية الصحية في دولة الإمارات العربية المتحدة ومنطقة دول مجلس التعاون الخليجي"',
 		getFreeConsultation: "احصل على استشارة مجانية",
+		trainingDescription:
+			"نوفر تدريباً على كيفية استخدام تقنية الليزر ونقدم دورات تدريبية طبية مهنية.",
+		freeDeliveryInfo: "توصيل مجاني للطلبات التي تزيد عن 2000 درهم",
+
+		// Bank Details Section
+		bankDetails: {
+			bankNameLabel: "اسم البنك",
+			accountNameLabel: "اسم الحساب",
+			customerTRNLabel: "رقم تسجيل العميل",
+			poBoxNumberLabel: "صندوق البريد",
+			emirateLabel: "الإمارة",
+			countryLabel: "الدولة",
+			accountTypeLabel: "نوع الحساب",
+			accountNumberLabel: "رقم الحساب",
+			ibanLabel: "رقم الأيبان",
+			currencyLabel: "العملة",
+			branchLabel: "الفرع",
+		},
 
 		// Partners Section
 		trustedPartners: "شركاء موثوقون",

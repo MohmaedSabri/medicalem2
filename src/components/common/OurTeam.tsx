@@ -137,15 +137,7 @@ const OurTeam: React.FC = () => {
 		<section className='py-16 lg:py-24 bg-gray-50 relative overflow-hidden'>
 			<div className='container mx-auto px-4 sm:px-6 lg:px-8 relative z-10'>
 				{/* Debug Info */}
-				<div className='mb-8 p-4 bg-yellow-100 border border-yellow-300 rounded-lg'>
-					<h3 className='font-bold text-yellow-800 mb-2'>Debug Info:</h3>
-					<p className='text-sm text-yellow-700'>
-						Team Members Count: {teamMembers.length} | API Data Length:{" "}
-						{Array.isArray(doctorsData) ? doctorsData.length : 0} | Team Member
-						Doctors: {teamMemberDoctors.length} | Using Fallback:{" "}
-						{teamMemberDoctors.length === 0 ? "Yes" : "No"}
-					</p>
-				</div>
+				
 
 				{/* Header */}
 				<div className='text-center mb-16'>

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { useContactInfo } from "../../../hooks/useContactInfo";
+import CartCounter from "../../common/CartCounter";
 
 interface MobileMenuProps {
 	isMenuOpen: boolean;
@@ -198,11 +199,12 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
 										<motion.div
 											whileHover={{ scale: 1.05, y: -2 }}
 											whileTap={{ scale: 0.95 }}
-											className='flex flex-col items-center p-4 bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl text-primary-600 hover:shadow-lg transition-all duration-300'>
+											className='relative flex flex-col items-center p-4 bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl text-primary-600 hover:shadow-lg transition-all duration-300'>
 											<ShoppingCart className='h-6 w-6 mb-2' />
 											<span className='text-xs font-medium'>
 												{currentLanguage === "ar" ? "السلة" : "Cart"}
 											</span>
+											<CartCounter size='sm' />
 										</motion.div>
 									</Link>
 									<motion.a

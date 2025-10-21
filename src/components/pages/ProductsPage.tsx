@@ -3,7 +3,16 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Search, Filter, ArrowRight, Heart, Grid3X3, List, ShoppingCart, Check } from "lucide-react";
+import {
+	Search,
+	Filter,
+	ArrowRight,
+	Heart,
+	Grid3X3,
+	List,
+	ShoppingCart,
+	Check,
+} from "lucide-react";
 import { Product } from "../../types";
 import { useProducts } from "../../hooks/useProducts";
 import { useCategories } from "../../contexts/CategoriesContext";
@@ -30,29 +39,41 @@ const ProductsPage: React.FC = () => {
 	const [favorites, setFavorites] = useState<string[]>(() => getFavorites());
 
 	// Helper: get localized text from string or {en, ar}
-	const getLocalizedProductField = useCallback((value: string | { en?: string; ar?: string } | null | undefined): string => {
-		if (!value) return "";
-		if (typeof value === "string") return value;
-		if (typeof value === "object") {
-			return (
-				value[currentLanguage as "en" | "ar"] || value.en || value.ar || ""
-			);
-		}
-		return "";
-	}, [currentLanguage]);
+	const getLocalizedProductField = useCallback(
+		(
+			value: string | { en?: string; ar?: string } | null | undefined
+		): string => {
+			if (!value) return "";
+			if (typeof value === "string") return value;
+			if (typeof value === "object") {
+				return (
+					value[currentLanguage as "en" | "ar"] || value.en || value.ar || ""
+				);
+			}
+			return "";
+		},
+		[currentLanguage]
+	);
 
 	// Helper: get localized category name
-	const getLocalizedCategoryName = useCallback((category: { name?: string | { en?: string; ar?: string } } | null | undefined): string => {
-		if (!category) return "";
-		return getLocalizedProductField(category.name);
-	}, [getLocalizedProductField]);
+	const getLocalizedCategoryName = useCallback(
+		(
+			category:
+				| { name?: string | { en?: string; ar?: string } }
+				| null
+				| undefined
+		): string => {
+			if (!category) return "";
+			return getLocalizedProductField(category.name);
+		},
+		[getLocalizedProductField]
+	);
 
 	// Sync favorites with localStorage
 	useEffect(() => {
 		const currentFavorites = getFavorites();
 		setFavorites(currentFavorites);
 	}, []);
-
 
 	// Handle URL parameters for category and subcategory filtering
 	useEffect(() => {
@@ -71,14 +92,19 @@ const ProductsPage: React.FC = () => {
 		if (selectedCategory && selectedCategory !== "All") {
 			const categoryFromUrl = searchParams.get("category");
 			const subcategoryFromUrl = searchParams.get("subcategory");
-			
+
 			if (categoryFromUrl || subcategoryFromUrl) {
 				const urlParam = subcategoryFromUrl || categoryFromUrl;
-				
+
 				// Find the category/subcategory object that matches the URL parameter in any language
 				const matchingCategory = (allCategories || []).find((cat) => {
 					const nameObj = cat.name;
-					if (typeof nameObj === 'object' && nameObj && 'en' in nameObj && 'ar' in nameObj) {
+					if (
+						typeof nameObj === "object" &&
+						nameObj &&
+						"en" in nameObj &&
+						"ar" in nameObj
+					) {
 						const typedNameObj = nameObj as { en?: string; ar?: string };
 						return typedNameObj.en === urlParam || typedNameObj.ar === urlParam;
 					}
@@ -87,7 +113,12 @@ const ProductsPage: React.FC = () => {
 
 				const matchingSubcategory = (allSubcategories || []).find((sub) => {
 					const nameObj = sub.name;
-					if (typeof nameObj === 'object' && nameObj && 'en' in nameObj && 'ar' in nameObj) {
+					if (
+						typeof nameObj === "object" &&
+						nameObj &&
+						"en" in nameObj &&
+						"ar" in nameObj
+					) {
 						const typedNameObj = nameObj as { en?: string; ar?: string };
 						return typedNameObj.en === urlParam || typedNameObj.ar === urlParam;
 					}
@@ -99,12 +130,22 @@ const ProductsPage: React.FC = () => {
 					const localizedName = getLocalizedCategoryName(matchingCategory);
 					setSelectedCategory(localizedName);
 				} else if (matchingSubcategory) {
-					const localizedName = getLocalizedProductField(matchingSubcategory.name);
+					const localizedName = getLocalizedProductField(
+						matchingSubcategory.name
+					);
 					setSelectedCategory(localizedName);
 				}
 			}
 		}
-	}, [currentLanguage, allCategories, allSubcategories, searchParams, selectedCategory, getLocalizedCategoryName, getLocalizedProductField]);
+	}, [
+		currentLanguage,
+		allCategories,
+		allSubcategories,
+		searchParams,
+		selectedCategory,
+		getLocalizedCategoryName,
+		getLocalizedProductField,
+	]);
 
 	// Update URL when category changes
 	const handleCategoryChange = (category: string) => {
@@ -132,7 +173,9 @@ const ProductsPage: React.FC = () => {
 	};
 
 	// Transform API products to local Product format with localization resolution
-	const resolveText = (value: string | { en?: string; ar?: string } | null | undefined): string => {
+	const resolveText = (
+		value: string | { en?: string; ar?: string } | null | undefined
+	): string => {
 		if (!value) return "";
 		if (typeof value === "string") return value;
 		if (typeof value === "object") {
@@ -160,7 +203,9 @@ const ProductsPage: React.FC = () => {
 		averageRating: product.averageRating || 0,
 		totalReviews: product.totalReviews || 0,
 		reviews: product.reviews,
-		features: (product.features || []).map((f: string | { en?: string; ar?: string }) => resolveText(f)),
+		features: (product.features || []).map(
+			(f: string | { en?: string; ar?: string }) => resolveText(f)
+		),
 		specifications: Object.fromEntries(
 			Object.entries(product.specifications || {}).map(([k, v]) => [
 				k,
@@ -266,21 +311,18 @@ const ProductsPage: React.FC = () => {
 
 	const handleAddToCart = (id: string) => {
 		addToCart(id, 1);
-		
+
 		// Find the product name for the toast
-		const product = products.find(p => p._id === id);
+		const product = products.find((p) => p._id === id);
 		if (product) {
-			toast.success(
-				`${product.name} ${t('addedToCartMessage')}`,
-				{
-					duration: 3000,
-					icon: '🛒',
-					style: {
-						background: '#0ba7ae',
-						color: '#fff',
-					},
-				}
-			);
+			toast.success(`${product.name} ${t("addedToCartMessage")}`, {
+				duration: 3000,
+				icon: "🛒",
+				style: {
+					background: "#0ba7ae",
+					color: "#fff",
+				},
+			});
 		}
 	};
 
@@ -369,9 +411,15 @@ const ProductsPage: React.FC = () => {
 								setAdded(true);
 							}}
 							disabled={added}
-							className={`bg-white/95 backdrop-blur-sm rounded-full p-2 sm:p-2.5 transition-all duration-300 shadow-lg hover:shadow-xl ${added ? 'text-primary-600 bg-primary-50 cursor-not-allowed' : 'text-gray-600 hover:bg-primary-50 hover:text-primary-600'}`}>
+							className={`bg-white/95 backdrop-blur-sm rounded-full p-2 sm:p-2.5 transition-all duration-300 shadow-lg hover:shadow-xl ${
+								added
+									? "text-primary-600 bg-primary-50 cursor-not-allowed"
+									: "text-gray-600 hover:bg-primary-50 hover:text-primary-600"
+							}`}>
 							<ShoppingCart
-								className={`h-3 w-3 sm:h-4 sm:w-4 ${added ? 'fill-primary-600' : ''}`}
+								className={`h-3 w-3 sm:h-4 sm:w-4 ${
+									added ? "fill-primary-600" : ""
+								}`}
 							/>
 						</motion.button>
 
@@ -510,10 +558,14 @@ const ProductsPage: React.FC = () => {
 						<div className='flex items-center justify-between mb-2 sm:mb-3'>
 							<div className='text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent'>
 								<span className='inline-flex items-center gap-2'>
-									{currentLanguage === 'ar' ? (
+									{currentLanguage === "ar" ? (
 										<span>د.ا</span>
 									) : (
-										<img src={'/Dirham%20Currency%20Symbol%20-%20Black.svg'} alt='AED' className='h-4 w-4' />
+										<img
+											src={"/Dirham%20Currency%20Symbol%20-%20Black.svg"}
+											alt='AED'
+											className='h-4 w-4'
+										/>
 									)}
 									<span>{product.price.toLocaleString()}</span>
 								</span>
@@ -539,7 +591,13 @@ const ProductsPage: React.FC = () => {
 								setAdded(true);
 							}}
 							disabled={added}
-							className={`w-full ${added ? 'bg-primary-600 hover:bg-primary-700 cursor-not-allowed border-primary-100' : 'bg-primary-600 hover:bg-primary-700 border-primary-100'} text-white py-4 sm:py-5 rounded-2xl font-bold text-sm sm:text-base flex items-center justify-center gap-3 transition-all duration-300 relative overflow-hidden group shadow-lg hover:shadow-xl hover:shadow-primary-500/25 border-2`} aria-live='polite' aria-disabled={added}>
+							className={`w-full ${
+								added
+									? "bg-primary-600 hover:bg-primary-700 cursor-not-allowed border-primary-100"
+									: "bg-primary-600 hover:bg-primary-700 border-primary-100"
+							} text-white py-4 sm:py-5 rounded-2xl font-bold text-sm sm:text-base flex items-center justify-center gap-3 transition-all duration-300 relative overflow-hidden group shadow-lg hover:shadow-xl hover:shadow-primary-500/25 border-2`}
+							aria-live='polite'
+							aria-disabled={added}>
 							{/* Shimmer effect */}
 							<div className='absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out bg-gradient-to-r from-transparent via-white/20 to-transparent'></div>
 
@@ -624,6 +682,40 @@ const ProductsPage: React.FC = () => {
 					<p className='text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4 sm:px-0'>
 						{t("productsDescription")}
 					</p>
+
+					{/* Free Delivery Information */}
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6, delay: 0.2 }}
+						className='mt-8 mb-4'>
+						<div className='relative inline-flex items-center gap-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl px-6 py-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105'>
+							{/* Animated background glow */}
+							<div className='absolute inset-0 bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 rounded-2xl opacity-0 hover:opacity-100 transition-opacity duration-300'></div>
+
+							{/* Icon */}
+							<div className='relative z-10 flex items-center justify-center w-8 h-8 bg-white/20 rounded-full'>
+								<svg
+									className='w-5 h-5 text-white'
+									fill='currentColor'
+									viewBox='0 0 20 20'>
+									<path
+										fillRule='evenodd'
+										d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+										clipRule='evenodd'
+									/>
+								</svg>
+							</div>
+
+							{/* Text */}
+							<span className='relative z-10 text-base font-bold tracking-wide'>
+								{t("freeDeliveryInfo")}
+							</span>
+
+							{/* Animated pulse dot */}
+							<div className='relative z-10 w-3 h-3 bg-white rounded-full animate-ping'></div>
+						</div>
+					</motion.div>
 				</motion.div>
 
 				{/* Search and Filter Controls */}

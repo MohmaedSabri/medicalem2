@@ -73,7 +73,6 @@ const Hero: React.FC = () => {
 				<div
 					className='relative mx-auto max-w-6xl lg:max-w-7xl
 				 rounded-[24px] md:rounded-[28px] lg:rounded-[32px] bg-primary-500 
-				 mx-auto
 				 mt-28
 				 '>
 					{/* New Enhanced Textures Layer */}
@@ -107,10 +106,7 @@ const Hero: React.FC = () => {
 									{t("heroDescription")}
 								</p>
 
-								<HeroButtons
-									onExploreProducts={() => navigate("/products")}
-									onContactUs={() => navigate("/contact")}
-								/>
+								<HeroButtons onPlaceOrder={() => navigate("/contact")} />
 
 								{/* Stats */}
 								<HeroStats
