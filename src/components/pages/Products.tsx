@@ -1,8 +1,8 @@
 /** @format */
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, ArrowRight, Star, Zap } from "lucide-react";
+import { ArrowRight, Star, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useProducts } from "../../contexts/ProductsContext";
 import { useTranslation } from "react-i18next";
@@ -14,9 +14,13 @@ const Products: React.FC = () => {
 	const { isRTL, currentLanguage } = useLanguage();
 	const { products, loading } = useProducts();
 
+	// Carousel state management
+	const [currentIndex, setCurrentIndex] = useState(0);
+
 	// Function to detect if text is Arabic
 	const isArabicText = (text: string): boolean => {
-		const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+		const arabicRegex =
+			/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
 		return arabicRegex.test(text);
 	};
 
@@ -27,103 +31,50 @@ const Products: React.FC = () => {
 		if (!value) return "";
 		if (typeof value === "string") return value;
 		if (typeof value === "object") {
-			return value[currentLanguage as "en" | "ar"] || value.en || value.ar || "";
+			return (
+				value[currentLanguage as "en" | "ar"] || value.en || value.ar || ""
+			);
 		}
 		return "";
 	};
 
-	// All hooks must be called before any conditional returns
-	const [currentIndex, setCurrentIndex] = useState(0);
-	const [direction, setDirection] = useState(0);
-	const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-	const [touchStart, setTouchStart] = useState<number | null>(null);
-	const [touchEnd, setTouchEnd] = useState<number | null>(null);
-
-	// Get first 4 products for the slider
-	const displayProducts = products.slice(0, 4);
-
-	// Minimum swipe distance (in px)
-	const minSwipeDistance = 50;
-
-	// Auto-advance slider
+	// Auto-rotation effect
 	useEffect(() => {
-		if (!isAutoPlaying || displayProducts.length === 0) return;
+		if (products.length === 0) return;
 
-		const timer = setInterval(() => {
-			setDirection(1);
-			setCurrentIndex((prev) => (prev + 1) % displayProducts.length);
-		}, 6000);
+		const interval = setInterval(() => {
+			setCurrentIndex((prev) => (prev + 1) % products.length);
+		}, 3500);
 
-		return () => clearInterval(timer);
-	}, [displayProducts.length, isAutoPlaying]);
+		return () => clearInterval(interval);
+	}, [products.length]);
 
-	const slideVariants = {
-		enter: (direction: number) => ({
-			x: direction > 0 ? "100%" : "-100%",
-			opacity: 0,
-			scale: 0.95,
-		}),
-		center: {
-			zIndex: 1,
-			x: 0,
-			opacity: 1,
-			scale: 1,
-		},
-		exit: (direction: number) => ({
-			zIndex: 0,
-			x: direction < 0 ? "100%" : "-100%",
-			opacity: 0,
-			scale: 0.95,
-		}),
+	// 3D positioning logic for cards
+	const getCardPosition = (position: number) => {
+		const positions = {
+			0: { scale: 1, y: 0, z: 0, opacity: 1, rotateY: 0 },
+			1: { scale: 0.92, y: 20, z: -100, opacity: 0.8, rotateY: -5 },
+			2: { scale: 0.84, y: 40, z: -200, opacity: 0.6, rotateY: -10 },
+		};
+		return positions[position as keyof typeof positions] || positions[2];
 	};
 
-	const paginate = useCallback(
-		(newDirection: number) => {
-			setDirection(newDirection);
-			setCurrentIndex(
-				(prev) =>
-					(prev + newDirection + displayProducts.length) %
-					displayProducts.length
-			);
-			setIsAutoPlaying(false);
-			setTimeout(() => setIsAutoPlaying(true), 10000);
-		},
-		[displayProducts.length]
-	);
+	// Get visible cards for carousel
+	const getVisibleCards = () => {
+		if (products.length === 0) return [];
 
-	const goToSlide = useCallback(
-		(index: number) => {
-			setDirection(index > currentIndex ? 1 : -1);
-			setCurrentIndex(index);
-			setIsAutoPlaying(false);
-			setTimeout(() => setIsAutoPlaying(true), 10000);
-		},
-		[currentIndex]
-	);
-
-	// Touch handlers for mobile swipe
-	const onTouchStart = (e: React.TouchEvent) => {
-		setTouchEnd(null);
-		setTouchStart(e.targetTouches[0].clientX);
-	};
-
-	const onTouchMove = (e: React.TouchEvent) => {
-		setTouchEnd(e.targetTouches[0].clientX);
-	};
-
-	const onTouchEnd = () => {
-		if (!touchStart || !touchEnd) return;
-
-		const distance = touchStart - touchEnd;
-		const isLeftSwipe = distance > minSwipeDistance;
-		const isRightSwipe = distance < -minSwipeDistance;
-
-		if (isLeftSwipe) {
-			paginate(1);
-		} else if (isRightSwipe) {
-			paginate(-1);
+		const cards = [];
+		for (let i = 0; i < Math.min(3, products.length); i++) {
+			const index = (currentIndex + i) % products.length;
+			cards.push({ ...products[index], position: i });
 		}
+		return cards;
 	};
+
+	// All hooks must be called before any conditional returns
+
+	// Get first 3 products for the grid layout
+	const displayProducts = products.slice(0, 3);
 
 	// Loading state
 	if (loading) {
@@ -180,209 +131,191 @@ const Products: React.FC = () => {
 						transition={{ delay: 0.2, duration: 0.8 }}
 						className='inline-flex items-center space-x-1.5 sm:space-x-2 bg-primary-50 px-3 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-3 rounded-full border border-primary-200 mb-3 sm:mb-4 md:mb-6'>
 						<span className='text-primary-700 font-medium text-xs sm:text-sm md:text-base'>
-							{t('premiumMedicalEquipment')}
+							{t("premiumMedicalEquipment")}
 						</span>
 					</motion.div>
 
 					<h2 className='text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-primary-600 mb-3 sm:mb-4 md:mb-6 px-2'>
-						{t('featured')}
+						{t("featured")}
 					</h2>
 					<p className='text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 max-w-2xl lg:max-w-3xl mx-auto leading-relaxed px-4 sm:px-2 md:px-0'>
-						{t('featuredProductsDescription')}
+						{t("featuredProductsDescription")}
 					</p>
 				</motion.div>
 
-				{/* Enhanced Slider Container - Mobile First */}
-				<div className='relative max-w-7xl mx-auto'>
-					{/* Enhanced Slider with Touch Support */}
-					<div
-						className='relative h-[320px] xs:h-[350px] sm:h-[380px] 
-						md:h-[420px] lg:h-[460px] xl:h-[520px] overflow-hidden rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-lg sm:shadow-xl lg:shadow-2xl'
-						onTouchStart={onTouchStart}
-						onTouchMove={onTouchMove}
-						onTouchEnd={onTouchEnd}>
-						{/* Navigation Arrows - Hidden on Mobile, Visible on Larger Screens */}
-						<motion.button
-							whileHover={{ scale: 1.05 }}
-							whileTap={{ scale: 0.95 }}
-							onClick={() => paginate(-1)}
-							className='hidden sm:flex absolute left-3 sm:left-4 md:left-5 lg:left-6 top-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16 bg-white/95 backdrop-blur-sm rounded-full items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 border border-white/30 group touch-manipulation px-1 sm:px-2 md:px-3'>
-							<ChevronLeft className='w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 text-gray-700 group-hover:text-primary-600 transition-colors' />
-						</motion.button>
+				{/* 3D Carousel Container */}
+				<motion.div
+					initial={{ opacity: 0, y: 50, scale: 0.95 }}
+					whileInView={{ opacity: 1, y: 0, scale: 1 }}
+					viewport={{ once: true, amount: 0.2 }}
+					transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+					className='relative max-w-7xl mx-auto'>
+					{/* 3D Carousel */}
+					<div className='relative h-[600px] md:h-[700px] flex items-center justify-center perspective-[2000px]'>
+						<AnimatePresence mode='popLayout'>
+							{getVisibleCards().map((product) => {
+								const pos = getCardPosition(product.position);
+								return (
+									<motion.div
+										key={`${product._id}-${currentIndex}`}
+										initial={{
+											scale: 0.7,
+											y: -50,
+											z: 100,
+											opacity: 0,
+											rotateY: 15,
+										}}
+										animate={{
+											scale: pos.scale,
+											y: pos.y,
+											z: pos.z,
+											opacity: pos.opacity,
+											rotateY: pos.rotateY,
+										}}
+										exit={{
+											scale: 0.76,
+											y: 60,
+											z: -300,
+											opacity: 0,
+											rotateY: -15,
+										}}
+										transition={{
+											duration: 0.8,
+											ease: [0.34, 1.56, 0.64, 1],
+										}}
+										style={{
+											position: "absolute",
+											transformStyle: "preserve-3d",
+											zIndex: 100 - product.position,
+										}}
+										className='w-full max-w-md md:max-w-2xl'>
+										<div className='group relative bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 transform-gpu'>
+											{/* Product Image */}
+											<div className='relative overflow-hidden h-72 md:h-96'>
+												<div className='relative w-full h-full bg-gradient-to-br from-gray-100 to-gray-200'>
+													<img
+														src={product?.image || ""}
+														alt={getLocalizedText(product?.name) || ""}
+														onError={(e) => {
+															e.currentTarget.style.display = "none";
+														}}
+														onLoad={(e) => {
+															e.currentTarget.style.opacity = "1";
+														}}
+														className='w-full h-full object-cover transition-all duration-500 group-hover:scale-105'
+													/>
 
-						<motion.button
-							whileHover={{ scale: 1.05 }}
-							whileTap={{ scale: 0.95 }}
-							onClick={() => paginate(1)}
-							className='hidden sm:flex absolute right-3 sm:right-4 md:right-5 lg:right-6 top-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16 bg-white/95 backdrop-blur-sm rounded-full items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 border border-white/30 group touch-manipulation px-1 sm:px-2 md:px-3'>
-							<ChevronRight className='w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 text-gray-700 group-hover:text-primary-600 transition-colors' />
-						</motion.button>
+													{/* Gradient Overlay */}
+													<div className='absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-primary-600/20'></div>
 
-						<AnimatePresence initial={false} custom={direction} mode='wait'>
-							<motion.div
-								key={currentIndex}
-								custom={direction}
-								variants={slideVariants}
-								initial='enter'
-								animate='center'
-								exit='exit'
-								transition={{
-									x: { type: "spring", stiffness: 300, damping: 30 },
-									opacity: { duration: 0.3 },
-									scale: { duration: 0.4 },
-								}}
-								className='absolute inset-0 z-10'>
-								<div className='relative h-full bg-white rounded-xl sm:rounded-2xl lg:rounded-3xl overflow-hidden'>
-									{/* Mobile-First Grid Layout */}
-									<div className={`flex flex-col lg:grid lg:grid-cols-2 h-full min-h-full ${isRTL ? 'lg:grid-flow-col-dense' : ''}`}>
-										{/* Product Image - Mobile Priority */}
-										<div className={`relative overflow-hidden h-[160px] xs:h-[180px] sm:h-[200px] md:h-[220px] lg:h-full order-1 ${isRTL ? 'lg:order-2' : 'lg:order-1'}`}>
-											{/* Image Container with Better Loading */}
-											<div className='relative w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 group'>
-												<motion.img
-													src={displayProducts[currentIndex]?.image || ""}
-													alt={getLocalizedText(displayProducts[currentIndex]?.name) || ""}
-													initial={{ scale: 1.05 }}
-													animate={{ scale: 1 }}
-													transition={{ duration: 0.8 }}
-													onError={(e) => {
-														// Image failed to load
-														e.currentTarget.style.display = "none";
-													}}
-													onLoad={(e) => {
-														e.currentTarget.style.opacity = "1";
-													}}
-													style={{ opacity: 0 }}
-													className='w-full h-full object-cover transition-opacity duration-500'
-												/>
+													{/* Subcategory Badge */}
+													<motion.div
+														initial={{ opacity: 0, y: 15 }}
+														animate={{ opacity: 1, y: 0 }}
+														className='absolute top-4 left-4'>
+														<span
+															className={`inline-flex items-center space-x-1.5 bg-white/95 backdrop-blur-sm text-gray-800 px-3 py-1.5 rounded-lg font-medium border border-white/20 shadow-lg text-sm ${
+																isArabicText(
+																	getLocalizedText(
+																		typeof product?.subcategory === "string"
+																			? product?.subcategory
+																			: product?.subcategory?.name
+																	)
+																)
+																	? "flex-row-reverse"
+																	: ""
+															}`}>
+															<Star className='w-3 h-3 text-primary-600' />
+															<span>
+																{getLocalizedText(
+																	typeof product?.subcategory === "string"
+																		? product?.subcategory
+																		: product?.subcategory?.name
+																)}
+															</span>
+														</span>
+													</motion.div>
 
-												{/* Mobile-Optimized Fallback */}
-												<div className='absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
-													<div className='text-center'>
-														<div className='w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-3 bg-primary-100 rounded-full flex items-center justify-center'>
-															<Zap className='w-6 h-6 sm:w-8 sm:h-8 text-primary-600' />
+													{/* Hover Overlay */}
+													<div className='absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
+														<div className='text-center'>
+															<div className='w-16 h-16 mx-auto mb-3 bg-primary-100 rounded-full flex items-center justify-center'>
+																<Zap className='w-8 h-8 text-primary-600' />
+															</div>
+															<p className='text-primary-700 font-medium text-sm'>
+																Medical Equipment
+															</p>
 														</div>
-														<p className='text-primary-700 font-medium text-xs sm:text-sm'>
-															Medical Equipment
-														</p>
 													</div>
 												</div>
 											</div>
 
-											{/* Responsive Gradient Overlay */}
-											<div className='absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-primary-600/20 lg:from-black/20 lg:to-primary-600/30'></div>
-
-											{/* Mobile-Optimized Subcategory Badge */}
-											<motion.div
-												initial={{ opacity: 0, y: 15 }}
-												animate={{ opacity: 1, y: 0 }}
-												transition={{ delay: 0.4 }}
-												className='absolute top-2 left-2 sm:top-3 sm:left-3 md:top-4 md:left-4 lg:top-6 lg:left-6'>
-												<span 												className={`inline-flex items-center space-x-1 sm:space-x-1.5 md:space-x-2 bg-white/95 backdrop-blur-sm text-gray-800 px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 lg:px-5 lg:py-3 rounded-lg sm:rounded-xl md:rounded-2xl font-medium border border-white/20 shadow-lg text-xs sm:text-sm md:text-base ${isArabicText(getLocalizedText(typeof displayProducts[currentIndex]?.subcategory === "string" ? displayProducts[currentIndex]?.subcategory : displayProducts[currentIndex]?.subcategory?.name)) ? 'flex-row-reverse' : ''}`}>
-													<Star className='w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 text-primary-600' />
-													<span>
-														{getLocalizedText(typeof displayProducts[currentIndex]?.subcategory ===
-														"string"
-															? displayProducts[currentIndex]?.subcategory
-															: displayProducts[currentIndex]?.subcategory?.name)}
-													</span>
-												</span>
-											</motion.div>
-										</div>
-
-										{/* Product Info - Simplified and Fixed Height */}
-										<div className={`flex-1 flex items-start p-3 xs:p-4 sm:p-5 md:p-6 lg:p-8 xl:p-12 2xl:p-16 bg-gradient-to-br from-gray-50 to-white order-2 ${isRTL ? 'lg:order-1' : 'lg:order-2'}`}>
-											<motion.div
-												initial={{ opacity: 0, x: 20 }}
-												animate={{ opacity: 1, x: 0 }}
-												transition={{ delay: 0.3, duration: 0.8 }}
-												className='w-full h-full flex flex-col justify-between'>
-												{/* Content Section */}
-												<div className='flex-1'>
+											{/* Product Info */}
+											<div className='p-6 md:p-8'>
+												<div className='h-full flex flex-col'>
 													{/* Product Title */}
-													<motion.h3
-										initial={{ opacity: 0, y: 15 }}
-										animate={{ opacity: 1, y: 0 }}
-										transition={{ delay: 0.4 }}
-										className={`text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light text-gray-900 mb-2 sm:mb-3 md:mb-4 lg:mb-6 ${isArabicText(getLocalizedText(displayProducts[currentIndex]?.name)) ? 'text-right leading-[1.9] whitespace-normal break-words overflow-visible' : 'text-left leading-tight line-clamp-2'}`}>
-										{getLocalizedText(displayProducts[currentIndex]?.name)}
-									</motion.h3>
+													<h3
+														className={`text-2xl md:text-3xl font-semibold text-gray-900 mb-3 line-clamp-2 ${
+															isArabicText(getLocalizedText(product?.name))
+																? "text-right"
+																: "text-left"
+														}`}>
+														{getLocalizedText(product?.name)}
+													</h3>
 
 													{/* Product Description */}
-													<motion.p
-														initial={{ opacity: 0, y: 15 }}
-														animate={{ opacity: 1, y: 0 }}
-														transition={{ delay: 0.5 }}
-														className={`text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 mb-4 sm:mb-6 md:mb-8 lg:mb-10 leading-relaxed line-clamp-3 ${isArabicText(getLocalizedText(displayProducts[currentIndex]?.description)) ? 'text-right' : 'text-left'}`}>
-														{getLocalizedText(displayProducts[currentIndex]?.description)}
-													</motion.p>
-												</div>
-
-												{/* CTA Buttons - Always at Bottom */}
-												<motion.div
-													initial={{ opacity: 0, y: 15 }}
-													animate={{ opacity: 1, y: 0 }}
-													transition={{ delay: 0.7 }}
-													className={`flex flex-col xs:flex-row gap-2 sm:gap-3 md:gap-4 mt-auto ${isRTL ? 'xs:flex-row-reverse' : ''}`}>
-													<motion.button
-														whileHover={{ scale: 1.02, y: -1 }}
-														whileTap={{ scale: 0.98 }}
-														onClick={() =>
-															navigate(
-																`/product/${displayProducts[currentIndex]?._id}`
+													<p
+														className={`text-base md:text-lg text-gray-600 mb-6 leading-relaxed line-clamp-3 flex-1 ${
+															isArabicText(
+																getLocalizedText(product?.description)
 															)
-														}
-														className={`inline-flex items-center justify-center space-x-1.5 sm:space-x-2 md:space-x-3 bg-primary-600 text-white px-3 py-2 xs:px-4 xs:py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-4 rounded-lg sm:rounded-xl md:rounded-2xl font-semibold hover:bg-primary-700 transition-all duration-300 shadow-lg hover:shadow-xl text-xs xs:text-sm sm:text-base touch-manipulation ${isRTL ? 'flex-row-reverse' : ''}`}>
-														<span>{t('learnMore')}</span>
-														<ArrowRight className={`w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 ${isRTL ? 'rotate-180' : ''}`} />
-													</motion.button>
+																? "text-right"
+																: "text-left"
+														}`}>
+														{getLocalizedText(product?.description)}
+													</p>
 
-													<motion.button
-														whileHover={{ scale: 1.02, y: -1 }}
-														whileTap={{ scale: 0.98 }}
-														onClick={() => navigate(`/contact?productId=${displayProducts[currentIndex]?._id}`)}
-														className='inline-flex items-center justify-center space-x-1.5 sm:space-x-2 md:space-x-3 bg-white text-gray-800 px-3 py-2 xs:px-4 xs:py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-4 rounded-lg sm:rounded-xl md:rounded-2xl font-semibold border border-gray-200 sm:border-2 hover:border-primary-300 hover:text-primary-700 transition-all duration-300 shadow-lg hover:shadow-xl text-xs xs:text-sm sm:text-base touch-manipulation'>
-														<span>{t('requestDemo')}</span>
-													</motion.button>
-												</motion.div>
-											</motion.div>
+													{/* CTA Buttons */}
+													<div
+														className={`flex flex-col sm:flex-row gap-3 mt-auto ${
+															isRTL ? "sm:flex-row-reverse" : ""
+														}`}>
+														<motion.button
+															whileHover={{ scale: 1.02, y: -1 }}
+															whileTap={{ scale: 0.98 }}
+															onClick={() =>
+																navigate(`/product/${product?._id}`)
+															}
+															className={`inline-flex items-center justify-center space-x-2 bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-all duration-300 shadow-lg hover:shadow-xl text-sm ${
+																isRTL ? "flex-row-reverse" : ""
+															}`}>
+															<span>{t("learnMore")}</span>
+															<ArrowRight
+																className={`w-4 h-4 ${
+																	isRTL ? "rotate-180" : ""
+																}`}
+															/>
+														</motion.button>
+
+														<motion.button
+															whileHover={{ scale: 1.02, y: -1 }}
+															whileTap={{ scale: 0.98 }}
+															onClick={() =>
+																navigate(`/contact?productId=${product?._id}`)
+															}
+															className='inline-flex items-center justify-center space-x-2 bg-white text-gray-800 px-6 py-3 rounded-lg font-semibold border border-gray-200 hover:border-primary-300 hover:text-primary-700 transition-all duration-300 shadow-lg hover:shadow-xl text-sm'>
+															<span>{t("requestDemo")}</span>
+														</motion.button>
+													</div>
+												</div>
+											</div>
 										</div>
-									</div>
-								</div>
-							</motion.div>
+									</motion.div>
+								);
+							})}
 						</AnimatePresence>
 					</div>
-
-					{/* Mobile-Optimized Dots Indicator */}
-					<div className='flex justify-center mt-4 sm:mt-6 md:mt-8 lg:mt-12 space-x-1.5 sm:space-x-2 md:space-x-3'>
-						{displayProducts.map((_, index) => (
-							<motion.button
-								key={index}
-								whileHover={{ scale: 1.1 }}
-								whileTap={{ scale: 0.9 }}
-								onClick={() => goToSlide(index)}
-								className={`relative transition-all duration-300 touch-manipulation ${
-									index === currentIndex
-										? "w-6 h-2 sm:w-8 sm:h-2 md:w-12 md:h-3 lg:w-16 lg:h-3"
-										: "w-2 h-2 sm:w-3 sm:h-3"
-								}`}>
-								<div
-									className={`absolute inset-0 rounded-full transition-all duration-300 ${
-									index === currentIndex
-										? "bg-primary-600 shadow-md"
-										: "bg-gray-300 hover:bg-gray-400"
-									}`}
-								/>
-								{index === currentIndex && (
-									<motion.div
-										layoutId='activeIndicator'
-										className='absolute inset-0 rounded-full bg-primary-600 shadow-md'
-									/>
-								)}
-							</motion.button>
-						))}
-					</div>
-				</div>
+				</motion.div>
 
 				{/* Mobile-Optimized View All Button */}
 				<motion.div
@@ -398,7 +331,7 @@ const Products: React.FC = () => {
 						className='group relative inline-flex items-center space-x-2 sm:space-x-3 md:space-x-4 bg-white text-primary-600 border-2 border-primary-600 px-4 py-2.5 sm:px-6 sm:py-3 md:px-10 md:py-4 lg:px-12 lg:py-5 rounded-lg sm:rounded-xl md:rounded-2xl font-semibold shadow-lg sm:shadow-xl hover:shadow-2xl hover:shadow-primary-500/50 hover:border-primary-400 hover:bg-primary-600 hover:text-white text-sm sm:text-base touch-manipulation w-full xs:w-auto max-w-xs xs:max-w-none mx-auto transition-all duration-500 ease-out overflow-hidden'>
 						{/* Animated background glow */}
 						<div className='absolute inset-0 bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 opacity-0 group-hover:opacity-20 transition-opacity duration-500 ease-out rounded-lg sm:rounded-xl md:rounded-2xl'></div>
-						
+
 						{/* Sparkle effects */}
 						<div className='absolute inset-0 overflow-hidden rounded-lg sm:rounded-xl md:rounded-2xl'>
 							<div className='absolute top-2 left-4 w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300 delay-100'></div>
@@ -408,9 +341,18 @@ const Products: React.FC = () => {
 						</div>
 
 						{/* Button content */}
-						<div className={`relative z-10 flex items-center justify-center ${isRTL ? 'flex-row-reverse' : ''}`}>
-							<span className='group-hover:drop-shadow-lg transition-all duration-300'>{t('viewAllProducts')}</span>
-							<ArrowRight className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${isRTL ? 'ml-2 rotate-180' : 'ml-2'} group-hover:translate-x-2 group-hover:scale-110 transition-all duration-300 ease-out`} />
+						<div
+							className={`relative z-10 flex items-center justify-center ${
+								isRTL ? "flex-row-reverse" : ""
+							}`}>
+							<span className='group-hover:drop-shadow-lg transition-all duration-300'>
+								{t("viewAllProducts")}
+							</span>
+							<ArrowRight
+								className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${
+									isRTL ? "ml-2 rotate-180" : "ml-2"
+								} group-hover:translate-x-2 group-hover:scale-110 transition-all duration-300 ease-out`}
+							/>
 						</div>
 					</motion.button>
 				</motion.div>

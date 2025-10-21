@@ -60,7 +60,6 @@ const Home: React.FC = () => {
 				<Header />
 				<Hero />
 				<WhyChooseUs />
-				<Partners />
 				<Products />
 				{/* Simple Section Divider */}
 				<svg
@@ -69,11 +68,7 @@ const Home: React.FC = () => {
 					className='w-full'
 					style={{ height: "80px" }}></svg>
 
-
 				{/* Why Choose Us Section */}
-
-			
-				<Ceo />
 
 				{/* Testimonials Section - Added after Team Section */}
 				<Testimonials />
